@@ -5,6 +5,29 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.6] - 2025-01-09
+
+### Added
+- **Setup Scripts Templates Integration Analysis** - Comprehensive analysis and preparation for templates directory support
+  - **Template Dependencies Investigation**: Identified that only create-spec.md references templates (13 total references)
+    - pocketflow-templates.md (7 references) - Design documents, LLM workflows, utility/node templates
+    - fastapi-templates.md (3 references) - API & Data Models, Pydantic schemas, API specifications  
+    - task-templates.md (3 references) - 8-phase and simplified task breakdown templates
+  - **Setup Script Analysis**: Analyzed all 3 setup scripts for templates integration requirements
+    - setup.sh requires major updates for templates directory support
+    - setup-claude-code.sh and setup-cursor.sh need no changes (reference base installation)
+  - **Implementation Guide**: Created comprehensive step-by-step guide at WorkingFiles/setup-scripts-update-guide.md
+    - 7 specific changes identified for setup.sh with exact line numbers and code blocks
+    - --overwrite-templates flag support with argument parsing and help text
+    - Templates directory creation and download logic for all 3 template files
+    - Comprehensive testing procedures and validation checklist
+    - Rollback procedures for safe implementation
+
+### Technical Details
+- **Critical Integration**: Templates are essential for Agent OS + PocketFlow workflow functionality
+- **Failure Impact**: Without these updates, create-spec.md will fail on @templates/ path references
+- **Implementation Ready**: All code changes prepared but not yet applied to setup.sh
+
 ## [1.3.5] - 2025-01-09
 
 ### Completed
