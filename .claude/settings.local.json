@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:buildermethods.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  }
+}
