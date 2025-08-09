@@ -44,28 +44,44 @@ encoding: UTF-8
   - Git repository initialized
 </prerequisites>
 
+<pre_flight_check>
+  EXECUTE: @~/.agent-os/instructions/meta/pre-flight.md
+</pre_flight_check>
+
 <process_flow>
 
-<step number="1" name="task_assignment">
+<step number="1" name="task_assignment_and_understanding">
 
-### Step 1: Task Assignment
+### Step 1: Task Assignment and Understanding
 
 <step_metadata>
   <inputs>
     - spec_srd_reference: file path
     - specific_tasks: array[string] (optional)
   </inputs>
-  <default>next uncompleted parent task</default>
+  <default>next uncompleted parent task(s)</default>
 </step_metadata>
 
 <task_selection>
   <explicit>user specifies exact task(s)</explicit>
-  <implicit>find next uncompleted task in tasks.md</implicit>
+  <implicit>find next uncompleted task(s) in tasks.md</implicit>
 </task_selection>
 
+<task_analysis>
+  <read_from_tasks_md>
+    - Parent task(s) description
+    - All sub-task descriptions for selected tasks
+    - Task dependencies and sequencing
+    - Expected outcomes and deliverables
+  </read_from_tasks_md>
+</task_analysis>
+
 <instructions>
-  ACTION: Identify task(s) to execute
-  DEFAULT: Select next uncompleted parent task if not specified
+  ACTION: Identify task(s) to execute and read all related sub-tasks
+  DEFAULT: Select next uncompleted parent task(s) if not specified
+  ANALYZE: Full scope of implementation required across selected tasks
+  UNDERSTAND: Dependencies and expected deliverables
+  NOTE: Test requirements for each sub-task
   CONFIRM: Task selection with user
 </instructions>
 
@@ -198,6 +214,77 @@ encoding: UTF-8
   BLOCK: Implementation progression if design document missing or incomplete
   MESSAGE: Clearly indicate whether step was executed or skipped
   GUIDE: User to create proper design documentation before proceeding
+</instructions>
+
+</step>
+
+<step number="2.7" subagent="context-fetcher" name="best_practices_review">
+
+### Step 2.7: Best Practices Review
+
+<step_metadata>
+  <uses>context-fetcher subagent</uses>
+  <targets>@~/.agent-os/standards/best-practices.md</targets>
+  <purpose>selective context loading for current tasks</purpose>
+</step_metadata>
+
+Use the context-fetcher subagent to retrieve relevant sections from @~/.agent-os/standards/best-practices.md that apply to the current task's technology stack and feature type.
+
+<selective_reading>
+  <search_best_practices>
+    FIND sections relevant to:
+    - Task's technology stack
+    - PocketFlow patterns if applicable
+    - Testing approaches needed
+    - Code organization patterns
+  </search_best_practices>
+</selective_reading>
+
+<instructions>
+  ACTION: Use context-fetcher subagent
+  REQUEST: "Find best practices sections relevant to:
+            - Task's technology stack: [CURRENT_TECH]
+            - Feature type: [CURRENT_FEATURE_TYPE]
+            - PocketFlow patterns: [IF_APPLICABLE]
+            - Testing approaches needed
+            - Code organization patterns"
+  PROCESS: Returned best practices
+  APPLY: Relevant patterns to implementation
+</instructions>
+
+</step>
+
+<step number="2.8" subagent="context-fetcher" name="code_style_review">
+
+### Step 2.8: Code Style Review
+
+<step_metadata>
+  <uses>context-fetcher subagent</uses>
+  <targets>@~/.agent-os/standards/code-style.md</targets>
+  <purpose>selective style rules loading</purpose>
+</step_metadata>
+
+Use the context-fetcher subagent to retrieve relevant code style rules from @~/.agent-os/standards/code-style.md for the languages and file types being used in this task.
+
+<selective_reading>
+  <search_code_style>
+    FIND style rules for:
+    - Languages used in this task
+    - File types being modified
+    - PocketFlow patterns being implemented
+    - Testing style guidelines
+  </search_code_style>
+</selective_reading>
+
+<instructions>
+  ACTION: Use context-fetcher subagent
+  REQUEST: "Find code style rules for:
+            - Languages: [LANGUAGES_IN_TASK]
+            - File types: [FILE_TYPES_BEING_MODIFIED]
+            - PocketFlow patterns: [PATTERNS_BEING_IMPLEMENTED]
+            - Testing style guidelines"
+  PROCESS: Returned style rules
+  APPLY: Relevant formatting and patterns
 </instructions>
 
 </step>
@@ -551,6 +638,50 @@ encoding: UTF-8
   MARK: [x] for completed items immediately
   DOCUMENT: Blocking issues with ⚠️ emoji
   LIMIT: 3 attempts before marking as blocked
+</instructions>
+
+</step>
+
+<step number="7.5" subagent="test-runner" name="task_specific_test_verification">
+
+### Step 7.5: Task-Specific Test Verification
+
+<step_metadata>
+  <uses>test-runner subagent</uses>
+  <purpose>focused testing before full suite</purpose>
+  <runs>only tests related to current tasks</runs>
+</step_metadata>
+
+Use the test-runner subagent to run and verify only the tests specific to the current tasks being worked on (not the full test suite) to ensure the features are working correctly.
+
+<focused_test_execution>
+  <run_only>
+    - All new tests written for current tasks
+    - All tests updated during these tasks
+    - Tests directly related to implemented features
+  </run_only>
+  <skip>
+    - Full test suite (done later in Step 8)
+    - Unrelated test files
+  </skip>
+</focused_test_execution>
+
+<final_verification>
+  IF any test failures:
+    - Debug and fix the specific issue
+    - Re-run only the failed tests
+  ELSE:
+    - Confirm all task tests passing
+    - Ready to proceed to full test suite
+</final_verification>
+
+<instructions>
+  ACTION: Use test-runner subagent
+  REQUEST: "Run tests for [current tasks' test files]"
+  WAIT: For test-runner analysis
+  PROCESS: Returned failure information
+  VERIFY: 100% pass rate for task-specific tests
+  CONFIRM: These features' tests are complete before full suite
 </instructions>
 
 </step>

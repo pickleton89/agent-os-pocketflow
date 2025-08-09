@@ -5,6 +5,33 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.2] - 2025-01-09
+
+### Added
+- **Selective Context Loading** - Enhanced `instructions/core/execute-tasks.md` with context-fetcher subagent integration
+  - Step 2.7: Best practices review using context-fetcher for relevant sections only
+  - Step 2.8: Code style review using context-fetcher for language-specific rules
+- **Focused Test Verification** - New Step 7.5 for task-specific testing before full test suite
+  - Uses test-runner subagent for targeted test execution
+  - Verifies feature-specific tests pass before running comprehensive suite
+- **Pre-flight Check Integration** - Added centralized pre-flight validation to execute-tasks workflow
+
+### Enhanced
+- **Task Understanding** - Updated Step 1 to "Task Assignment and Understanding"
+  - Enhanced multi-task analysis with comprehensive task dependency tracking
+  - Better scope analysis across multiple selected tasks
+  - Improved deliverable identification for complex task sequences
+- **PocketFlow Integration Maintained** - Preserved all existing LLM/AI detection and design document validation
+  - Conditional execution based on PocketFlow component detection
+  - Design-first enforcement for LLM/AI implementations
+  - Modern Python stack prioritization (uv + Ruff + ty + pytest)
+
+### Improved
+- **Context Efficiency** - Reduced context usage through selective loading while maintaining quality
+- **Testing Workflow** - Progressive testing approach (focused → comprehensive)
+- **Multi-task Support** - Better handling of multiple parent tasks in single execution
+- **Subagent Integration** - Consistent use of specialized agents for specific operations
+
 ## [1.3.1] - 2025-08-02
 
 ### Added
