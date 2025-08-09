@@ -24,14 +24,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - PocketFlow project structure conventions integration
 
 ### In Progress
-- **Phase 2: Workflow Integration** - Updating remaining Claude Code agents (1 of 3 complete)
+- **Phase 2: Workflow Integration** - Updating remaining Claude Code agents (2 of 3 complete)
   - ✅ **context-fetcher.md Enhancement**: Added comprehensive PocketFlow project structure awareness
     - PocketFlow file type recognition (docs/design.md, main.py, flow.py, nodes.py, schemas/, utils/)
     - Design-first workflow priority with mandatory design document detection
     - Python configuration awareness (pyproject.toml, requirements.txt, .python-version)
     - Smart extraction examples for Node classes, Flow definitions, and utility functions
-  - 🔄 **Next**: git-workflow.md - Integrate Python tooling (ruff/ty) into git workflows
-  - 🔄 **Next**: test-runner.md - Add PocketFlow testing patterns
+  - ✅ **git-workflow.md Enhancement**: Integrated Python tooling and PocketFlow development practices
+    - Automatic Python project detection (pyproject.toml, main.py/flow.py/nodes.py structure)
+    - Pre-commit quality gates with ruff linting, ty type checking, and pytest testing
+    - Python-enhanced commit workflow with quality validation and status reporting
+    - Python/PocketFlow PR template with code quality sections and component tracking
+    - Smart constraints preventing commits with failing type checks
+  - 🔄 **Next**: test-runner.md - Add PocketFlow testing patterns and pytest integration
 
 ## [1.3.4] - 2025-01-09
 
