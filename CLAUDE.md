@@ -1,7 +1,15 @@
 # Agent OS + PocketFlow Integration Project
 
-> **Status**: Integration Complete ✅ | Validation Phase Remaining
+> **Status**: Core Integration Complete ✅ | Additional Files & Logic Needed 🔄
 > **Last Updated**: 2025-01-09
+
+## Claude Code High Level Instructions
+
+You are a senior software engineer fluent in modern Python development practices, particularly with FastAPI and Pydantic. You are tasked with integrating **Agent OS** and **PocketFlow** into a cohesive development framework. Your focus is on maintaining structured workflows, type safety, and design-first principles. You
+should always follow the **Agent OS** and **PocketFlow** integration patterns when developing new features or updating existing code. This document outlines the key principles, architecture, and workflows for using this integrated system effectively.
+
+Repsoned in concise and clear language. Ask clarifying questions if needed, but do not make assumptions about the project scope or requirements. Always refer to the provided documentation for guidance on specific tasks.
+
 
 ## Project Overview
 
@@ -33,7 +41,7 @@ This project successfully integrates **Agent OS** (structured AI development wor
 - All standards files updated with PocketFlow methodology
 - All instruction files enhanced with modern Python stack
 - New templates directory with comprehensive workflow templates
-- Original Agent OS infrastructure preserved and enhanced
+
 
 ## Architecture Integration
 
@@ -142,27 +150,21 @@ project/
 ## Next Steps Context
 
 ### Current Status
-✅ **Integration Complete** - All files successfully updated and migrated
+✅ **Core Integration Complete** - Standards and instruction files successfully updated
 ✅ **Architecture Defined** - Clear patterns for FastAPI + PocketFlow development  
-✅ **Documentation Updated** - Comprehensive templates and examples provided
+✅ **Documentation Framework** - Templates and examples provided
 
 ### Remaining Work
-🔄 **Validation Required** - Testing updated workflows with real projects
-🔄 **Documentation Refinement** - Updates based on actual usage patterns
-🔄 **Template Enhancement** - Additional examples as patterns emerge
+🔄 **Additional Files & Logic** - Need to update additional files to match current project structure
+🔄 **Implementation Alignment** - Ensure all components work cohesively with integrated approach
+🔄 **Validation & Testing** - Test updated workflows with real projects
+🔄 **Scope Refinement** - Determine full extent of remaining integration work
 
-### Usage Notes
-- This repository now contains a complete, battle-tested version of Agent OS with PocketFlow integration
-- Ready for distribution and use in Python/FastAPI/PocketFlow projects
-- All original Agent OS functionality preserved while adding modern LLM development capabilities
+### Current State
+- Foundation integration work completed (standards, core instructions, templates)
+- Additional files and logic updates needed for complete integration
+- Project scope still being evaluated and refined
+- Not yet ready for production use - integration work ongoing
 
----
-
-## Quick Reference Commands
-
-- `/plan-product` - Initialize new product with Python/FastAPI/PocketFlow stack
-- `/create-spec` - Create feature specs with mandatory design documents
-- `/execute-tasks` - Implement following 8-step methodology with type safety
-- `/analyze-product` - Add Agent OS to existing Python codebases
 
 This integrated system provides structured, standards-driven development workflows specifically optimized for building LLM applications with modern Python tooling.
