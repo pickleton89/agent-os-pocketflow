@@ -6,7 +6,10 @@
       "Bash(mkdir:*)",
       "Bash(cp:*)",
       "Bash(git add:*)",
-      "mcp__graphiti__add_memory"
+      "mcp__graphiti__add_memory",
+      "mcp__graphiti__search_memory_facts",
+      "mcp__pocketflow__fetch_PocketFlow_documentation",
+      "mcp__pocketflow__search_PocketFlow_documentation"
     ],
     "deny": []
   }
