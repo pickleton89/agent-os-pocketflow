@@ -5,7 +5,8 @@
       "WebFetch(domain:github.com)",
       "Bash(mkdir:*)",
       "Bash(cp:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "mcp__graphiti__add_memory"
     ],
     "deny": []
   }

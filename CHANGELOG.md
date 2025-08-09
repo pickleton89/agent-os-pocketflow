@@ -5,6 +5,24 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.3] - 2025-01-09
+
+### Fixed
+- **Command Path References** - Updated all command files to use correct `instructions/core/` paths
+  - Fixed `commands/plan-product.md` path reference to point to `instructions/core/plan-product.md`
+  - Fixed `commands/create-spec.md` path reference to point to `instructions/core/create-spec.md`
+  - Fixed `commands/execute-tasks.md` path reference to point to `instructions/core/execute-tasks.md`
+  - Fixed `commands/analyze-product.md` path reference to point to `instructions/core/analyze-product.md`
+- **Agent OS Command Integration** - Commands now properly connect to PocketFlow-integrated instruction files
+  - Resolves issue where commands referenced old directory structure before core/meta reorganization
+  - Ensures users access enhanced LLM/AI workflow capabilities when running Agent OS commands
+
+### Completed
+- **Agent OS + PocketFlow Integration** - Major integration project now functionally complete
+  - All core workflows, standards, templates, and command connectivity successfully unified
+  - PocketFlow methodology fully integrated with design document validation and type safety
+  - Modern Python stack prioritization maintained (uv + Ruff + ty + pytest)
+
 ## [1.3.2] - 2025-01-09
 
 ### Added
