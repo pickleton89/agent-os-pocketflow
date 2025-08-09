@@ -1,8 +1,11 @@
 # Code Style Guide
 
+> Version: 1.3.0
+> Last Updated: 2025-01-31
+
 ## Context
 
-Global code style rules for Agent OS projects.
+This file is part of the Agent OS standards system. These global code style rules are referenced by all product codebases and provide default formatting guidelines. Individual projects may extend or override these rules in their `.agent-os/product/code-style.md` file.
 
 <conditional-block context-check="general-formatting">
 IF this General Formatting section already read in current context:
@@ -13,65 +16,156 @@ ELSE:
 
 ## General Formatting
 
-### Indentation
-- Use 2 spaces for indentation (never tabs)
-- Maintain consistent indentation throughout files
-- Align nested structures for readability
+### Python Standards
+- **Indentation**: 4 spaces (never tabs)
+- **Line Length**: 88 characters max (Ruff default)
+- **File Length**: Keep under 500 lines
+- **Blank Lines**: Two around top-level definitions, one around methods
 
 ### Naming Conventions
-- **Methods and Variables**: Use snake_case (e.g., `user_profile`, `calculate_total`)
-- **Classes and Modules**: Use PascalCase (e.g., `UserProfile`, `PaymentProcessor`)
-- **Constants**: Use UPPER_SNAKE_CASE (e.g., `MAX_RETRY_COUNT`)
+| Type | Convention | Example |
+|------|------------|---------|
+| Methods/Variables | snake_case | `user_profile` |
+| Classes | PascalCase | `UserProfile` |
+| Constants | UPPER_SNAKE_CASE | `MAX_RETRY_COUNT` |
+| Private Methods | _prefix | `_validate_input()` |
+| Environment Vars | UPPER_SNAKE_CASE | `API_KEY` |
 
 ### String Formatting
-- Use single quotes for strings: `'Hello World'`
-- Use double quotes only when interpolation is needed
-- Use template literals for multi-line strings or complex interpolation
+- Prefer f-strings: `f"Hello {name}"`
+- Single quotes for simple strings, triple double for docstrings
+- Define constants at module level after imports
 
-### Code Comments
-- Add brief comments above non-obvious business logic
-- Document complex algorithms or calculations
-- Explain the "why" behind implementation choices
-- Never remove existing comments unless removing the associated code
-- Update comments when modifying code to maintain accuracy
-- Keep comments concise and relevant
+### Code Principles
+- **DRY**: Extract common logic into utilities
+- **Whitespace**: No extra spaces inside brackets/parens
+- **Trailing Commas**: Use in multi-line collections
+
 </conditional-block>
 
-<conditional-block task-condition="html-css-tailwind" context-check="html-css-style">
-IF current task involves writing or updating HTML, CSS, or TailwindCSS:
-  IF html-style.md AND css-style.md already in context:
-    SKIP: Re-reading these files
-    NOTE: "Using HTML/CSS style guides already in context"
-  ELSE:
-    <context_fetcher_strategy>
-      IF current agent is Claude Code AND context-fetcher agent exists:
-        USE: @agent:context-fetcher
-        REQUEST: "Get HTML formatting rules from code-style/html-style.md"
-        REQUEST: "Get CSS and TailwindCSS rules from code-style/css-style.md"
-        PROCESS: Returned style rules
-      ELSE:
-        READ the following style guides (only if not already in context):
-        - @~/.agent-os/standards/code-style/html-style.md (if not in context)
-        - @~/.agent-os/standards/code-style/css-style.md (if not in context)
-    </context_fetcher_strategy>
-ELSE:
-  SKIP: HTML/CSS style guides not relevant to current task
+<conditional-block task-condition="pocketflow" context-check="pocketflow-patterns">
+IF current task involves PocketFlow nodes or flows:
+  READ: The following PocketFlow conventions
+
+## PocketFlow Patterns
+
+### Naming Standards
+- **Nodes**: `PascalCase` + "Node" suffix (e.g., `FetchDataNode`)
+- **Flows**: `PascalCase` + "Flow" suffix (e.g., `ProcessingFlow`)
+- **Batch/Async**: Include in name (e.g., `BatchProcessNode`, `AsyncFetchNode`)
+
+### Lifecycle Methods
+- Standard: `prep()`, `exec()`, `post()`
+- Async variants: `prep_async()`, `exec_async()`, `post_async()`
+- Keep each method focused and single-purpose
+
+### Shared Store Conventions
+- **Key Format**: snake_case (e.g., `processed_chunks`)
+- **Namespacing**: Prefix by node (e.g., `fetcher_results`)
+- **Timestamps**: Use `<key>_timestamp` format
+- **Prefixes**: `raw_`, `processed_`, `final_`, `temp_`
+
+### Flow Control Actions
+| Purpose | Action String |
+|---------|--------------|
+| Default/Success | `None` or `"success"` |
+| Error States | `"error"`, `"retry"`, `"skip"` |
+| Flow Control | `"continue"`, `"end"`, `"batch"` |
+| Branching | Custom descriptive strings |
+
+**Best Practice**: For complex flows with many branches, define action strings as constants at the top of your `flow.py` file to avoid typos and improve readability (e.g., `ACTION_APPROVE = "approved"`).
+
 </conditional-block>
 
-<conditional-block task-condition="javascript" context-check="javascript-style">
-IF current task involves writing or updating JavaScript:
-  IF javascript-style.md already in context:
-    SKIP: Re-reading this file
-    NOTE: "Using JavaScript style guide already in context"
-  ELSE:
-    <context_fetcher_strategy>
-      IF current agent is Claude Code AND context-fetcher agent exists:
-        USE: @agent:context-fetcher
-        REQUEST: "Get JavaScript style rules from code-style/javascript-style.md"
-        PROCESS: Returned style rules
-      ELSE:
-        READ: @~/.agent-os/standards/code-style/javascript-style.md
-    </context_fetcher_strategy>
-ELSE:
-  SKIP: JavaScript style guide not relevant to current task
+<conditional-block task-condition="fastapi" context-check="fastapi-conventions">
+IF current task involves FastAPI routes or models:
+  READ: The following FastAPI conventions
+
+## FastAPI Conventions
+
+### Routes & Models
+- **Route Functions**: verb_noun pattern (e.g., `get_items`, `create_user`)
+- **Base Models**: Simple names (e.g., `User`, `Item`)
+- **Request Models**: Action suffix (e.g., `UserCreate`, `ItemUpdate`)
+- **Response Models**: "Response" suffix when different from base
+- **Always use** `async def` for route functions
+
+### Status Codes
+- 200: Success (GET/PUT)
+- 201: Created (POST)
+- 204: No Content (DELETE)
+- 404: Not Found
+- 422: Validation Error
+
+### Project Structure
+```
+src/
+├── auth/
+│   ├── router.py
+│   ├── schemas.py
+│   └── service.py
+├── items/
+│   ├── router.py
+│   ├── schemas.py
+│   └── service.py
+```
+
 </conditional-block>
+
+<conditional-block task-condition="mcp" context-check="mcp-conventions">
+IF current task involves Fast MCP tools:
+  READ: The following MCP conventions
+
+## Fast MCP Conventions
+
+### Tool Standards
+- **Function Names**: snake_case (e.g., `search_documents`)
+- **Descriptions**: Concise, action-oriented
+- **Return Types**: JSON-serializable only
+- **Parameters**: Use type hints with defaults
+- **Error Handling**: Return structured error objects
+
+</conditional-block>
+
+<conditional-block task-condition="async" context-check="async-patterns">
+IF current task involves async/await:
+  READ: The following async patterns
+
+## Async/Await Patterns
+
+### Best Practices
+- No `_async` suffix unless disambiguating from sync version
+- Use `async with` for context managers
+- Use `asyncio.gather()` for parallel operations
+- Wrap await statements in try/except for error handling
+
+</conditional-block>
+
+## Universal Standards
+
+### Imports
+1. Standard library
+2. Core frameworks (FastAPI, PocketFlow)
+3. Third-party packages
+4. Local application
+
+### Type Hints
+- **Required** for all function parameters and returns
+- Use `Optional[T]` or `T | None` (Python 3.10+)
+- Use `Protocol` for duck typing interfaces
+
+### Documentation
+- Follow PEP 257 for docstrings
+- Comment the "why", not the "what"
+- Update comments when code changes
+
+## Logging
+- Use `structlog` for all application logging.
+- Log levels: Use `info` for routine events, `warning` for recoverable issues, and `error` or `exception` for critical failures.
+- Context: Bind relevant context (e.g., `user_id`, `request_id`) to the logger for better traceability.
+
+### Testing
+- Files: `test_*.py` pattern
+- Classes: `Test` prefix (e.g., `TestUserAPI`)
+- Methods: `test_` prefix (e.g., `test_create_user`)
+- Use pytest fixtures for common data

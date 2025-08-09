@@ -1,33 +1,109 @@
 # Tech Stack
 
+> Version: 1.3.0
+> Last Updated: 2025-07-21
+
 ## Context
 
-Global tech stack defaults for Agent OS projects, overridable in project-specific `.agent-os/product/tech-stack.md`.
+This file is part of the Agent OS standards system. These global tech stack defaults are referenced by all product codebases when initializing new projects. Individual projects may override these choices in their `.agent-os/product/tech-stack.md` file.
 
-- App Framework: Ruby on Rails 8.0+
-- Language: Ruby 3.2+
-- Primary Database: PostgreSQL 17+
-- ORM: Active Record
-- JavaScript Framework: React latest stable
-- Build Tool: Vite
-- Import Strategy: Node.js modules
-- Package Manager: npm
-- Node Version: 22 LTS
-- CSS Framework: TailwindCSS 4.0+
-- UI Components: Instrumental Components latest
-- UI Installation: Via development gems group
-- Font Provider: Google Fonts
-- Font Loading: Self-hosted for performance
-- Icons: Lucide React components
-- Application Hosting: Digital Ocean App Platform/Droplets
-- Hosting Region: Primary region based on user base
-- Database Hosting: Digital Ocean Managed PostgreSQL
-- Database Backups: Daily automated
-- Asset Storage: Amazon S3
-- CDN: CloudFront
-- Asset Access: Private with signed URLs
-- CI/CD Platform: GitHub Actions
-- CI/CD Trigger: Push to main/staging branches
-- Tests: Run before deployment
-- Production Environment: main branch
-- Staging Environment: staging branch
+## Core Technologies
+
+## Application Framework
+
+- **Primary Web Framework:** FastAPI  
+  - Purpose: Serves MCP API endpoints, integrates with PocketFlow orchestration layer.  
+- **Workflow Orchestration Framework:** PocketFlow (latest)  
+  - Purpose: Manages Node/Flow execution for LLM-assisted interactions.
+- **Language:** Python 3.12+
+
+### AI/LLM Framework
+- **Framework:** PocketFlow (latest)
+- **Purpose:** LLM workflow orchestration
+
+### Message Queue/Coordination
+- **Framework:** FastMCP
+- **Purpose:** Multi-agent messaging and coordination
+
+## Database
+
+### Orchestration State Storage
+- **Store:** PocketFlow SharedStore (in-memory, with optional persistent backend)
+- **Purpose:** Maintains agent workflow state, cached API responses, and metadata during and across flows.
+
+### Vector Store
+- **Database:** ChromaDB
+- **Purpose:** Embeddings and semantic search
+
+### Relational Store
+- **Database:** SQLite (or similar file-based)
+- **Purpose:** Structured data and metadata
+
+## Python Libraries
+
+### Data Manipulation & Analysis
+- **Libraries:** Pandas, NumPy
+- **Purpose:** Data structures and operations
+
+### Visualization
+- **Libraries:** Matplotlib, Seaborn
+- **Purpose:** Data visualization
+
+### API & Data Validation
+- **Libraries:** Pydantic, FastAPI
+- **Purpose:** Data validation and API building
+
+### External API Clients
+- **Library:** Custom API clients as needed
+- **Purpose:** Interfacing with external services and APIs
+
+## Development Tools
+
+### Testing Framework
+- **Framework:** Pytest
+
+### Package Management
+- **Tool:** uv
+
+### Code Quality
+- **Linting/Formatting:** Ruff
+- **Type Checking:** mypy (via `uvx ty check`)
+
+## Version Control
+- **System:** Git
+- **Hosting:** GitHub
+
+## CI/CD
+- **Platform:** GitHub Actions (linting, tests, build before deploy)
+
+## Environment Variables
+- **Tool:** python-dotenv
+
+## Frontend
+- **Framework:** None (API only)
+
+## Hosting/Deployment
+- **Platform:** Local development
+- **Production:** TBD
+
+## Observability
+
+- **Logging Framework:** 
+  - `structlog` for structured, JSON-formatted logs compatible with modern log aggregation tools.
+  - Integrated with FastAPI's logging middleware for request/response tracking.
+  - PocketFlow Node-level logging enabled for step-by-step workflow tracing.
+
+- **Error Tracking:**
+  - Sentry SDK for Python to capture exceptions from both FastAPI endpoints and PocketFlow execution flows.
+
+- **Metrics & Monitoring:**
+  - Prometheus-compatible metrics via `prometheus-fastapi-instrumentator` for endpoint latency, request counts, and error rates.
+  - Optional PocketFlow custom metrics node for workflow timing and throughput.
+
+- **Tracing:**
+  - OpenTelemetry instrumentation for distributed tracing across MCP server requests, API calls, and internal PocketFlow nodes.
+
+- **Log Retention & Storage:**
+  - Development: Local log files (rotated daily).
+
+---
