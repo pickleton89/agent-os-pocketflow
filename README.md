@@ -1,5 +1,10 @@
 <img width="1280" height="640" alt="agent-os-og" src="https://github.com/user-attachments/assets/e897628e-7063-4bab-a69a-7bb6d7ac8403" />
 
+[![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-4A90E2?style=flat-square&logo=anthropic&logoColor=white)](https://claude.ai/code)
+[![Agentic Coding](https://img.shields.io/badge/Development-Agentic%20Coding-FF6B6B?style=flat-square)](https://the-pocket.github.io/PocketFlow/guide.html)
+[![Agent OS](https://img.shields.io/badge/Framework-Agent%20OS-00B4D8?style=flat-square)](https://buildermethods.com/agent-os)
+[![PocketFlow](https://img.shields.io/badge/LLM%20Framework-PocketFlow-00F5FF?style=flat-square)](https://github.com/The-Pocket/PocketFlow)
+
 ## Agent OS + PocketFlow Integration
 
 **Your system for structured LLM application development.**
@@ -126,7 +131,13 @@ PocketFlow provides the elegant, minimalist LLM orchestration framework that mak
 - [PocketFlow Framework](https://github.com/The-Pocket/PocketFlow) - The core framework
 - [Documentation](https://the-pocket.github.io/PocketFlow/) - Complete guides and patterns
 
-### Integration
+### Integration Development
 This integration was created to demonstrate how structured workflow management (Agent OS) and minimalist LLM orchestration (PocketFlow) can work together to create a world-class development experience for building AI applications.
 
-The integration maintains the design philosophy of both frameworks while creating something greater than the sum of its parts.
+**Built with Agentic Coding**: This entire integration was developed using the Agentic Coding methodology with [Claude Code](https://claude.ai/code) as the AI development partner. The project exemplifies the "humans design, agents code" philosophy:
+
+- **Human-led Design**: Strategic decisions, architecture planning, and integration approach
+- **AI-assisted Implementation**: Standards files, templates, documentation, and workflow instructions
+- **Collaborative Refinement**: Iterative improvement and validation of all components
+
+The integration maintains the design philosophy of both frameworks while creating something greater than the sum of its parts. This project serves as a real-world example of how Agentic Coding can be used to build complex, production-ready developer tools and frameworks.
