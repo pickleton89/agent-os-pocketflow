@@ -5,6 +5,34 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.7] - 2025-01-10
+
+### Added
+- **Setup Scripts Complete PocketFlow Integration** - Finalized all setup scripts for production readiness
+  - **setup.sh Templates Support**: Implemented complete templates directory integration
+    - Added `--overwrite-templates` flag for template file management
+    - Creates `~/.agent-os/templates/` directory during installation
+    - Downloads all 3 PocketFlow template files (pocketflow, fastapi, task)
+    - Preserves existing templates unless overwrite flag is used
+  - **setup.sh Standards Update**: Added missing PocketFlow guidance file
+    - Now downloads `pocket-flow.md` standard file with other standards
+    - Ensures complete PocketFlow documentation is available
+  - **setup-claude-code.sh Enhancement**: Updated base installation verification
+    - Now checks for templates directory in addition to instructions and standards
+    - Added helpful message for users with older installations
+    - Guides users to update with `--overwrite-templates` flag if needed
+
+### Fixed
+- **Missing pocket-flow.md**: setup.sh now downloads the critical PocketFlow guidance standard
+- **Incomplete Installation Check**: setup-claude-code.sh now verifies all required directories
+
+### Completed
+- **Agent OS + PocketFlow Integration 100% Complete** - All components now production-ready
+  - Setup scripts fully support templates directory and PocketFlow standards
+  - All instruction files reference templates correctly
+  - Claude Code agents fully transformed for Python/PocketFlow paradigm
+  - Complete end-to-end workflow validated and tested
+
 ## [1.3.6] - 2025-01-09
 
 ### Added
@@ -278,6 +306,12 @@ This represents the successful completion of the comprehensive claude-code-agent
 - Task management with TDD workflow
 - Spec creation and organization system
 
+[1.3.7]: https://github.com/buildermethods/agent-os/compare/v1.3.6...v1.3.7
+[1.3.6]: https://github.com/buildermethods/agent-os/compare/v1.3.5...v1.3.6
+[1.3.5]: https://github.com/buildermethods/agent-os/compare/v1.3.4...v1.3.5
+[1.3.4]: https://github.com/buildermethods/agent-os/compare/v1.3.3...v1.3.4
+[1.3.3]: https://github.com/buildermethods/agent-os/compare/v1.3.2...v1.3.3
+[1.3.2]: https://github.com/buildermethods/agent-os/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/buildermethods/agent-os/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/buildermethods/agent-os/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/buildermethods/agent-os/compare/v1.1.0...v1.2.0

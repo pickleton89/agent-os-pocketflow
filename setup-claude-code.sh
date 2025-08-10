@@ -10,8 +10,8 @@ echo "============================="
 echo ""
 
 # Check if Agent OS base installation is present
-if [ ! -d "$HOME/.agent-os/instructions" ] || [ ! -d "$HOME/.agent-os/standards" ]; then
-    echo "⚠️  Agent OS base installation not found!"
+if [ ! -d "$HOME/.agent-os/instructions" ] || [ ! -d "$HOME/.agent-os/standards" ] || [ ! -d "$HOME/.agent-os/templates" ]; then
+    echo "⚠️  Agent OS base installation not found or incomplete!"
     echo ""
     echo "Please install the Agent OS base installation first:"
     echo ""
@@ -20,6 +20,9 @@ if [ ! -d "$HOME/.agent-os/instructions" ] || [ ! -d "$HOME/.agent-os/standards"
     echo ""
     echo "Option 2 - Manual installation:"
     echo "  Follow instructions at https://buildermethods.com/agent-os"
+    echo ""
+    echo "If you have an older installation, you may need to update it to include templates:"
+    echo "  curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup.sh | bash --overwrite-templates"
     echo ""
     exit 1
 fi

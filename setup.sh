@@ -100,6 +100,18 @@ else
     fi
 fi
 
+# pocket-flow.md
+if [ -f "$HOME/.agent-os/standards/pocket-flow.md" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
+    echo "  ⚠️  ~/.agent-os/standards/pocket-flow.md already exists - skipping"
+else
+    curl -s -o "$HOME/.agent-os/standards/pocket-flow.md" "${BASE_URL}/standards/pocket-flow.md"
+    if [ -f "$HOME/.agent-os/standards/pocket-flow.md" ] && [ "$OVERWRITE_STANDARDS" = true ]; then
+        echo "  ✓ ~/.agent-os/standards/pocket-flow.md (overwritten)"
+    else
+        echo "  ✓ ~/.agent-os/standards/pocket-flow.md"
+    fi
+fi
+
 # Download code-style subdirectory files
 echo ""
 echo "📥 Downloading code style files to ~/.agent-os/standards/code-style/"
