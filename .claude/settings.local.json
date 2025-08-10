@@ -15,7 +15,8 @@
       "Bash(claude mcp:*)",
       "Bash(bash:*)",
       "Bash(./setup.sh:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "mcp__agent-os-git-docs__fetch_agent_os_git_documentation"
     ],
     "deny": []
   }
