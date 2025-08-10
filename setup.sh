@@ -8,6 +8,7 @@ set -e  # Exit on error
 # Initialize flags
 OVERWRITE_INSTRUCTIONS=false
 OVERWRITE_STANDARDS=false
+OVERWRITE_TEMPLATES=false
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
@@ -20,12 +21,17 @@ while [[ $# -gt 0 ]]; do
             OVERWRITE_STANDARDS=true
             shift
             ;;
+        --overwrite-templates)
+            OVERWRITE_TEMPLATES=true
+            shift
+            ;;
         -h|--help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
             echo "Options:"
             echo "  --overwrite-instructions    Overwrite existing instruction files"
             echo "  --overwrite-standards       Overwrite existing standards files"
+            echo "  --overwrite-templates       Overwrite existing template files"
             echo "  -h, --help                  Show this help message"
             echo ""
             exit 0
@@ -52,6 +58,7 @@ mkdir -p "$HOME/.agent-os/standards/code-style"
 mkdir -p "$HOME/.agent-os/instructions"
 mkdir -p "$HOME/.agent-os/instructions/core"
 mkdir -p "$HOME/.agent-os/instructions/meta"
+mkdir -p "$HOME/.agent-os/templates"
 
 # Download standards files
 echo ""
@@ -130,6 +137,46 @@ else
         echo "  ✓ ~/.agent-os/standards/code-style/javascript-style.md (overwritten)"
     else
         echo "  ✓ ~/.agent-os/standards/code-style/javascript-style.md"
+    fi
+fi
+
+# Download template files
+echo ""
+echo "📥 Downloading template files to ~/.agent-os/templates/"
+
+# pocketflow-templates.md
+if [ -f "$HOME/.agent-os/templates/pocketflow-templates.md" ] && [ "$OVERWRITE_TEMPLATES" = false ]; then
+    echo "  ⚠️  ~/.agent-os/templates/pocketflow-templates.md already exists - skipping"
+else
+    curl -s -o "$HOME/.agent-os/templates/pocketflow-templates.md" "${BASE_URL}/templates/pocketflow-templates.md"
+    if [ -f "$HOME/.agent-os/templates/pocketflow-templates.md" ] && [ "$OVERWRITE_TEMPLATES" = true ]; then
+        echo "  ✓ ~/.agent-os/templates/pocketflow-templates.md (overwritten)"
+    else
+        echo "  ✓ ~/.agent-os/templates/pocketflow-templates.md"
+    fi
+fi
+
+# fastapi-templates.md
+if [ -f "$HOME/.agent-os/templates/fastapi-templates.md" ] && [ "$OVERWRITE_TEMPLATES" = false ]; then
+    echo "  ⚠️  ~/.agent-os/templates/fastapi-templates.md already exists - skipping"
+else
+    curl -s -o "$HOME/.agent-os/templates/fastapi-templates.md" "${BASE_URL}/templates/fastapi-templates.md"
+    if [ -f "$HOME/.agent-os/templates/fastapi-templates.md" ] && [ "$OVERWRITE_TEMPLATES" = true ]; then
+        echo "  ✓ ~/.agent-os/templates/fastapi-templates.md (overwritten)"
+    else
+        echo "  ✓ ~/.agent-os/templates/fastapi-templates.md"
+    fi
+fi
+
+# task-templates.md
+if [ -f "$HOME/.agent-os/templates/task-templates.md" ] && [ "$OVERWRITE_TEMPLATES" = false ]; then
+    echo "  ⚠️  ~/.agent-os/templates/task-templates.md already exists - skipping"
+else
+    curl -s -o "$HOME/.agent-os/templates/task-templates.md" "${BASE_URL}/templates/task-templates.md"
+    if [ -f "$HOME/.agent-os/templates/task-templates.md" ] && [ "$OVERWRITE_TEMPLATES" = true ]; then
+        echo "  ✓ ~/.agent-os/templates/task-templates.md (overwritten)"
+    else
+        echo "  ✓ ~/.agent-os/templates/task-templates.md"
     fi
 fi
 
@@ -222,8 +269,9 @@ echo ""
 echo "📍 Files installed to:"
 echo "   ~/.agent-os/standards/     - Your development standards"
 echo "   ~/.agent-os/instructions/  - Agent OS instructions"
+echo "   ~/.agent-os/templates/     - PocketFlow templates"
 echo ""
-if [ "$OVERWRITE_INSTRUCTIONS" = false ] && [ "$OVERWRITE_STANDARDS" = false ]; then
+if [ "$OVERWRITE_INSTRUCTIONS" = false ] && [ "$OVERWRITE_STANDARDS" = false ] && [ "$OVERWRITE_TEMPLATES" = false ]; then
     echo "💡 Note: Existing files were skipped to preserve your customizations"
     echo "   Use --overwrite-instructions or --overwrite-standards to update specific files"
 else
@@ -233,6 +281,9 @@ else
     fi
     if [ "$OVERWRITE_STANDARDS" = false ]; then
         echo "   Existing standards files were preserved"
+    fi
+    if [ "$OVERWRITE_TEMPLATES" = false ]; then
+        echo "   Existing template files were preserved"
     fi
 fi
 echo ""
