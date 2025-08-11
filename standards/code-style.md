@@ -43,73 +43,58 @@ ELSE:
 
 </conditional-block>
 
-<conditional-block task-condition="pocketflow" context-check="pocketflow-patterns">
-IF current task involves PocketFlow nodes or flows:
-  READ: The following PocketFlow conventions
-
-## PocketFlow Patterns
-
-### Naming Standards
-- **Nodes**: `PascalCase` + "Node" suffix (e.g., `FetchDataNode`)
-- **Flows**: `PascalCase` + "Flow" suffix (e.g., `ProcessingFlow`)
-- **Batch/Async**: Include in name (e.g., `BatchProcessNode`, `AsyncFetchNode`)
-
-### Lifecycle Methods
-- Standard: `prep()`, `exec()`, `post()`
-- Async variants: `prep_async()`, `exec_async()`, `post_async()`
-- Keep each method focused and single-purpose
-
-### Shared Store Conventions
-- **Key Format**: snake_case (e.g., `processed_chunks`)
-- **Namespacing**: Prefix by node (e.g., `fetcher_results`)
-- **Timestamps**: Use `<key>_timestamp` format
-- **Prefixes**: `raw_`, `processed_`, `final_`, `temp_`
-
-### Flow Control Actions
-| Purpose | Action String |
-|---------|--------------|
-| Default/Success | `None` or `"success"` |
-| Error States | `"error"`, `"retry"`, `"skip"` |
-| Flow Control | `"continue"`, `"end"`, `"batch"` |
-| Branching | Custom descriptive strings |
-
-**Best Practice**: For complex flows with many branches, define action strings as constants at the top of your `flow.py` file to avoid typos and improve readability (e.g., `ACTION_APPROVE = "approved"`).
-
+<conditional-block task-condition="python" context-check="python-style">
+IF current task involves writing or updating Python:
+  IF python-style.md already in context:
+    SKIP: Re-reading this file
+    NOTE: "Using Python style guide already in context"
+  ELSE:
+    <context_fetcher_strategy>
+      IF current agent is Claude Code AND context-fetcher agent exists:
+        USE: @agent:context-fetcher
+        REQUEST: "Get Python style rules from code-style/python-style.md"
+        PROCESS: Returned style rules
+      ELSE:
+        READ: @~/.agent-os/standards/code-style/python-style.md
+    </context_fetcher_strategy>
+ELSE:
+  SKIP: Python style guide not relevant to current task
 </conditional-block>
 
-<conditional-block task-condition="fastapi" context-check="fastapi-conventions">
+<conditional-block task-condition="pocketflow" context-check="pocketflow-style">
+IF current task involves PocketFlow nodes or flows:
+  IF pocketflow-style.md already in context:
+    SKIP: Re-reading this file
+    NOTE: "Using PocketFlow style guide already in context"
+  ELSE:
+    <context_fetcher_strategy>
+      IF current agent is Claude Code AND context-fetcher agent exists:
+        USE: @agent:context-fetcher
+        REQUEST: "Get PocketFlow conventions from code-style/pocketflow-style.md"
+        PROCESS: Returned style rules
+      ELSE:
+        READ: @~/.agent-os/standards/code-style/pocketflow-style.md
+    </context_fetcher_strategy>
+ELSE:
+  SKIP: PocketFlow style guide not relevant to current task
+</conditional-block>
+
+<conditional-block task-condition="fastapi" context-check="fastapi-style">
 IF current task involves FastAPI routes or models:
-  READ: The following FastAPI conventions
-
-## FastAPI Conventions
-
-### Routes & Models
-- **Route Functions**: verb_noun pattern (e.g., `get_items`, `create_user`)
-- **Base Models**: Simple names (e.g., `User`, `Item`)
-- **Request Models**: Action suffix (e.g., `UserCreate`, `ItemUpdate`)
-- **Response Models**: "Response" suffix when different from base
-- **Always use** `async def` for route functions
-
-### Status Codes
-- 200: Success (GET/PUT)
-- 201: Created (POST)
-- 204: No Content (DELETE)
-- 404: Not Found
-- 422: Validation Error
-
-### Project Structure
-```
-src/
-├── auth/
-│   ├── router.py
-│   ├── schemas.py
-│   └── service.py
-├── items/
-│   ├── router.py
-│   ├── schemas.py
-│   └── service.py
-```
-
+  IF fastapi-style.md already in context:
+    SKIP: Re-reading this file
+    NOTE: "Using FastAPI style guide already in context"
+  ELSE:
+    <context_fetcher_strategy>
+      IF current agent is Claude Code AND context-fetcher agent exists:
+        USE: @agent:context-fetcher
+        REQUEST: "Get FastAPI conventions from code-style/fastapi-style.md"
+        PROCESS: Returned style rules
+      ELSE:
+        READ: @~/.agent-os/standards/code-style/fastapi-style.md
+    </context_fetcher_strategy>
+ELSE:
+  SKIP: FastAPI style guide not relevant to current task
 </conditional-block>
 
 <conditional-block task-condition="mcp" context-check="mcp-conventions">
@@ -164,8 +149,20 @@ IF current task involves async/await:
 - Log levels: Use `info` for routine events, `warning` for recoverable issues, and `error` or `exception` for critical failures.
 - Context: Bind relevant context (e.g., `user_id`, `request_id`) to the logger for better traceability.
 
-### Testing
-- Files: `test_*.py` pattern
-- Classes: `Test` prefix (e.g., `TestUserAPI`)
-- Methods: `test_` prefix (e.g., `test_create_user`)
-- Use pytest fixtures for common data
+<conditional-block task-condition="testing" context-check="testing-style">
+IF current task involves writing or updating tests:
+  IF testing-style.md already in context:
+    SKIP: Re-reading this file
+    NOTE: "Using testing style guide already in context"
+  ELSE:
+    <context_fetcher_strategy>
+      IF current agent is Claude Code AND context-fetcher agent exists:
+        USE: @agent:context-fetcher
+        REQUEST: "Get testing conventions from code-style/testing-style.md"
+        PROCESS: Returned style rules
+      ELSE:
+        READ: @~/.agent-os/standards/code-style/testing-style.md
+    </context_fetcher_strategy>
+ELSE:
+  SKIP: Testing style guide not relevant to current task
+</conditional-block>

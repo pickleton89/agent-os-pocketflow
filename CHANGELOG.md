@@ -5,6 +5,34 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.9] - 2025-01-11
+
+### Added
+- **Code Style System Restructure** - Modernized code style system for Python/PocketFlow development
+  - **Updated Main Guide**: Restructured `standards/code-style.md` to use context-fetcher agent pattern
+    - Added conditional blocks for Python, FastAPI, PocketFlow, and Testing
+    - Implemented `context_fetcher_strategy` blocks following original Agent OS pattern
+    - Enables on-demand loading to prevent context bloat
+  - **New Python-Focused Style Guides**: Created 4 comprehensive style guides in `standards/code-style/`
+    - `python-style.md` - Python conventions (imports, type hints, async patterns, error handling)
+    - `fastapi-style.md` - FastAPI patterns (routing, schemas, middleware, WebSocket, testing)
+    - `pocketflow-style.md` - LLM workflow patterns (nodes, flows, shared store, batch processing)
+    - `testing-style.md` - Python testing conventions (pytest, fixtures, mocking, performance)
+  - **Context-Fetcher Integration**: Leverages Claude Code's specialized subagent for efficient style guide loading
+    - Conditional loading only when relevant to current task
+    - Fallback support for non-Claude Code environments
+    - Maintains backward compatibility with existing workflows
+
+### Changed
+- **Technology Focus**: Shifted from legacy web development (CSS/HTML/JS) to modern Python stack
+- **Agent Integration**: Now properly utilizes Claude Code's context-fetcher agent for efficient documentation retrieval
+- **Architecture Alignment**: Code style system now matches Python 3.12+, FastAPI, PocketFlow, and uv package manager defaults
+
+### Completed
+- **Style System Modernization**: Complete restructure from web-focused to Python/PocketFlow-focused guidance
+- **Integration Methodology**: Proper implementation of Agent OS conditional loading patterns
+- **Development Standards**: Comprehensive style guides covering entire modern Python development stack
+
 ## [1.3.8] - 2025-08-10
 
 ### Added
