@@ -16,19 +16,19 @@ if [ ! -d "$HOME/.agent-os/instructions" ] || [ ! -d "$HOME/.agent-os/standards"
     echo "Please install the Agent OS base installation first:"
     echo ""
     echo "Option 1 - Automatic installation:"
-    echo "  curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup.sh | bash"
+    echo "  curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os/main/setup.sh | bash"
     echo ""
     echo "Option 2 - Manual installation:"
     echo "  Follow instructions at https://buildermethods.com/agent-os"
     echo ""
     echo "If you have an older installation, you may need to update it to include templates:"
-    echo "  curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup.sh | bash --overwrite-templates"
+    echo "  curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os/main/setup.sh | bash --overwrite-templates"
     echo ""
     exit 1
 fi
 
 # Base URL for raw GitHub content
-BASE_URL="https://raw.githubusercontent.com/buildermethods/agent-os/main"
+BASE_URL="https://raw.githubusercontent.com/pickleton89/agent-os/main"
 
 # Create directories
 echo "📁 Creating directories..."

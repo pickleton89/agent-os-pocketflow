@@ -5,6 +5,24 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.11] - 2025-01-11
+
+### Changed
+- **Repository Configuration Update** - Updated all setup scripts and configuration files to use personal fork
+  - Updated `setup.sh` BASE_URL to reference `pickleton89/agent-os` instead of `buildermethods/agent-os`
+  - Updated `setup-claude-code.sh` installation command references to use personal repository
+  - Updated `setup-cursor.sh` installation references to personal repository
+  - Modified `.claude/config.json` MCP server configuration to use `pickleton89/agent-os.git`
+  - Updated `analyze-product.md` documentation reference to personal repository
+  - Preserved historical references in CHANGELOG.md and documentation for link integrity
+  - Maintained upstream git remote for tracking original repository updates
+
+### Fixed
+- **Setup Script Self-Reference** - Agent OS setup scripts now correctly reference their own repository
+  - Users installing from personal fork now pull configurations from correct source
+  - Eliminates dependency on original buildermethods repository for setup operations
+  - Ensures fully self-contained Agent OS installation experience
+
 ## [1.3.10] - 2025-01-11
 
 ### Changed
