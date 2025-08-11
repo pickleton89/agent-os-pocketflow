@@ -59,12 +59,12 @@ This document provides detailed instructions for updating `setup.sh` to handle t
 
 ### Step 4: Add Templates Download Section
 
-**Location**: After line 135 (after the javascript-style.md download section, before instruction files)
+**Location**: After the Python-specific style files download section, before instruction files
 
 **Action**: Insert complete templates download section
 
 **Changes**:
-1. Locate the end of the javascript-style.md download block (around line 135)
+1. Locate the end of the testing-style.md download block
 2. Insert the following complete section:
 
 ```bash

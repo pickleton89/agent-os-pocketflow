@@ -112,43 +112,55 @@ else
     fi
 fi
 
-# Download code-style subdirectory files
+# Download Python-specific code-style files
 echo ""
-echo "📥 Downloading code style files to ~/.agent-os/standards/code-style/"
+echo "📥 Downloading Python code style files to ~/.agent-os/standards/code-style/"
 
-# css-style.md
-if [ -f "$HOME/.agent-os/standards/code-style/css-style.md" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
-    echo "  ⚠️  ~/.agent-os/standards/code-style/css-style.md already exists - skipping"
+# python-style.md
+if [ -f "$HOME/.agent-os/standards/code-style/python-style.md" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
+    echo "  ⚠️  ~/.agent-os/standards/code-style/python-style.md already exists - skipping"
 else
-    curl -s -o "$HOME/.agent-os/standards/code-style/css-style.md" "${BASE_URL}/standards/code-style/css-style.md"
-    if [ -f "$HOME/.agent-os/standards/code-style/css-style.md" ] && [ "$OVERWRITE_STANDARDS" = true ]; then
-        echo "  ✓ ~/.agent-os/standards/code-style/css-style.md (overwritten)"
+    curl -s -o "$HOME/.agent-os/standards/code-style/python-style.md" "${BASE_URL}/standards/code-style/python-style.md"
+    if [ -f "$HOME/.agent-os/standards/code-style/python-style.md" ] && [ "$OVERWRITE_STANDARDS" = true ]; then
+        echo "  ✓ ~/.agent-os/standards/code-style/python-style.md (overwritten)"
     else
-        echo "  ✓ ~/.agent-os/standards/code-style/css-style.md"
+        echo "  ✓ ~/.agent-os/standards/code-style/python-style.md"
     fi
 fi
 
-# html-style.md
-if [ -f "$HOME/.agent-os/standards/code-style/html-style.md" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
-    echo "  ⚠️  ~/.agent-os/standards/code-style/html-style.md already exists - skipping"
+# fastapi-style.md
+if [ -f "$HOME/.agent-os/standards/code-style/fastapi-style.md" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
+    echo "  ⚠️  ~/.agent-os/standards/code-style/fastapi-style.md already exists - skipping"
 else
-    curl -s -o "$HOME/.agent-os/standards/code-style/html-style.md" "${BASE_URL}/standards/code-style/html-style.md"
-    if [ -f "$HOME/.agent-os/standards/code-style/html-style.md" ] && [ "$OVERWRITE_STANDARDS" = true ]; then
-        echo "  ✓ ~/.agent-os/standards/code-style/html-style.md (overwritten)"
+    curl -s -o "$HOME/.agent-os/standards/code-style/fastapi-style.md" "${BASE_URL}/standards/code-style/fastapi-style.md"
+    if [ -f "$HOME/.agent-os/standards/code-style/fastapi-style.md" ] && [ "$OVERWRITE_STANDARDS" = true ]; then
+        echo "  ✓ ~/.agent-os/standards/code-style/fastapi-style.md (overwritten)"
     else
-        echo "  ✓ ~/.agent-os/standards/code-style/html-style.md"
+        echo "  ✓ ~/.agent-os/standards/code-style/fastapi-style.md"
     fi
 fi
 
-# javascript-style.md
-if [ -f "$HOME/.agent-os/standards/code-style/javascript-style.md" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
-    echo "  ⚠️  ~/.agent-os/standards/code-style/javascript-style.md already exists - skipping"
+# pocketflow-style.md
+if [ -f "$HOME/.agent-os/standards/code-style/pocketflow-style.md" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
+    echo "  ⚠️  ~/.agent-os/standards/code-style/pocketflow-style.md already exists - skipping"
 else
-    curl -s -o "$HOME/.agent-os/standards/code-style/javascript-style.md" "${BASE_URL}/standards/code-style/javascript-style.md"
-    if [ -f "$HOME/.agent-os/standards/code-style/javascript-style.md" ] && [ "$OVERWRITE_STANDARDS" = true ]; then
-        echo "  ✓ ~/.agent-os/standards/code-style/javascript-style.md (overwritten)"
+    curl -s -o "$HOME/.agent-os/standards/code-style/pocketflow-style.md" "${BASE_URL}/standards/code-style/pocketflow-style.md"
+    if [ -f "$HOME/.agent-os/standards/code-style/pocketflow-style.md" ] && [ "$OVERWRITE_STANDARDS" = true ]; then
+        echo "  ✓ ~/.agent-os/standards/code-style/pocketflow-style.md (overwritten)"
     else
-        echo "  ✓ ~/.agent-os/standards/code-style/javascript-style.md"
+        echo "  ✓ ~/.agent-os/standards/code-style/pocketflow-style.md"
+    fi
+fi
+
+# testing-style.md
+if [ -f "$HOME/.agent-os/standards/code-style/testing-style.md" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
+    echo "  ⚠️  ~/.agent-os/standards/code-style/testing-style.md already exists - skipping"
+else
+    curl -s -o "$HOME/.agent-os/standards/code-style/testing-style.md" "${BASE_URL}/standards/code-style/testing-style.md"
+    if [ -f "$HOME/.agent-os/standards/code-style/testing-style.md" ] && [ "$OVERWRITE_STANDARDS" = true ]; then
+        echo "  ✓ ~/.agent-os/standards/code-style/testing-style.md (overwritten)"
+    else
+        echo "  ✓ ~/.agent-os/standards/code-style/testing-style.md"
     fi
 fi
 

@@ -136,10 +136,11 @@ Copy these files to `~/.agent-os/standards/`:
 - `code-style.md`
 - `best-practices.md`
 
-Also copy the language-specific style guides to `~/.agent-os/standards/code-style/`:
-- `html-style.md`
-- `css-style.md`
-- `javascript-style.md`
+Also copy the Python-specific style guides to `~/.agent-os/standards/code-style/`:
+- `python-style.md`
+- `fastapi-style.md`
+- `pocketflow-style.md`
+- `testing-style.md`
 
 **3. Copy the instructions files**
 Copy these files to `~/.agent-os/instructions/`:
@@ -289,10 +290,11 @@ After installation, you'll have:
 │   ├── tech-stack.md         # Your default tech choices
 │   ├── code-style.md         # Your formatting preferences
 │   ├── best-practices.md     # Your development philosophy
-│   └── code-style/           # Language-specific style guides
-│       ├── html-style.md
-│       ├── css-style.md
-│       └── javascript-style.md
+│   └── code-style/           # Python-specific style guides
+│       ├── python-style.md
+│       ├── fastapi-style.md
+│       ├── pocketflow-style.md
+│       └── testing-style.md
 └── instructions/
     ├── plan-product.md       # Agent's instructions to initialize a product
     ├── create-spec.md        # Agent's instructions to plan features
@@ -526,9 +528,9 @@ After each feature or spec, ask yourself:
 - `code-style.md` - Formatting patterns, naming conventions
 - `best-practices.md` - Development philosophy, patterns to follow/avoid
 
-**Code Style Organization** *(For language-specific rules)*
-- Create separate files in `~/.agent-os/standards/code-style/` for each language
-- Examples: `html-style.md`, `javascript-style.md`, `ruby-style.md`
+**Code Style Organization** *(For Python-specific rules)*
+- Create separate files in `~/.agent-os/standards/code-style/` for each technology
+- Examples: `python-style.md`, `fastapi-style.md`, `pocketflow-style.md`, `testing-style.md`
 - Reference them conditionally in your main `code-style.md` file
 - This keeps context lean—agents only load styles relevant to current work
 

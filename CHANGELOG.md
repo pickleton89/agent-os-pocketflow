@@ -5,6 +5,24 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.10] - 2025-01-11
+
+### Changed
+- **Setup Script Cleanup** - Removed references to unused web technology style files
+  - Updated `setup.sh` to download Python-specific style files instead of HTML/CSS/JavaScript files
+  - Replaced `css-style.md`, `html-style.md`, `javascript-style.md` downloads with Python-focused alternatives
+  - Now downloads: `python-style.md`, `fastapi-style.md`, `pocketflow-style.md`, `testing-style.md`
+- **Documentation Updates** - Aligned all documentation with Python tech stack
+  - Updated `WorkingFiles/docs/agent-os-full-documentation.md` with correct file references
+  - Updated `WorkingFiles/setup-scripts-update-guide.md` location references
+  - Updated CHANGELOG entries to reflect Python-specific style files
+
+### Fixed
+- **Tech Stack Consistency** - Agent OS setup now properly reflects Python/FastAPI/PocketFlow architecture
+  - Removed lingering web technology references throughout codebase
+  - Ensured all setup scripts align with actual development standards
+  - Verified existing Python-specific style files are properly integrated
+
 ## [1.3.9] - 2025-01-11
 
 ### Added
@@ -312,10 +330,11 @@ This represents the successful completion of the comprehensive claude-code-agent
 - New `spec-lite.md` file generation in spec creation for condensed spec summaries
 - New `execute-task.md` instruction file for individual task execution with TDD workflow
 - Task execution loop in `execute-tasks.md` that calls `execute-task.md` for each parent task
-- Language-specific code style guides:
-  - `standards/code-style/css-style.md` for CSS and TailwindCSS
-  - `standards/code-style/html-style.md` for HTML markup
-  - `standards/code-style/javascript-style.md` for JavaScript
+- Python-specific code style guides:
+  - `standards/code-style/python-style.md` for Python formatting and conventions
+  - `standards/code-style/fastapi-style.md` for FastAPI patterns and best practices
+  - `standards/code-style/pocketflow-style.md` for PocketFlow node and flow patterns
+  - `standards/code-style/testing-style.md` for pytest and testing conventions
 - Conditional loading blocks in `best-practices.md` and `code-style.md` to prevent duplicate context loading
 - Context-aware file loading throughout all instruction files
 
