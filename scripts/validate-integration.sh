@@ -46,7 +46,7 @@ test_directory_structure() {
         ".agent-os/instructions/extensions"
         ".agent-os/instructions/orchestration"
         ".agent-os/workflows"
-        ".agent-os/templates"
+        "templates"
         ".claude/agents"
         "scripts/validation"
         "scripts/coordination"

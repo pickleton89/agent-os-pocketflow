@@ -31,7 +31,10 @@
       "Bash(python3:*)",
       "Bash(chmod:*)",
       "Bash(rm:*)",
-      "Bash(./scripts/run-all-tests.sh:*)"
+      "Bash(./scripts/run-all-tests.sh:*)",
+      "Bash(ln:*)",
+      "Bash(mv:*)",
+      "Bash(./scripts/validation/validate-integration.sh:*)"
     ],
     "deny": []
   }

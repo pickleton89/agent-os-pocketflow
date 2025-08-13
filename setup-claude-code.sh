@@ -10,7 +10,7 @@ echo "============================="
 echo ""
 
 # Check if Agent OS base installation is present
-if [ ! -d "$HOME/.agent-os/instructions/core" ] || [ ! -d "$HOME/.agent-os/instructions/extensions" ] || [ ! -d "$HOME/.agent-os/instructions/orchestration" ] || [ ! -d "$HOME/.agent-os/standards" ] || [ ! -d "$HOME/.agent-os/templates" ]; then
+if [ ! -d "$HOME/.agent-os/instructions/core" ] || [ ! -d "$HOME/.agent-os/instructions/extensions" ] || [ ! -d "$HOME/.agent-os/instructions/orchestration" ] || [ ! -d "$HOME/.agent-os/standards" ]; then
     echo "⚠️  Agent OS base installation not found or incomplete!"
     echo ""
     echo "Please install the Agent OS base installation first:"
@@ -35,19 +35,21 @@ echo "📁 Creating directories..."
 mkdir -p "$HOME/.claude/commands"
 mkdir -p "$HOME/.claude/agents"
 
-# Download command files for Claude Code
+# Link to instruction files instead of downloading commands
 echo ""
-echo "📥 Downloading Claude Code command files to ~/.claude/commands/"
+echo "📥 Linking instruction files for Claude Code commands"
 
-# Commands
-for cmd in plan-product create-spec execute-tasks analyze-product; do
-    if [ -f "$HOME/.claude/commands/${cmd}.md" ]; then
-        echo "  ⚠️  ~/.claude/commands/${cmd}.md already exists - skipping"
-    else
-        curl -s -o "$HOME/.claude/commands/${cmd}.md" "${BASE_URL}/commands/${cmd}.md"
-        echo "  ✓ ~/.claude/commands/${cmd}.md"
-    fi
-done
+# Create symlinks to instruction files if local
+if [ -d "instructions/core" ]; then
+    echo "  ✓ Using local instruction files from instructions/core/"
+else
+    echo "  ⚠️  Local instructions not found - downloading from repository"
+    # Download instruction files if not local
+    for cmd in plan-product create-spec execute-tasks analyze-product execute-task; do
+        curl -s -o "$HOME/.claude/commands/${cmd}.md" "${BASE_URL}/instructions/core/${cmd}.md"
+        echo "  ✓ Downloaded ${cmd}.md"
+    done
+fi
 
 # Download Claude Code agents
 echo ""
@@ -69,7 +71,7 @@ echo ""
 echo "✅ Agent OS Claude Code installation complete!"
 echo ""
 echo "📍 Files installed to:"
-echo "   ~/.claude/commands/        - Claude Code commands"
+echo "   instructions/core/         - Agent OS instructions (or ~/.claude/commands/ if downloaded)"
 echo "   ~/.claude/agents/          - Claude Code specialized subagents"
 echo ""
 echo "Next steps:"
@@ -84,7 +86,7 @@ echo "Initiate a new feature with:"
 echo "  /create-spec (or simply ask 'what's next?')"
 echo ""
 echo "Build and ship code with:"
-echo "  /execute-task"
+echo "  /execute-tasks"
 echo ""
 echo "Learn more at https://buildermethods.com/agent-os"
 echo ""

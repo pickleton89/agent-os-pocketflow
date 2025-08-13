@@ -5,6 +5,17 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2025-08-13
+
+### Changed
+- **Repository Streamlining**: Eliminated redundant file locations and 5x duplication
+  - Removed `.agent-os/backup/` directory (git provides version control)
+  - Removed `commands/` directory (redundant with `instructions/core/`)
+  - Removed `.agent-os/templates/` (consolidated to single `templates/` directory)
+  - Created symlink from `.agent-os/instructions/core` → `instructions/core`
+  - Updated all scripts to reference streamlined structure
+  - Result: Single source of truth for each file type, cleaner mental model
+
 ## [1.8.0] - 2025-08-13
 
 ### Completed

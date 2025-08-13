@@ -101,7 +101,6 @@ create_directory_structure() {
         ".agent-os/instructions/extensions" 
         ".agent-os/instructions/orchestration"
         ".agent-os/workflows"
-        ".agent-os/templates"
         ".claude/agents"
         ".claude/commands"
         "scripts/validation"
@@ -122,17 +121,14 @@ create_directory_structure() {
 }
 
 install_core_files() {
-    # Split existing instruction files into modular components
-    if [[ -f "instructions/core/create-spec.md" ]]; then
-        log_info "Backing up existing instruction files..."
-        mkdir -p .agent-os/backup
-        cp -r instructions/core/* .agent-os/backup/ 2>/dev/null || true
-    fi
-    
-    # Move core instruction files to new location
+    # Create symlink to instructions/core instead of copying
     if [[ -d "instructions/core" ]]; then
-        cp -r instructions/core/* .agent-os/instructions/core/
-        log_success "Core instruction files installed"
+        if [[ ! -L ".agent-os/instructions/core" ]]; then
+            ln -s ../../instructions/core .agent-os/instructions/core
+            log_success "Linked core instruction files"
+        else
+            log_info "Core instructions already linked"
+        fi
     fi
     
     # Update file references to use modular includes
@@ -370,24 +366,13 @@ EOF
 }
 
 install_templates() {
-    # Copy template files (these would be the actual template files)
-    local template_files=(
-        "pocketflow-templates.md"
-        "fastapi-templates.md"  
-        "task-templates.md"
-    )
-    
-    for template in "${template_files[@]}"; do
-        if [[ -f "templates/$template" ]]; then
-            cp "templates/$template" ".agent-os/templates/"
-            log_success "Installed template: $template"
-        else
-            log_warning "Template not found: templates/$template"
-            # Create placeholder
-            touch ".agent-os/templates/$template"
-            echo "# $template - To be implemented" > ".agent-os/templates/$template"
-        fi
-    done
+    # Templates are now in the main templates directory only
+    if [[ -d "templates" ]]; then
+        log_success "Templates directory exists at templates/"
+    else
+        mkdir -p templates
+        log_info "Created templates directory"
+    fi
 }
 
 install_orchestrator_agent() {
@@ -692,7 +677,7 @@ display_next_steps() {
 📁 Key Files Created:
 - .claude/agents/pocketflow-orchestrator.md (Strategic planning agent)
 - .agent-os/instructions/orchestration/ (Coordination system)
-- .agent-os/templates/ (Complete template system)
+- templates/ (Template system)
 
 🔧 Validation Commands:
 - ./scripts/validation/validate-integration.sh (Run full validation)
