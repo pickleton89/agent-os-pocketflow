@@ -1,11 +1,11 @@
-<img width="1280" height="640" alt="agent-os-og" src="https://github.com/user-attachments/assets/e897628e-7063-4bab-a69a-7bb6d7ac8403" />
+
 
 [![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-4A90E2?style=flat-square&logo=anthropic&logoColor=white)](https://claude.ai/code)
 [![Agentic Coding](https://img.shields.io/badge/Development-Agentic%20Coding-FF6B6B?style=flat-square)](https://the-pocket.github.io/PocketFlow/guide.html)
 [![Agent OS](https://img.shields.io/badge/Framework-Agent%20OS-00B4D8?style=flat-square)](https://buildermethods.com/agent-os)
 [![PocketFlow](https://img.shields.io/badge/LLM%20Framework-PocketFlow-00F5FF?style=flat-square)](https://github.com/The-Pocket/PocketFlow)
 
-## Agent OS + PocketFlow Integration
+## Agent OS - Pocketflow
 
 **Your system for structured LLM application development.**
 
@@ -141,3 +141,4 @@ This integration was created to demonstrate how structured workflow management (
 - **Collaborative Refinement**: Iterative improvement and validation of all components
 
 The integration maintains the design philosophy of both frameworks while creating something greater than the sum of its parts. This project serves as a real-world example of how Agentic Coding can be used to build complex, production-ready developer tools and frameworks.
+
