@@ -20,7 +20,9 @@
       "mcp__agent-os-git-docs__search_agent_os_git_documentation",
       "mcp__agent-os-git-docs__search_agent_os_git_code",
       "Bash(git fetch:*)",
-      "Bash(git remote set-url:*)"
+      "Bash(git remote set-url:*)",
+      "Bash(git checkout:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }
