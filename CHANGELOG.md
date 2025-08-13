@@ -5,6 +5,28 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1] - 2025-01-13
+
+### Completed
+- **Phase 1: Foundation Complete** - Setup scripts updated for new modular structure
+  - **Setup Script Modernization**: Updated all three setup scripts for new modular architecture
+    - `setup.sh` - Added support for extensions and orchestration directories with complete file downloads
+    - `setup-claude-code.sh` - Updated validation checks to require new modular structure
+    - `setup-cursor.sh` - Enhanced prerequisite checking for complete installation
+  - **New Directory Structure Support**: Setup scripts now create and populate:
+    - `.agent-os/instructions/extensions/` - PocketFlow integration extensions
+    - `.agent-os/instructions/orchestration/` - Cross-file coordination system
+    - Complete file downloads for all extension and orchestration components
+  - **Enhanced Installation Validation**: All setup scripts verify complete modular installation
+    - Prevents partial installations that could cause workflow failures
+    - Guides users to update older installations with proper overwrite flags
+    - Comprehensive error handling for missing components
+
+### Foundation Architecture Complete
+- **✅ All Phase 1 Tasks**: Modular directory structure, split instruction files, coordination framework, and setup scripts
+- **Production Ready**: Complete end-to-end installation and validation system
+- **Next Phase Ready**: Infrastructure prepared for Phase 2 orchestration implementation
+
 ## [1.5.0] - 2025-01-13
 
 ### Implemented

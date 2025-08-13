@@ -57,6 +57,8 @@ mkdir -p "$HOME/.agent-os/standards"
 mkdir -p "$HOME/.agent-os/standards/code-style"
 mkdir -p "$HOME/.agent-os/instructions"
 mkdir -p "$HOME/.agent-os/instructions/core"
+mkdir -p "$HOME/.agent-os/instructions/extensions"
+mkdir -p "$HOME/.agent-os/instructions/orchestration"
 mkdir -p "$HOME/.agent-os/instructions/meta"
 mkdir -p "$HOME/.agent-os/templates"
 
@@ -287,13 +289,95 @@ else
     fi
 fi
 
+# Extension instruction files
+echo ""
+echo "  📂 Extension instructions:"
+
+# pocketflow-integration.md
+if [ -f "$HOME/.agent-os/instructions/extensions/pocketflow-integration.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
+    echo "    ⚠️  ~/.agent-os/instructions/extensions/pocketflow-integration.md already exists - skipping"
+else
+    curl -s -o "$HOME/.agent-os/instructions/extensions/pocketflow-integration.md" "${BASE_URL}/.agent-os/instructions/extensions/pocketflow-integration.md"
+    if [ -f "$HOME/.agent-os/instructions/extensions/pocketflow-integration.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
+        echo "    ✓ ~/.agent-os/instructions/extensions/pocketflow-integration.md (overwritten)"
+    else
+        echo "    ✓ ~/.agent-os/instructions/extensions/pocketflow-integration.md"
+    fi
+fi
+
+# llm-workflow-extension.md
+if [ -f "$HOME/.agent-os/instructions/extensions/llm-workflow-extension.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
+    echo "    ⚠️  ~/.agent-os/instructions/extensions/llm-workflow-extension.md already exists - skipping"
+else
+    curl -s -o "$HOME/.agent-os/instructions/extensions/llm-workflow-extension.md" "${BASE_URL}/.agent-os/instructions/extensions/llm-workflow-extension.md"
+    if [ -f "$HOME/.agent-os/instructions/extensions/llm-workflow-extension.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
+        echo "    ✓ ~/.agent-os/instructions/extensions/llm-workflow-extension.md (overwritten)"
+    else
+        echo "    ✓ ~/.agent-os/instructions/extensions/llm-workflow-extension.md"
+    fi
+fi
+
+# design-first-enforcement.md
+if [ -f "$HOME/.agent-os/instructions/extensions/design-first-enforcement.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
+    echo "    ⚠️  ~/.agent-os/instructions/extensions/design-first-enforcement.md already exists - skipping"
+else
+    curl -s -o "$HOME/.agent-os/instructions/extensions/design-first-enforcement.md" "${BASE_URL}/.agent-os/instructions/extensions/design-first-enforcement.md"
+    if [ -f "$HOME/.agent-os/instructions/extensions/design-first-enforcement.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
+        echo "    ✓ ~/.agent-os/instructions/extensions/design-first-enforcement.md (overwritten)"
+    else
+        echo "    ✓ ~/.agent-os/instructions/extensions/design-first-enforcement.md"
+    fi
+fi
+
+# Orchestration files
+echo ""
+echo "  📂 Orchestration files:"
+
+# coordination.yaml
+if [ -f "$HOME/.agent-os/instructions/orchestration/coordination.yaml" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
+    echo "    ⚠️  ~/.agent-os/instructions/orchestration/coordination.yaml already exists - skipping"
+else
+    curl -s -o "$HOME/.agent-os/instructions/orchestration/coordination.yaml" "${BASE_URL}/.agent-os/instructions/orchestration/coordination.yaml"
+    if [ -f "$HOME/.agent-os/instructions/orchestration/coordination.yaml" ] && [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
+        echo "    ✓ ~/.agent-os/instructions/orchestration/coordination.yaml (overwritten)"
+    else
+        echo "    ✓ ~/.agent-os/instructions/orchestration/coordination.yaml"
+    fi
+fi
+
+# orchestrator-hooks.md
+if [ -f "$HOME/.agent-os/instructions/orchestration/orchestrator-hooks.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
+    echo "    ⚠️  ~/.agent-os/instructions/orchestration/orchestrator-hooks.md already exists - skipping"
+else
+    curl -s -o "$HOME/.agent-os/instructions/orchestration/orchestrator-hooks.md" "${BASE_URL}/.agent-os/instructions/orchestration/orchestrator-hooks.md"
+    if [ -f "$HOME/.agent-os/instructions/orchestration/orchestrator-hooks.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
+        echo "    ✓ ~/.agent-os/instructions/orchestration/orchestrator-hooks.md (overwritten)"
+    else
+        echo "    ✓ ~/.agent-os/instructions/orchestration/orchestrator-hooks.md"
+    fi
+fi
+
+# dependency-validation.md
+if [ -f "$HOME/.agent-os/instructions/orchestration/dependency-validation.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
+    echo "    ⚠️  ~/.agent-os/instructions/orchestration/dependency-validation.md already exists - skipping"
+else
+    curl -s -o "$HOME/.agent-os/instructions/orchestration/dependency-validation.md" "${BASE_URL}/.agent-os/instructions/orchestration/dependency-validation.md"
+    if [ -f "$HOME/.agent-os/instructions/orchestration/dependency-validation.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
+        echo "    ✓ ~/.agent-os/instructions/orchestration/dependency-validation.md (overwritten)"
+    else
+        echo "    ✓ ~/.agent-os/instructions/orchestration/dependency-validation.md"
+    fi
+fi
+
 echo ""
 echo "✅ Agent OS base installation complete!"
 echo ""
 echo "📍 Files installed to:"
-echo "   ~/.agent-os/standards/     - Your development standards"
-echo "   ~/.agent-os/instructions/  - Agent OS instructions"
-echo "   ~/.agent-os/templates/     - PocketFlow templates"
+echo "   ~/.agent-os/standards/             - Your development standards"
+echo "   ~/.agent-os/instructions/core/     - Core Agent OS instructions"
+echo "   ~/.agent-os/instructions/extensions/ - PocketFlow integration extensions"
+echo "   ~/.agent-os/instructions/orchestration/ - Cross-file coordination system"
+echo "   ~/.agent-os/templates/             - PocketFlow templates"
 echo ""
 if [ "$OVERWRITE_INSTRUCTIONS" = false ] && [ "$OVERWRITE_STANDARDS" = false ] && [ "$OVERWRITE_TEMPLATES" = false ]; then
     echo "💡 Note: Existing files were skipped to preserve your customizations"

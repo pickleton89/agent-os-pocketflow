@@ -10,7 +10,7 @@ echo "============================="
 echo ""
 
 # Check if Agent OS base installation is present
-if [ ! -d "$HOME/.agent-os/instructions" ] || [ ! -d "$HOME/.agent-os/standards" ] || [ ! -d "$HOME/.agent-os/templates" ]; then
+if [ ! -d "$HOME/.agent-os/instructions/core" ] || [ ! -d "$HOME/.agent-os/instructions/extensions" ] || [ ! -d "$HOME/.agent-os/instructions/orchestration" ] || [ ! -d "$HOME/.agent-os/standards" ] || [ ! -d "$HOME/.agent-os/templates" ]; then
     echo "⚠️  Agent OS base installation not found or incomplete!"
     echo ""
     echo "Please install the Agent OS base installation first:"
@@ -22,7 +22,7 @@ if [ ! -d "$HOME/.agent-os/instructions" ] || [ ! -d "$HOME/.agent-os/standards"
     echo "  Follow instructions at https://buildermethods.com/agent-os"
     echo ""
     echo "If you have an older installation, you may need to update it to include templates:"
-    echo "  curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup.sh | bash --overwrite-templates"
+    echo "  curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup.sh | bash --overwrite-instructions"
     echo ""
     exit 1
 fi
