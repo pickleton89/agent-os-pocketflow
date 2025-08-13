@@ -749,5 +749,3 @@ When asked to work on this codebase:
   - **Modular design** with reusable nodes and utilities
   - **Agent coordination** through FastMCP when needed
 </architecture_pattern>
-<!-- Orchestration Integration -->
-@include orchestration/orchestrator-hooks.md
