@@ -50,8 +50,8 @@ FastAPI (main.py) → Pydantic Models (schemas/) → PocketFlow Flows (flow.py) 
 
 ```bash
 # Clone this integrated repository
-git clone https://github.com/your-repo/agent-os.git
-cd agent-os
+git clone https://github.com/pickleton89/agent-os-pocketflow.git
+cd agent-os-pocketflow
 
 # Run the setup script to install globally
 ./setup.sh

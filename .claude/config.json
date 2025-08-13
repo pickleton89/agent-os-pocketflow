@@ -4,7 +4,7 @@
       "command": "npx",
       "args": [
         "mcp-remote",
-        "https://gitmcp.io/pickleton89/agent-os.git"
+        "https://gitmcp.io/pickleton89/agent-os-pocketflow.git"
       ]
     }
   }

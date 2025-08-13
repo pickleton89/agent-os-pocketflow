@@ -5,6 +5,24 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.12] - 2025-08-13
+
+### Changed
+- **Repository Rename to agent-os-pocketflow** - Comprehensive repository rename to reflect PocketFlow integration focus
+  - Updated git remote origin to `pickleton89/agent-os-pocketflow.git`
+  - Updated all setup scripts (setup.sh, setup-claude-code.sh, setup-cursor.sh) to reference new repository name
+  - Modified `.claude/config.json` MCP server configuration to use `agent-os-pocketflow.git`
+  - Updated README.md clone instructions to use correct repository URL
+  - Fixed documentation reference in `instructions/core/analyze-product.md`
+  - Preserved historical references in CHANGELOG.md for link integrity
+  - Maintained upstream git remote for tracking original buildermethods/agent-os repository
+
+### Fixed
+- **Repository Reference Consistency** - All functional repository references now point to correct location
+  - Eliminates broken links in setup and installation processes
+  - Ensures users clone and reference the correct repository
+  - Maintains proper MCP server configuration for Claude Code integration
+
 ## [1.3.11] - 2025-01-11
 
 ### Changed
