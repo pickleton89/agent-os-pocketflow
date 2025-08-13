@@ -23,7 +23,10 @@
       "Bash(git remote set-url:*)",
       "Bash(git checkout:*)",
       "Bash(git push:*)",
-      "Bash(uv run:*)"
+      "Bash(uv run:*)",
+      "Bash(grep:*)",
+      "mcp__graphiti__search_memory_nodes",
+      "Bash(tree:*)"
     ],
     "deny": []
   }
