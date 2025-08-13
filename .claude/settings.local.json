@@ -36,7 +36,8 @@
       "Bash(mv:*)",
       "Bash(./scripts/validation/validate-integration.sh:*)",
       "Bash(cat:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(git branch:*)"
     ],
     "deny": []
   }
