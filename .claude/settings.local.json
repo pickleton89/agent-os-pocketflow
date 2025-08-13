@@ -34,7 +34,9 @@
       "Bash(./scripts/run-all-tests.sh:*)",
       "Bash(ln:*)",
       "Bash(mv:*)",
-      "Bash(./scripts/validation/validate-integration.sh:*)"
+      "Bash(./scripts/validation/validate-integration.sh:*)",
+      "Bash(cat:*)",
+      "Bash(git merge:*)"
     ],
     "deny": []
   }
