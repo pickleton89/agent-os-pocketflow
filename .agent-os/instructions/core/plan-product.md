@@ -749,3 +749,7 @@ When asked to work on this codebase:
   - **Modular design** with reusable nodes and utilities
   - **Agent coordination** through FastMCP when needed
 </architecture_pattern>
+
+<!-- Orchestration Integration -->
+@include extensions/pocketflow-integration.md
+@include orchestration/orchestrator-hooks.md hook="orchestrator_fallback"
