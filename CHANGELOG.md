@@ -5,6 +5,27 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2025-08-13
+
+### Completed
+- **Phase 3: Templates & Code Generation Complete ✅** - Complete workflow generation system for Agent OS + PocketFlow
+  - **Workflow Generator**: Created comprehensive Python generator (`generator.py`) that creates complete PocketFlow workflows from YAML specifications
+    - Supports all PocketFlow patterns (Agent, Workflow, RAG, MapReduce, Multi-Agent, Structured Output)
+    - Generates 12+ files per workflow including nodes, flows, FastAPI integration, tests, and documentation
+    - Full design document creation with Mermaid diagrams and PocketFlow-specific templates
+  - **Code Generation Validation**: Built robust validation system (`validate-generation.py`) for generated code quality
+    - Validates file structure, PocketFlow patterns, type safety, and test coverage
+    - Integrates with development toolchain (ruff, ty) for comprehensive quality assurance
+    - Provides detailed error reporting and compliance checking
+  - **Auto-generation Examples & Testing**: Created multiple workflow examples and comprehensive test suite
+    - Example specifications for RAG, Agent, and MapReduce patterns with working implementations
+    - Full test automation (`test-full-generation.py`) validating complete generation workflow
+    - Quality assurance scripts and demonstration examples for rapid workflow creation
+  - **Enhanced Template System**: Completed all template files with auto-generation support
+    - Updated `pocketflow-templates.md`, `fastapi-templates.md`, and `task-templates.md` with variable substitution
+    - Templates follow 8-step Agentic Coding methodology with proper phase organization
+    - Complete integration between templates and code generation system
+
 ## [1.6.0] - 2025-01-13
 
 ### Completed

@@ -1,0 +1,87 @@
+name: "DataProcessor"
+pattern: "MAPREDUCE"
+description: "Batch process large datasets using parallel processing pattern"
+fast_api_integration: true
+
+nodes:
+  - name: "DataValidatorNode"
+    type: "Node"
+    description: "Validate input data format and structure"
+  - name: "DataSplitterNode"
+    type: "Node"
+    description: "Split large dataset into manageable chunks"
+  - name: "ParallelProcessorNode"
+    type: "BatchNode"
+    description: "Process data chunks in parallel"
+  - name: "ResultAggregatorNode"
+    type: "Node"
+    description: "Aggregate results from parallel processing"
+  - name: "OutputFormatterNode"
+    type: "Node"
+    description: "Format final results for output"
+
+utilities:
+  - name: "validate_data_format"
+    description: "Validate input data structure and types"
+    parameters:
+      - name: "data"
+        type: "List[Dict[str, Any]]"
+        optional: false
+    return_type: "bool"
+  - name: "split_dataset"
+    description: "Split dataset into processing chunks"
+    parameters:
+      - name: "data"
+        type: "List[Dict[str, Any]]"
+        optional: false
+      - name: "chunk_size"
+        type: "int"
+        optional: true
+    return_type: "List[List[Dict[str, Any]]]"
+  - name: "process_chunk"
+    description: "Process a single data chunk"
+    parameters:
+      - name: "chunk"
+        type: "List[Dict[str, Any]]"
+        optional: false
+      - name: "processing_params"
+        type: "Dict[str, Any]"
+        optional: false
+    return_type: "List[Dict[str, Any]]"
+  - name: "aggregate_results"
+    description: "Combine results from multiple chunks"
+    parameters:
+      - name: "results"
+        type: "List[List[Dict[str, Any]]]"
+        optional: false
+    return_type: "Dict[str, Any]"
+
+shared_store_schema:
+  input_data: "List[Dict[str, Any]]"
+  validation_result: "bool"
+  data_chunks: "List[List[Dict[str, Any]]]"
+  processing_params: "Dict[str, Any]"
+  chunk_results: "List[List[Dict[str, Any]]]"
+  aggregated_result: "Dict[str, Any]"
+  formatted_output: "Dict[str, Any]"
+  processing_stats: "Dict[str, Any]"
+
+api_endpoints:
+  - name: "ProcessDataset"
+    method: "post"
+    path: "/process/dataset"
+    description: "Process large dataset using batch processing"
+    request_fields:
+      - name: "data"
+        type: "List[Dict[str, Any]]"
+      - name: "processing_config"
+        type: "Dict[str, Any]"
+      - name: "chunk_size"
+        type: "Optional[int]"
+    response_fields:
+      - name: "result"
+        type: "Dict[str, Any]"
+      - name: "stats"
+        type: "Dict[str, Any]"
+      - name: "processing_time"
+        type: "float"
