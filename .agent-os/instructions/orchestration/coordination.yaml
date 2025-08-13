@@ -1,0 +1,59 @@
+# Cross-file coordination configuration
+coordination_map:
+  plan-product:
+    triggers_orchestrator: true
+    orchestrator_scope: "full_product_planning"
+    outputs: 
+      - ".agent-os/product/"
+      - ".agent-os/workflows/"
+    next_files: ["create-spec"]
+    
+  create-spec:
+    depends_on: ["plan-product"]
+    checks_for_orchestrator: true
+    fallback_to_orchestrator: true
+    coordination_points:
+      - step_4_5: "design_document_creation"
+      - step_12: "task_decomposition"
+    outputs:
+      - ".agent-os/specs/"
+      - ".agent-os/workflows/[feature-name].py"
+    next_files: ["execute-tasks"]
+    
+  execute-tasks:
+    depends_on: ["create-spec"]
+    requires_orchestrator_plan: true
+    validation_gates:
+      - "orchestrated_workflow_exists"
+      - "design_document_complete"
+      - "pydantic_models_defined"
+    blocks_without: ["workflow_implementation"]
+
+# Hook definitions
+hooks:
+  design_document_validation:
+    file: "orchestration/orchestrator-hooks.md"
+    section: "validate_design_document"
+    required_for: ["create-spec", "execute-tasks"]
+    
+  validate_orchestrated_plan:
+    file: "orchestration/orchestrator-hooks.md" 
+    section: "validate_workflow_implementation"
+    required_for: ["execute-tasks"]
+    
+  invoke_orchestrator_if_missing:
+    file: "orchestration/orchestrator-hooks.md"
+    section: "orchestrator_fallback"
+    used_by: ["create-spec", "execute-tasks"]
+
+# Error handling
+error_handling:
+  missing_dependency:
+    action: "invoke_prerequisite_instruction"
+    wait_for_completion: true
+  failed_validation:
+    action: "invoke_orchestrator_for_repair"
+    max_retries: 3
+  orchestrator_unavailable:
+    action: "graceful_fallback_to_manual"
+    notify_user: true

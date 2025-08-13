@@ -1,0 +1,492 @@
+---
+description: Analyze Current Product & Install Agent OS
+globs:
+alwaysApply: false
+version: 1.1
+encoding: UTF-8
+---
+
+# Analyze Current Product & Install Agent OS
+
+<ai_meta>
+  <parsing_rules>
+    - Process XML blocks first for structured data
+    - Execute instructions in sequential order
+    - Use templates as exact patterns
+    - Analyze existing code before generating documentation
+  </parsing_rules>
+  <file_conventions>
+    - encoding: UTF-8
+    - line_endings: LF
+    - indent: 2 spaces
+    - markdown_headers: no indentation
+  </file_conventions>
+</ai_meta>
+
+## Overview
+
+<purpose>
+  - Install Agent OS into an existing codebase
+  - Analyze current product state and progress
+  - Generate documentation that reflects actual implementation
+  - Preserve existing architectural decisions
+</purpose>
+
+<context>
+  - Part of Agent OS framework
+  - Used when retrofitting Agent OS to established products
+  - Builds on plan-product.md with codebase analysis
+</context>
+
+<prerequisites>
+  - Existing product codebase
+  - Write access to project root
+  - Access to @~/.agent-os/instructions/plan-product.md
+</prerequisites>
+
+<process_flow>
+
+<step number="1" name="analyze_existing_codebase">
+
+### Step 1: Analyze Existing Codebase
+
+<step_metadata>
+  <action>deep codebase analysis</action>
+  <purpose>understand current state before documentation</purpose>
+</step_metadata>
+
+<analysis_areas>
+  <project_structure>
+    - Directory organization
+    - File naming patterns
+    - Module structure
+    - Build configuration
+  </project_structure>
+  <technology_stack>
+    - **Primary Language Detection**: Python version (3.8+), Node.js, Ruby, etc.
+    - **Python Stack Specifics**: FastAPI vs Django vs Flask, Pydantic usage, uv package management
+    - **Dependencies**: pyproject.toml (uv), requirements.txt (legacy), package.json, Gemfile
+    - **Development Tools**: Ruff (linting/formatting), ty (type checking), pytest (testing)
+    - **Database Systems**: SQLite, PostgreSQL, MongoDB, ChromaDB (vector store)
+    - **Infrastructure Configuration**: Docker, deployment scripts, CI/CD
+  </technology_stack>
+  <implementation_progress>
+    - Completed features and current functionality
+    - Work in progress and incomplete implementations
+    - Authentication/authorization mechanisms
+    - **API Layer Analysis**: FastAPI routes, Pydantic models, middleware
+    - **Database Layer**: Schema structure, ORM usage, migrations
+    - **PocketFlow Component Detection**:
+      - Core files: `nodes.py`, `flow.py`, `main.py` entry point
+      - Utility functions: `utils/` directory structure and LLM integrations
+      - Design documentation: `docs/design.md` existence and completeness
+      - Node types: AsyncNode, BatchNode, custom implementations
+      - Flow patterns: Agent, RAG, Workflow, MapReduce, Multi-Agent
+      - SharedStore usage: Data structure patterns and Pydantic integration
+  </implementation_progress>
+  <code_patterns>
+    - Coding style in use
+    - Naming conventions
+    - File organization patterns
+    - Testing approach
+  </code_patterns>
+</analysis_areas>
+
+<conditional_analysis>
+  <python_stack_detection>
+    <detect_files>
+      - pyproject.toml (preferred uv format)
+      - uv.lock (uv lockfile)
+      - main.py with FastAPI imports (FastAPI application)
+      - schemas/ directory with Pydantic models (modern structure)
+      - ruff.toml or .ruff.toml (Ruff configuration)
+    </detect_files>
+    <if_python_detected>
+      <prioritize>
+        - FastAPI over Django/Flask for API projects
+        - Pydantic for all data validation
+        - uv as the sole package manager
+        - Ruff for linting and formatting
+        - ty for type checking (mypy wrapper)
+        - pytest for testing
+      </prioritize>
+    </if_python_detected>
+  </python_stack_detection>
+  
+  <pocketflow_detection>
+    <detect_files>
+      - nodes.py (PocketFlow nodes)
+      - flow.py (PocketFlow flows)
+      - docs/design.md (design-first approach)
+      - utils/ with LLM functions
+    </detect_files>
+    <detect_patterns>
+      - Node class inheritance (AsyncNode, BatchNode)
+      - SharedStore usage patterns
+      - prep/exec/post lifecycle methods
+      - LLM integration utilities
+    </detect_patterns>
+    <if_pocketflow_detected>
+      <document>
+        - Existing PocketFlow patterns (Agent, RAG, etc.)
+        - Current node implementations
+        - SharedStore schema design
+        - LLM providers and models in use
+      </document>
+    </if_pocketflow_detected>
+  </pocketflow_detection>
+</conditional_analysis>
+
+<instructions>
+  ACTION: Thoroughly analyze the existing codebase with systematic detection
+  DETECT: Modern Python stack and PocketFlow components specifically
+  DOCUMENT: Current technologies, features, and patterns, including any existing PocketFlow implementations
+  IDENTIFY: Architectural decisions already made
+  PRIORITIZE: Modern Python/FastAPI/Pydantic stack when detected
+  NOTE: Development progress and completed work
+</instructions>
+
+</step>
+
+<step number="2" name="gather_product_context">
+
+### Step 2: Gather Product Context
+
+<step_metadata>
+  <supplements>codebase analysis</supplements>
+  <gathers>business context and future plans</gathers>
+</step_metadata>
+
+<context_questions>
+  Based on my analysis of your codebase, I can see you're building [OBSERVED_PRODUCT_TYPE].
+
+  To properly set up Agent OS, I need to understand:
+
+  1. **Product Vision**: What problem does this solve? Who are the target users?
+
+  2. **Current State**: Are there features I should know about that aren't obvious from the code?
+     - Specifically, if LLM/AI components are present, clarify their purpose, underlying models, and any specific PocketFlow patterns or designs used.
+
+  3. **Roadmap**: What features are planned next? Any major refactoring planned?
+     - For planned LLM/AI features, specify desired PocketFlow patterns (Agent, Workflow, RAG, etc.).
+
+  4. **Decisions**: Are there important technical or product decisions I should document?
+     - Include any strategic decisions related to LLM/AI models or framework choices (e.g., why PocketFlow was chosen).
+
+  5. **Team Preferences**: Any coding standards or practices the team follows that I should capture?
+     - Emphasize PocketFlow-specific best practices for LLM development.
+</context_questions>
+
+<instructions>
+  ACTION: Ask user for product context
+  COMBINE: Merge user input with codebase analysis
+  PREPARE: Information for plan-product.md execution
+</instructions>
+
+</step>
+
+<step number="3" name="execute_plan_product">
+
+### Step 3: Execute Plan-Product with Context
+
+<step_metadata>
+  <uses>@~/.agent-os/instructions/plan-product.md</uses>
+  <modifies>standard flow for existing products</modifies>
+</step_metadata>
+
+<execution_parameters>
+  <main_idea>[DERIVED_FROM_ANALYSIS_AND_USER_INPUT]</main_idea>
+  <key_features>[IDENTIFIED_IMPLEMENTED_AND_PLANNED_FEATURES]</key_features>
+  <target_users>[FROM_USER_CONTEXT]</target_users>
+  <tech_stack>[DETECTED_FROM_CODEBASE_WITH_MODERN_PYTHON_PRIORITY]</tech_stack>
+  <involves_llm_ai>[TRUE/FALSE_BASED_ON_POCKETFLOW_ANALYSIS_AND_USER_INPUT]</involves_llm_ai>
+</execution_parameters>
+
+<tech_stack_resolution>
+  <priority_order>
+    1. **If Python detected**: Prioritize uv/Ruff/ty stack (FastAPI, Pydantic, uv, Ruff, ty)
+    2. **If PocketFlow detected**: Set involves_llm_ai to true, document existing patterns
+    3. **If legacy Python tools**: Document current state but suggest migration to uv/Ruff/ty
+    4. **If other frameworks**: Document but suggest migration path to modern Python stack
+  </priority_order>
+  <detection_logic>
+    <python_indicators>
+      - pyproject.toml (preferred) or requirements.txt presence
+      - uv.lock file (modern uv usage)
+      - Python import statements in main files
+      - FastAPI, Django, or Flask usage
+      - Ruff configuration files
+    </python_indicators>
+    <pocketflow_indicators>
+      - nodes.py and flow.py files
+      - SharedStore usage patterns
+      - docs/design.md existence
+      - LLM utility functions in utils/
+    </pocketflow_indicators>
+  </detection_logic>
+</tech_stack_resolution>
+
+<execution_prompt>
+  @~/.agent-os/instructions/plan-product.md
+
+  I'm installing Agent OS into an existing product. Here's what I've gathered:
+
+  **Main Idea**: [SUMMARY_FROM_ANALYSIS_AND_CONTEXT]
+
+  **Key Features**:
+  - Already Implemented: [LIST_FROM_ANALYSIS]
+  - Planned: [LIST_FROM_USER]
+
+  **Target Users**: [FROM_USER_RESPONSE]
+
+  **Tech Stack**: [DETECTED_STACK_WITH_VERSIONS_AND_MODERN_PYTHON_PRIORITY]
+
+  **Involves LLMs/AI**: [TRUE/FALSE_WITH_POCKETFLOW_ANALYSIS]
+  
+  **Detected Patterns**: [POCKETFLOW_PATTERNS_IF_APPLICABLE]
+</execution_prompt>
+
+<instructions>
+  ACTION: Execute plan-product.md with gathered information
+  PROVIDE: All context as structured input
+  ALLOW: plan-product.md to create .agent-os/product/ structure
+</instructions>
+
+</step>
+
+<step number="4" name="customize_generated_files">
+
+### Step 4: Customize Generated Documentation
+
+<step_metadata>
+  <refines>generated documentation</refines>
+  <ensures>accuracy for existing product</ensures>
+</step_metadata>
+
+<customization_tasks>
+  <roadmap_adjustment>
+    - Mark completed features as done
+    - Move implemented items to "Phase 0: Already Completed"
+    - Adjust future phases based on actual progress
+    - **For LLM/AI features:** Ensure they are tagged with the correct PocketFlow pattern.
+  </roadmap_adjustment>
+  <tech_stack_verification>
+    - Verify detected versions are correct
+    - Add any missing infrastructure details
+    - Document actual deployment setup
+    - **For LLM/AI:** Explicitly state PocketFlow as the LLM framework if present.
+  </tech_stack_verification>
+  <decisions_documentation>
+    - Add historical decisions that shaped current architecture
+    - Document why certain technologies were chosen
+    - Capture any pivots or major changes
+    - **For LLM/AI:** Document decisions related to PocketFlow adoption, specific LLM model choices, or major pattern implementations.
+  </decisions_documentation>
+  <llm_strategy_refinement>
+    - If LLM/AI components are present, refine the "AI/LLM Strategy" section in `mission.md` based on the analysis.
+    - Document currently utilized PocketFlow patterns and LLM providers.
+    - Include existing design.md analysis if present
+    - Map current node implementations to standard PocketFlow patterns
+  </llm_strategy_refinement>
+</customization_tasks>
+
+<conditional_documentation>
+  <python_stack_detected>
+    <if_modern_python>
+      <apply>
+        - Emphasize uv/Ruff/ty stack in tech-stack.md (FastAPI, Pydantic, uv, Ruff, ty)
+        - Document existing Pydantic models and schemas/ structure
+        - Note modern toolchain usage (specifically uv, Ruff, ty, pytest)
+      </apply>
+    </if_modern_python>
+    <if_legacy_python>
+      <apply>
+        - Document current stack (Django/Flask/pip/poetry/black/mypy)
+        - Suggest migration path to uv/Ruff/ty stack in decisions.md
+        - Note specific differences from preferred uv/Ruff/ty defaults
+      </apply>
+    </if_legacy_python>
+  </python_stack_detected>
+  
+  <pocketflow_detected>
+    <if_complete_implementation>
+      <apply>
+        - Document all existing PocketFlow patterns
+        - Map current nodes to design patterns (Agent, RAG, etc.)
+        - Include design.md analysis in mission.md
+        - Mark LLM features as "Phase 0: Already Completed"
+      </apply>
+    </if_complete_implementation>
+    <if_partial_implementation>
+      <apply>
+        - Document what exists vs. what's missing
+        - Suggest completion roadmap for partial PocketFlow adoption
+        - Flag missing design.md as high priority
+      </apply>
+    </if_partial_implementation>
+  </pocketflow_detected>
+</conditional_documentation>
+
+<roadmap_template>
+  ## Phase 0: Already Completed
+
+  The following features have been implemented:
+
+  - [x] [FEATURE_1] - [DESCRIPTION_FROM_CODE]
+      - **LLM Pattern:** [POCKETFLOW_PATTERN] (if applicable)
+
+  ## Phase 1: Current Development
+
+  - [ ] [IN_PROGRESS_FEATURE] - [DESCRIPTION]
+
+  [CONTINUE_WITH_STANDARD_PHASES]
+</roadmap_template>
+
+<instructions>
+  ACTION: Update generated files to reflect reality
+  MODIFY: Roadmap to show completed work
+  VERIFY: Tech stack matches actual implementation
+  ADD: Historical context to decisions.md
+  REFINE: LLM/AI specific documentation based on analysis.
+</instructions>
+
+</step>
+
+<step number="5" name="final_verification">
+
+### Step 5: Final Verification and Summary
+
+<step_metadata>
+  <verifies>installation completeness</verifies>
+  <provides>next steps for user</provides>
+</step_metadata>
+
+<verification_checklist>
+  - [ ] .agent-os/product/ directory created
+  - [ ] All product documentation reflects actual codebase
+  - [ ] Roadmap shows completed and planned features accurately
+  - [ ] Tech stack matches installed dependencies
+  - [ ] CLAUDE.md or .cursorrules configured (if applicable)
+</verification_checklist>
+
+<summary_template>
+  ## ✅ Agent OS Successfully Installed
+
+  I've analyzed your [PRODUCT_TYPE] codebase and set up Agent OS with documentation that reflects your actual implementation.
+
+  ### What I Found
+
+  - **Tech Stack**: [SUMMARY_OF_DETECTED_STACK]
+  - **Completed Features**: [COUNT] features already implemented
+  - **Code Style**: [DETECTED_PATTERNS]
+  - **Current Phase**: [IDENTIFIED_DEVELOPMENT_STAGE]
+  - **LLM/AI Components**: [PRESENCE_AND_SUMMARY_OF_POCKETFLOW_USAGE]
+  - **Modern Python Stack**: [FASTAPI_PYDANTIC_UV_USAGE_STATUS]
+  - **Development Toolchain**: [UV_RUFF_TY_PYTEST_USAGE_STATUS]
+
+  ### What Was Created
+
+  - ✓ Product documentation in `.agent-os/product/`
+  - ✓ Roadmap with completed work in Phase 0
+  - ✓ Tech stack reflecting actual dependencies
+  - ✓ Updated LLM Strategy in mission.md (if applicable)
+
+  ### Next Steps
+
+  1. Review the generated documentation in `.agent-os/product/`
+  2. Make any necessary adjustments to reflect your vision
+  3. See the Agent OS README for usage instructions: https://github.com/pickleton89/agent-os-pocketflow
+  4. Start using Agent OS for your next feature:
+     ```
+     @~/.agent-os/instructions/create-spec.md
+     ```
+
+  Your codebase is now Agent OS-enabled! 🚀
+</summary_template>
+
+<instructions>
+  ACTION: Verify all files created correctly
+  SUMMARIZE: What was found and created
+  PROVIDE: Clear next steps for user
+</instructions>
+
+</step>
+
+</process_flow>
+
+## Error Handling
+
+<error_scenarios>
+  <scenario name="no_clear_structure">
+    <condition>Cannot determine project type or structure</condition>
+    <action>Ask user for clarification about project</action>
+  </scenario>
+  <scenario name="conflicting_patterns">
+    <condition>Multiple coding styles detected</condition>
+    <action>Ask user which pattern to document</action>
+  </scenario>
+  <scenario name="missing_dependencies">
+    <condition>Cannot determine full tech stack</condition>
+    <action>List detected technologies and ask for missing pieces</action>
+  </scenario>
+  <scenario name="unclear_llm_usage">
+    <condition>LLM/AI components detected but their purpose or pattern is unclear</condition>
+    <action>Ask user for clarification on LLM patterns (e.g., "Is this a RAG system or an Agent workflow?") or specific models.</action>
+  </scenario>
+  <scenario name="mixed_python_tooling">
+    <condition>Multiple Python package managers or linting tools detected (e.g., poetry + pip, black + Ruff)</condition>
+    <action>Recommend migration to uv/Ruff/ty stack for consistency with Agent OS preferences.</action>
+  </scenario>
+  <scenario name="incomplete_pocketflow">
+    <condition>Some PocketFlow files present but missing key components (e.g., design.md)</condition>
+    <action>Ask user if they want to complete PocketFlow implementation or document current partial state.</action>
+  </scenario>
+</error_scenarios>
+
+## Modern Python Toolchain Detection
+
+<preferred_toolchain_detection>
+  <package_managers>
+    <detect_files>uv.lock (preferred), pyproject.toml (uv format), requirements.txt (legacy), Pipfile (pipenv), poetry.lock (poetry)</detect_files>
+    <preferred>uv (exclusively)</preferred>
+    <legacy_migration>Suggest migration from poetry/pipenv/pip to uv</legacy_migration>
+  </package_managers>
+  
+  <linting_formatting>
+    <detect_files>ruff.toml, .ruff.toml (preferred), setup.cfg, tox.ini (flake8), pyproject.toml (black), .flake8</detect_files>
+    <preferred>Ruff (exclusively - replaces black, flake8, isort, etc.)</preferred>
+    <legacy_migration>Suggest migration from black+flake8+isort to unified Ruff</legacy_migration>
+  </linting_formatting>
+  
+  <type_checking>
+    <detect_files>pyproject.toml (ty/mypy config), mypy.ini, .mypy.ini, pyrightconfig.json</detect_files>
+    <detect_usage>ty command wrapper (preferred), mypy direct usage</detect_usage>
+    <preferred>ty (mypy wrapper with better UX)</preferred>
+    <legacy_migration>Suggest using ty instead of direct mypy calls</legacy_migration>
+  </type_checking>
+  
+  <testing>
+    <detect_files>pytest.ini, pyproject.toml (pytest), setup.cfg, tox.ini</detect_files>
+    <detect_patterns>test_*.py files, tests/ directory structure</detect_patterns>
+    <preferred>pytest (already the standard)</preferred>
+    <legacy_migration>Migrate from unittest to pytest if needed</legacy_migration>
+  </testing>
+  
+  <optimal_stack_summary>
+    **Preferred Stack:** uv + Ruff + ty + pytest
+    **Migration Path:** Any detected legacy tools → Recommend uv/Ruff/ty adoption
+    **Detection Priority:** Look for uv.lock and Ruff config as indicators of modern stack
+  </optimal_stack_summary>
+</preferred_toolchain_detection>
+
+## Execution Summary
+
+<final_checklist>
+  <verify>
+    - [ ] Codebase analyzed thoroughly
+    - [ ] User context gathered
+    - [ ] plan-product.md executed with proper context
+    - [ ] Documentation customized for existing product
+    - [ ] Team can adopt Agent OS workflow
+  </verify>
+</final_checklist>
