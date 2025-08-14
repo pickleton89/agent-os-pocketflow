@@ -382,7 +382,6 @@ install_orchestrator_agent() {
 name: pocketflow-orchestrator
 description: MUST BE USED PROACTIVELY for planning, designing, and orchestrating complex Agent OS workflows using PocketFlow's graph-based architecture. Automatically invoked for LLM/AI features and complex planning tasks.
 tools: [Read, Write, Grep, Glob, Bash, Edit, MultiEdit, TodoWrite, Task]
-model: claude-3-5-sonnet-20241022
 auto_invoke_triggers:
   - "think about"
   - "plan"
