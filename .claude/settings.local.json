@@ -40,9 +40,14 @@
       "Bash(git branch:*)",
       "WebSearch",
       "Bash(./scripts/validation/validate-orchestration.sh:*)",
-      "Bash(./scripts/validation/validate-end-to-end.sh:*)"
+      "Bash(./scripts/validation/validate-end-to-end.sh:*)",
+      "Bash(python:*)",
+      "Bash(uv init:*)"
     ],
     "deny": [],
-    "defaultMode": "acceptEdits"
+    "defaultMode": "acceptEdits",
+    "additionalDirectories": [
+      "/private/tmp/test-output/testworkflow"
+    ]
   }
 }
