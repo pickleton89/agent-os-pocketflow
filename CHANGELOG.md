@@ -5,6 +5,37 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.4] - 2025-08-14
+
+### Fixed
+- **CLI Output Flag and Template Path Critical Fix** - Resolved CLI --output flag being ignored and template path mismatch causing generator failures
+  - **CLI Flag Implementation**: Fixed --output argument not being wired to PocketFlowGenerator constructor, enabling users to customize output locations for testing vs production environments
+  - **Template Path Correction**: Changed hardcoded `.agent-os/templates` path to correct `templates/` location (root level) - was causing immediate failures when trying to load templates
+  - **Constructor Enhancement**: Added `output_path` parameter to PocketFlowGenerator to accept custom output directories via CLI
+  - **Error Handling**: Added validation for missing template directories with clear error messages guiding users when setup is incorrect
+  - **Syntax Fix**: Resolved f-string syntax error in FastAPI router generation that was preventing successful code generation
+
+### Added
+- **Python Project Infrastructure** - Added proper uv-based Python project configuration for CLI tool functionality
+  - **uv Project Setup**: Added pyproject.toml with PyYAML dependency required for CLI YAML parsing
+  - **Python Version Management**: Added .python-version file to ensure consistent Python 3.11 usage across environments
+  - **Gitignore Enhancement**: Updated .gitignore with comprehensive Python-specific entries (venv, __pycache__, pytest cache, etc.)
+
+### Improved
+- **CLI Tool Usability**: Generator now fully functional from command line with proper output customization
+- **Template Loading**: Robust template loading mechanism with clear error messages for missing directories
+- **Development Environment**: Proper Python project structure following uv best practices
+
+### Validation
+- **Comprehensive Testing**: Verified CLI functionality with both default output (.agent-os/workflows) and custom paths
+- **Error Scenarios**: Confirmed proper error handling for non-existent template directories
+- **Code Quality**: All generated workflow files created correctly with proper directory structure
+
+### Impact
+- **CLI Tool Now Functional**: Users can successfully generate PocketFlow workflows via command line
+- **Flexible Output Organization**: Enables different output locations for testing vs production workflow generation
+- **Clear Error Guidance**: Users receive helpful error messages when template setup is incorrect
+
 ## [1.10.3] - 2025-08-14
 
 ### Fixed

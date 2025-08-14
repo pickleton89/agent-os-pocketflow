@@ -34,10 +34,16 @@ class WorkflowSpec:
 class PocketFlowGenerator:
     """Generate complete PocketFlow workflows from specifications."""
     
-    def __init__(self, templates_path: str = ".agent-os/templates"):
+    def __init__(self, templates_path: str = "templates", output_path: str = ".agent-os/workflows"):
         self.templates_path = Path(templates_path)
-        self.output_path = Path(".agent-os/workflows")
+        self.output_path = Path(output_path)
         self.output_path.mkdir(exist_ok=True)
+        
+        # Validate templates directory exists
+        if not self.templates_path.exists():
+            raise FileNotFoundError(f"Templates directory not found: {self.templates_path}")
+        if not self.templates_path.is_dir():
+            raise NotADirectoryError(f"Templates path is not a directory: {self.templates_path}")
         
         # Load templates
         self.templates = self._load_templates()
@@ -413,12 +419,14 @@ graph TD
         for endpoint in spec.api_endpoints:
             method = endpoint.get("method", "post").lower()
             path = endpoint.get("path", f"/{endpoint['name'].lower()}")
+            endpoint_name = endpoint["name"]
+            default_desc = f"Execute {endpoint_name} workflow"
             
             router_code.extend([
-                f'@router.{method}("{path}", response_model={endpoint["name"]}Response)',
-                f'async def {endpoint["name"].lower()}_endpoint(request: {endpoint["name"]}Request):',
+                f'@router.{method}("{path}", response_model={endpoint_name}Response)',
+                f'async def {endpoint_name.lower()}_endpoint(request: {endpoint_name}Request):',
                 '    """',
-                f'    {endpoint.get("description", f"Execute {endpoint["name"]} workflow")}',
+                f'    {endpoint.get("description", default_desc)}',
                 '    """',
                 '        # Initialize SharedStore',
                 '        shared = {',
@@ -820,7 +828,12 @@ def main():
     
     # Generate workflow
     try:
-        generator = PocketFlowGenerator()
+        # Initialize generator with custom paths if provided
+        generator_kwargs = {}
+        if args.output:
+            generator_kwargs['output_path'] = args.output
+        
+        generator = PocketFlowGenerator(**generator_kwargs)
         output_files = generator.generate_workflow(spec)
         generator.save_workflow(spec, output_files)
         
