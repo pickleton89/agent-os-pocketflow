@@ -138,12 +138,12 @@ test_orchestrator_hooks() {
 
 # Test 7: Template System
 test_template_system() {
-    [[ -d ".agent-os/templates" ]] || return 1
+    [[ -d "templates" ]] || return 1
     
     local template_files=(
-        ".agent-os/templates/pocketflow-templates.md"
-        ".agent-os/templates/fastapi-templates.md"
-        ".agent-os/templates/task-templates.md"
+        "templates/pocketflow-templates.md"
+        "templates/fastapi-templates.md"
+        "templates/task-templates.md"
     )
     
     for template in "${template_files[@]}"; do

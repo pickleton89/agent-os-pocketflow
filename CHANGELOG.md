@@ -5,6 +5,29 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.1] - 2025-08-14
+
+### Removed
+- **Codebase Cleanup & Template Fix** - Eliminated orphaned files and resolved template reference conflicts
+  - **Orphaned Files Removed**: Deleted unused `claude-code/agents/git-workflow.md` (244 lines of git workflow logic never referenced in any instructions or setup scripts)
+  - **Unused Setup Script Removed**: Deleted `setup-cursor.sh` (87 lines) as Cursor IDE support not needed, script contained broken references to non-existent `/commands/` directory
+  - **Duplicate Template Directory Eliminated**: Removed `.agent-os/templates/` directory and contents - duplicate of root `templates/` directory that caused validation conflicts
+  - **Template Reference Fixes**: Updated 3 validation scripts to reference correct template location:
+    - `scripts/validate-integration.sh` - Changed `.agent-os/templates/` → `templates/`
+    - `scripts/validation/validate-orchestration.sh` - Updated template path references  
+    - `scripts/validation/validate-end-to-end.sh` - Corrected template validation paths
+
+### Fixed
+- **Template System Validation** - Resolved template reference confusion where instructions expected `@templates/` (root level) but validation scripts looked for `.agent-os/templates/`
+- **Repository Streamlining Completion** - Fully implemented template consolidation mentioned in v1.9.0 by removing remaining duplicate `.agent-os/templates/` directory
+- **Validation Test Accuracy** - Integration, orchestration, and end-to-end tests now pass with correct template references
+
+### Impact
+- **Code Reduction**: Removed ~350 lines of orphaned and duplicate code
+- **Single Source of Truth**: Templates now definitively located at root `templates/` directory as intended
+- **Validation Integrity**: All template-related tests now reference correct file locations
+- **Framework Fidelity Maintained**: All functional capabilities preserved while eliminating dead code
+
 ## [1.10.0] - 2025-08-14
 
 ### Implemented

@@ -167,9 +167,9 @@ test_pocketflow_setup() {
 test_template_system() {
     # Check that templates are accessible and have content
     local templates=(
-        ".agent-os/templates/pocketflow-templates.md"
-        ".agent-os/templates/fastapi-templates.md"
-        ".agent-os/templates/task-templates.md"
+        "templates/pocketflow-templates.md"
+        "templates/fastapi-templates.md"
+        "templates/task-templates.md"
     )
     
     for template in "${templates[@]}"; do
