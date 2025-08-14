@@ -452,81 +452,140 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 </step>
 
-<step number="6" name="development_execution">
+<step number="5" name="task_execution_loop">
 
-### Step 6: Development Execution
+### Step 5: Task Execution Loop
 
 <step_metadata>
-  <follows>approved implementation plan</follows>
-  <adheres_to>all spec standards</adheres_to>
+  <purpose>Execute all parent tasks using individual task processor</purpose>
+  <delegates>execute-task.md for actual implementation</delegates>
+  <manages>task orchestration and progress tracking</manages>
+  <references>@~/.agent-os/shared/execution_utils.md for shared patterns</references>
 </step_metadata>
 
-<execution_standards>
-  <follow_exactly>
-    - approved implementation plan
-    - spec specifications
-    - @.agent-os/product/code-style.md
-    - @.agent-os/product/dev-best-practices.md
-  </follow_exactly>
-  <approach>test-driven development (TDD)</approach>
-  <phase_based_execution>
-    - **Phase 0**: Create Pydantic schemas with validation tests
-    - **Phase 1**: Implement utility functions with standalone tests and type hints
-    - **Phase 2**: Create FastAPI endpoints with proper async patterns (if applicable)
-    - **Phase 3**: Implement PocketFlow nodes following lifecycle patterns
-    - **Phase 4**: Assemble flow.py connecting nodes with action-based transitions
-    - **Phase 5**: Integration testing and validation
-  </phase_based_execution>
-  <type_safety_enforcement>
-    - All functions must have complete type hints
-    - Pydantic models validate at all boundaries
-    - FastAPI automatic documentation generation validated
-    - SharedStore schema enforced with Pydantic models
-    - No Any types without explicit justification
-  </type_safety_enforcement>
-  <pocketflow_coding_principles>
-    - **For LLM/AI components:**
-      - Follow design.md specifications exactly
-      - Generate `utils/` functions first with input/output contracts
-      - Implement `nodes.py` with `prep`, `exec`, `post` methods clearly separated
-      - Define `shared` store schema using Pydantic models consistently
-      - Assemble `flow.py` by connecting nodes with clear action-based transitions
-      - **Apply comprehensive toolchain:** Use `ruff format`, `ruff check`, and `uvx ty check`
-      - Implement error handling as action string routing (not try/catch inline)
-      - Use Node retry mechanisms for error handling
-      - Consider BatchNode/BatchFlow for iterative/parallel processing
-      - Use provided LLM wrappers or create new ones in `utils/`
-      - Add logging to LLM calls and node execution for debugging
-      - Emphasize "Fail Fast" by avoiding excessive `try`/`except` during initial implementation
-  </pocketflow_coding_principles>
-</execution_standards>
+<task_execution_workflow>
+  <preparation>
+    LOAD: @~/.agent-os/instructions/core/execute-task.md instructions ONCE
+    IDENTIFY: All parent tasks selected for execution
+    PREPARE: Shared execution context for consistency
+  </preparation>
+  
+  <execution_loop>
+    FOR each parent_task in selected_tasks:
+      <task_invocation>
+        CONTEXT: {
+          parent_task_number: "Task X",
+          parent_task_description: "task description from tasks.md", 
+          subtasks: ["X.1", "X.2", "X.3", ...],
+          project_type: "pocketflow|standard|graphrag",
+          shared_context: minimal_project_state,
+          execution_mode: "orchestrated"
+        }
+        
+        INVOKE: execute-task.md with task_context
+        METHOD: Use Task tool to delegate execution
+        WAIT: For task completion confirmation
+      </task_invocation>
+      
+      <progress_tracking>
+        UPDATE: tasks.md with completion status
+        VALIDATE: Task completion meets acceptance criteria
+        REPORT: Progress to user with clear status
+      </progress_tracking>
+      
+      <error_handling>
+        IF task_fails:
+          CAPTURE: Detailed error context from execute-task.md
+          OFFER: Options to retry, skip, or abort workflow
+          PRESERVE: Progress of completed tasks
+        END_IF
+      </error_handling>
+    END_FOR
+  </execution_loop>
+</task_execution_workflow>
 
-<tdd_workflow>
-  1. Write failing tests first
-  2. Implement minimal code to pass
-  3. Refactor while keeping tests green
-  4. Repeat for each feature
-</tdd_workflow>
+<context_management>
+  <efficiency_strategy>
+    - Load execute-task.md context once, reuse for all tasks
+    - Pass minimal context per task to reduce token usage
+    - Clear task-specific context after each completion
+    - Maintain only essential workflow state between tasks
+  </efficiency_strategy>
+  
+  <shared_state>
+    - Project configuration (tech stack, standards)
+    - Current branch and git state
+    - Overall progress tracking
+    - Error recovery information
+  </shared_state>
+</context_management>
 
 <instructions>
-  ACTION: Execute development plan systematically
-  FOLLOW: All coding standards and specifications, including PocketFlow-specific principles for LLM components and explicit use of Ruff for code quality.
-  IMPLEMENT: TDD approach throughout
-  MAINTAIN: Code quality at every step
-  Keep files modular and organized. No large monolithic files.
+  ACTION: Load execute-task.md instructions once for efficiency
+  LOOP: Through each parent task systematically
+  DELEGATE: All actual implementation to execute-task.md
+  COORDINATE: Task sequence and dependencies
+  TRACK: Progress and handle failures gracefully
+  MAINTAIN: Clean separation between orchestration and execution
 </instructions>
 
 </step>
 
-<step number="6.5" name="design_document_adherence_check">
+<step number="6" name="final_validation">
 
-### Step 6.5: Design Document Adherence Check (LLM/AI Components Only)
+### Step 6: Final Validation & Workflow Completion
 
 <step_metadata>
-  <validates>implementation matches design.md specifications</validates>
-  <ensures>design-implementation consistency</ensures>
-  <condition>only if LLM/AI components implemented</condition>
+  <validates>overall workflow completion</validates>
+  <confirms>all tasks completed successfully</confirms>
+  <purpose>workflow finalization and cleanup</purpose>
 </step_metadata>
+
+<workflow_validation>
+  <task_completion_check>
+    VERIFY: All selected parent tasks marked as [COMPLETED] in tasks.md
+    CONFIRM: No tasks remain in [IN_PROGRESS] or [FAILED] status
+    VALIDATE: Each completed task meets acceptance criteria
+  </task_completion_check>
+  
+  <integration_verification>
+    RUN: Full test suite to ensure all components work together
+    CHECK: All PocketFlow integrations function correctly (if applicable)
+    VALIDATE: Code quality standards met (ruff, ty checks pass)
+    CONFIRM: No critical errors or warnings remain
+  </integration_verification>
+  
+  <documentation_check>
+    VERIFY: All implementation matches specifications
+    UPDATE: Documentation reflects any implementation decisions
+    CONFIRM: Design documents align with final implementation (if LLM/AI components)
+  </documentation_check>
+</workflow_validation>
+
+<completion_reporting>
+  <progress_summary>
+    REPORT: Total tasks completed vs planned
+    HIGHLIGHT: Key features implemented
+    DOCUMENT: Any deviations from original plan
+    NOTE: Performance metrics and quality indicators
+  </progress_summary>
+  
+  <next_steps_guidance>
+    SUGGEST: Appropriate next actions for user
+    RECOMMEND: Testing procedures or deployment steps
+    IDENTIFY: Any follow-up tasks or improvements
+  </next_steps_guidance>
+</completion_reporting>
+
+<instructions>
+  ACTION: Validate overall workflow completion
+  CONFIRM: All tasks executed successfully via execute-task.md
+  VERIFY: Integration and quality standards met
+  REPORT: Comprehensive completion summary to user
+  GUIDE: User on appropriate next steps
+</instructions>
+
+</step>
 
 <conditional_execution>
   <detection_criteria>

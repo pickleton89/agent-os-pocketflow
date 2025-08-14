@@ -42,6 +42,10 @@ echo "📥 Linking instruction files for Claude Code commands"
 # Create symlinks to instruction files if local
 if [ -d "instructions/core" ]; then
     echo "  ✓ Using local instruction files from instructions/core/"
+    for cmd in plan-product create-spec execute-tasks analyze-product execute-task; do
+        ln -sf "$(pwd)/instructions/core/${cmd}.md" "$HOME/.claude/commands/${cmd}.md"
+        echo "  ✓ Linked ${cmd}.md"
+    done
 else
     echo "  ⚠️  Local instructions not found - downloading from repository"
     # Download instruction files if not local

@@ -5,6 +5,39 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2025-08-14
+
+### Implemented
+- **Option 1: Restore Original Loop Pattern Complete** - Implemented proper execute-tasks.md and execute-task.md separation as designed in original Agent OS v1.1.0
+  - **execute-tasks.md Transformation**: Added new Step 5 "Task Execution Loop" that delegates individual task execution to execute-task.md via Task tool
+    - Replaced monolithic Step 6 implementation with simple final validation and cleanup
+    - Now functions as pure orchestrator handling task coordination and progress tracking
+    - Reduced token usage from ~15K to ~3K for orchestration-only operations
+  - **execute-task.md Enhancement**: Enhanced with comprehensive PocketFlow execution logic and dual invocation modes
+    - Added all 6 PocketFlow phases (Schema Design, Utility Functions, FastAPI Integration, Node Implementation, Flow Assembly, Integration Testing)
+    - Implemented project type detection to handle both PocketFlow and standard TDD workflows conditionally
+    - Added dual invocation support: direct user calls (`/execute-task`) and orchestrated calls from execute-tasks.md
+    - Enhanced Step 1 with context determination for orchestrated vs direct execution modes
+  - **Shared Utilities Module**: Created `.agent-os/shared/execution_utils.md` to prevent duplication between files
+    - Common PocketFlow phase definitions and quality standards
+    - Shared error handling patterns and context management strategies
+    - Type safety enforcement and validation patterns used by both instruction files
+  - **Coordination System Integration**: Updated `coordination.yaml` to include execute-task.md in orchestration framework
+    - Added execute-task coordination mapping with proper delegation relationships
+    - Configured validation gates and quality enforcement for individual task execution
+    - Added new orchestration hook for individual task completion validation
+  - **Direct Command Access**: Created `/execute-task` command for granular task execution and updated setup infrastructure
+    - Created `~/.claude/commands/execute-task.md` for direct user invocation of individual tasks
+    - Updated `setup-claude-code.sh` to properly handle symlinks for both execute-tasks and execute-task commands
+    - Enables users to work on individual tasks without full workflow orchestration overhead
+
+### Benefits Achieved
+- **Architectural Coherence**: Restored clean separation of concerns between orchestration (execute-tasks.md) and execution (execute-task.md)
+- **Context Efficiency**: Each task runs in isolation with context reset, improving token usage for large projects
+- **Dual Access Patterns**: Users can choose between full workflow (`/execute-tasks`) and individual task execution (`/execute-task`)
+- **Future Extensibility**: Natural extension points for adding GraphRAG, Multi-Agent, and custom workflow patterns
+- **Original Design Compliance**: Properly implements the task execution loop pattern intended in Agent OS v1.1.0
+
 ## [1.9.3] - 2025-08-14
 
 ### Changed

@@ -10,7 +10,23 @@ encoding: UTF-8
 
 ## Overview
 
-Execute a specific task along with its sub-tasks systematically following a TDD development workflow.
+Execute a specific task along with its sub-tasks systematically following a TDD development workflow. This instruction can be invoked directly by users (`/execute-task`) or called from execute-tasks.md in orchestrated mode.
+
+**Shared Resources**: See @~/.agent-os/shared/execution_utils.md for common patterns, phase definitions, and quality standards used by both execute-tasks.md and execute-task.md.
+
+<invocation_modes>
+  <direct_invocation>
+    USER: "/execute-task" or "/execute-task Task 3.2"
+    CONTEXT: User wants to work on a specific task independently
+    BEHAVIOR: Interactive task selection and full context loading
+  </direct_invocation>
+  
+  <orchestrated_invocation>  
+    CALLER: execute-tasks.md via Task tool
+    CONTEXT: Part of full workflow orchestration
+    BEHAVIOR: Use provided task context, minimal additional loading
+  </orchestrated_invocation>
+</invocation_modes>
 
 <pre_flight_check>
   EXECUTE: @~/.agent-os/instructions/meta/pre-flight.md
@@ -21,24 +37,69 @@ Execute a specific task along with its sub-tasks systematically following a TDD 
 
 <step number="1" name="task_understanding">
 
-### Step 1: Task Understanding
+### Step 1: Task Understanding & Context Determination
 
-Read and analyze the given parent task and all its sub-tasks from tasks.md to gain complete understanding of what needs to be built.
+Determine invocation mode and establish task context appropriately.
 
-<task_analysis>
-  <read_from_tasks_md>
-    - Parent task description
-    - All sub-task descriptions
-    - Task dependencies
-    - Expected outcomes
-  </read_from_tasks_md>
-</task_analysis>
+<invocation_detection>
+  <check_for_orchestrated_context>
+    IF task_context provided from execute-tasks.md:
+      MODE: orchestrated
+      CONTEXT: Use provided task information
+      TASK: task_context.parent_task_number and subtasks
+    ELSE:
+      MODE: direct
+      CONTEXT: Load from user input and tasks.md
+      TASK: User-specified or interactive selection
+    END_IF
+  </check_for_orchestrated_context>
+</invocation_detection>
+
+<task_selection_and_analysis>
+  <orchestrated_mode>
+    IF MODE == orchestrated:
+      RECEIVE: Task context from execute-tasks.md
+      EXTRACT: parent_task_number, parent_task_description, subtasks
+      VALIDATE: Context completeness and consistency
+      PROCEED: With provided task information
+    END_IF
+  </orchestrated_mode>
+  
+  <direct_mode>
+    IF MODE == direct:
+      <user_task_specification>
+        IF user specified task (e.g., "/execute-task Task 3.2"):
+          PARSE: Task number from user input
+          VALIDATE: Task exists in tasks.md
+        ELSE:
+          DISPLAY: Available tasks from tasks.md
+          PROMPT: User to select specific task
+        END_IF
+      </user_task_specification>
+      
+      <task_analysis_direct>
+        READ: Specified task and all subtasks from tasks.md
+        ANALYZE: Task dependencies and prerequisites
+        UNDERSTAND: Full scope of implementation required
+        NOTE: Test requirements for each sub-task
+      </task_analysis_direct>
+    END_IF
+  </direct_mode>
+</task_selection_and_analysis>
+
+<context_validation>
+  CONFIRM: Task selection is clear and unambiguous
+  VERIFY: All subtasks are identified and understood
+  CHECK: Prerequisites and dependencies are noted
+  ENSURE: Ready to proceed with implementation
+</context_validation>
 
 <instructions>
-  ACTION: Read the specific parent task and all its sub-tasks
-  ANALYZE: Full scope of implementation required
-  UNDERSTAND: Dependencies and expected deliverables
-  NOTE: Test requirements for each sub-task
+  DETECT: Invocation mode (orchestrated vs direct)
+  HANDLE: Task selection based on mode
+  LOAD: Appropriate context for selected task
+  VALIDATE: Task understanding is complete
+  PREPARE: For systematic implementation
 </instructions>
 
 </step>
@@ -130,60 +191,142 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 ### Step 5: Task and Sub-task Execution
 
-Execute the parent task and all sub-tasks in order using test-driven development (TDD) approach.
+Execute the parent task and all sub-tasks systematically following TDD approach and PocketFlow-specific patterns when applicable.
 
-<typical_task_structure>
-  <first_subtask>Write tests for [feature]</first_subtask>
-  <middle_subtasks>Implementation steps</middle_subtasks>
-  <final_subtask>Verify all tests pass</final_subtask>
-</typical_task_structure>
+<execution_context_detection>
+  <project_type_detection>
+    CHECK: If docs/design.md exists (indicates LLM/AI implementation)
+    LOOK: For PocketFlow imports or usage in codebase  
+    IDENTIFY: utils/ directory with LLM-related functions
+    DETERMINE: Standard task vs PocketFlow task execution
+  </project_type_detection>
+</execution_context_detection>
 
-<execution_order>
-  <subtask_1_tests>
-    IF sub-task 1 is "Write tests for [feature]":
-      - Write all tests for the parent feature
-      - Include unit tests, integration tests, edge cases
-      - Run tests to ensure they fail appropriately
-      - Mark sub-task 1 complete
-  </subtask_1_tests>
+<design_document_validation>
+  <llm_ai_components_only>
+    <conditional_execution>
+      IF LLM/AI components detected:
+        VALIDATE: docs/design.md exists and is complete
+        REQUIRE: All sections filled with specific details
+        VERIFY: Mermaid diagrams are syntactically correct
+        CONFIRM: Input/output contracts for all utility functions specified
+        BLOCK: Implementation if design document incomplete
+      ELSE:
+        SKIP: Design validation (no LLM/AI components)
+      END_IF
+    </conditional_execution>
+  </llm_ai_components_only>
+</design_document_validation>
 
-  <middle_subtasks_implementation>
-    FOR each implementation sub-task (2 through n-1):
-      - Implement the specific functionality
-      - Make relevant tests pass
-      - Update any adjacent/related tests if needed
-      - Refactor while keeping tests green
-      - Mark sub-task complete
-  </middle_subtasks_implementation>
+<execution_standards>
+  <follow_exactly>
+    - Task specifications from tasks.md
+    - Technical specifications from technical-spec.md
+    - @~/.agent-os/standards/code-style.md patterns
+    - @~/.agent-os/standards/best-practices.md guidelines
+  </follow_exactly>
+  
+  <tdd_approach>Test-driven development throughout</tdd_approach>
+  
+  <pocketflow_phase_execution>
+    <conditional_pocketflow_phases>
+      IF project_type == "pocketflow" OR LLM/AI components detected:
+        EXECUTE: PocketFlow 6-phase implementation:
+        
+        **Phase 0: Schema Design & Validation**
+        - Create Pydantic schemas with comprehensive validation tests
+        - Define SharedStore schema using Pydantic models
+        - Implement data transformation schemas
+        - Test schema validation edge cases
+        
+        **Phase 1: Utility Functions Development**
+        - Implement utility functions with input/output contracts from design.md
+        - Create standalone tests with type hints
+        - Build LLM integration utilities (call_llm_*.py functions)
+        - Develop data retrieval utilities (retrieve_*.py functions)
+        - Ensure all utility functions are testable and modular
+        
+        **Phase 2: FastAPI Integration (if applicable)**
+        - Create FastAPI endpoints with proper async patterns
+        - Implement Pydantic request/response models
+        - Add middleware and error handling
+        - Build WebSocket support if needed
+        - Test API endpoints thoroughly
+        
+        **Phase 3: PocketFlow Node Implementation**  
+        - Implement nodes.py following lifecycle patterns (prep/exec/post)
+        - Ensure clear separation of node responsibilities
+        - Define action strings for flow transitions
+        - Implement error handling as action string routing (not try/catch inline)
+        - Add logging for debugging and monitoring
+        - Use Node retry mechanisms for error handling
+        
+        **Phase 4: Flow Assembly & Orchestration**
+        - Assemble flow.py connecting nodes with action-based transitions
+        - Match Mermaid diagram from design.md exactly
+        - Implement error handling and retry strategies
+        - Consider BatchNode/BatchFlow for iterative/parallel processing
+        - Validate integration points work as designed
+        
+        **Phase 5: Integration Testing & Quality Validation**
+        - Run comprehensive integration tests
+        - Apply toolchain: `ruff format`, `ruff check`, `uvx ty check`
+        - Validate against design.md specifications
+        - Test error scenarios and recovery paths
+        - Ensure logging and monitoring work correctly
+      ELSE:
+        EXECUTE: Standard TDD workflow:
+        - Write failing tests first
+        - Implement minimal code to pass
+        - Refactor while keeping tests green
+        - Repeat for each subtask
+      END_IF
+    </conditional_pocketflow_phases>
+  </pocketflow_phase_execution>
+  
+  <type_safety_enforcement>
+    - All functions must have complete type hints
+    - Pydantic models validate at all boundaries  
+    - FastAPI automatic documentation generation validated
+    - SharedStore schema enforced with Pydantic models
+    - No Any types without explicit justification
+  </type_safety_enforcement>
+  
+  <quality_principles>
+    - Keep files modular and organized (no large monolithic files)
+    - Follow "Fail Fast" by avoiding excessive try/except during initial implementation
+    - Emphasize clear error messages and debugging information
+    - Maintain consistent coding patterns throughout implementation
+  </quality_principles>
+</execution_standards>
 
-  <final_subtask_verification>
-    IF final sub-task is "Verify all tests pass":
-      - Run entire test suite
-      - Fix any remaining failures
-      - Ensure no regressions
-      - Mark final sub-task complete
-  </final_subtask_verification>
-</execution_order>
-
-<test_management>
-  <new_tests>
-    - Written in first sub-task
-    - Cover all aspects of parent feature
-    - Include edge cases and error handling
-  </new_tests>
-  <test_updates>
-    - Made during implementation sub-tasks
-    - Update expectations for changed behavior
-    - Maintain backward compatibility
-  </test_updates>
-</test_management>
+<subtask_execution_loop>
+  FOR each subtask in parent_task:
+    <subtask_implementation>
+      READ: Subtask description and requirements
+      PLAN: Implementation approach based on subtask type
+      IMPLEMENT: Following appropriate phase patterns above
+      TEST: Verify subtask completion meets acceptance criteria
+      UPDATE: Mark subtask as [COMPLETED] in tasks.md
+    </subtask_implementation>
+    
+    <quality_validation>
+      RUN: Relevant tests for implemented functionality
+      CHECK: Code quality with ruff and ty (if PocketFlow)
+      VALIDATE: Implementation matches specifications
+      ENSURE: No regressions in existing functionality
+    </quality_validation>
+  END_FOR
+</subtask_execution_loop>
 
 <instructions>
-  ACTION: Execute sub-tasks in their defined order
-  RECOGNIZE: First sub-task typically writes all tests
-  IMPLEMENT: Middle sub-tasks build functionality
-  VERIFY: Final sub-task ensures all tests pass
-  UPDATE: Mark each sub-task complete as finished
+  ACTION: Detect project type and execution context first
+  VALIDATE: Design document if LLM/AI components present
+  EXECUTE: Appropriate phase-based implementation (PocketFlow or standard)
+  FOLLOW: All coding standards and quality requirements
+  IMPLEMENT: Each subtask systematically with proper testing
+  MAINTAIN: Code quality and architectural consistency throughout
+  UPDATE: Progress tracking for each completed subtask
 </instructions>
 
 </step>

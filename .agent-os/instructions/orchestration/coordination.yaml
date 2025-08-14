@@ -19,11 +19,26 @@ coordination_map:
   execute-tasks:
     depends_on: ["create-spec"]
     requires_orchestrator_plan: true
+    delegates_to: ["execute-task"]
+    coordination_method: "task_loop"
     validation_gates:
       - "orchestrated_workflow_exists"
       - "design_document_complete"
       - "pydantic_models_defined"
     blocks_without: ["workflow_implementation"]
+    
+  execute-task:
+    invoked_by: ["execute-tasks", "direct_user_command"]
+    execution_modes: ["orchestrated", "direct"]
+    handles: ["individual_task_implementation"]
+    uses_shared_resources: ["execution_utils"]
+    validation_gates:
+      - "task_context_valid"
+      - "design_document_adherence" 
+    quality_enforcement:
+      - "pocketflow_phases_followed"
+      - "type_safety_maintained"
+      - "tdd_approach_applied"
 
 hooks:
   design_document_validation:
@@ -35,3 +50,8 @@ hooks:
     file: "orchestration/orchestrator-hooks.md"
     section: "validate_workflow_implementation"  
     required_for: ["execute-tasks"]
+    
+  validate_task_execution:
+    file: "orchestration/orchestrator-hooks.md"
+    section: "validate_individual_task_completion"
+    required_for: ["execute-task"]

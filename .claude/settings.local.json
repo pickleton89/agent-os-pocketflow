@@ -37,8 +37,10 @@
       "Bash(./scripts/validation/validate-integration.sh:*)",
       "Bash(cat:*)",
       "Bash(git merge:*)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "WebSearch"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }
