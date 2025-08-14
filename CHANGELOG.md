@@ -5,6 +5,21 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.2] - 2025-08-14
+
+### Improved
+- **README.md Quick Start Section Enhancement** - Significantly improved user onboarding experience based on feedback
+  - **System vs Project Installation Clarity**: Added clear distinction between system-wide installation (to `~/.agent-os/`) and per-project setup
+  - **Comprehensive Project Setup**: Added complete section for setting up Python projects with uv package manager
+    - Required PocketFlow dependencies: `pocketflow`, `fastapi`, `pydantic`, `uvicorn`
+    - Development dependencies: `pytest`, `ruff`, `ty`
+    - Basic project structure creation and git initialization
+  - **Workflow Generation Explanation**: Clarified what workflow generation means and when to use it
+    - Explained it's for prototyping, learning patterns, and creating templates
+    - Made clear that most users will use Agent OS commands (`/plan-product`, `/create-spec`, `/execute-tasks`)
+    - Added practical examples and working demo locations
+  - **Usage Context Enhancement**: Improved usage patterns showing proper project directory navigation and system-wide access
+
 ## [1.9.1] - 2025-08-13
 
 ### Updated
