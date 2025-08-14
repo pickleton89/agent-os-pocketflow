@@ -79,14 +79,16 @@ Agent OS (Workflow Management) + PocketFlow (LLM Orchestration) = Intelligent De
 
 ## Quick Start
 
-### Installation
+### System Installation (One-Time Setup)
+
+**Important**: This installs Agent OS + PocketFlow **system-wide** in your home directory (`~/.agent-os/`), not in your project directory. This allows you to use the framework across multiple projects.
 
 ```bash
 # Clone this integrated repository
 git clone https://github.com/pickleton89/agent-os-pocketflow.git
 cd agent-os-pocketflow
 
-# Run the production-ready setup script (v2.0.0)
+# Run the production-ready setup script (installs to ~/.agent-os/)
 ./setup.sh
 
 # Setup Claude Code integration with PocketFlow Orchestrator
@@ -96,9 +98,35 @@ cd agent-os-pocketflow
 ./scripts/run-all-tests.sh
 ```
 
-### Intelligent Usage Patterns
+### Project Setup (For Each New Project)
 
-The integration **automatically detects** when to use PocketFlow orchestration:
+After system installation, set up your Python project with the required dependencies:
+
+```bash
+# Create and navigate to your new project directory
+mkdir my-pocketflow-app
+cd my-pocketflow-app
+
+# Initialize Python project with uv (recommended package manager)
+uv init
+
+# Add core PocketFlow dependencies
+uv add pocketflow fastapi pydantic uvicorn
+
+# Add development dependencies
+uv add --dev pytest ruff ty
+
+# Create basic project structure
+mkdir -p {docs,schemas,utils,tests}
+touch docs/design.md main.py flow.py nodes.py
+
+# Initialize git repository
+git init
+```
+
+### Using Agent OS in Your Projects
+
+Once installed system-wide, you can use Agent OS in any project directory. The integration **automatically detects** when to use PocketFlow orchestration:
 
 **Automatic PocketFlow Orchestrator Invocation**:
 - When you say: "think", "plan", "design", "architect", "implement"
@@ -106,9 +134,12 @@ The integration **automatically detects** when to use PocketFlow orchestration:
 - When creating specifications or workflows
 - For complex problem-solving requiring multiple steps
 
-**For new Python/PocketFlow projects**:
+**For new Python/PocketFlow projects** (run these in your project directory):
 ```bash
-# These automatically trigger intelligent orchestration
+# Navigate to your project directory first
+cd my-pocketflow-app
+
+# These commands access the system-wide Agent OS installation
 /plan-product    # → Engages PocketFlow Orchestrator for strategic planning
 /create-spec     # → Design-first workflow with mandatory design docs
 /execute-tasks   # → Quality-gated implementation with validation
@@ -116,25 +147,39 @@ The integration **automatically detects** when to use PocketFlow orchestration:
 
 **For existing codebases** (any language):
 ```bash
+# Navigate to your existing project
+cd my-existing-project
+
 # Analyze and intelligently integrate Agent OS
 /analyze-product
 ```
 
-### Workflow Generation
+### Automatic Code Generation (Optional)
 
-Generate complete PocketFlow implementations automatically:
+**What is Workflow Generation?** 
+The system includes a Python-based code generator that can automatically create complete PocketFlow applications from YAML specifications. This means you can describe your LLM workflow in a simple YAML file, and the generator will create all the Python files, tests, and documentation for you.
+
+**When to use it:**
+- Quick prototyping of PocketFlow applications
+- Learning PocketFlow patterns through generated examples
+- Creating starting templates for complex workflows
 
 ```bash
-# Generate from YAML specification
-cd .agent-os/workflows
+# Option 1: Use the built-in example generator
+cd ~/.agent-os/workflows
+./generate-example.sh
+
+# Option 2: Generate from your own YAML specification
 python generator.py your-workflow-spec.yaml
 
-# Test the full generation workflow
-python test-full-generation.py
+# Option 3: See working examples
+ls -la testcontentanalyzer/  # Complete generated PocketFlow app
 
-# Validate generated code quality
-python ../scripts/validate-generation.py
+# Test the generation system
+python test-full-generation.py
 ```
+
+**Note**: Most users will create PocketFlow applications manually using the Agent OS workflow commands (`/plan-product`, `/create-spec`, `/execute-tasks`) rather than using the code generator.
 
 ## Generated Project Structure
 
