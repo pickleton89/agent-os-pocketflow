@@ -7,11 +7,10 @@ and PocketFlow best practices.
 """
 
 import ast
-import os
 import sys
 import subprocess
 from pathlib import Path
-from typing import List, Dict, Any, Tuple
+from typing import List, Tuple
 
 
 class ValidationError(Exception):
@@ -154,19 +153,64 @@ class WorkflowValidator:
                 if not any(base in valid_bases for base in base_names):
                     self.warnings.append(f"Node class {node.name} may not extend a valid PocketFlow node type")
                 
-                # Check for required methods
-                methods = [n.name for n in node.body if isinstance(n, ast.FunctionDef)]
+                # Check for required methods (including async methods)
+                sync_methods = [n.name for n in node.body if isinstance(n, ast.FunctionDef)]
+                async_methods = [n.name for n in node.body if isinstance(n, ast.AsyncFunctionDef)]
+                all_methods = sync_methods + async_methods
+                
                 required_methods = ['prep', 'post']
                 for method in required_methods:
-                    if method not in methods:
+                    if method not in all_methods:
                         self.errors.append(f"Node {node.name} missing required method: {method}")
                 
                 # Check for exec method (either exec or exec_async)
-                if 'exec' not in methods and 'exec_async' not in methods:
-                    self.errors.append(f"Node {node.name} missing exec or exec_async method")
+                exec_methods = [m for m in all_methods if m.startswith('exec')]
+                if not exec_methods:
+                    self.errors.append(f"Node {node.name} missing exec or exec_async method (found methods: {all_methods})")
+                
+                # Check for try/except in exec methods (PocketFlow anti-pattern)
+                self._check_try_except_in_node_methods(node)
         
         if not node_classes:
             self.errors.append("nodes.py contains no node class definitions")
+    
+    def _check_try_except_in_node_methods(self, class_node):
+        """Check for try/except blocks in node methods."""
+        for method in class_node.body:
+            if isinstance(method, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                # Check exec methods specifically
+                if method.name in ['exec', 'exec_async']:
+                    for node in ast.walk(method):
+                        if isinstance(node, ast.Try):
+                            self.errors.append(
+                                f"Found try/except in {class_node.name}.{method.name}(). "
+                                "Use PocketFlow's max_retries and exec_fallback instead."
+                            )
+                
+                # Check utility-style methods that shouldn't have broad try/catch
+                elif method.name not in ['prep', 'post', '__init__']:
+                    for node in ast.walk(method):
+                        if isinstance(node, ast.Try):
+                            if not self._is_legitimate_try_except(node):
+                                self.warnings.append(
+                                    f"Found try/except in {class_node.name}.{method.name}(). "
+                                    "Consider if this should use PocketFlow error handling."
+                                )
+    
+    def _is_legitimate_try_except(self, try_node):
+        """Check if try/except is for legitimate parsing/validation."""
+        # Allow for JSON parsing, file operations, etc.
+        legitimate_exceptions = ['JSONDecodeError', 'FileNotFoundError', 'ValueError', 'KeyError']
+        
+        for handler in try_node.handlers:
+            if handler.type and hasattr(handler.type, 'id'):
+                if handler.type.id in legitimate_exceptions:
+                    return True
+            elif handler.type and hasattr(handler.type, 'attr'):
+                if handler.type.attr in legitimate_exceptions:
+                    return True
+        
+        return False
     
     def _validate_flow_file(self, flow_file: Path):
         """Validate flow.py follows PocketFlow patterns."""

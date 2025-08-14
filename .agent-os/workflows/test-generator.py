@@ -4,7 +4,6 @@ Test script for the workflow generator without external dependencies.
 """
 
 import sys
-import json
 from pathlib import Path
 
 # Add the parent directory to the path
@@ -124,7 +123,7 @@ def test_full_workflow():
     try:
         output_files = generator.generate_workflow(spec)
         
-        print(f"✓ Complete workflow generated")
+        print("✓ Complete workflow generated")
         print(f"  Generated files: {len(output_files)}")
         
         for file_path in sorted(output_files.keys()):

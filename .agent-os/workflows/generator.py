@@ -6,12 +6,9 @@ Generates complete PocketFlow workflow implementations from design documents
 and templates, following the 8-step Agentic Coding methodology.
 """
 
-import json
-import os
-import re
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Any
 from dataclasses import dataclass, field
 
 try:
@@ -229,9 +226,9 @@ graph TD
     def _generate_utility(self, utility: Dict[str, Any]) -> str:
         """Generate utility function from specification."""
         utility_code = [
-            f'"""',
+            '"""',
             f'{utility["description"]}',
-            f'"""',
+            '"""',
             "",
             "from typing import Any, Optional",
             "",
@@ -250,18 +247,18 @@ graph TD
             f'async def {utility["name"]}(',
             f'    {", ".join(params)}',
             f') -> {utility.get("return_type", "Any")}:',
-            f'    """',
+            '    """',
             f'    {utility["description"]}',
-            f'    """',
+            '    """',
             f'    # TODO: Implement {utility["name"]}',
             f'    raise NotImplementedError("Utility function {utility["name"]} not implemented")',
             "",
             "",
             'if __name__ == "__main__":',
             f'    # Test {utility["name"]} function',
-            f'    import asyncio',
+            '    import asyncio',
             f'    # asyncio.run({utility["name"]}())',
-            f'    pass'
+            '    pass'
         ])
         
         return "\n".join(utility_code)
@@ -281,29 +278,34 @@ graph TD
         for node in spec.nodes:
             node_type = node.get("type", "AsyncNode")
             
+            # Use BatchNode for operations that process lists of items
+            batch_comment = ""
+            if node_type == "BatchNode":
+                batch_comment = "\n    # NOTE: BatchNode used for processing multiple items in parallel"
+            
             nodes_code.extend([
                 f'class {node["name"]}({node_type}):',
-                f'    """',
+                '    """',
                 f'    {node["description"]}',
-                f'    """',
+                f'    """{batch_comment}',
                 "",
-                f'    def prep(self, shared: Dict[str, Any]) -> Any:',
-                f'        """Data preparation and validation."""',
+                '    def prep(self, shared: Dict[str, Any]) -> Any:',
+                '        """Data preparation and validation."""',
                 f'        logger.info(f"Preparing data for {node["name"]}")',
                 f'        # TODO: Implement prep logic for {node["name"]}',
-                f'        return shared.get("input_data")',
+                '        return shared.get("input_data")',
                 "",
-                f'    async def exec_async(self, prep_result: Any) -> str:',
-                f'        """Core processing logic."""',
+                '    async def exec_async(self, prep_result: Any) -> str:',
+                '        """Core processing logic."""',
                 f'        logger.info(f"Executing {node["name"]}")',
                 f'        # TODO: Implement exec logic for {node["name"]}',
-                f'        return "success"',
+                '        return "success"',
                 "",
-                f'    def post(self, shared: Dict[str, Any], prep_result: Any, exec_result: Any) -> None:',
-                f'        """Post-processing and result storage."""',
+                '    def post(self, shared: Dict[str, Any], prep_result: Any, exec_result: Any) -> None:',
+                '        """Post-processing and result storage."""',
                 f'        logger.info(f"Post-processing for {node["name"]}")',
                 f'        # TODO: Implement post logic for {node["name"]}',
-                f'        shared["output_data"] = exec_result',
+                '        shared["output_data"] = exec_result',
                 "",
                 ""
             ])
@@ -325,12 +327,12 @@ graph TD
         # Create flow class
         flow_code.extend([
             f'class {spec.name}Flow(Flow):',
-            f'    """',
+            '    """',
             f'    {spec.description}',
-            f'    """',
+            '    """',
             "",
-            f'    def __init__(self):',
-            f'        nodes = {{',
+            '    def __init__(self):',
+            '        nodes = {',
         ])
         
         for node in spec.nodes:
@@ -371,11 +373,11 @@ graph TD
             "",
             "logging.basicConfig(level=logging.INFO)",
             "",
-            f'app = FastAPI(',
+            'app = FastAPI(',
             f'    title="{spec.name} API",',
             f'    description="{spec.description}",',
-            f'    version="1.0.0"',
-            f')',
+            '    version="1.0.0"',
+            ')',
             "",
             "app.add_middleware(",
             "    CORSMiddleware,",
@@ -415,32 +417,28 @@ graph TD
             router_code.extend([
                 f'@router.{method}("{path}", response_model={endpoint["name"]}Response)',
                 f'async def {endpoint["name"].lower()}_endpoint(request: {endpoint["name"]}Request):',
-                f'    """',
+                '    """',
                 f'    {endpoint.get("description", f"Execute {endpoint["name"]} workflow")}',
-                f'    """',
-                f'    try:',
-                f'        # Initialize SharedStore',
-                f'        shared = {{',
-                f'            "request_data": request.dict(),',
-                f'            "timestamp": datetime.utcnow().isoformat()',
-                f'        }}',
-                f'        ',
-                f'        # Execute workflow',
+                '    """',
+                '        # Initialize SharedStore',
+                '        shared = {',
+                '            "request_data": request.dict(),',
+                '            "timestamp": datetime.utcnow().isoformat()',
+                '        }',
+                '        ',
+                '        # Execute workflow - let PocketFlow handle retries and errors',
                 f'        flow = {spec.name}Flow()',
-                f'        await flow.run_async(shared)',
-                f'        ',
-                f'        # Check for errors',
-                f'        if "error" in shared:',
-                f'            raise HTTPException(',
-                f'                status_code=422,',
-                f'                detail=shared.get("error_message", "Workflow execution failed")',
-                f'            )',
-                f'        ',
-                f'        # Return response',
+                '        await flow.run_async(shared)',
+                '        ',
+                '        # Check for flow-level errors',
+                '        if "error" in shared:',
+                '            raise HTTPException(',
+                '                status_code=422,',
+                '                detail=shared.get("error_message", "Workflow execution failed")',
+                '            )',
+                '        ',
+                '        # Return response',
                 f'        return {endpoint["name"]}Response(**shared.get("result", {{}}))',
-                f'    except Exception as e:',
-                f'        logger.error(f"Error in {endpoint["name"]}: {{e}}")',
-                f'        raise HTTPException(status_code=500, detail=str(e))',
                 "",
                 ""
             ])
@@ -462,29 +460,29 @@ graph TD
                 f'class Test{node["name"]}:',
                 f'    """Tests for {node["name"]} node."""',
                 "",
-                f'    @pytest.fixture',
-                f'    def node(self):',
+                '    @pytest.fixture',
+                '    def node(self):',
                 f'        return {node["name"]}()',
                 "",
-                f'    @pytest.fixture',
-                f'    def shared_store(self):',
-                f'        return {{"input_data": "test_data"}}',
+                '    @pytest.fixture',
+                '    def shared_store(self):',
+                '        return {"input_data": "test_data"}',
                 "",
-                f'    def test_prep(self, node, shared_store):',
-                f'        """Test prep method."""',
-                f'        result = node.prep(shared_store)',
-                f'        assert result == "test_data"',
+                '    def test_prep(self, node, shared_store):',
+                '        """Test prep method."""',
+                '        result = node.prep(shared_store)',
+                '        assert result == "test_data"',
                 "",
-                f'    @pytest.mark.asyncio',
-                f'    async def test_exec_async(self, node):',
-                f'        """Test exec_async method."""',
-                f'        result = await node.exec_async("test_data")',
-                f'        assert result == "success"',
+                '    @pytest.mark.asyncio',
+                '    async def test_exec_async(self, node):',
+                '        """Test exec_async method."""',
+                '        result = await node.exec_async("test_data")',
+                '        assert result == "success"',
                 "",
-                f'    def test_post(self, node, shared_store):',
-                f'        """Test post method."""',
-                f'        node.post(shared_store, "prep_result", "exec_result")',
-                f'        assert "output_data" in shared_store',
+                '    def test_post(self, node, shared_store):',
+                '        """Test post method."""',
+                '        node.post(shared_store, "prep_result", "exec_result")',
+                '        assert "output_data" in shared_store',
                 "",
                 ""
             ])
@@ -502,27 +500,27 @@ graph TD
             f'class Test{spec.name}Flow:',
             f'    """Tests for {spec.name}Flow."""',
             "",
-            f'    @pytest.fixture',
-            f'    def flow(self):',
+            '    @pytest.fixture',
+            '    def flow(self):',
             f'        return {spec.name}Flow()',
             "",
-            f'    @pytest.fixture',
-            f'    def shared_store(self):',
-            f'        return {{"input_data": "test_data"}}',
+            '    @pytest.fixture',
+            '    def shared_store(self):',
+            '        return {"input_data": "test_data"}',
             "",
-            f'    @pytest.mark.asyncio',
-            f'    async def test_flow_execution(self, flow, shared_store):',
-            f'        """Test complete flow execution."""',
-            f'        await flow.run_async(shared_store)',
-            f'        assert "output_data" in shared_store',
+            '    @pytest.mark.asyncio',
+            '    async def test_flow_execution(self, flow, shared_store):',
+            '        """Test complete flow execution."""',
+            '        await flow.run_async(shared_store)',
+            '        assert "output_data" in shared_store',
             "",
-            f'    @pytest.mark.asyncio',
-            f'    async def test_flow_error_handling(self, flow, shared_store):',
-            f'        """Test flow error handling."""',
-            f'        # Test with invalid input',
-            f'        shared_store["input_data"] = None',
-            f'        with pytest.raises(Exception):',
-            f'            await flow.run_async(shared_store)',
+            '    @pytest.mark.asyncio',
+            '    async def test_flow_error_handling(self, flow, shared_store):',
+            '        """Test flow error handling."""',
+            '        # Test with invalid input',
+            '        shared_store["input_data"] = None',
+            '        with pytest.raises(Exception):',
+            '            await flow.run_async(shared_store)',
             "",
         ]
         
@@ -551,14 +549,14 @@ graph TD
                 "",
                 f'    def test_{endpoint["name"].lower()}_success(self):',
                 f'        """Test successful {endpoint["name"]} request."""',
-                f'        request_data = {{"test": "data"}}',
+                '        request_data = {"test": "data"}',
                 f'        response = client.{method.lower()}("/api/v1{path}", json=request_data)',
-                f'        assert response.status_code == 200',
+                '        assert response.status_code == 200',
                 "",
                 f'    def test_{endpoint["name"].lower()}_validation_error(self):',
-                f'        """Test validation error handling."""',
+                '        """Test validation error handling."""',
                 f'        response = client.{method.lower()}("/api/v1{path}", json={{}})',
-                f'        assert response.status_code == 422',
+                '        assert response.status_code == 422',
                 "",
                 ""
             ])
@@ -630,7 +628,7 @@ Following PocketFlow's 8-step Agentic Coding methodology:
 - [ ] 3.1 FastAPI integration not required for this workflow
 - [ ] 3.2 Skip FastAPI-specific tasks"""
 
-        tasks += f"""
+        tasks += """
 
 ### Phase 4: PocketFlow Nodes (LLM/AI Components)
 - [ ] 4.1 Write tests for individual node lifecycle methods

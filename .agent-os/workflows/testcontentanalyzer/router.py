@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from .schemas.models import *
+from .schemas.models import AnalyzeContentRequest, AnalyzeContentResponse
 from .flow import TestContentAnalyzerFlow
-from typing import Dict, Any
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
@@ -12,27 +12,28 @@ async def analyzecontent_endpoint(request: AnalyzeContentRequest):
     """
     Analyze content using RAG pattern
     """
-    try:
-        # Initialize SharedStore
-        shared = {
-            "request_data": request.dict(),
-            "timestamp": datetime.utcnow().isoformat()
-        }
-        
-        # Execute workflow
-        flow = TestContentAnalyzerFlow()
-        await flow.run_async(shared)
-        
-        # Check for errors
-        if "error" in shared:
-            raise HTTPException(
-                status_code=422,
-                detail=shared.get("error_message", "Workflow execution failed")
-            )
-        
-        # Return response
-        return AnalyzeContentResponse(**shared.get("result", {}))
-    except Exception as e:
-        logger.error(f"Error in AnalyzeContent: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    # Initialize SharedStore
+    shared = {
+        "request_data": request.dict(),
+        "timestamp": datetime.utcnow().isoformat()
+    }
+    
+    # Execute workflow - let PocketFlow handle retries and errors
+    flow = TestContentAnalyzerFlow()
+    await flow.run_async(shared)
+    
+    # Check for flow-level errors
+    if "error" in shared:
+        raise HTTPException(
+            status_code=422,
+            detail=shared.get("error_message", "Workflow execution failed")
+        )
+    
+    # Return response with properly structured data
+    result = shared.get("result", {})
+    return AnalyzeContentResponse(
+        analysis=result.get("analysis", shared.get("analysis_result", {})),
+        confidence=result.get("confidence", 0.0),
+        sources=result.get("sources", [])
+    )
 

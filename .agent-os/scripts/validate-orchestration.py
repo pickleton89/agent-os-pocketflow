@@ -6,11 +6,10 @@ This script validates that the PocketFlow orchestrator integration is working
 correctly with the Agent OS instruction files and coordination system.
 """
 
-import os
 import sys
 import yaml
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 class OrchestrationValidator:
     """Validates orchestration integration components."""

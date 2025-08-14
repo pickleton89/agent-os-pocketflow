@@ -79,6 +79,32 @@ SharedStore = {
 }
 ```
 
+## Node Design
+
+### DocumentRetrieverNode
+- **Type:** AsyncNode
+- **Purpose:** Retrieve relevant documents from vector store
+- **Input:** `input_query` from SharedStore
+- **Output:** `retrieved_docs` list
+
+### ContextBuilderNode
+- **Type:** Node
+- **Purpose:** Build context from retrieved documents
+- **Input:** `retrieved_docs` from SharedStore
+- **Output:** `context` string
+
+### LLMAnalyzerNode
+- **Type:** AsyncNode
+- **Purpose:** Analyze content using LLM with context
+- **Input:** `context` and `input_query` from SharedStore
+- **Output:** `analysis_result` dictionary
+
+### ResponseFormatterNode
+- **Type:** Node
+- **Purpose:** Format analysis results for response
+- **Input:** `analysis_result` from SharedStore
+- **Output:** Final formatted response
+
 ## Implementation Notes
 
 - Pattern: RAG

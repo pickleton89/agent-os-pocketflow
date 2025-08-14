@@ -2,7 +2,7 @@
 Retrieve documents from vector database
 """
 
-from typing import Any, Optional
+from typing import List, Dict, Any, Optional
 
 
 async def retrieve_documents(
@@ -17,6 +17,5 @@ async def retrieve_documents(
 
 if __name__ == "__main__":
     # Test retrieve_documents function
-    import asyncio
     # asyncio.run(retrieve_documents())
     pass
