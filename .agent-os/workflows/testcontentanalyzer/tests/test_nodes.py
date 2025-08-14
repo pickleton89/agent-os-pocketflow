@@ -1,5 +1,10 @@
 import pytest
-from ..nodes import DocumentRetrieverNode, ContextBuilderNode, LLMAnalyzerNode, ResponseFormatterNode
+from ..nodes import (
+    DocumentRetrieverNode,
+    ContextBuilderNode,
+    LLMAnalyzerNode,
+    ResponseFormatterNode,
+)
 
 
 class TestDocumentRetrieverNode:
@@ -112,4 +117,3 @@ class TestResponseFormatterNode:
         """Test post method."""
         node.post(shared_store, "prep_result", "exec_result")
         assert "output_data" in shared_store
-

@@ -40,7 +40,7 @@ class ContextBuilderNode(Node):
         # TODO: Implement prep logic for ContextBuilderNode
         return shared.get("input_data")
 
-    async def exec_async(self, prep_result: Any) -> str:
+    def exec(self, prep_result: Any) -> str:
         """Core processing logic."""
         logger.info("Executing ContextBuilderNode")
         # TODO: Implement exec logic for ContextBuilderNode
@@ -88,7 +88,7 @@ class ResponseFormatterNode(Node):
         # TODO: Implement prep logic for ResponseFormatterNode
         return shared.get("input_data")
 
-    async def exec_async(self, prep_result: Any) -> str:
+    def exec(self, prep_result: Any) -> str:
         """Core processing logic."""
         logger.info("Executing ResponseFormatterNode")
         # TODO: Implement exec logic for ResponseFormatterNode
@@ -99,4 +99,3 @@ class ResponseFormatterNode(Node):
         logger.info("Post-processing for ResponseFormatterNode")
         # TODO: Implement post logic for ResponseFormatterNode
         shared["output_data"] = exec_result
-

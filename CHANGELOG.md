@@ -5,6 +5,34 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.5] - 2025-08-14
+
+### Fixed
+- **PocketFlow Async Pattern Violations** - Resolved critical framework implementation issues that violated PocketFlow's design principles
+  - **Node Generation Fix**: Changed default from `AsyncNode` to `Node` (sync) and implemented proper type detection for generating correct method signatures (`exec` vs `exec_async`)
+  - **Utility Function Logic**: Fixed utilities to default to sync unless they explicitly need async (I/O operations like LLM, API, database, file, network calls)
+  - **Type Detection**: Added smart async detection based on utility descriptions and explicit flags rather than forcing all utilities to be async
+  - **Existing Code Alignment**: Updated generated `testcontentanalyzer` workflow to use correct sync patterns for `ContextBuilderNode` and `ResponseFormatterNode`
+  - **Framework Consistency**: Restored proper PocketFlow framework behavior where sync and async operations are intentionally separated based on actual I/O needs
+
+### Improved
+- **Code Generation Logic**: Generator now properly respects PocketFlow's design pattern of distinct `Node` vs `AsyncNode` types
+- **Performance**: Eliminated unnecessary async overhead for synchronous operations like data transformation and validation
+- **Type Safety**: Proper method signatures generated based on node type specification
+- **Framework Compliance**: Implementation now aligns with PocketFlow documentation guidelines for sync vs async usage
+
+### Technical Details
+- **Files Modified**: `.agent-os/workflows/generator.py`, `.agent-os/workflows/testcontentanalyzer/nodes.py`
+- **Pattern Compliance**: Restored proper separation between sync (`Node.exec()`) and async (`AsyncNode.exec_async()`) operations
+- **Quality Gates**: All linting (`ruff check`) and formatting (`ruff format`) passes successfully
+- **Documentation Alignment**: Implementation now matches PocketFlow's documented best practices for I/O-bound vs CPU-bound operation handling
+
+### Impact
+- **Framework Integrity**: PocketFlow framework implementation now follows its own design principles
+- **Developer Experience**: Proper sync/async patterns eliminate confusion and unnecessary complexity
+- **Performance**: Reduced async overhead for operations that don't require it
+- **Future Development**: Establishes correct foundation for additional PocketFlow pattern implementations
+
 ## [1.10.4] - 2025-08-14
 
 ### Fixed

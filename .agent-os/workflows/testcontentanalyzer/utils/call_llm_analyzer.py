@@ -3,10 +3,7 @@ Call LLM for content analysis
 """
 
 
-
-async def call_llm_analyzer(
-    context: str, query: str
-) -> str:
+async def call_llm_analyzer(context: str, query: str) -> str:
     """
     Call LLM for content analysis
     """

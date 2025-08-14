@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 
 try:
     import yaml
+
     YAML_AVAILABLE = True
 except ImportError:
     YAML_AVAILABLE = False
@@ -21,6 +22,7 @@ except ImportError:
 @dataclass
 class WorkflowSpec:
     """Specification for generating a PocketFlow workflow."""
+
     name: str
     pattern: str  # AGENT/WORKFLOW/RAG/MAPREDUCE/MULTI-AGENT/STRUCTURED-OUTPUT
     description: str
@@ -33,65 +35,73 @@ class WorkflowSpec:
 
 class PocketFlowGenerator:
     """Generate complete PocketFlow workflows from specifications."""
-    
-    def __init__(self, templates_path: str = "templates", output_path: str = ".agent-os/workflows"):
+
+    def __init__(
+        self,
+        templates_path: str = "templates",
+        output_path: str = ".agent-os/workflows",
+    ):
         self.templates_path = Path(templates_path)
         self.output_path = Path(output_path)
         self.output_path.mkdir(exist_ok=True)
-        
+
         # Validate templates directory exists
         if not self.templates_path.exists():
-            raise FileNotFoundError(f"Templates directory not found: {self.templates_path}")
+            raise FileNotFoundError(
+                f"Templates directory not found: {self.templates_path}"
+            )
         if not self.templates_path.is_dir():
-            raise NotADirectoryError(f"Templates path is not a directory: {self.templates_path}")
-        
+            raise NotADirectoryError(
+                f"Templates path is not a directory: {self.templates_path}"
+            )
+
         # Load templates
         self.templates = self._load_templates()
-    
+
     def _load_templates(self) -> Dict[str, str]:
         """Load all template files."""
         templates = {}
         for template_file in self.templates_path.glob("*.md"):
             templates[template_file.stem] = template_file.read_text()
         return templates
-    
+
     def generate_workflow(self, spec: WorkflowSpec) -> Dict[str, str]:
         """Generate complete workflow implementation from spec."""
         output_files = {}
-        
+
         # Generate design document
         output_files["docs/design.md"] = self._generate_design_doc(spec)
-        
+
         # Generate data models
         output_files["schemas/models.py"] = self._generate_pydantic_models(spec)
-        
+
         # Generate utility functions
         for utility in spec.utilities:
             file_path = f"utils/{utility['name']}.py"
             output_files[file_path] = self._generate_utility(utility)
-        
+
         # Generate nodes
         output_files["nodes.py"] = self._generate_nodes(spec)
-        
+
         # Generate flow
         output_files["flow.py"] = self._generate_flow(spec)
-        
+
         # Generate FastAPI integration if needed
         if spec.fast_api_integration:
             output_files["main.py"] = self._generate_fastapi_main(spec)
             output_files["router.py"] = self._generate_fastapi_router(spec)
-        
+
         # Generate tests
         output_files["tests/test_nodes.py"] = self._generate_node_tests(spec)
         output_files["tests/test_flow.py"] = self._generate_flow_tests(spec)
         if spec.fast_api_integration:
             output_files["tests/test_api.py"] = self._generate_api_tests(spec)
-        
+
         # Generate tasks file
         output_files["tasks.md"] = self._generate_tasks(spec)
-        
+
         return output_files
-    
+
     def _generate_design_doc(self, spec: WorkflowSpec) -> str:
         """Generate design document from template."""
         # Create a comprehensive design document
@@ -117,7 +127,7 @@ class PocketFlowGenerator:
 
 ### Design Pattern Classification
 **Primary Pattern:** {spec.pattern}
-**Secondary Patterns:** FastAPI Integration{'(enabled)' if spec.fast_api_integration else '(disabled)'}
+**Secondary Patterns:** FastAPI Integration{"(enabled)" if spec.fast_api_integration else "(disabled)"}
 
 ### Input/Output Specification
 - **Input Format:** Request data from API or direct invocation
@@ -135,10 +145,10 @@ graph TD
         # Add nodes to mermaid diagram
         if spec.nodes:
             for i, node in enumerate(spec.nodes):
-                current = chr(ord('C') + i)
-                next_node = chr(ord('C') + i + 1) if i < len(spec.nodes) - 1 else 'Z'
+                current = chr(ord("C") + i)
+                next_node = chr(ord("C") + i + 1) if i < len(spec.nodes) - 1 else "Z"
                 design_doc += f"\n    {current}[{node['name']}] --> {next_node}[{'Next Node' if i < len(spec.nodes) - 1 else 'End'}]"
-        
+
         design_doc += "\n```\n"
 
         # Add node sequence
@@ -148,13 +158,15 @@ graph TD
 
         # Add utilities section
         design_doc += "\n## Utilities\n\n"
-        design_doc += "Following PocketFlow's \"implement your own\" philosophy, specify all utility functions needed.\n\n"
+        design_doc += 'Following PocketFlow\'s "implement your own" philosophy, specify all utility functions needed.\n\n'
         design_doc += "### Required Utility Functions\n\n"
-        
+
         for utility in spec.utilities:
             design_doc += f"#### {utility['name']}\n"
             design_doc += f"- **Purpose:** {utility['description']}\n"
-            params_str = ', '.join([f"{p['name']}: {p['type']}" for p in utility.get('parameters', [])])
+            params_str = ", ".join(
+                [f"{p['name']}: {p['type']}" for p in utility.get("parameters", [])]
+            )
             design_doc += f"- **Input:** {params_str}\n"
             design_doc += f"- **Output:** {utility.get('return_type', 'Any')}\n\n"
 
@@ -165,7 +177,7 @@ graph TD
         design_doc += "```python\n"
         design_doc += "SharedStore = {\n"
         for key, value_type in spec.shared_store_schema.items():
-            design_doc += f"    \"{key}\": {value_type},\n"
+            design_doc += f'    "{key}": {value_type},\n'
         design_doc += "}\n```\n"
 
         # Add implementation notes
@@ -175,9 +187,9 @@ graph TD
         design_doc += f"- Utilities: {len(spec.utilities)}\n"
         design_doc += f"- FastAPI Integration: {'Enabled' if spec.fast_api_integration else 'Disabled'}\n"
         design_doc += "\nThis design document was generated automatically. Please review and complete with specific implementation details."
-        
+
         return design_doc
-    
+
     def _generate_pydantic_models(self, spec: WorkflowSpec) -> str:
         """Generate Pydantic models from shared store schema."""
         models = [
@@ -185,90 +197,126 @@ graph TD
             "from typing import Dict, List, Optional, Any",
             "from datetime import datetime",
             "",
-            ""
+            "",
         ]
-        
+
         # Generate SharedStore model
-        models.extend([
-            "class SharedStoreModel(BaseModel):",
-            '    """Pydantic model for SharedStore validation."""',
-            ""
-        ])
-        
+        models.extend(
+            [
+                "class SharedStoreModel(BaseModel):",
+                '    """Pydantic model for SharedStore validation."""',
+                "",
+            ]
+        )
+
         for key, value_type in spec.shared_store_schema.items():
             models.append(f"    {key}: {value_type}")
-        
+
         models.extend(["", ""])
-        
+
         # Generate API models if FastAPI integration
         if spec.fast_api_integration:
             for endpoint in spec.api_endpoints:
                 # Request model
-                models.extend([
-                    f"class {endpoint['name']}Request(BaseModel):",
-                    f'    """Request model for {endpoint["name"]} endpoint."""',
-                    ""
-                ])
-                
+                models.extend(
+                    [
+                        f"class {endpoint['name']}Request(BaseModel):",
+                        f'    """Request model for {endpoint["name"]} endpoint."""',
+                        "",
+                    ]
+                )
+
                 for field in endpoint.get("request_fields", []):
                     models.append(f"    {field['name']}: {field['type']}")
-                
+
                 models.extend(["", ""])
-                
+
                 # Response model
-                models.extend([
-                    f"class {endpoint['name']}Response(BaseModel):",
-                    f'    """Response model for {endpoint["name"]} endpoint."""',
-                    ""
-                ])
-                
+                models.extend(
+                    [
+                        f"class {endpoint['name']}Response(BaseModel):",
+                        f'    """Response model for {endpoint["name"]} endpoint."""',
+                        "",
+                    ]
+                )
+
                 for field in endpoint.get("response_fields", []):
                     models.append(f"    {field['name']}: {field['type']}")
-                
+
                 models.extend(["", ""])
-        
+
         return "\n".join(models)
-    
+
     def _generate_utility(self, utility: Dict[str, Any]) -> str:
         """Generate utility function from specification."""
         utility_code = [
             '"""',
-            f'{utility["description"]}',
+            f"{utility['description']}",
             '"""',
             "",
             "from typing import Any, Optional",
             "",
-            ""
+            "",
         ]
-        
+
         # Function signature
         params = []
         for param in utility.get("parameters", []):
             if param.get("optional", False):
-                params.append(f'{param["name"]}: Optional[{param["type"]}] = None')
+                params.append(f"{param['name']}: Optional[{param['type']}] = None")
             else:
-                params.append(f'{param["name"]}: {param["type"]}')
-        
-        utility_code.extend([
-            f'async def {utility["name"]}(',
-            f'    {", ".join(params)}',
-            f') -> {utility.get("return_type", "Any")}:',
-            '    """',
-            f'    {utility["description"]}',
-            '    """',
-            f'    # TODO: Implement {utility["name"]}',
-            f'    raise NotImplementedError("Utility function {utility["name"]} not implemented")',
-            "",
-            "",
-            'if __name__ == "__main__":',
-            f'    # Test {utility["name"]} function',
-            '    import asyncio',
-            f'    # asyncio.run({utility["name"]}())',
-            '    pass'
-        ])
-        
+                params.append(f"{param['name']}: {param['type']}")
+
+        # Determine if utility should be async based on description or explicit flag
+        is_async_utility = utility.get("async", False) or any(
+            keyword in utility["description"].lower()
+            for keyword in [
+                "llm",
+                "api",
+                "database",
+                "file",
+                "network",
+                "http",
+                "fetch",
+                "request",
+            ]
+        )
+
+        func_def = (
+            f"async def {utility['name']}("
+            if is_async_utility
+            else f"def {utility['name']}("
+        )
+        test_call = (
+            f"    # asyncio.run({utility['name']}())"
+            if is_async_utility
+            else f"    # {utility['name']}()"
+        )
+
+        utility_code.extend(
+            [
+                func_def,
+                f"    {', '.join(params)}",
+                f") -> {utility.get('return_type', 'Any')}:",
+                '    """',
+                f"    {utility['description']}",
+                '    """',
+                f"    # TODO: Implement {utility['name']}",
+                f'    raise NotImplementedError("Utility function {utility["name"]} not implemented")',
+                "",
+                "",
+                'if __name__ == "__main__":',
+                f"    # Test {utility['name']} function",
+            ]
+        )
+
+        if is_async_utility:
+            utility_code.extend(["    import asyncio", test_call, "    pass"])
+        else:
+            utility_code.extend([test_call, "    pass"])
+
         return "\n".join(utility_code)
-    
+
     def _generate_nodes(self, spec: WorkflowSpec) -> str:
         """Generate PocketFlow nodes from specification."""
         nodes_code = [
@@ -278,46 +326,58 @@ graph TD
             "",
             "logger = logging.getLogger(__name__)",
             "",
-            ""
+            "",
         ]
-        
+
         for node in spec.nodes:
-            node_type = node.get("type", "AsyncNode")
-            
+            # Default to Node (sync) unless explicitly specified as async
+            node_type = node.get("type", "Node")
+
             # Use BatchNode for operations that process lists of items
             batch_comment = ""
             if node_type == "BatchNode":
                 batch_comment = "\n    # NOTE: BatchNode used for processing multiple items in parallel"
-            
-            nodes_code.extend([
-                f'class {node["name"]}({node_type}):',
-                '    """',
-                f'    {node["description"]}',
-                f'    """{batch_comment}',
-                "",
-                '    def prep(self, shared: Dict[str, Any]) -> Any:',
-                '        """Data preparation and validation."""',
-                f'        logger.info(f"Preparing data for {node["name"]}")',
-                f'        # TODO: Implement prep logic for {node["name"]}',
-                '        return shared.get("input_data")',
-                "",
-                '    async def exec_async(self, prep_result: Any) -> str:',
-                '        """Core processing logic."""',
-                f'        logger.info(f"Executing {node["name"]}")',
-                f'        # TODO: Implement exec logic for {node["name"]}',
-                '        return "success"',
-                "",
-                '    def post(self, shared: Dict[str, Any], prep_result: Any, exec_result: Any) -> None:',
-                '        """Post-processing and result storage."""',
-                f'        logger.info(f"Post-processing for {node["name"]}")',
-                f'        # TODO: Implement post logic for {node["name"]}',
-                '        shared["output_data"] = exec_result',
-                "",
-                ""
-            ])
-        
+
+            # Determine method signature based on node type
+            is_async_node = node_type in [
+                "AsyncNode",
+                "AsyncBatchNode",
+                "AsyncParallelBatchNode",
+            ]
+            exec_method = "async def exec_async" if is_async_node else "def exec"
+            exec_signature = f"    {exec_method}(self, prep_result: Any) -> str:"
+
+            nodes_code.extend(
+                [
+                    f"class {node['name']}({node_type}):",
+                    '    """',
+                    f"    {node['description']}",
+                    f'    """{batch_comment}',
+                    "",
+                    "    def prep(self, shared: Dict[str, Any]) -> Any:",
+                    '        """Data preparation and validation."""',
+                    f'        logger.info(f"Preparing data for {node["name"]}")',
+                    f"        # TODO: Implement prep logic for {node['name']}",
+                    '        return shared.get("input_data")',
+                    "",
+                    exec_signature,
+                    '        """Core processing logic."""',
+                    f'        logger.info(f"Executing {node["name"]}")',
+                    f"        # TODO: Implement exec logic for {node['name']}",
+                    '        return "success"',
+                    "",
+                    "    def post(self, shared: Dict[str, Any], prep_result: Any, exec_result: Any) -> None:",
+                    '        """Post-processing and result storage."""',
+                    f'        logger.info(f"Post-processing for {node["name"]}")',
+                    f"        # TODO: Implement post logic for {node['name']}",
+                    '        shared["output_data"] = exec_result',
+                    "",
+                    "",
+                ]
+            )
+
         return "\n".join(nodes_code)
-    
+
     def _generate_flow(self, spec: WorkflowSpec) -> str:
         """Generate PocketFlow flow assembly."""
         flow_code = [
@@ -327,48 +387,58 @@ graph TD
             "",
             "logger = logging.getLogger(__name__)",
             "",
-            ""
-        ]
-        
-        # Create flow class
-        flow_code.extend([
-            f'class {spec.name}Flow(Flow):',
-            '    """',
-            f'    {spec.description}',
-            '    """',
             "",
-            '    def __init__(self):',
-            '        nodes = {',
-        ])
-        
+        ]
+
+        # Create flow class
+        flow_code.extend(
+            [
+                f"class {spec.name}Flow(Flow):",
+                '    """',
+                f"    {spec.description}",
+                '    """',
+                "",
+                "    def __init__(self):",
+                "        nodes = {",
+            ]
+        )
+
         for node in spec.nodes:
             flow_code.append(f'            "{node["name"].lower()}": {node["name"]}(),')
-        
-        flow_code.extend([
-            "        }",
-            "",
-            "        edges = {",
-        ])
-        
+
+        flow_code.extend(
+            [
+                "        }",
+                "",
+                "        edges = {",
+            ]
+        )
+
         # Generate edges based on node sequence
         for i, node in enumerate(spec.nodes):
             node_name = node["name"].lower()
             if i < len(spec.nodes) - 1:
                 next_node = spec.nodes[i + 1]["name"].lower()
-                flow_code.append(f'            "{node_name}": {{"success": "{next_node}", "error": "error_handler"}},')
+                flow_code.append(
+                    f'            "{node_name}": {{"success": "{next_node}", "error": "error_handler"}},'
+                )
             else:
-                flow_code.append(f'            "{node_name}": {{"success": None, "error": "error_handler"}},')
-        
-        flow_code.extend([
-            "        }",
-            "",
-            "        super().__init__(nodes=nodes, edges=edges)",
-            "",
-            ""
-        ])
-        
+                flow_code.append(
+                    f'            "{node_name}": {{"success": None, "error": "error_handler"}},'
+                )
+
+        flow_code.extend(
+            [
+                "        }",
+                "",
+                "        super().__init__(nodes=nodes, edges=edges)",
+                "",
+                "",
+            ]
+        )
+
         return "\n".join(flow_code)
-    
+
     def _generate_fastapi_main(self, spec: WorkflowSpec) -> str:
         """Generate FastAPI main application."""
         main_code = [
@@ -379,11 +449,11 @@ graph TD
             "",
             "logging.basicConfig(level=logging.INFO)",
             "",
-            'app = FastAPI(',
+            "app = FastAPI(",
             f'    title="{spec.name} API",',
             f'    description="{spec.description}",',
             '    version="1.0.0"',
-            ')',
+            ")",
             "",
             "app.add_middleware(",
             "    CORSMiddleware,",
@@ -399,9 +469,9 @@ graph TD
             "async def health_check():",
             '    return {"status": "healthy"}',
         ]
-        
+
         return "\n".join(main_code)
-    
+
     def _generate_fastapi_router(self, spec: WorkflowSpec) -> str:
         """Generate FastAPI router with endpoints."""
         router_code = [
@@ -415,44 +485,46 @@ graph TD
             "router = APIRouter()",
             "",
         ]
-        
+
         for endpoint in spec.api_endpoints:
             method = endpoint.get("method", "post").lower()
             path = endpoint.get("path", f"/{endpoint['name'].lower()}")
             endpoint_name = endpoint["name"]
             default_desc = f"Execute {endpoint_name} workflow"
-            
-            router_code.extend([
-                f'@router.{method}("{path}", response_model={endpoint_name}Response)',
-                f'async def {endpoint_name.lower()}_endpoint(request: {endpoint_name}Request):',
-                '    """',
-                f'    {endpoint.get("description", default_desc)}',
-                '    """',
-                '        # Initialize SharedStore',
-                '        shared = {',
-                '            "request_data": request.dict(),',
-                '            "timestamp": datetime.utcnow().isoformat()',
-                '        }',
-                '        ',
-                '        # Execute workflow - let PocketFlow handle retries and errors',
-                f'        flow = {spec.name}Flow()',
-                '        await flow.run_async(shared)',
-                '        ',
-                '        # Check for flow-level errors',
-                '        if "error" in shared:',
-                '            raise HTTPException(',
-                '                status_code=422,',
-                '                detail=shared.get("error_message", "Workflow execution failed")',
-                '            )',
-                '        ',
-                '        # Return response',
-                f'        return {endpoint["name"]}Response(**shared.get("result", {{}}))',
-                "",
-                ""
-            ])
-        
+
+            router_code.extend(
+                [
+                    f'@router.{method}("{path}", response_model={endpoint_name}Response)',
+                    f"async def {endpoint_name.lower()}_endpoint(request: {endpoint_name}Request):",
+                    '    """',
+                    f"    {endpoint.get('description', default_desc)}",
+                    '    """',
+                    "        # Initialize SharedStore",
+                    "        shared = {",
+                    '            "request_data": request.dict(),',
+                    '            "timestamp": datetime.utcnow().isoformat()',
+                    "        }",
+                    "        ",
+                    "        # Execute workflow - let PocketFlow handle retries and errors",
+                    f"        flow = {spec.name}Flow()",
+                    "        await flow.run_async(shared)",
+                    "        ",
+                    "        # Check for flow-level errors",
+                    '        if "error" in shared:',
+                    "            raise HTTPException(",
+                    "                status_code=422,",
+                    '                detail=shared.get("error_message", "Workflow execution failed")',
+                    "            )",
+                    "        ",
+                    "        # Return response",
+                    f'        return {endpoint["name"]}Response(**shared.get("result", {{}}))',
+                    "",
+                    "",
+                ]
+            )
+
         return "\n".join(router_code)
-    
+
     def _generate_node_tests(self, spec: WorkflowSpec) -> str:
         """Generate tests for nodes."""
         test_code = [
@@ -460,43 +532,45 @@ graph TD
             "from unittest.mock import AsyncMock, patch",
             "from ..nodes import " + ", ".join(node["name"] for node in spec.nodes),
             "",
-            ""
+            "",
         ]
-        
+
         for node in spec.nodes:
-            test_code.extend([
-                f'class Test{node["name"]}:',
-                f'    """Tests for {node["name"]} node."""',
-                "",
-                '    @pytest.fixture',
-                '    def node(self):',
-                f'        return {node["name"]}()',
-                "",
-                '    @pytest.fixture',
-                '    def shared_store(self):',
-                '        return {"input_data": "test_data"}',
-                "",
-                '    def test_prep(self, node, shared_store):',
-                '        """Test prep method."""',
-                '        result = node.prep(shared_store)',
-                '        assert result == "test_data"',
-                "",
-                '    @pytest.mark.asyncio',
-                '    async def test_exec_async(self, node):',
-                '        """Test exec_async method."""',
-                '        result = await node.exec_async("test_data")',
-                '        assert result == "success"',
-                "",
-                '    def test_post(self, node, shared_store):',
-                '        """Test post method."""',
-                '        node.post(shared_store, "prep_result", "exec_result")',
-                '        assert "output_data" in shared_store',
-                "",
-                ""
-            ])
-        
+            test_code.extend(
+                [
+                    f"class Test{node['name']}:",
+                    f'    """Tests for {node["name"]} node."""',
+                    "",
+                    "    @pytest.fixture",
+                    "    def node(self):",
+                    f"        return {node['name']}()",
+                    "",
+                    "    @pytest.fixture",
+                    "    def shared_store(self):",
+                    '        return {"input_data": "test_data"}',
+                    "",
+                    "    def test_prep(self, node, shared_store):",
+                    '        """Test prep method."""',
+                    "        result = node.prep(shared_store)",
+                    '        assert result == "test_data"',
+                    "",
+                    "    @pytest.mark.asyncio",
+                    "    async def test_exec_async(self, node):",
+                    '        """Test exec_async method."""',
+                    '        result = await node.exec_async("test_data")',
+                    '        assert result == "success"',
+                    "",
+                    "    def test_post(self, node, shared_store):",
+                    '        """Test post method."""',
+                    '        node.post(shared_store, "prep_result", "exec_result")',
+                    '        assert "output_data" in shared_store',
+                    "",
+                    "",
+                ]
+            )
+
         return "\n".join(test_code)
-    
+
     def _generate_flow_tests(self, spec: WorkflowSpec) -> str:
         """Generate tests for flow."""
         test_code = [
@@ -505,35 +579,35 @@ graph TD
             f"from ..flow import {spec.name}Flow",
             "",
             "",
-            f'class Test{spec.name}Flow:',
+            f"class Test{spec.name}Flow:",
             f'    """Tests for {spec.name}Flow."""',
             "",
-            '    @pytest.fixture',
-            '    def flow(self):',
-            f'        return {spec.name}Flow()',
+            "    @pytest.fixture",
+            "    def flow(self):",
+            f"        return {spec.name}Flow()",
             "",
-            '    @pytest.fixture',
-            '    def shared_store(self):',
+            "    @pytest.fixture",
+            "    def shared_store(self):",
             '        return {"input_data": "test_data"}',
             "",
-            '    @pytest.mark.asyncio',
-            '    async def test_flow_execution(self, flow, shared_store):',
+            "    @pytest.mark.asyncio",
+            "    async def test_flow_execution(self, flow, shared_store):",
             '        """Test complete flow execution."""',
-            '        await flow.run_async(shared_store)',
+            "        await flow.run_async(shared_store)",
             '        assert "output_data" in shared_store',
             "",
-            '    @pytest.mark.asyncio',
-            '    async def test_flow_error_handling(self, flow, shared_store):',
+            "    @pytest.mark.asyncio",
+            "    async def test_flow_error_handling(self, flow, shared_store):",
             '        """Test flow error handling."""',
-            '        # Test with invalid input',
+            "        # Test with invalid input",
             '        shared_store["input_data"] = None',
-            '        with pytest.raises(Exception):',
-            '            await flow.run_async(shared_store)',
+            "        with pytest.raises(Exception):",
+            "            await flow.run_async(shared_store)",
             "",
         ]
-        
+
         return "\n".join(test_code)
-    
+
     def _generate_api_tests(self, spec: WorkflowSpec) -> str:
         """Generate tests for FastAPI endpoints."""
         test_code = [
@@ -544,38 +618,40 @@ graph TD
             "",
             "client = TestClient(app)",
             "",
-            ""
+            "",
         ]
-        
+
         for endpoint in spec.api_endpoints:
             method = endpoint.get("method", "post").upper()
             path = endpoint.get("path", f"/{endpoint['name'].lower()}")
-            
-            test_code.extend([
-                f'class Test{endpoint["name"]}Endpoint:',
-                f'    """Tests for {endpoint["name"]} endpoint."""',
-                "",
-                f'    def test_{endpoint["name"].lower()}_success(self):',
-                f'        """Test successful {endpoint["name"]} request."""',
-                '        request_data = {"test": "data"}',
-                f'        response = client.{method.lower()}("/api/v1{path}", json=request_data)',
-                '        assert response.status_code == 200',
-                "",
-                f'    def test_{endpoint["name"].lower()}_validation_error(self):',
-                '        """Test validation error handling."""',
-                f'        response = client.{method.lower()}("/api/v1{path}", json={{}})',
-                '        assert response.status_code == 422',
-                "",
-                ""
-            ])
-        
+
+            test_code.extend(
+                [
+                    f"class Test{endpoint['name']}Endpoint:",
+                    f'    """Tests for {endpoint["name"]} endpoint."""',
+                    "",
+                    f"    def test_{endpoint['name'].lower()}_success(self):",
+                    f'        """Test successful {endpoint["name"]} request."""',
+                    '        request_data = {"test": "data"}',
+                    f'        response = client.{method.lower()}("/api/v1{path}", json=request_data)',
+                    "        assert response.status_code == 200",
+                    "",
+                    f"    def test_{endpoint['name'].lower()}_validation_error(self):",
+                    '        """Test validation error handling."""',
+                    f'        response = client.{method.lower()}("/api/v1{path}", json={{}})',
+                    "        assert response.status_code == 422",
+                    "",
+                    "",
+                ]
+            )
+
         return "\n".join(test_code)
-    
+
     def _generate_tasks(self, spec: WorkflowSpec) -> str:
         """Generate tasks.md file from template."""
         current_date = datetime.now().isoformat()[:10]
-        spec_name = spec.name.lower().replace(' ', '-')
-        
+        spec_name = spec.name.lower().replace(" ", "-")
+
         tasks = f"""# Spec Tasks
 
 These are the tasks to be completed for the spec detailed in @.agent-os/specs/{current_date}-{spec_name}/spec.md
@@ -644,7 +720,9 @@ Following PocketFlow's 8-step Agentic Coding methodology:
 
         # Add specific nodes
         for node in spec.nodes:
-            tasks += f"\n- [ ] 4.2.{node['name']}: Complete implementation of {node['name']}"
+            tasks += (
+                f"\n- [ ] 4.2.{node['name']}: Complete implementation of {node['name']}"
+            )
 
         tasks += """
 - [ ] 4.3 Create prep() methods for data access and validation
@@ -729,25 +807,25 @@ The following files have been generated and need completion:
 
 Generated on: {current_date}
 Workflow Pattern: {spec.pattern}
-FastAPI Integration: {'Enabled' if spec.fast_api_integration else 'Disabled'}"""
+FastAPI Integration: {"Enabled" if spec.fast_api_integration else "Disabled"}"""
 
         return tasks
-    
+
     def _extract_template_section(self, template: str, section_name: str) -> str:
         """Extract a specific section from a template file."""
-        lines = template.split('\n')
+        lines = template.split("\n")
         in_section = False
         section_lines = []
-        
+
         for line in lines:
             if section_name in line:
                 in_section = True
                 continue
-            elif in_section and line.startswith('##') and section_name not in line:
+            elif in_section and line.startswith("##") and section_name not in line:
                 break
             elif in_section:
                 section_lines.append(line)
-        
+
         # If no section found, return a basic template
         if not section_lines:
             return f"""# Design Document
@@ -779,39 +857,47 @@ graph TD
 
 This is a generated design document template. Please complete with actual requirements and design details.
 """
-        
-        return '\n'.join(section_lines)
-    
+
+        return "\n".join(section_lines)
+
     def save_workflow(self, spec: WorkflowSpec, output_files: Dict[str, str]) -> None:
         """Save generated workflow files to disk."""
-        workflow_dir = self.output_path / spec.name.lower().replace(' ', '_')
+        workflow_dir = self.output_path / spec.name.lower().replace(" ", "_")
         workflow_dir.mkdir(exist_ok=True)
-        
+
         for file_path, content in output_files.items():
             full_path = workflow_dir / file_path
             full_path.parent.mkdir(parents=True, exist_ok=True)
             full_path.write_text(content)
-        
+
         print(f"Generated workflow saved to: {workflow_dir}")
 
 
 def main():
     """CLI interface for the workflow generator."""
     import argparse
-    
+
     if not YAML_AVAILABLE:
-        print("Error: PyYAML is required for CLI usage. Install with: pip install pyyaml")
+        print(
+            "Error: PyYAML is required for CLI usage. Install with: pip install pyyaml"
+        )
         return 1
-    
-    parser = argparse.ArgumentParser(description="Generate PocketFlow workflows from specifications")
-    parser.add_argument("--spec", required=True, help="Path to workflow specification YAML file")
-    parser.add_argument("--output", help="Output directory (default: .agent-os/workflows)")
-    
+
+    parser = argparse.ArgumentParser(
+        description="Generate PocketFlow workflows from specifications"
+    )
+    parser.add_argument(
+        "--spec", required=True, help="Path to workflow specification YAML file"
+    )
+    parser.add_argument(
+        "--output", help="Output directory (default: .agent-os/workflows)"
+    )
+
     args = parser.parse_args()
-    
+
     # Load specification
     try:
-        with open(args.spec, 'r') as f:
+        with open(args.spec, "r") as f:
             spec_data = yaml.safe_load(f)
     except FileNotFoundError:
         print(f"Error: Specification file not found: {args.spec}")
@@ -819,24 +905,24 @@ def main():
     except yaml.YAMLError as e:
         print(f"Error: Invalid YAML in specification file: {e}")
         return 1
-    
+
     try:
         spec = WorkflowSpec(**spec_data)
     except TypeError as e:
         print(f"Error: Invalid specification format: {e}")
         return 1
-    
+
     # Generate workflow
     try:
         # Initialize generator with custom paths if provided
         generator_kwargs = {}
         if args.output:
-            generator_kwargs['output_path'] = args.output
-        
+            generator_kwargs["output_path"] = args.output
+
         generator = PocketFlowGenerator(**generator_kwargs)
         output_files = generator.generate_workflow(spec)
         generator.save_workflow(spec, output_files)
-        
+
         print(f"Successfully generated workflow: {spec.name}")
         return 0
     except Exception as e:
@@ -846,4 +932,5 @@ def main():
 
 if __name__ == "__main__":
     import sys
+
     sys.exit(main())

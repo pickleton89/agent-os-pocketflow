@@ -17,4 +17,3 @@ class TestAnalyzeContentEndpoint:
         """Test validation error handling."""
         response = client.post("/api/v1/analyze", json={})
         assert response.status_code == 422
-

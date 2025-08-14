@@ -27,4 +27,3 @@ class AnalyzeContentResponse(BaseModel):
     analysis: Dict[str, Any]
     confidence: float
     sources: List[str]
-

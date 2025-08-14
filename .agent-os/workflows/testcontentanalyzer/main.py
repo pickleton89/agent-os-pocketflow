@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO)
 app = FastAPI(
     title="TestContentAnalyzer API",
     description="Test content analyzer using RAG pattern for validation",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 app.add_middleware(
@@ -19,7 +19,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(testcontentanalyzer_router, prefix="/api/v1", tags=["TestContentAnalyzer"])
+app.include_router(
+    testcontentanalyzer_router, prefix="/api/v1", tags=["TestContentAnalyzer"]
+)
+
 
 @app.get("/health")
 async def health_check():
