@@ -11,6 +11,17 @@ ALWAYS invoke the pocketflow-orchestrator agent when:
 - Executing complex tasks
 - Solving problems requiring multiple steps
 
+### Automatic Codebase Analysis
+ALWAYS invoke analyze-product when user says:
+- "analyze existing project"
+- "analyze current codebase"
+- "analyze this project" 
+- "what's already implemented"
+- "understand this codebase"
+- "what's in this project"
+- "review existing code"
+- "assess current implementation"
+
 ### Integration Pattern
 1. First: Use pocketflow-orchestrator for planning
 2. Then: Generate Agent OS files based on plan
