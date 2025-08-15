@@ -865,10 +865,28 @@ This is a generated design document template. Please complete with actual requir
         workflow_dir = self.output_path / spec.name.lower().replace(" ", "_")
         workflow_dir.mkdir(exist_ok=True)
 
+        # Track directories that need __init__.py files
+        directories_needing_init = set()
+
         for file_path, content in output_files.items():
             full_path = workflow_dir / file_path
             full_path.parent.mkdir(parents=True, exist_ok=True)
             full_path.write_text(content)
+            
+            # Add parent directories to the set for __init__.py creation
+            directories_needing_init.add(full_path.parent)
+
+        # Create __init__.py files for proper package structure
+        # This ensures relative imports in tests work correctly
+        for directory in directories_needing_init:
+            init_file = directory / "__init__.py"
+            if not init_file.exists():
+                init_file.write_text("")
+
+        # Also create __init__.py in the root workflow directory
+        root_init = workflow_dir / "__init__.py"
+        if not root_init.exists():
+            root_init.write_text("")
 
         print(f"Generated workflow saved to: {workflow_dir}")
 

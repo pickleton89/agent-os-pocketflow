@@ -5,6 +5,22 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.6] - 2025-08-15
+
+### Fixed
+- **PocketFlow Generator Package Structure** - Resolved critical issue with relative imports in generated test files
+  - **Root Cause**: Generated test files used relative imports like `from ..nodes import` but `save_workflow` method didn't create `__init__.py` files, causing `ModuleNotFoundError` when tests tried to run
+  - **Solution**: Enhanced `save_workflow` method in `.agent-os/workflows/generator.py:863-891` to automatically create proper Python package scaffolding
+  - **Implementation**: Added logic to track all directories created during file generation and create empty `__init__.py` files in subdirectories (tests, schemas, utils, docs, root)
+  - **Immediate Fix**: Created missing `__init__.py` files for existing `testcontentanalyzer` workflow to restore functionality
+  - **Impact**: All generated PocketFlow workflows now have proper Python package structure, enabling relative imports in tests to work correctly
+
+### Technical Details
+- **Files Modified**: `.agent-os/workflows/generator.py` (save_workflow method), created 5 `__init__.py` files for testcontentanalyzer workflow
+- **Pattern Fixed**: Relative imports (`from ..nodes import`, `from ..flow import`, `from ..main import`) now function properly in generated test files
+- **Quality Assurance**: Added pytest dependency for testing validation, confirmed import resolution works correctly
+- **Framework Integrity**: Generator now creates proper Python module structure automatically for all future workflow generation
+
 ## [1.10.5] - 2025-08-14
 
 ### Fixed
