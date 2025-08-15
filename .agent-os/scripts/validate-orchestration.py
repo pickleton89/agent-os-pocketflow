@@ -18,6 +18,8 @@ class OrchestrationValidator:
     def __init__(self, project_root: str = "."):
         self.project_root = Path(project_root)
         self.agent_os_path = self.project_root / ".agent-os"
+        self.claude_path = self.project_root / ".claude"
+        self.templates_path = self.project_root / "templates"
         self.validation_results: List[Tuple[str, bool, Optional[str]]] = []
 
     def validate_all(self) -> bool:
@@ -38,7 +40,7 @@ class OrchestrationValidator:
 
     def validate_orchestrator_agent(self):
         """Validate the PocketFlow orchestrator agent exists and is properly configured."""
-        agent_path = self.agent_os_path / "agents" / "pocketflow-orchestrator.md"
+        agent_path = self.claude_path / "agents" / "pocketflow-orchestrator.md"
 
         if not agent_path.exists():
             self.add_result(
@@ -224,7 +226,7 @@ class OrchestrationValidator:
             "task-templates.md",
         ]
 
-        templates_path = self.agent_os_path / "templates"
+        templates_path = self.templates_path
         missing_templates = []
 
         for template in template_files:

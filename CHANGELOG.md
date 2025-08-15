@@ -5,6 +5,16 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.10] - 2025-08-15
+
+### Fixed
+- **Orchestration Validator Path Mismatch** - Fixed critical path issues preventing proper validation of PocketFlow orchestration integration
+  - **Root Cause**: Validator was looking for files in wrong locations - expected `.agent-os/agents/` and `.agent-os/templates/` but actual locations are `.claude/agents/` and `templates/`
+  - **Solution**: Updated OrchestrationValidator class to use correct paths by adding claude_path and templates_path properties
+  - **Implementation**: Modified `.agent-os/scripts/validate-orchestration.py` to reference actual file locations
+  - **Impact**: Template Files validation now passes, orchestrator agent file properly located, eliminates core path mismatch preventing validation
+  - **Validation**: Confirmed Template Files test now passes (was failing before due to wrong template path)
+
 ## [1.10.9] - 2025-08-15
 
 ### Fixed
