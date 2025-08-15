@@ -5,6 +5,21 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.12] - 2025-08-15
+
+### Fixed
+- **CLAUDE.md Framework Repository Clarification** - Resolved AI agent confusion about project purpose and scope
+  - **Root Cause**: CLAUDE.md incorrectly configured AI agents to treat this repository as a USER of Agent OS + PocketFlow, when this IS the framework itself
+  - **Solution**: Completely rewrote CLAUDE.md to clarify this is the framework repository, not a project using it
+  - **Key Changes**:
+    - Added clear warning that this IS the framework repository
+    - Documented explicit DO NOT guidelines for framework development (don't invoke orchestrator, don't fix TODO templates, don't install PocketFlow)
+    - Clarified difference between framework development (this repo) vs framework usage (end-user repos)
+    - Explained that TODO placeholders in generator.py are intentional templates, not bugs
+    - Documented that import errors in generated code are expected (PocketFlow installed in target projects)
+  - **Impact**: Prevents AI agents from misidentifying intentional design decisions as "technical debt" and eliminates confusion about repository purpose
+  - **Context**: This resolves issues where agents tried to "fix" the generator's TODO stubs, install PocketFlow dependencies, or expect application tests in a meta-framework
+
 ## [1.10.11] - 2025-08-15
 
 ### Fixed
