@@ -324,12 +324,28 @@ class WorkflowValidator:
                 )
 
             # Check for async test methods if needed
-            if "async def test_" not in content and "AsyncNode" in str(
-                self.workflow_path
-            ):
+            if "async def test_" not in content and self._has_async_nodes():
                 self.warnings.append(
                     f"{test_file.name} may need async test methods for AsyncNode"
                 )
+
+    def _has_async_nodes(self) -> bool:
+        """Check if the workflow contains any AsyncNode implementations."""
+        nodes_file = self.workflow_path / "nodes.py"
+        if not nodes_file.exists():
+            return False
+        
+        try:
+            with open(nodes_file, "r") as f:
+                content = f.read()
+            
+            # Check for AsyncNode class inheritance
+            # Look for pattern like "class SomeClass(AsyncNode)" or "class SomeClass(SomeOther, AsyncNode)"
+            import re
+            pattern = r'class\s+\w+\([^)]*AsyncNode[^)]*\)'
+            return bool(re.search(pattern, content))
+        except Exception:
+            return False
 
 
 def validate_workflow_directory(workflow_dir: Path) -> bool:

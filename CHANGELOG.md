@@ -5,6 +5,16 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.9] - 2025-08-15
+
+### Fixed
+- **Async Test Detection Logic** - Fixed ineffective async node detection in workflow validation script
+  - **Root Cause**: Validation script was checking for "AsyncNode" in workflow path string instead of analyzing actual file content
+  - **Solution**: Added `_has_async_nodes()` method with regex pattern matching to detect class inheritance like `class SomeClass(AsyncNode)`
+  - **Implementation**: Enhanced `.agent-os/scripts/validate-generation.py:332-346` to read and analyze `nodes.py` file content
+  - **Impact**: Validation now correctly identifies workflows with AsyncNode implementations and warns about missing async test methods
+  - **Validation**: Confirmed working on testcontentanalyzer workflow with DocumentRetrieverNode(AsyncNode) and LLMAnalyzerNode(AsyncNode)
+
 ## [1.10.8] - 2025-08-15
 
 ### Fixed
