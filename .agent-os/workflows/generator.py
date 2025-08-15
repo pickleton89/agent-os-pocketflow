@@ -180,6 +180,29 @@ graph TD
             design_doc += f'    "{key}": {value_type},\n'
         design_doc += "}\n```\n"
 
+        # Add node design section
+        design_doc += "\n## Node Design\n\n"
+        design_doc += "Following PocketFlow's node-based architecture, each processing step is implemented as a discrete node.\n\n"
+        
+        for i, node in enumerate(spec.nodes, 1):
+            design_doc += f"### {i}. {node['name']}\n"
+            design_doc += f"**Purpose:** {node['description']}\n\n"
+            
+            # Add input/output details if available
+            if 'inputs' in node:
+                inputs_str = ", ".join(node['inputs']) if node['inputs'] else "SharedStore"
+                design_doc += f"**Inputs:** {inputs_str}\n"
+            else:
+                design_doc += "**Inputs:** SharedStore\n"
+                
+            if 'outputs' in node:
+                outputs_str = ", ".join(node['outputs']) if node['outputs'] else "Updates SharedStore"
+                design_doc += f"**Outputs:** {outputs_str}\n"
+            else:
+                design_doc += "**Outputs:** Updates SharedStore\n"
+                
+            design_doc += "\n"
+
         # Add implementation notes
         design_doc += "\n## Implementation Notes\n\n"
         design_doc += f"- Pattern: {spec.pattern}\n"

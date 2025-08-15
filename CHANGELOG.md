@@ -5,6 +5,16 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.8] - 2025-08-15
+
+### Fixed
+- **PocketFlow Generator Node Design Section** - Fixed critical validation mismatch between generator and validator
+  - **Root Cause**: Design document generator stopped at "## Data Design" section but validator expected "## Node Design" section
+  - **Solution**: Added Node Design section generation in `.agent-os/workflows/generator.py:183-205` after Data Design section
+  - **Implementation**: Includes documentation for each node with purpose, inputs, outputs following PocketFlow's node-based architecture
+  - **Impact**: Generated design documents now pass validation with all 6 required sections (Design Document, Requirements, Flow Design, Utilities, Data Design, Node Design)
+  - **Validation**: Confirmed fix works with test workflow - validator now passes successfully
+
 ## [1.10.7] - 2025-08-15
 
 ### Fixed
