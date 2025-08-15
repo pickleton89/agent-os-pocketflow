@@ -5,6 +5,15 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.7] - 2025-08-15
+
+### Fixed
+- **FastAPI Router DateTime Import** - Fixed missing datetime import in generated FastAPI router templates
+  - **Root Cause**: FastAPI router template in generator.py was using `datetime.utcnow()` without importing datetime module
+  - **Solution**: Added `from datetime import datetime` to router template imports in `.agent-os/workflows/generator.py:483`
+  - **Impact**: Resolves NameError runtime exception when generated workflows try to timestamp request data in API endpoints
+  - **Files Modified**: `.agent-os/workflows/generator.py` - Added datetime import to FastAPI router generation template
+
 ## [1.10.6] - 2025-08-15
 
 ### Fixed

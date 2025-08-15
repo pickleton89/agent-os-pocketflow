@@ -480,6 +480,7 @@ graph TD
             f"from .flow import {spec.name}Flow",
             "from typing import Dict, Any",
             "import logging",
+            "from datetime import datetime",
             "",
             "logger = logging.getLogger(__name__)",
             "router = APIRouter()",
