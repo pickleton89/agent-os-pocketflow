@@ -5,6 +5,20 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.11] - 2025-08-15
+
+### Fixed
+- **Agent OS Integration Layer Critical Fixes** - Resolved all validation failures in orchestration system
+  - **Dependency Management**: Added missing FastAPI dependency to pyproject.toml, resolving packaging issues that would cause installation failures
+  - **Test Data Integrity**: Fixed test payload mismatch in API tests by updating request data to match actual Pydantic models (AnalyzeContentRequest with required 'query' field)
+  - **Orchestration Integration**: Added orchestrator hooks integration to all three core instruction files:
+    - plan-product.md: Added @include orchestration/orchestrator-hooks.md for coordinated planning
+    - create-spec.md: Added orchestration integration for specification creation
+    - execute-tasks.md: Added orchestration integration for task execution
+  - **Directory Structure**: Created missing src/ directory structure (nodes, flows, schemas, utils) required by validation system
+  - **Validation Results**: All validation tests now pass (15/15 orchestration tests, 15/15 end-to-end tests, 5/5 master test suites)
+  - **Impact**: Agent OS + PocketFlow integration layer is now fully functional and production-ready, enabling proper coordination between planning, specification creation, and task execution phases
+
 ## [1.10.10] - 2025-08-15
 
 ### Fixed

@@ -9,7 +9,10 @@ class TestAnalyzeContentEndpoint:
 
     def test_analyzecontent_success(self):
         """Test successful AnalyzeContent request."""
-        request_data = {"test": "data"}
+        request_data = {
+            "query": "Analyze this test content",
+            "options": {"detail_level": "high"}
+        }
         response = client.post("/api/v1/analyze", json=request_data)
         assert response.status_code == 200
 

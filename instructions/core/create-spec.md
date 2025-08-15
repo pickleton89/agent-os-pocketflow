@@ -824,3 +824,9 @@ This instruction file uses modular templates from:
     - [ ] Strategic decisions evaluated
   </verify>
 </final_checklist>
+
+## Orchestration Integration
+
+@include orchestration/orchestrator-hooks.md
+
+This instruction integrates with the orchestrator system for coordinated specification creation.

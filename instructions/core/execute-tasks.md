@@ -1088,3 +1088,9 @@ Use the test-runner subagent to run and verify only the tests specific to the cu
     - [ ] Summary provided to user
   </verify>
 </final_checklist>
+
+## Orchestration Integration
+
+@include orchestration/orchestrator-hooks.md
+
+This instruction integrates with the orchestrator system for coordinated task execution.
