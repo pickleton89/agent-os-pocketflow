@@ -42,7 +42,11 @@
       "Bash(./scripts/validation/validate-orchestration.sh:*)",
       "Bash(./scripts/validation/validate-end-to-end.sh:*)",
       "Bash(python:*)",
-      "Bash(uv init:*)"
+      "Bash(uv init:*)",
+      "Bash(find:*)",
+      "Bash(uv tree:*)",
+      "Bash(uv pip:*)",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",

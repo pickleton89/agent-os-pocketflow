@@ -5,6 +5,22 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.13] - 2025-08-15
+
+### Enhanced
+- **PocketFlow Generator Intelligence & Type Resolution** - Significantly improved workflow generator with smart defaults and dependency management
+  - **Fixed Import Generation**: Updated test file generation to use absolute imports (`from {workflow_name}.nodes import`) instead of relative imports for better type checker compatibility
+  - **Smart Node Defaults**: Added intelligent pattern recognition that generates meaningful starter code based on node names/descriptions:
+    - LLM nodes get `response = await call_llm(prep_result)` instead of generic TODOs
+    - Retriever nodes get `search_results = await search_documents(prep_result)`
+    - Analyzer nodes get `analysis = await analyze_content(prep_result)`
+    - 10+ patterns supported (retriever, analyzer, formatter, validator, transformer, etc.)
+  - **Proper Package Structure**: Added comprehensive __init__.py file generation for all packages with appropriate imports and auto-discovery
+  - **Installation Helper**: Created `check-pocketflow-install.py` script that validates Python version, project structure, and dependencies with auto-installation support
+  - **Generated Project Integration**: Each workflow now includes `check-install.py` reference script for dependency validation
+  - **Unicode Fix**: Fixed encoding issues in test files preventing execution
+  - **Impact**: Generator now produces intelligent, working starter templates instead of TODO-heavy stubs, with proper type safety and dependency management
+
 ## [1.10.12] - 2025-08-15
 
 ### Fixed

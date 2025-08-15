@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Test script for the workflow generator without external dependencies.
 """
@@ -12,9 +13,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 try:
     from generator import WorkflowSpec, PocketFlowGenerator
 
-    print("✓ Generator module imported successfully")
+    print("+ Generator module imported successfully")
 except ImportError as e:
-    print(f"✗ Failed to import generator: {e}")
+    print(f"- Failed to import generator: {e}")
     sys.exit(1)
 
 
@@ -39,7 +40,7 @@ def test_workflow_spec():
         fast_api_integration=False,
     )
 
-    print(f"✓ Created WorkflowSpec: {spec.name}")
+    print(f"+ Created WorkflowSpec: {spec.name}")
     print(f"  Pattern: {spec.pattern}")
     print(f"  Nodes: {len(spec.nodes)}")
     print(f"  Utilities: {len(spec.utilities)}")
@@ -53,14 +54,14 @@ def test_generator():
 
     try:
         generator = PocketFlowGenerator()
-        print("✓ Generator created successfully")
+        print("+ Generator created successfully")
 
         # Check if templates are loaded
         print(f"  Templates loaded: {list(generator.templates.keys())}")
 
         return generator
     except Exception as e:
-        print(f"✗ Generator creation failed: {e}")
+        print(f"- Generator creation failed: {e}")
         return None
 
 
@@ -78,29 +79,29 @@ def test_generation():
         # Test individual generation methods
         print("  Testing design doc generation...")
         design_doc = generator._generate_design_doc(spec)
-        print(f"    ✓ Design doc generated ({len(design_doc)} chars)")
+        print(f"    + Design doc generated ({len(design_doc)} chars)")
 
         print("  Testing Pydantic models generation...")
         models = generator._generate_pydantic_models(spec)
-        print(f"    ✓ Models generated ({len(models)} chars)")
+        print(f"    + Models generated ({len(models)} chars)")
 
         print("  Testing nodes generation...")
         nodes = generator._generate_nodes(spec)
-        print(f"    ✓ Nodes generated ({len(nodes)} chars)")
+        print(f"    + Nodes generated ({len(nodes)} chars)")
 
         print("  Testing flow generation...")
         flow = generator._generate_flow(spec)
-        print(f"    ✓ Flow generated ({len(flow)} chars)")
+        print(f"    + Flow generated ({len(flow)} chars)")
 
         print("  Testing utility generation...")
         utility = generator._generate_utility(spec.utilities[0])
-        print(f"    ✓ Utility generated ({len(utility)} chars)")
+        print(f"    + Utility generated ({len(utility)} chars)")
 
-        print("✓ All generation methods working")
+        print("+ All generation methods working")
         return True
 
     except Exception as e:
-        print(f"✗ Generation failed: {e}")
+        print(f"- Generation failed: {e}")
         import traceback
 
         traceback.print_exc()
@@ -120,7 +121,7 @@ def test_full_workflow():
     try:
         output_files = generator.generate_workflow(spec)
 
-        print("✓ Complete workflow generated")
+        print("+ Complete workflow generated")
         print(f"  Generated files: {len(output_files)}")
 
         for file_path in sorted(output_files.keys()):
@@ -131,14 +132,14 @@ def test_full_workflow():
         for key_file in key_files:
             if key_file in output_files:
                 content = output_files[key_file]
-                print(f"    ✓ {key_file} ({len(content)} chars)")
+                print(f"    + {key_file} ({len(content)} chars)")
             else:
-                print(f"    ✗ Missing {key_file}")
+                print(f"    - Missing {key_file}")
 
         return True
 
     except Exception as e:
-        print(f"✗ Complete workflow generation failed: {e}")
+        print(f"- Complete workflow generation failed: {e}")
         import traceback
 
         traceback.print_exc()
@@ -160,16 +161,16 @@ def main():
             if test():
                 passed += 1
         except Exception as e:
-            print(f"✗ Test {test.__name__} failed with exception: {e}")
+            print(f"- Test {test.__name__} failed with exception: {e}")
 
     print("\n" + "=" * 40)
     print(f"Test Results: {passed}/{total} tests passed")
 
     if passed == total:
-        print("✓ All tests passed!")
+        print("+ All tests passed!")
         return 0
     else:
-        print("✗ Some tests failed")
+        print("- Some tests failed")
         return 1
 
 
