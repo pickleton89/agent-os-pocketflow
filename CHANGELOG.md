@@ -5,6 +5,23 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.16] - 2025-08-16
+
+### Added
+- **Comprehensive Architecture Documentation Suite** - Complete visual and technical documentation for the meta-framework system
+  - **System Overview**: High-level architecture documentation with detailed Mermaid diagrams showing meta-framework flow, component relationships, and system boundaries at [`docs/architecture/system-overview.md`](docs/architecture/system-overview.md)
+  - **Component Architecture**: Detailed breakdown of all system components including generator engine, template system, validation framework, and Claude Code integration at [`docs/architecture/components.md`](docs/architecture/components.md)
+  - **Data Flow Documentation**: Complete data transformation pipeline from YAML specifications to generated PocketFlow applications with processing stages and performance metrics at [`docs/architecture/data-flow.md`](docs/architecture/data-flow.md)
+  - **Generator Workflow Diagrams**: Visual documentation of the generation process with stage-by-stage flow diagrams and optimization insights at [`docs/architecture/generator-workflow.md`](docs/architecture/generator-workflow.md)
+  - **Code Pointers Guide**: Comprehensive navigation guide with file:line references for all major components enabling easy IDE navigation at [`docs/architecture/code-pointers.md`](docs/architecture/code-pointers.md)
+  - **Architecture README**: Documentation structure guide and reading recommendations for different user types at [`docs/architecture/README.md`](docs/architecture/README.md)
+  - **Impact**: Eliminates "framework vs usage" confusion from line 1 of contributor onboarding, provides comprehensive code tour with direct navigation paths, and clarifies conceptual model through visual diagrams and clear explanations
+
+### Enhanced
+- **README Navigation**: Updated contributor navigation to link to new architecture documentation suite instead of future planning document
+- **Documentation Structure**: Created complete architecture documentation hierarchy with cross-references and navigation guides
+- **Meta-Framework Clarity**: Visual diagrams and detailed explanations clearly distinguish between framework development (this repository) and framework usage (generated projects)
+
 ## [1.10.15] - 2025-08-16
 
 ### Added

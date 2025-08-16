@@ -100,8 +100,8 @@ Agent OS (Workflow Management) + PocketFlow (LLM Orchestration) = Intelligent De
 
 **👥 For Framework Contributors:**
 - [Core Components](#core-components) - Generator, validators, templates
+- [Architecture Documentation](docs/architecture/) - Complete system architecture with diagrams
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Development guidelines and patterns
-- [Architecture Documentation Plan](docs/architecture-documentation-plan.md) - Future documentation roadmap
 
 **🚀 For Framework Users:**  
 - [System Installation](#system-installation) - Install the framework
