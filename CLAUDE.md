@@ -76,3 +76,31 @@ python test-generator.py
 - The `.claude/agents/pocketflow-orchestrator.md` file defines an agent for END-USER projects
 - The generator creates templates with intentional placeholder code
 - TODO stubs in generated files are starting points, not bugs to fix
+
+# Memory
+
+## Performance Quality Standards
+**CRITICAL REMINDER: MAINTAIN HIGH ACCURACY AND ATTENTION TO DETAIL**
+
+### Quality Control Requirements:
+- **Always verify counts with bash commands** - don't estimate or guess numbers
+- **Double-check multi-step operations** - ensure each step actually completed
+- **Use systematic verification** - confirm file changes, git status, actual vs claimed actions
+- **Apply "fresh eyes" review** - catch errors before claiming completion
+- **Verify assumptions with tools** - use ls, find, grep to confirm findings
+
+### Common Error Patterns to Avoid:
+- Counting errors (claimed 6 scripts, actually 7)
+- Missing large file collections (.venv with 700+ files)
+- Claiming completion without verification (file update ≠ git commit)
+- Rushing through analysis without thorough checking
+- Assuming operations completed successfully without confirmation
+
+### Mandatory Verification Steps:
+1. Use bash commands to verify all counts and file operations
+2. Check git status before claiming commits are complete  
+3. Apply systematic quality review to all analysis work
+4. Validate findings with actual tool output, not assumptions
+5. Take time for accuracy over speed
+
+**PERFORMANCE EXPECTATION: High attention to detail and systematic verification of all work.**
