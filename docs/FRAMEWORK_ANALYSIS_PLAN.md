@@ -197,6 +197,21 @@ grep -r "Task.*orchestrator" .
 - Check validation scripts test framework installation
 - Verify scripts don't test application features
 - Ensure scripts validate template generation quality
+- **✅ RESOLVED:** All validation scripts properly focus on framework capabilities and installation validation:
+  - `scripts/run-all-tests.sh` - **Master test orchestrator** that coordinates all framework validation suites
+  - `scripts/validation/validate-configuration.sh` - **Framework configuration validation** checks boundary compliance (no app configs, no PocketFlow dependencies, proper framework description)
+  - `scripts/validation/validate-integration.sh` - **Basic framework installation test** validates Agent OS directory structure, agent files, and extension modules are installed
+  - `scripts/validation/validate-pocketflow.sh` - **Framework prerequisites check** validates Python environment and source directory structure for framework usage
+  - `scripts/validation/validate-orchestration.sh` - **Orchestration system validation** tests agent configuration, coordination setup, hook system, and template accessibility
+  - `scripts/validation/validate-end-to-end.sh` - **Complete framework integration test** performs comprehensive validation including design document creation, template system, and full system health checks
+  - `scripts/validation/validate-design.sh` - **Design document structure validation** checks required sections in generated design documents
+  - `scripts/validate-integration.sh` - **Comprehensive integration validator** with 15 test categories covering all framework components
+  - **✅ NO APPLICATION FEATURE TESTING:** All scripts test framework installation, configuration, and template accessibility - no business logic, user features, or application-specific functionality
+  - **✅ TEMPLATE GENERATION QUALITY:** Framework includes comprehensive template generation tests:
+    - `.agent-os/workflows/test-generator.py` - **Generator unit tests** validate WorkflowSpec creation, PocketFlowGenerator functionality, and individual generation methods
+    - `.agent-os/workflows/test-full-generation.py` - **Complete generation integration test** creates full workflow with RAG pattern, validates all expected files, and checks content structure
+    - **Template quality validation includes:** File structure validation, content verification, placeholder presence, API integration testing, and generated code syntax checking
+  - **✅ PROPER FRAMEWORK FOCUS:** All validation ensures framework generates appropriate templates, not working implementations
 
 #### 4.3 .agent-os Directory Review
 **Objective:** Confirm it contains only generator templates  
@@ -243,10 +258,10 @@ grep -r "Task.*orchestrator" .
 - [ ] Set up analysis tools and search commands
 
 ### Execution Tracking
-- [ ] Phase 1: Structural Analysis Complete
-- [ ] Phase 2: Code Analysis Complete  
-- [ ] Phase 3: Template & Generator Analysis Complete
-- [ ] Phase 4: Testing & Validation Complete
+- [x] Phase 1: Structural Analysis Complete
+- [x] Phase 2: Code Analysis Complete  
+- [x] Phase 3: Template & Generator Analysis Complete
+- [ ] Phase 4: Testing & Validation Complete (4.2 ✅ Validation Script Analysis Complete)
 - [ ] Phase 5: Documentation & Scripts Complete
 - [ ] Phase 6: Synthesis & Reporting Complete
 
