@@ -46,7 +46,9 @@
       "Bash(find:*)",
       "Bash(uv tree:*)",
       "Bash(uv pip:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(uv build:*)",
+      "Bash(true)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
