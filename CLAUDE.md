@@ -49,6 +49,29 @@ python test-generator.py
 ./scripts/validation/validate-integration.sh
 ```
 
+### CRITICAL FRAMEWORK vs USAGE DISTINCTION
+
+**⚠️ ALWAYS REMEMBER: This repository IS the Agent OS + PocketFlow framework itself, NOT a project using it.**
+
+**FRAMEWORK DEVELOPMENT (this repository):**
+- Contains the meta-system that generates PocketFlow templates for other projects
+- Generator creates STARTER TEMPLATES with intentional TODO stubs and placeholder code
+- Missing imports/functions in generated code are BY DESIGN - they're templates for developers to customize
+- Focus: Improve generator logic, validation scripts, template quality, setup tools
+- Test the framework itself, not applications built with it
+- DO NOT: Install PocketFlow as dependency, invoke orchestrator agent, fix TODO placeholders, expect working imports in generated code
+
+**FRAMEWORK USAGE (end-user projects):**
+- Where PocketFlow gets installed as a dependency  
+- Where generated templates become working applications
+- Where placeholder functions get implemented
+- Where the orchestrator agent runs and is useful
+- Where import errors would be actual bugs to fix
+
+**KEY PRINCIPLE:** Template generators should create meaningful placeholder code that shows intent and guides implementation, not working implementations. "Missing" dependencies and undefined functions in generated templates are features, not bugs.
+
+**ALWAYS apply this distinction when reviewing code, identifying bugs, or making improvements. Template generation bugs (syntax errors, broken generators) are real issues. Missing implementations in generated templates are intentional design.**
+
 ### Architecture Reminders
 - The `.claude/agents/pocketflow-orchestrator.md` file defines an agent for END-USER projects
 - The generator creates templates with intentional placeholder code
