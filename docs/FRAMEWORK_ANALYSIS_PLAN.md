@@ -85,6 +85,7 @@ This repository contains the **Agent OS + PocketFlow framework itself** - NOT a 
 - Look for direct PocketFlow class instantiations
 - Check for workflow execution code outside templates
 - Verify any PocketFlow references are in template strings only
+- **⚠️ INVESTIGATE:** `.agent-os/workflows/testcontentanalyzer/` contains working PocketFlow code with direct imports (`from pocketflow import Flow`, `from pocketflow import Node`) - this violates framework boundaries even if used for testing
 
 **Search Commands:**
 ```bash
