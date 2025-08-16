@@ -1,7 +1,7 @@
 [project]
 name = "agent-os-pocketflow"
 version = "0.1.0"
-description = "Add your description here"
+description = "Agent OS + PocketFlow Framework - Meta-system for generating PocketFlow workflow templates"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

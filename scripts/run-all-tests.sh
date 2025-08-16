@@ -57,6 +57,7 @@ done
 
 # Test suite configuration
 declare -a TEST_SUITES=(
+    "Configuration:scripts/validation/validate-configuration.sh:Framework configuration validation"
     "Integration:scripts/validation/validate-integration.sh:Core integration validation"
     "Design:scripts/validation/validate-design.sh:Design document validation" 
     "PocketFlow:scripts/validation/validate-pocketflow.sh:PocketFlow setup validation"
@@ -66,6 +67,7 @@ declare -a TEST_SUITES=(
 
 # Quick mode test suites (essential only)
 declare -a QUICK_SUITES=(
+    "Configuration:scripts/validation/validate-configuration.sh:Framework configuration validation"
     "Integration:scripts/validation/validate-integration.sh:Core integration validation"
     "PocketFlow:scripts/validation/validate-pocketflow.sh:PocketFlow setup validation"
     "Orchestration:scripts/validation/validate-orchestration.sh:Orchestration system validation"
@@ -203,6 +205,7 @@ display_results() {
 # Function to make all scripts executable
 ensure_scripts_executable() {
     local scripts=(
+        "scripts/validation/validate-configuration.sh"
         "scripts/validation/validate-integration.sh"
         "scripts/validation/validate-design.sh"
         "scripts/validation/validate-pocketflow.sh"
