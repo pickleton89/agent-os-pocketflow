@@ -114,7 +114,7 @@ class PocketFlowGenerator:
 
     def _generate_init_file(self, spec: WorkflowSpec, is_root=False, is_test=False, is_schema=False, is_utils=False) -> str:
         """Generate appropriate __init__.py file content."""
-        workflow_name = spec.name.lower().replace(" ", "")
+        # workflow_name = spec.name.lower().replace(" ", "")  # Currently unused
         
         if is_root:
             # Root package init - expose main classes
@@ -164,7 +164,7 @@ for util_file in _utils_dir.glob("*.py"):
     if util_file.name not in ["__init__.py"]:
         module_name = util_file.stem
         try:
-            importlib.import_module(f".{{module_name}}", package=__name__)
+            importlib.import_module(f".{module_name}", package=__name__)
         except ImportError:
             pass  # Skip utility files with missing dependencies
 '''
@@ -445,7 +445,7 @@ graph TD
 
         return "\n".join(utility_code)
 
-    def _get_smart_node_defaults(self, node: Dict[str, Any]) -> Dict[str, str]:
+    def _get_smart_node_defaults(self, node: Dict[str, Any], is_async: bool = False) -> Dict[str, str]:
         """Generate smart defaults based on node name and description."""
         name = node.get("name", "").lower()
         description = node.get("description", "").lower()
@@ -458,24 +458,42 @@ graph TD
             "formatter": 'return shared.get("raw_data", "")',
             "validator": 'return shared.get("input_data", "")',
             "transformer": 'return shared.get("input_data", "")',
-            "llm": 'prompt = f"Process this: {shared.get(\'content\', \'\')}"\\n        return prompt',
+            "llm": 'prompt = f"Process this: {shared.get(\"content\", \"\")}"\\n        return prompt',
             "embedding": 'return shared.get("text", "")',
             "search": 'return shared.get("query", "")',
             "filter": 'return shared.get("items", [])',
         }
         
-        exec_examples = {
+        # Async exec examples
+        exec_examples_async = {
             "retriever": 'search_results = await search_documents(prep_result)\\n        return search_results',
-            "loader": 'with open(prep_result, "r") as f:\\n            content = f.read()\\n        return content',
+            "loader": 'async with aiofiles.open(prep_result, "r") as f:\\n            content = await f.read()\\n        return content',
             "analyzer": 'analysis = await analyze_content(prep_result)\\n        return analysis',
-            "formatter": 'formatted_data = format_response(prep_result)\\n        return formatted_data',
-            "validator": 'is_valid = validate_input(prep_result)\\n        return {"valid": is_valid, "data": prep_result}',
-            "transformer": 'transformed = transform_data(prep_result)\\n        return transformed',
+            "formatter": 'formatted_data = await format_response_async(prep_result)\\n        return formatted_data',
+            "validator": 'is_valid = await validate_input_async(prep_result)\\n        return {"valid": is_valid, "data": prep_result}',
+            "transformer": 'transformed = await transform_data_async(prep_result)\\n        return transformed',
             "llm": 'response = await call_llm(prep_result)\\n        return response',
             "embedding": 'embedding = await get_embedding(prep_result)\\n        return embedding',
             "search": 'results = await search_vector_db(prep_result)\\n        return results',
+            "filter": 'filtered = await filter_async(prep_result)\\n        return filtered',
+        }
+        
+        # Sync exec examples  
+        exec_examples_sync = {
+            "retriever": 'search_results = search_documents(prep_result)\\n        return search_results',
+            "loader": 'with open(prep_result, "r") as f:\\n            content = f.read()\\n        return content',
+            "analyzer": 'analysis = analyze_content(prep_result)\\n        return analysis',
+            "formatter": 'formatted_data = format_response(prep_result)\\n        return formatted_data',
+            "validator": 'is_valid = validate_input(prep_result)\\n        return {"valid": is_valid, "data": prep_result}',
+            "transformer": 'transformed = transform_data(prep_result)\\n        return transformed',
+            "llm": 'response = call_llm_sync(prep_result)\\n        return response',
+            "embedding": 'embedding = get_embedding_sync(prep_result)\\n        return embedding',
+            "search": 'results = search_vector_db_sync(prep_result)\\n        return results',
             "filter": 'filtered = [item for item in prep_result if meets_criteria(item)]\\n        return filtered',
         }
+        
+        # Choose appropriate exec examples based on async flag
+        exec_examples = exec_examples_async if is_async else exec_examples_sync
         
         post_examples = {
             "retriever": 'shared["retrieved_docs"] = exec_result',
@@ -537,7 +555,7 @@ graph TD
             exec_signature = f"    {exec_method}(self, prep_result: Any) -> str:"
 
             # Get smart defaults based on node name/description
-            smart_defaults = self._get_smart_node_defaults(node)
+            smart_defaults = self._get_smart_node_defaults(node, is_async_node)
 
             nodes_code.extend(
                 [
@@ -549,19 +567,19 @@ graph TD
                     "    def prep(self, shared: Dict[str, Any]) -> Any:",
                     '        """Data preparation and validation."""',
                     f'        logger.info(f"Preparing data for {node["name"]}")',
-                    f"        # TODO: Customize this prep logic based on your needs",
+                    "        # TODO: Customize this prep logic based on your needs",
                     f"        {smart_defaults['prep']}",
                     "",
                     exec_signature,
                     '        """Core processing logic."""',
                     f'        logger.info(f"Executing {node["name"]}")',
-                    f"        # TODO: Customize this exec logic based on your needs",
+                    "        # TODO: Customize this exec logic based on your needs",
                     f"        {smart_defaults['exec']}",
                     "",
                     "    def post(self, shared: Dict[str, Any], prep_result: Any, exec_result: Any) -> None:",
                     '        """Post-processing and result storage."""',
                     f'        logger.info(f"Post-processing for {node["name"]}")',
-                    f"        # TODO: Customize this post logic based on your needs",
+                    "        # TODO: Customize this post logic based on your needs",
                     f"        {smart_defaults['post']}",
                     "",
                     "",

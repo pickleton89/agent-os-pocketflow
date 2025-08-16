@@ -5,6 +5,18 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.17] - 2025-08-16
+
+### Fixed
+- **Critical PocketFlow Generator Bug Fixes** - Resolved critical runtime errors and improved security
+  - **String Escaping Fix**: Fixed problematic nested quotes in LLM smart default pattern (`.agent-os/workflows/generator.py:461`) - changed `\'` to `\"` in f-string template to prevent syntax errors in generated code
+  - **F-string Template Fix**: Fixed double braces `{{module_name}}` preventing variable interpolation (`.agent-os/workflows/generator.py:167`) - changed to single braces `{module_name}` for proper runtime execution
+  - **Async/Sync Compatibility**: Enhanced `_get_smart_node_defaults()` to accept `is_async` parameter and generate appropriate sync vs async code variants, eliminating async/sync mismatch in generated node methods
+  - **Security Hardening**: Added comprehensive package name validation with PyPI naming conventions and security checks to prevent malicious package installation in `check-pocketflow-install.py`
+  - **Error Handling**: Improved installation checker with better failure tracking, timeout handling (5-min limit), and detailed success/failure reporting
+  - **Code Quality**: Fixed unnecessary f-string prefixes, removed unused imports, maintained backward compatibility
+  - **Impact**: Generator now produces syntactically correct, secure code with proper async/sync handling and robust dependency management
+
 ## [1.10.16] - 2025-08-16
 
 ### Added

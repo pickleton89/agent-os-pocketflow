@@ -15,8 +15,9 @@ Options:
 import sys
 import subprocess
 import importlib
+import re
 from pathlib import Path
-from typing import List, Tuple, Dict
+from typing import Tuple, Dict
 
 # Required dependencies for PocketFlow workflows
 REQUIRED_PACKAGES = {
@@ -37,6 +38,23 @@ OPTIONAL_PACKAGES = {
     "chromadb": "Vector database for RAG patterns",
     "numpy": "Numerical computing (for embeddings)",
 }
+
+
+def validate_package_name(package_name: str) -> bool:
+    """Validate package name follows PyPI naming conventions for security."""
+    # PyPI package names can only contain letters, numbers, periods, hyphens, and underscores
+    # Must start and end with alphanumeric character
+    pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9._-]*[a-zA-Z0-9])?$'
+    
+    # Additional security checks
+    if not package_name or len(package_name) > 214:  # PyPI limit
+        return False
+    if package_name.lower() in ['..', '.', '__pycache__']:  # Dangerous names
+        return False
+    if package_name.startswith('-') or package_name.endswith('-'):  # Invalid format
+        return False
+        
+    return bool(re.match(pattern, package_name))
 
 
 def check_package(package_name: str) -> Tuple[bool, str]:
@@ -75,6 +93,11 @@ def check_project_structure() -> Dict[str, bool]:
 
 def install_package(package_name: str) -> bool:
     """Install a package using uv or pip."""
+    # Validate package name for security
+    if not validate_package_name(package_name):
+        print(f"❌ Invalid package name '{package_name}' - security validation failed")
+        return False
+    
     # Try uv first (preferred), then pip
     for installer in ["uv", "pip"]:
         try:
@@ -83,7 +106,7 @@ def install_package(package_name: str) -> bool:
             else:
                 cmd = ["pip", "install", package_name]
                 
-            result = subprocess.run(cmd, capture_output=True, text=True)
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)  # 5 min timeout
             if result.returncode == 0:
                 print(f"✅ Successfully installed {package_name} with {installer}")
                 return True
@@ -91,7 +114,11 @@ def install_package(package_name: str) -> bool:
                 print(f"❌ Failed to install {package_name} with {installer}: {result.stderr}")
         except FileNotFoundError:
             continue  # Try next installer
+        except subprocess.TimeoutExpired:
+            print(f"❌ Installation of {package_name} timed out")
+            return False
     
+    print(f"❌ Could not install {package_name} - no suitable installer found")
     return False
 
 
@@ -146,8 +173,24 @@ def main():
     # Auto-install if requested
     if auto_install and missing_required:
         print(f"\n🚀 Auto-installing {len(missing_required)} missing required packages...")
+        install_failures = []
+        install_successes = []
+        
         for package in missing_required:
-            install_package(package)
+            if install_package(package):
+                install_successes.append(package)
+            else:
+                install_failures.append(package)
+        
+        # Report installation results
+        if install_successes:
+            print(f"\n✅ Successfully installed: {', '.join(install_successes)}")
+        if install_failures:
+            print(f"\n❌ Failed to install: {', '.join(install_failures)}")
+            print("   You may need to install these manually or check your internet connection.")
+        
+        # Update missing_required list for final summary
+        missing_required = install_failures
     
     # Summary
     print("\n📊 Summary:")
