@@ -5,6 +5,22 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.15] - 2025-08-16
+
+### Added
+- **Developer Documentation Suite** - Comprehensive onboarding documentation for meta-framework contributors
+  - **Developer Quick Start Guide**: Created `docs/DEVELOPER_QUICKSTART.md` with complete framework contributor onboarding
+    - Meta-framework architecture diagrams using Mermaid showing framework development vs usage distinction
+    - Detailed code tour with direct links to generator, validation, templates, and standards components
+    - Comprehensive "What NOT to do" section with specific examples (don't fix TODO placeholders, don't install PocketFlow here, don't invoke orchestrator)
+    - Development workflow with concrete commands, testing procedures, and contribution areas
+  - **CONTRIBUTING.md Enhancement**: Added meta-framework context section at the top
+    - Critical understanding section explaining this repository IS the framework itself
+    - "What NOT to do" section with code examples of common contributor mistakes
+    - Framework development vs usage distinction clearly explained with practical examples
+    - Quick reference links creating clear documentation navigation path (README → DEVELOPER_QUICKSTART.md → CONTRIBUTING.md)
+  - **Impact**: Creates comprehensive onboarding experience eliminating confusion about meta-framework nature and providing clear guidance for effective contribution
+
 ## [1.10.14] - 2025-08-16
 
 ### Enhanced

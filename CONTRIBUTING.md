@@ -1,3 +1,67 @@
+# Contributing to the Agent OS + PocketFlow Framework
+
+> **Important:** You are contributing to the framework itself, not using it. See [meta-framework context](#meta-framework-context).
+
+## Meta-Framework Context
+
+### 🚨 Critical Understanding
+
+**This repository IS the framework** - you are developing the system that generates PocketFlow templates for other projects.
+
+**Framework Development (this repo):**
+- Improve generator logic in [`.agent-os/workflows/generator.py`](./.agent-os/workflows/generator.py)
+- Enhance validation scripts in [`./scripts/validation/`](./scripts/validation/)
+- Develop templates that other projects will use
+- Test the framework itself, not applications built with it
+
+**Framework Usage (other repos):**
+- Where developers install PocketFlow as a dependency
+- Where generated templates become working applications
+- Where the orchestrator agent runs and is useful
+
+### ❌ What NOT to Do in This Repository
+
+**Don't "Fix" TODO Placeholders:**
+```python
+# ❌ Wrong - These are intentional templates for end-users!
+class SomeNode(Node):
+    def exec(self, prep_result):
+        # TODO: Implement your logic here  ← Don't "fix" this!
+```
+
+**Don't Install PocketFlow Here:**
+```bash
+# ❌ Wrong - PocketFlow gets installed in target projects
+uv add pocketflow  # This framework creates projects that use PocketFlow
+```
+
+**Don't Invoke the Orchestrator Agent:**
+```bash
+# ❌ Wrong - Orchestrator is for end-user projects using the framework
+/plan-product  # This command is for projects that have installed the framework
+```
+
+**Don't Expect Application Tests:**
+- Import errors in generated test files are expected (PocketFlow installs in target projects)
+- Missing dependencies are intentional (the generator creates templates, not working apps)
+- This repository tests the framework itself, not applications built with it
+
+### ✅ What TO Do
+
+**Improve the Meta-System:**
+- Enhance template generation quality
+- Add validation for framework components
+- Improve the system that creates workflows for others
+- Update documentation about framework development
+
+## Quick Reference
+
+- **New to the project?** Read [`docs/DEVELOPER_QUICKSTART.md`](docs/DEVELOPER_QUICKSTART.md)
+- **Architecture questions?** See [`docs/architecture-documentation-plan.md`](docs/architecture-documentation-plan.md)
+- **Core components?** Check the [README Core Components section](README.md#core-components)
+
+---
+
 # PocketFlow Implementation Guidelines
 
 ## Quick PR Review Checklist
