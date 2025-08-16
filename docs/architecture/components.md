@@ -74,7 +74,7 @@ classDiagram
 
 ## 2. Template System
 
-**Locations:** [`templates/`](./templates/) and [`.agent-os/workflows/`](./.agent-os/workflows/)
+**Locations:** [`templates/`](../../templates/) and [`.agent-os/workflows/`](../../.agent-os/workflows/)
 
 ### Template Architecture
 ```mermaid

@@ -67,7 +67,7 @@ This directory contains detailed architectural documentation for the Agent OS + 
 - **Troubleshooting:** Diagnose issues using architectural knowledge
 - **Planning:** Make informed decisions about framework usage
 
-### for Framework Maintainers
+### For Framework Maintainers
 - **Change Impact Analysis:** Understand consequences of modifications
 - **Performance Optimization:** Identify bottlenecks and optimization opportunities
 - **Quality Assurance:** Ensure changes maintain architectural integrity
