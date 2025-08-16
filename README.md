@@ -25,6 +25,25 @@ This repository contains a **complete, production-ready integration** of [Agent 
 ✅ **Cross-File Orchestration** (Intelligent dependency management)  
 ✅ **End-to-End Testing** (Complete integration validation framework)
 
+### 🚨 Important: Framework vs Usage Context
+
+**This Repository Contains the Framework Itself**
+- You are looking at the Agent OS + PocketFlow **system** that gets installed to `~/.agent-os/`
+- This is NOT a project using the framework - it IS the framework
+- The generator creates templates for **other projects** to use
+
+**Framework Development (this repo):**
+- Improve generator logic in [`.agent-os/workflows/generator.py`](.agent-os/workflows/generator.py)
+- Enhance validation scripts in [`./scripts/validation/`](./scripts/validation/)
+- Develop the system that creates workflows for others
+
+**Framework Usage (your projects):**
+- Where you install PocketFlow as a dependency
+- Where generated templates become working applications  
+- Where the orchestrator agent is useful for planning
+
+> **New Contributors:** You're working on the meta-system that generates templates, not implementing those templates.
+
 ### What This Integration Provides
 
 ✅ **Complete Python/FastAPI Development Stack** - Modern Python 3.12+, FastAPI, Pydantic, uv toolchain  
@@ -76,6 +95,40 @@ Agent OS (Workflow Management) + PocketFlow (LLM Orchestration) = Intelligent De
 - **Design-First Enforcement**: Mandatory design documents with blocking mechanisms
 - **Quality Gates**: Ruff linting, ty type checking, and pytest integration
 - **Template System**: Auto-generation of working PocketFlow, FastAPI, and task templates
+
+## Navigation Guide
+
+**👥 For Framework Contributors:**
+- [Core Components](#core-components) - Generator, validators, templates
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Development guidelines and patterns
+- [Architecture Documentation Plan](docs/architecture-documentation-plan.md) - Future documentation roadmap
+
+**🚀 For Framework Users:**  
+- [System Installation](#system-installation) - Install the framework
+- [Project Setup](#project-setup) - Use the framework in your projects
+- [Automatic Code Generation](#automatic-code-generation-optional) - See what the framework creates
+
+## Core Components
+
+**🔧 Generator System** ([`.agent-os/workflows/generator.py`](./.agent-os/workflows/generator.py))
+- Creates complete PocketFlow projects from YAML specs
+- Generates 12+ files per workflow pattern
+- Template substitution and validation system
+
+**✅ Validation Framework** ([`./scripts/validation/`](./scripts/validation/))
+- 75+ tests ensuring framework reliability
+- Integration, orchestration, and end-to-end validation  
+- Run with [`./scripts/run-all-tests.sh`](./scripts/run-all-tests.sh)
+
+**📋 Template System** ([`templates/`](templates/))
+- PocketFlow, FastAPI, and task templates
+- Variable substitution and code generation
+- Standards enforcement and best practices
+
+**🎯 Standards & Guidelines** ([`standards/`](standards/))
+- [PocketFlow Guidelines](standards/pocket-flow.md) - Framework patterns and best practices
+- [Code Style](standards/code-style.md) - Python, FastAPI, and testing standards
+- [Tech Stack](standards/tech-stack.md) - Technology choices and rationale
 
 ## Quick Start
 

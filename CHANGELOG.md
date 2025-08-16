@@ -5,6 +5,20 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.14] - 2025-08-16
+
+### Enhanced
+- **Documentation Structure Reorganization** - Major improvements to address meta-framework vs application usage confusion
+  - **Documentation Cleanup**: Moved all reference documentation (Agent OS docs, PocketFlow docs, design notes) to `docs/archive/` to eliminate confusion between framework development vs framework usage documentation
+  - **Meta-Framework Clarity**: Added prominent "🚨 Important: Framework vs Usage Context" section to README explaining this repository IS the framework itself, not a project using it
+  - **Navigation Guide**: Added structured navigation with separate paths for framework contributors vs framework users, including direct links to core components
+  - **Core Components Section**: Added comprehensive section with direct code pointers to key framework parts:
+    - Generator System: `.agent-os/workflows/generator.py` - Creates complete PocketFlow projects from YAML specs
+    - Validation Framework: `./scripts/validation/` - 75+ tests ensuring framework reliability  
+    - Template System: `templates/` - PocketFlow, FastAPI, and task templates
+    - Standards & Guidelines: `standards/` - Framework patterns and best practices
+  - **Impact**: Eliminates confusion for new contributors about whether they should be developing the framework or using it, provides clear code tour with direct links to key components
+
 ## [1.10.13] - 2025-08-15
 
 ### Enhanced
