@@ -226,7 +226,7 @@ cd ~/.agent-os/workflows
 python generator.py your-workflow-spec.yaml
 
 # Option 3: See working examples
-ls -la testcontentanalyzer/  # Complete generated PocketFlow app
+ls -la testcontentanalyzer/  # Generated PocketFlow template with TODO placeholders (framework validation example)
 
 # Test the generation system
 python test-full-generation.py
