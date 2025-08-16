@@ -142,6 +142,15 @@ grep -r "PocketFlow" --include="*.py" .
 - Check for Task tool usage with orchestrator agent
 - Verify orchestrator is only referenced in templates/docs
 - Ensure no direct agent execution in framework scripts
+- **✅ RESOLVED:** All orchestrator references are appropriate for framework repository:
+  - `.claude/agents/pocketflow-orchestrator.md` - Agent definition file for END-USER projects (framework delivers this)
+  - `setup.sh` - Framework installation script that creates the agent file in target projects
+  - `docs/archive/` - Documentation and planning files explaining orchestrator usage patterns
+  - `scripts/validation/` - Framework validation scripts that check orchestrator installation works
+  - `CLAUDE.md` and `CHANGELOG.md` - Framework instructions warning NOT to invoke orchestrator in framework repo
+  - **✅ NO VIOLATIONS FOUND:** Zero direct orchestrator invocations in framework code
+  - **✅ NO TASK TOOL USAGE:** No Task tool calls invoking pocketflow-orchestrator agent
+  - **✅ PROPER BOUNDARIES:** All references are framework delivery/documentation, not usage
 
 **Search Commands:**
 ```bash
