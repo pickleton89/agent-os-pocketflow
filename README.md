@@ -25,24 +25,33 @@ This repository contains a **complete, production-ready integration** of [Agent 
 ✅ **Cross-File Orchestration** (Intelligent dependency management)  
 ✅ **End-to-End Testing** (Complete integration validation framework)
 
-### 🚨 Important: Framework vs Usage Context
+### ⚠️ CRITICAL: This IS the Framework Repository
 
-**This Repository Contains the Framework Itself**
-- You are looking at the Agent OS + PocketFlow **system** that gets installed to `~/.agent-os/`
-- This is NOT a project using the framework - it IS the framework
-- The generator creates templates for **other projects** to use
+**You are viewing the Agent OS + PocketFlow framework itself - NOT a project using it.**
+
+| Framework Repository (This Repo) | Usage Repository (End-User Projects) |
+|----------------------------------|-------------------------------------|
+| 🏗️ **We BUILD** the generator | 🚀 **They USE** generated templates |
+| 🔧 **We CREATE** template systems | ✅ **They IMPLEMENT** business logic |
+| 📝 **We WRITE** placeholder TODOs | 💻 **They COMPLETE** placeholder TODOs |
+| 🧪 **We TEST** the framework itself | ✅ **They TEST** their applications |
+| 📦 **Dependencies**: Template generation tools | 📦 **Dependencies**: PocketFlow + runtime libs |
+
+**Key Principle**: Missing implementations in generated templates are **features, not bugs**. This framework creates starting points for developers, not finished applications.
 
 **Framework Development (this repo):**
 - Improve generator logic in [`.agent-os/workflows/generator.py`](.agent-os/workflows/generator.py)
 - Enhance validation scripts in [`./scripts/validation/`](./scripts/validation/)
 - Develop the system that creates workflows for others
+- Template placeholders and TODO stubs are intentional design features
 
 **Framework Usage (your projects):**
 - Where you install PocketFlow as a dependency
 - Where generated templates become working applications  
 - Where the orchestrator agent is useful for planning
+- Where placeholder code gets implemented
 
-> **New Contributors:** You're working on the meta-system that generates templates, not implementing those templates.
+> **New Contributors:** You're working on the meta-system that generates educational templates, not implementing those templates.
 
 ### What This Integration Provides
 
@@ -96,17 +105,34 @@ Agent OS (Workflow Management) + PocketFlow (LLM Orchestration) = Intelligent De
 - **Quality Gates**: Ruff linting, ty type checking, and pytest integration
 - **Template System**: Auto-generation of working PocketFlow, FastAPI, and task templates
 
-## Navigation Guide
+## 📖 Documentation Navigation
 
-**👥 For Framework Contributors:**
-- [Core Components](#core-components) - Generator, validators, templates
-- [Architecture Documentation](docs/architecture/) - Complete system architecture with diagrams
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Development guidelines and patterns
+### Quick Navigation by Purpose
 
-**🚀 For Framework Users:**  
-- [System Installation](#system-installation) - Install the framework
-- [Project Setup](#project-setup) - Use the framework in your projects
-- [Automatic Code Generation](#automatic-code-generation-optional) - See what the framework creates
+**🏗️ Contributing to the Framework:**
+- **[Framework Development Guide](docs/framework-development/QUICKSTART.md)** - Get started contributing
+- **[Framework Testing](docs/framework-development/TESTING.md)** - Testing the framework itself
+- **[Architecture Documentation](docs/architecture/)** - System internals and design
+- **[Core Components](#core-components)** - Key framework components
+
+**🎨 Understanding Template Generation:**
+- **[Template Generation Overview](docs/template-generation/README.md)** - How the framework creates templates
+- **[Sub-Agents System](docs/template-generation/sub-agents/overview.md)** - Template enhancement agents
+- **[Placeholder Philosophy](docs/template-generation/placeholders.md)** - Why TODOs are features
+- **[Generated Project Structure](#generated-project-structure)** - What the framework produces
+
+**👥 Received a Generated Template?**
+- **[For End-Users Guide](docs/for-end-users/README.md)** - You probably want your generated project docs
+- The documentation you need is WITH your generated template, not here
+
+**🚀 Installing and Using the Framework:**  
+- **[System Installation](#system-installation)** - Install the framework system-wide
+- **[Project Setup](#project-setup)** - Use the framework in your projects
+- **[Automatic Code Generation](#automatic-code-generation-optional)** - See what the framework creates
+
+**📚 Additional Resources:**
+- **[Release Notes](docs/releases/)** - Version history and changes
+- **[Historical Documentation](docs/archive/)** - Previous planning and discussions
 
 ## Core Components
 
@@ -121,11 +147,12 @@ Agent OS (Workflow Management) + PocketFlow (LLM Orchestration) = Intelligent De
 - Template Validator agent with comprehensive quality checks
 - Run with [`./scripts/run-all-tests.sh`](./scripts/run-all-tests.sh)
 
-**🔍 Template Validator** ([`.claude/agents/template-validator.md`](.claude/agents/template-validator.md))
-- Automatic validation of generated PocketFlow templates
-- Python syntax, pattern compliance, and educational quality checks
-- Integrated into template generation pipeline with detailed reporting
-- Framework vs usage distinction enforcement
+**🤖 Sub-Agents System** ([`docs/template-generation/sub-agents/`](docs/template-generation/sub-agents/))
+- **Pattern Recognizer Agent**: Analyzes requirements and identifies optimal PocketFlow patterns
+- **Template Validator Agent**: Validates generated templates for structural correctness and educational value
+- **Dependency Orchestrator Agent**: Manages Python tooling and dependency configuration
+- Intelligent coordination with performance caching (100x+ speedups on repeated requests)
+- Framework vs usage distinction enforcement throughout template generation
 
 **📋 Template System** ([`templates/`](templates/))
 - PocketFlow, FastAPI, and task templates
@@ -326,9 +353,12 @@ agent-os-pocketflow/
 
 ## Documentation & Resources
 
-### Integration Documentation
-- **Implementation Plan**: Complete strategic roadmap at `docs/pocketflow-integration-implementation-plan.md`
-- **Architecture Documentation**: Comprehensive integration guide at `docs/agent-os-pocketflow-documentation.md`
+### Framework Documentation
+- **[Complete Documentation Hub](docs/)** - Organized documentation with clear navigation
+- **[Template Generation System](docs/template-generation/)** - How the framework creates educational templates
+- **[Sub-Agents Implementation](docs/template-generation/sub-agents/implementation.md)** - Complete 5-phase implementation details
+- **[Architecture Documentation](docs/architecture/)** - System internals, components, and data flow
+- **[Framework Development Guide](docs/framework-development/)** - Contributing to the framework
 - **Generated Examples**: Working PocketFlow implementations in `.agent-os/workflows/examples/`
 
 ### Original Agent OS
