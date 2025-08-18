@@ -215,10 +215,10 @@ test_test_structure_ready() {
 test_claude_md_integration() {
     [[ -f "CLAUDE.md" ]] || return 1
     
-    # Check orchestration directives are present
-    grep -q "pocketflow-orchestrator" "CLAUDE.md" || return 1
-    grep -q "Orchestration Mode Active" "CLAUDE.md" || return 1
-    grep -q "ALWAYS invoke the pocketflow-orchestrator" "CLAUDE.md" || return 1
+    # For framework repository: Check that it properly identifies itself as framework
+    grep -q "This IS the Framework" "CLAUDE.md" || return 1
+    grep -q "Framework Development Guidelines" "CLAUDE.md" || return 1
+    grep -q "pocketflow-orchestrator.*for end-user projects" "CLAUDE.md" || return 1
     
     return 0
 }

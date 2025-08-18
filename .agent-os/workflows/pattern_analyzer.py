@@ -76,6 +76,9 @@ class PatternAnalyzer:
     def __init__(self):
         self.pattern_indicators = self._load_pattern_indicators()
         self.context_rules = self._load_context_rules()
+        # Simple caching for performance optimization
+        self._analysis_cache = {}
+        self._cache_size_limit = 100
 
     def _load_pattern_indicators(self) -> List[PatternIndicator]:
         """Load pattern indicator definitions."""
@@ -679,7 +682,13 @@ class PatternAnalyzer:
         return list(set(utilities))[:8]
 
     def analyze_and_recommend(self, requirements_text: str) -> PatternRecommendation:
-        """Complete analysis and recommendation pipeline."""
+        """Complete analysis and recommendation pipeline with caching."""
+        # Check cache first for performance optimization
+        cache_key = hash(requirements_text.strip().lower())
+        if cache_key in self._analysis_cache:
+            logger.debug(f"Cache hit for requirements analysis")
+            return self._analysis_cache[cache_key]
+            
         logger.info(f"Starting pattern analysis for requirements: {requirements_text[:100]}...")
         
         # Step 1: Analyze requirements
@@ -696,7 +705,24 @@ class PatternAnalyzer:
         logger.info(f"Recommended {recommendation.primary_pattern.value} with "
                    f"confidence {recommendation.confidence_score:.2f}")
         
+        # Cache the result for future use
+        self._cache_result(cache_key, recommendation)
+        
         return recommendation
+
+    def _cache_result(self, cache_key: int, recommendation: PatternRecommendation):
+        """Cache analysis result with size management."""
+        if len(self._analysis_cache) >= self._cache_size_limit:
+            # Simple LRU: remove oldest entry (first key)
+            oldest_key = next(iter(self._analysis_cache))
+            del self._analysis_cache[oldest_key]
+        
+        self._analysis_cache[cache_key] = recommendation
+
+    def clear_cache(self):
+        """Clear the analysis cache."""
+        self._analysis_cache.clear()
+        logger.debug("Pattern analysis cache cleared")
 
 
 # Example usage and testing

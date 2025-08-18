@@ -54,6 +54,10 @@ class DependencyOrchestrator:
         self.pattern_dependency_map = self._load_pattern_dependencies()
         self.tool_configurations = self._load_tool_configurations()
         self.version_constraints = self._load_version_constraints()
+        # Caching for generated configurations
+        self._config_cache = {}
+        self._pyproject_cache = {}
+        self._cache_size_limit = 50
     
     def _load_pattern_dependencies(self) -> Dict[str, Dict[str, List[str]]]:
         """Load pattern-specific dependency mappings."""
@@ -262,7 +266,13 @@ class DependencyOrchestrator:
         }
     
     def generate_config_for_pattern(self, pattern: str) -> DependencyConfig:
-        """Generate complete dependency configuration for a specific pattern."""
+        """Generate complete dependency configuration for a specific pattern with caching."""
+        # Check cache first
+        cache_key = pattern.lower().strip()
+        if cache_key in self._config_cache:
+            logger.debug(f"Cache hit for dependency config: {pattern}")
+            return self._config_cache[cache_key]
+            
         logger.info(f"Generating dependency config for pattern: {pattern}")
         
         # Get pattern-specific dependencies
@@ -280,13 +290,18 @@ class DependencyOrchestrator:
         # Get Python version requirement
         python_version = self.version_constraints.get("python", ">=3.9")
         
-        return DependencyConfig(
+        config = DependencyConfig(
             base_dependencies=base_deps,
             pattern_dependencies=pattern_deps,
             dev_dependencies=dev_deps,
             python_version=python_version,
             tool_configs=tool_configs
         )
+        
+        # Cache the result
+        self._cache_config(cache_key, config)
+        
+        return config
     
     def _get_pattern_dependencies(self, pattern: str) -> List[str]:
         """Get dependencies specific to a pattern."""
@@ -666,6 +681,21 @@ build-backend = "hatchling.build"
                 issues["warnings"].append("No HTTP client detected for TOOL pattern")
         
         return issues
+
+    def _cache_config(self, cache_key: str, config: DependencyConfig):
+        """Cache dependency configuration with size management."""
+        if len(self._config_cache) >= self._cache_size_limit:
+            # Remove oldest entry
+            oldest_key = next(iter(self._config_cache))
+            del self._config_cache[oldest_key]
+        
+        self._config_cache[cache_key] = config
+
+    def clear_cache(self):
+        """Clear all caches."""
+        self._config_cache.clear()
+        self._pyproject_cache.clear()
+        logger.debug("Dependency orchestrator caches cleared")
 
 
 def main():
