@@ -528,6 +528,10 @@ class PocketFlowGenerator:
         # Generate installation checker reference
         output_files["check-install.py"] = self._generate_install_checker_reference()
         
+        # Generate dependency configuration files
+        dependency_files = self._generate_dependency_files(spec)
+        output_files.update(dependency_files)
+        
         # Generate package initialization files
         output_files["__init__.py"] = self._generate_init_file(spec, is_root=True)
         output_files["tests/__init__.py"] = self._generate_init_file(spec, is_test=True)
@@ -630,6 +634,416 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+'''
+
+    def _generate_dependency_files(self, spec: WorkflowSpec) -> Dict[str, str]:
+        """Generate dependency configuration files using dependency orchestrator."""
+        files = {}
+        
+        try:
+            from .dependency_orchestrator import DependencyOrchestrator
+            
+            orchestrator = DependencyOrchestrator()
+            project_name = spec.name.lower().replace(" ", "-")
+            
+            # Generate pyproject.toml
+            files["pyproject.toml"] = orchestrator.generate_pyproject_toml(
+                project_name, 
+                spec.pattern,
+                spec.description
+            )
+            
+            # Generate UV configuration files
+            uv_files = orchestrator.generate_uv_config(project_name, spec.pattern)
+            files.update(uv_files)
+            
+            # Generate requirements files for easier manual management
+            config = orchestrator.generate_config_for_pattern(spec.pattern)
+            
+            # requirements.txt (runtime dependencies)
+            runtime_deps = list(set(config.base_dependencies + config.pattern_dependencies))
+            files["requirements.txt"] = "\n".join(sorted(runtime_deps)) + "\n"
+            
+            # requirements-dev.txt (development dependencies)
+            files["requirements-dev.txt"] = "\n".join(sorted(config.dev_dependencies)) + "\n"
+            
+            # .gitignore optimized for Python projects
+            files[".gitignore"] = self._generate_gitignore()
+            
+            # README.md with dependency setup instructions
+            files["README.md"] = self._generate_readme(spec, config)
+            
+        except Exception as e:
+            logger.warning(f"Failed to generate dependency files: {e}")
+            # Fallback to basic files
+            files["pyproject.toml"] = self._generate_basic_pyproject(spec)
+            files["requirements.txt"] = "pocketflow\npydantic>=2.0\nfastapi>=0.104.0\n"
+            files["requirements-dev.txt"] = "pytest>=7.0.0\nruff>=0.1.0\n"
+            files[".gitignore"] = self._generate_gitignore()
+            files["README.md"] = self._generate_basic_readme(spec)
+        
+        return files
+    
+    def _generate_gitignore(self) -> str:
+        """Generate .gitignore file for Python projects."""
+        return '''# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+*.log
+temp/
+tmp/
+'''
+
+    def _generate_readme(self, spec: WorkflowSpec, config: Any) -> str:
+        """Generate README.md with setup instructions."""
+        project_name = spec.name.lower().replace(" ", "-")
+        
+        return f'''# {spec.name}
+
+{spec.description}
+
+## Overview
+
+This is a PocketFlow {spec.pattern} pattern implementation generated by Agent OS + PocketFlow Framework.
+
+## Setup
+
+### Prerequisites
+
+- Python {config.python_version}
+- UV package manager (recommended) or pip
+
+### Installation with UV (Recommended)
+
+```bash
+# Install dependencies
+uv sync
+
+# Activate virtual environment
+uv shell
+
+# Install development dependencies
+uv sync --dev
+```
+
+### Installation with pip
+
+```bash
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\\Scripts\\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Install development dependencies
+pip install -r requirements-dev.txt
+```
+
+## Development
+
+### Running Tests
+
+```bash
+# With UV
+uv run pytest
+
+# With pip
+pytest
+```
+
+### Code Quality
+
+```bash
+# Linting and formatting
+uv run ruff check --fix .
+uv run ruff format .
+
+# Type checking
+uv run ty check
+```
+
+### Running the Application
+
+```bash
+# Development server (if FastAPI enabled)
+{'uv run uvicorn main:app --reload' if spec.fast_api_integration else '# Run your workflow directly'}
+
+# Or run the flow directly
+uv run python -c "from flow import {spec.name}Flow; import asyncio; flow = {spec.name}Flow(); asyncio.run(flow.run_async({{}}))"
+```
+
+## Architecture
+
+### Pattern: {spec.pattern}
+
+This workflow implements the {spec.pattern} pattern with the following components:
+
+#### Nodes
+{chr(10).join(f'- **{node["name"]}**: {node["description"]}' for node in spec.nodes)}
+
+#### Utilities
+{chr(10).join(f'- **{util["name"]}**: {util["description"]}' for util in spec.utilities)}
+
+### FastAPI Integration
+
+{'✅ Enabled - API endpoints available at `/api/v1/`' if spec.fast_api_integration else '❌ Not enabled for this workflow'}
+
+## Project Structure
+
+```
+{project_name}/
+├── pyproject.toml          # Project configuration and dependencies
+├── requirements.txt        # Runtime dependencies
+├── requirements-dev.txt    # Development dependencies
+├── README.md              # This file
+├── .gitignore             # Git ignore rules
+├── docs/
+│   └── design.md          # Detailed design document
+├── schemas/
+│   └── models.py          # Pydantic models
+├── utils/                 # Utility functions
+├── nodes.py               # PocketFlow nodes
+├── flow.py                # Main workflow
+├── tests/                 # Test files
+{'├── main.py               # FastAPI application' if spec.fast_api_integration else ''}
+{'└── router.py             # API routes' if spec.fast_api_integration else ''}
+```
+
+## Next Steps
+
+1. **Review Design**: Check `docs/design.md` for complete specifications
+2. **Implement Utilities**: Complete functions in `utils/` directory
+3. **Implement Nodes**: Complete business logic in `nodes.py`
+4. **Test**: Run tests and ensure all pass
+5. **Deploy**: Follow your deployment process
+
+## Generated Files
+
+This project was generated by Agent OS + PocketFlow Framework. Key files to customize:
+
+- **`utils/*.py`**: Implement your utility functions
+- **`nodes.py`**: Complete node implementations
+- **`docs/design.md`**: Review and complete design specifications
+
+## Support
+
+For questions about PocketFlow patterns and implementation:
+- Check the design document: `docs/design.md`
+- Review PocketFlow documentation
+- Check Agent OS documentation
+
+Generated on: {datetime.now().isoformat()[:10]}
+'''
+
+    def _generate_basic_pyproject(self, spec: WorkflowSpec) -> str:
+        """Generate basic pyproject.toml as fallback."""
+        project_name = spec.name.lower().replace(" ", "-")
+        
+        return f'''[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "{project_name}"
+version = "0.1.0"
+description = "{spec.description}"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pocketflow",
+    "pydantic>=2.0",
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "ruff>=0.1.0",
+    "ty>=0.5.0",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+'''
+
+    def _generate_basic_readme(self, spec: WorkflowSpec) -> str:
+        """Generate basic README.md as fallback."""
+        project_name = spec.name.lower().replace(" ", "-")
+        
+        return f'''# {spec.name}
+
+{spec.description}
+
+## Setup
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run tests
+pytest
+```
+
+Pattern: {spec.pattern}
+Generated: {datetime.now().isoformat()[:10]}
 '''
 
     def _generate_design_doc(self, spec: WorkflowSpec) -> str:
@@ -1616,8 +2030,22 @@ This is a generated design document template. Please complete with actual requir
 
     def generate_dependency_config(self, pattern: str) -> DependencyConfig:
         """Generate dependency configuration via dependency-orchestrator agent."""
-        # This is a coordination function that would interface with the dependency-orchestrator agent
-        # For now, return basic config
+        try:
+            from .dependency_orchestrator import DependencyOrchestrator
+            
+            orchestrator = DependencyOrchestrator()
+            config = orchestrator.generate_config_for_pattern(pattern)
+            return config
+            
+        except ImportError:
+            # Fallback implementation if orchestrator not available
+            return self._generate_basic_dependency_config(pattern)
+        except Exception as e:
+            logger.warning(f"Dependency orchestrator failed: {e}, using fallback")
+            return self._generate_basic_dependency_config(pattern)
+
+    def _generate_basic_dependency_config(self, pattern: str) -> DependencyConfig:
+        """Generate basic dependency configuration as fallback."""
         base_deps = ["pocketflow", "pydantic", "fastapi"]
         
         pattern_deps = {
