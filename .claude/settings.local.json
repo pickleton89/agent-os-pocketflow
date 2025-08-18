@@ -48,7 +48,8 @@
       "Bash(uv pip:*)",
       "Bash(sed:*)",
       "Bash(uv build:*)",
-      "Bash(true)"
+      "Bash(true)",
+      "mcp__graphiti__get_episodes"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
