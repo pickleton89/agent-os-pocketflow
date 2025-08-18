@@ -93,6 +93,402 @@ class PocketFlowGenerator:
         for template_file in self.templates_path.glob("*.md"):
             templates[template_file.stem] = template_file.read_text()
         return templates
+    
+    def generate_spec_from_analysis(self, name: str, description: str, recommendation: PatternRecommendation) -> WorkflowSpec:
+        """Generate a WorkflowSpec from pattern analysis recommendation."""
+        
+        # Extract suggested nodes from workflow suggestions
+        suggested_utilities = recommendation.template_customizations.get("suggested_utilities", [])
+        workflow_suggestions = getattr(recommendation, 'workflow_suggestions', {})
+        
+        # Generate nodes based on pattern and suggestions
+        nodes = self._generate_nodes_from_pattern(
+            recommendation.primary_pattern, 
+            workflow_suggestions
+        )
+        
+        # Generate utilities based on pattern and analysis
+        utilities = self._generate_utilities_from_pattern(
+            recommendation.primary_pattern,
+            suggested_utilities
+        )
+        
+        # Generate shared store schema based on pattern
+        shared_store_schema = self._generate_shared_store_from_pattern(
+            recommendation.primary_pattern
+        )
+        
+        # Determine if FastAPI integration is needed
+        fast_api_integration = any(
+            indicator in description.lower() 
+            for indicator in ["api", "endpoint", "service", "rest", "web"]
+        )
+        
+        # Generate API endpoints if FastAPI is enabled
+        api_endpoints = []
+        if fast_api_integration:
+            api_endpoints = [{
+                "name": "Process",
+                "method": "post",
+                "path": "/process",
+                "description": f"Execute {name} workflow",
+                "request_fields": [
+                    {"name": "input_data", "type": "str"},
+                    {"name": "options", "type": "Optional[Dict[str, Any]]"}
+                ],
+                "response_fields": [
+                    {"name": "result", "type": "Dict[str, Any]"},
+                    {"name": "status", "type": "str"},
+                    {"name": "processing_time", "type": "float"}
+                ]
+            }]
+        
+        return WorkflowSpec(
+            name=name,
+            pattern=recommendation.primary_pattern,
+            description=description,
+            nodes=nodes,
+            utilities=utilities,
+            shared_store_schema=shared_store_schema,
+            api_endpoints=api_endpoints,
+            fast_api_integration=fast_api_integration
+        )
+        
+    def _generate_nodes_from_pattern(self, pattern: str, workflow_suggestions: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Generate node specifications based on pattern type."""
+        
+        pattern_node_templates = {
+            "RAG": [
+                {"name": "DocumentLoader", "description": "Load and preprocess documents for retrieval", "type": "Node"},
+                {"name": "EmbeddingGenerator", "description": "Generate embeddings for document chunks", "type": "AsyncNode"},
+                {"name": "QueryProcessor", "description": "Process and enhance user queries", "type": "Node"},
+                {"name": "Retriever", "description": "Retrieve relevant documents based on query", "type": "AsyncNode"},
+                {"name": "ContextFormatter", "description": "Format retrieved documents for generation", "type": "Node"},
+                {"name": "LLMGenerator", "description": "Generate response using LLM with context", "type": "AsyncNode"}
+            ],
+            "AGENT": [
+                {"name": "TaskAnalyzer", "description": "Analyze and understand the given task", "type": "Node"},
+                {"name": "PlanningEngine", "description": "Create execution plan for the task", "type": "AsyncNode"},
+                {"name": "ReasoningNode", "description": "Apply reasoning to make decisions", "type": "AsyncNode"},
+                {"name": "ActionExecutor", "description": "Execute planned actions", "type": "AsyncNode"},
+                {"name": "ResultEvaluator", "description": "Evaluate and validate results", "type": "Node"}
+            ],
+            "TOOL": [
+                {"name": "InputValidator", "description": "Validate and sanitize input data", "type": "Node"},
+                {"name": "AuthHandler", "description": "Handle authentication for external services", "type": "AsyncNode"},
+                {"name": "APIClient", "description": "Make requests to external APIs", "type": "AsyncNode"},
+                {"name": "DataTransformer", "description": "Transform data between formats", "type": "Node"},
+                {"name": "ResponseProcessor", "description": "Process and format API responses", "type": "Node"}
+            ],
+            "WORKFLOW": [
+                {"name": "InputProcessor", "description": "Process and validate workflow input", "type": "Node"},
+                {"name": "BusinessLogic", "description": "Execute core business logic", "type": "Node"},
+                {"name": "DataProcessor", "description": "Process and transform data", "type": "Node"},
+                {"name": "OutputFormatter", "description": "Format and prepare output", "type": "Node"}
+            ],
+            "MAPREDUCE": [
+                {"name": "TaskDistributor", "description": "Distribute tasks across workers", "type": "BatchNode"},
+                {"name": "MapProcessor", "description": "Process individual data chunks", "type": "AsyncBatchNode"},
+                {"name": "IntermediateAggregator", "description": "Aggregate intermediate results", "type": "BatchNode"},
+                {"name": "ReduceProcessor", "description": "Reduce results to final output", "type": "AsyncBatchNode"},
+                {"name": "ResultCollector", "description": "Collect and format final results", "type": "Node"}
+            ],
+            "MULTI-AGENT": [
+                {"name": "TaskCoordinator", "description": "Coordinate tasks among multiple agents", "type": "Node"},
+                {"name": "SpecialistAgent", "description": "Execute specialized tasks", "type": "AsyncNode"},
+                {"name": "ConsensusManager", "description": "Manage consensus between agents", "type": "Node"},
+                {"name": "ResultIntegrator", "description": "Integrate results from multiple agents", "type": "Node"}
+            ],
+            "STRUCTURED-OUTPUT": [
+                {"name": "SchemaValidator", "description": "Validate input against schema", "type": "Node"},
+                {"name": "DataProcessor", "description": "Process data according to schema", "type": "Node"},
+                {"name": "OutputStructurer", "description": "Structure output according to schema", "type": "Node"},
+                {"name": "FormatValidator", "description": "Validate final output format", "type": "Node"}
+            ]
+        }
+        
+        # Get nodes for the specific pattern
+        default_nodes = pattern_node_templates.get(pattern, pattern_node_templates["WORKFLOW"])
+        
+        # Customize based on workflow suggestions if available
+        if workflow_suggestions:
+            # Override nodes if specific suggestions are provided
+            for node_type in ["preprocessing_nodes", "retrieval_nodes", "generation_nodes", 
+                             "planning_nodes", "execution_nodes", "reflection_nodes",
+                             "integration_nodes", "transformation_nodes", "validation_nodes"]:
+                if node_type in workflow_suggestions:
+                    suggested_names = workflow_suggestions[node_type]
+                    # Replace relevant nodes with suggested ones
+                    for i, node_name in enumerate(suggested_names[:len(default_nodes)]):
+                        if i < len(default_nodes):
+                            default_nodes[i]["name"] = "".join(word.capitalize() for word in node_name.split("_"))
+                            default_nodes[i]["description"] = f"Handle {node_name.replace('_', ' ')} operations"
+        
+        return default_nodes
+    
+    def _generate_utilities_from_pattern(self, pattern: str, suggested_utilities: List[str]) -> List[Dict[str, Any]]:
+        """Generate utility function specifications based on pattern."""
+        
+        pattern_utility_templates = {
+            "RAG": [
+                {
+                    "name": "vector_search",
+                    "description": "Search vectors using similarity matching",
+                    "parameters": [
+                        {"name": "query_vector", "type": "List[float]"},
+                        {"name": "top_k", "type": "int", "optional": True}
+                    ],
+                    "return_type": "List[Dict[str, Any]]",
+                    "async": True
+                },
+                {
+                    "name": "document_processor", 
+                    "description": "Process documents into chunks with embeddings",
+                    "parameters": [
+                        {"name": "documents", "type": "List[str]"},
+                        {"name": "chunk_size", "type": "int", "optional": True}
+                    ],
+                    "return_type": "List[Dict[str, Any]]",
+                    "async": True
+                }
+            ],
+            "AGENT": [
+                {
+                    "name": "llm_client",
+                    "description": "Interface with LLM for reasoning and generation", 
+                    "parameters": [
+                        {"name": "prompt", "type": "str"},
+                        {"name": "model_config", "type": "Dict[str, Any]", "optional": True}
+                    ],
+                    "return_type": "str",
+                    "async": True
+                },
+                {
+                    "name": "reasoning_engine",
+                    "description": "Apply structured reasoning to problems",
+                    "parameters": [
+                        {"name": "context", "type": "Dict[str, Any]"},
+                        {"name": "reasoning_type", "type": "str", "optional": True}
+                    ],
+                    "return_type": "Dict[str, Any]",
+                    "async": True
+                }
+            ],
+            "TOOL": [
+                {
+                    "name": "api_client",
+                    "description": "Generic HTTP client for external API calls",
+                    "parameters": [
+                        {"name": "endpoint", "type": "str"},
+                        {"name": "method", "type": "str"}, 
+                        {"name": "data", "type": "Dict[str, Any]", "optional": True}
+                    ],
+                    "return_type": "Dict[str, Any]",
+                    "async": True
+                },
+                {
+                    "name": "data_transformer",
+                    "description": "Transform data between different formats",
+                    "parameters": [
+                        {"name": "data", "type": "Any"},
+                        {"name": "target_format", "type": "str"}
+                    ],
+                    "return_type": "Any"
+                }
+            ]
+        }
+        
+        # Start with pattern-specific utilities
+        utilities = pattern_utility_templates.get(pattern, [])
+        
+        # Add utilities based on suggestions
+        for suggestion in suggested_utilities:
+            if not any(util["name"] == suggestion for util in utilities):
+                utilities.append({
+                    "name": suggestion,
+                    "description": f"Utility function for {suggestion.replace('_', ' ')}",
+                    "parameters": [{"name": "input_data", "type": "Any"}],
+                    "return_type": "Any",
+                    "async": True if "client" in suggestion or "api" in suggestion else False
+                })
+        
+        return utilities
+    
+    def _generate_shared_store_from_pattern(self, pattern: str) -> Dict[str, str]:
+        """Generate shared store schema based on pattern."""
+        
+        pattern_schemas = {
+            "RAG": {
+                "query": "str",
+                "documents": "List[Dict[str, Any]]",
+                "embeddings": "List[List[float]]",
+                "retrieved_docs": "List[Dict[str, Any]]",
+                "context": "str",
+                "generated_response": "str",
+                "metadata": "Dict[str, Any]"
+            },
+            "AGENT": {
+                "task": "str",
+                "plan": "List[Dict[str, Any]]",
+                "current_state": "Dict[str, Any]",
+                "reasoning_history": "List[str]",
+                "actions_taken": "List[Dict[str, Any]]",
+                "result": "Dict[str, Any]",
+                "confidence": "float"
+            },
+            "TOOL": {
+                "input_data": "Dict[str, Any]",
+                "processed_data": "Dict[str, Any]",
+                "api_responses": "List[Dict[str, Any]]",
+                "transformed_data": "Dict[str, Any]",
+                "final_result": "Dict[str, Any]",
+                "error_info": "Optional[str]"
+            },
+            "WORKFLOW": {
+                "input_data": "Any",
+                "processing_state": "Dict[str, Any]", 
+                "intermediate_results": "List[Any]",
+                "output_data": "Any",
+                "metadata": "Dict[str, Any]"
+            }
+        }
+        
+        return pattern_schemas.get(pattern, pattern_schemas["WORKFLOW"])
+
+    def generate_workflow_from_requirements(self, name: str, requirements: str) -> Dict[str, str]:
+        """Generate complete workflow from natural language requirements using pattern analysis."""
+        
+        # Step 1: Analyze requirements to determine optimal pattern
+        print(f"Analyzing requirements for pattern recognition...")
+        recommendation = self.request_pattern_analysis(requirements)
+        
+        print(f"Pattern Analysis Results:")
+        print(f"   Primary Pattern: {recommendation.primary_pattern}")
+        print(f"   Confidence: {recommendation.confidence_score:.2f}")
+        print(f"   Rationale: {recommendation.rationale}")
+        
+        if recommendation.secondary_patterns:
+            print(f"   Alternative Patterns: {', '.join(recommendation.secondary_patterns)}")
+        
+        # Step 2: Generate WorkflowSpec from analysis
+        print(f"Generating workflow specification...")
+        spec = self.generate_spec_from_analysis(name, requirements, recommendation)
+        
+        print(f"Generated Specification:")
+        print(f"   Nodes: {len(spec.nodes)}")
+        print(f"   Utilities: {len(spec.utilities)}")
+        print(f"   FastAPI Integration: {spec.fast_api_integration}")
+        
+        # Step 3: Generate workflow files
+        print(f"Generating workflow implementation...")
+        workflow_files = self.generate_workflow(spec)
+        
+        # Step 4: Add pattern analysis to design document
+        self._enhance_design_with_pattern_analysis(workflow_files, recommendation, spec)
+        
+        return workflow_files
+    
+    def _enhance_design_with_pattern_analysis(self, workflow_files: Dict[str, str], 
+                                           recommendation: PatternRecommendation, 
+                                           spec: WorkflowSpec) -> None:
+        """Enhance the design document with pattern analysis details."""
+        
+        if "docs/design.md" in workflow_files:
+            design_content = workflow_files["docs/design.md"]
+            
+            # Generate workflow graph
+            try:
+                from .workflow_graph_generator import WorkflowGraphGenerator, PatternType
+                from .pattern_analyzer import PatternType as AnalyzerPatternType
+                
+                # Convert string pattern back to enum for graph generation
+                pattern_enum = AnalyzerPatternType(recommendation.primary_pattern)
+                
+                graph_generator = WorkflowGraphGenerator()
+                workflow_graph = graph_generator.generate_workflow_graph(pattern_enum, complexity_level="medium")
+                
+                # Generate Mermaid diagram
+                mermaid_diagram = graph_generator.generate_mermaid_diagram(workflow_graph)
+                
+                # Generate workflow description
+                workflow_description = graph_generator.generate_workflow_description(workflow_graph)
+                
+            except ImportError:
+                mermaid_diagram = self._generate_basic_mermaid(spec)
+                workflow_description = "Workflow graph generator not available."
+            except Exception as e:
+                mermaid_diagram = self._generate_basic_mermaid(spec)
+                workflow_description = f"Graph generation failed: {str(e)}"
+            
+            # Add pattern analysis section after the pattern classification
+            # Use detailed justification if available, otherwise fall back to brief rationale
+            detailed_analysis = getattr(recommendation, 'detailed_justification', '') or recommendation.rationale
+            
+            pattern_analysis_section = f"""
+
+### Pattern Analysis Results
+
+**Analysis Confidence:** {recommendation.confidence_score:.1%}
+
+#### Detailed Pattern Justification
+
+{detailed_analysis}
+
+#### Template Customizations Applied
+{self._format_customizations_for_doc(recommendation.template_customizations)}
+
+#### Generated Architecture
+- **Nodes Generated:** {len(spec.nodes)} specialized processing nodes
+- **Utilities Generated:** {len(spec.utilities)} pattern-specific utility functions
+- **API Integration:** {'Enabled' if spec.fast_api_integration else 'Disabled'}
+- **Shared Store Schema:** Optimized for {recommendation.primary_pattern} pattern workflows
+
+### Workflow Graph
+
+{mermaid_diagram}
+
+### Workflow Analysis
+
+{workflow_description[:500] + ('...' if len(workflow_description) > 500 else '')}"""
+
+            # Insert after the pattern classification section
+            if "### Design Pattern Classification" in design_content:
+                parts = design_content.split("### Input/Output Specification", 1)
+                if len(parts) == 2:
+                    workflow_files["docs/design.md"] = (
+                        parts[0] + pattern_analysis_section + "\n\n### Input/Output Specification" + parts[1]
+                    )
+    
+    def _generate_basic_mermaid(self, spec: WorkflowSpec) -> str:
+        """Generate a basic Mermaid diagram as fallback."""
+        lines = [
+            "```mermaid",
+            "graph TD",
+            "    A[Start] --> B[Input Validation]"
+        ]
+        
+        # Add nodes
+        prev_node = "B"
+        for i, node in enumerate(spec.nodes):
+            node_id = chr(ord("C") + i)
+            lines.append(f"    {prev_node} --> {node_id}[{node['name']}]")
+            prev_node = node_id
+        
+        lines.append(f"    {prev_node} --> Z[End]")
+        lines.append("```")
+        
+        return "\n".join(lines)
+    
+    def _format_customizations_for_doc(self, customizations: Dict[str, Any]) -> str:
+        """Format customizations for documentation."""
+        if not customizations:
+            return "- No specific customizations applied"
+        
+        formatted = []
+        for key, value in customizations.items():
+            formatted.append(f"- **{key.replace('_', ' ').title()}:** {value}")
+        
+        return "\n".join(formatted)
 
     def generate_workflow(self, spec: WorkflowSpec) -> Dict[str, str]:
         """Generate complete workflow implementation from spec."""
@@ -1188,13 +1584,35 @@ This is a generated design document template. Please complete with actual requir
 
     def request_pattern_analysis(self, requirements: str) -> PatternRecommendation:
         """Request pattern analysis from pattern-recognizer agent."""
-        # This is a coordination function that would interface with the pattern-recognizer agent
-        # For now, return a basic recommendation
-        return PatternRecommendation(
-            primary_pattern="AGENT",
-            confidence_score=0.8,
-            rationale="Pattern analysis agent integration pending"
-        )
+        try:
+            from .pattern_analyzer import PatternAnalyzer
+            
+            analyzer = PatternAnalyzer()
+            recommendation = analyzer.analyze_and_recommend(requirements)
+            
+            # Convert PatternType enum to string for compatibility
+            return PatternRecommendation(
+                primary_pattern=recommendation.primary_pattern.value,
+                confidence_score=recommendation.confidence_score,
+                secondary_patterns=[p.value for p in recommendation.secondary_patterns],
+                rationale=recommendation.rationale,
+                template_customizations=recommendation.template_customizations
+            )
+            
+        except ImportError:
+            # Fallback if pattern analyzer is not available
+            return PatternRecommendation(
+                primary_pattern="WORKFLOW",
+                confidence_score=0.6,
+                rationale="Pattern analyzer not available - using default WORKFLOW pattern"
+            )
+        except Exception as e:
+            # Fallback for any other errors
+            return PatternRecommendation(
+                primary_pattern="WORKFLOW", 
+                confidence_score=0.5,
+                rationale=f"Pattern analysis failed ({str(e)}) - using default WORKFLOW pattern"
+            )
 
     def generate_dependency_config(self, pattern: str) -> DependencyConfig:
         """Generate dependency configuration via dependency-orchestrator agent."""
