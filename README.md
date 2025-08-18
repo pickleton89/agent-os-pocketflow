@@ -118,7 +118,14 @@ Agent OS (Workflow Management) + PocketFlow (LLM Orchestration) = Intelligent De
 **✅ Validation Framework** ([`./scripts/validation/`](./scripts/validation/))
 - 75+ tests ensuring framework reliability
 - Integration, orchestration, and end-to-end validation  
+- Template Validator agent with comprehensive quality checks
 - Run with [`./scripts/run-all-tests.sh`](./scripts/run-all-tests.sh)
+
+**🔍 Template Validator** ([`.claude/agents/template-validator.md`](.claude/agents/template-validator.md))
+- Automatic validation of generated PocketFlow templates
+- Python syntax, pattern compliance, and educational quality checks
+- Integrated into template generation pipeline with detailed reporting
+- Framework vs usage distinction enforcement
 
 **📋 Template System** ([`templates/`](templates/))
 - PocketFlow, FastAPI, and task templates

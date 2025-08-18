@@ -8,9 +8,8 @@ and templates, following the 8-step Agentic Coding methodology.
 
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, List, Any
 from dataclasses import dataclass, field
-from enum import Enum
 
 try:
     import yaml
@@ -194,7 +193,7 @@ for util_file in _utils_dir.glob("*.py"):
     if util_file.name not in ["__init__.py"]:
         module_name = util_file.stem
         try:
-            importlib.import_module(f".{module_name}", package=__name__)
+            importlib.import_module(f".{{module_name}}", package=__name__)
         except ImportError:
             pass  # Skip utility files with missing dependencies
 '''
@@ -488,7 +487,7 @@ graph TD
             "formatter": 'return shared.get("raw_data", "")',
             "validator": 'return shared.get("input_data", "")',
             "transformer": 'return shared.get("input_data", "")',
-            "llm": 'prompt = f"Process this: {shared.get(\"content\", \"\")}"\\n        return prompt',
+            "llm": 'prompt = f"Process this: {shared.get(\"content\", \"\")}"\n        return prompt',
             "embedding": 'return shared.get("text", "")',
             "search": 'return shared.get("query", "")',
             "filter": 'return shared.get("items", [])',
@@ -496,30 +495,30 @@ graph TD
         
         # Async exec examples
         exec_examples_async = {
-            "retriever": 'search_results = await search_documents(prep_result)\\n        return search_results',
-            "loader": 'async with aiofiles.open(prep_result, "r") as f:\\n            content = await f.read()\\n        return content',
-            "analyzer": 'analysis = await analyze_content(prep_result)\\n        return analysis',
-            "formatter": 'formatted_data = await format_response_async(prep_result)\\n        return formatted_data',
-            "validator": 'is_valid = await validate_input_async(prep_result)\\n        return {"valid": is_valid, "data": prep_result}',
-            "transformer": 'transformed = await transform_data_async(prep_result)\\n        return transformed',
-            "llm": 'response = await call_llm(prep_result)\\n        return response',
-            "embedding": 'embedding = await get_embedding(prep_result)\\n        return embedding',
-            "search": 'results = await search_vector_db(prep_result)\\n        return results',
-            "filter": 'filtered = await filter_async(prep_result)\\n        return filtered',
+            "retriever": 'search_results = await search_documents(prep_result)\n        return search_results',
+            "loader": 'async with aiofiles.open(prep_result, "r") as f:\n            content = await f.read()\n        return content',
+            "analyzer": 'analysis = await analyze_content(prep_result)\n        return analysis',
+            "formatter": 'formatted_data = await format_response_async(prep_result)\n        return formatted_data',
+            "validator": 'is_valid = await validate_input_async(prep_result)\n        return {"valid": is_valid, "data": prep_result}',
+            "transformer": 'transformed = await transform_data_async(prep_result)\n        return transformed',
+            "llm": 'response = await call_llm(prep_result)\n        return response',
+            "embedding": 'embedding = await get_embedding(prep_result)\n        return embedding',
+            "search": 'results = await search_vector_db(prep_result)\n        return results',
+            "filter": 'filtered = await filter_async(prep_result)\n        return filtered',
         }
         
         # Sync exec examples  
         exec_examples_sync = {
-            "retriever": 'search_results = search_documents(prep_result)\\n        return search_results',
-            "loader": 'with open(prep_result, "r") as f:\\n            content = f.read()\\n        return content',
-            "analyzer": 'analysis = analyze_content(prep_result)\\n        return analysis',
-            "formatter": 'formatted_data = format_response(prep_result)\\n        return formatted_data',
-            "validator": 'is_valid = validate_input(prep_result)\\n        return {"valid": is_valid, "data": prep_result}',
-            "transformer": 'transformed = transform_data(prep_result)\\n        return transformed',
-            "llm": 'response = call_llm_sync(prep_result)\\n        return response',
-            "embedding": 'embedding = get_embedding_sync(prep_result)\\n        return embedding',
-            "search": 'results = search_vector_db_sync(prep_result)\\n        return results',
-            "filter": 'filtered = [item for item in prep_result if meets_criteria(item)]\\n        return filtered',
+            "retriever": 'search_results = search_documents(prep_result)\n        return search_results',
+            "loader": 'with open(prep_result, "r") as f:\n            content = f.read()\n        return content',
+            "analyzer": 'analysis = analyze_content(prep_result)\n        return analysis',
+            "formatter": 'formatted_data = format_response(prep_result)\n        return formatted_data',
+            "validator": 'is_valid = validate_input(prep_result)\n        return {"valid": is_valid, "data": prep_result}',
+            "transformer": 'transformed = transform_data(prep_result)\n        return transformed',
+            "llm": 'response = call_llm_sync(prep_result)\n        return response',
+            "embedding": 'embedding = get_embedding_sync(prep_result)\n        return embedding',
+            "search": 'results = search_vector_db_sync(prep_result)\n        return results',
+            "filter": 'filtered = [item for item in prep_result if meets_criteria(item)]\n        return filtered',
         }
         
         # Choose appropriate exec examples based on async flag
@@ -550,7 +549,7 @@ graph TD
         # Default fallback
         return {
             "prep": 'return shared.get("input_data")',
-            "exec": '# Implement your core logic here\\n        return "success"',
+            "exec": '# Implement your core logic here\n        return "success"',
             "post": 'shared["output_data"] = exec_result'
         }
 
@@ -1136,15 +1135,56 @@ This is a generated design document template. Please complete with actual requir
             root_init.write_text("")
 
         print(f"Generated workflow saved to: {workflow_dir}")
+        
+        # Automatically validate generated templates
+        print("\n🔍 Running template validation...")
+        validation_result = self.coordinate_template_validation(str(workflow_dir))
+        
+        if validation_result.is_valid:
+            print("✅ Template validation passed!")
+        else:
+            print("❌ Template validation issues found:")
+            for error in validation_result.errors:
+                print(f"  • Error: {error}")
+            for warning in validation_result.warnings:
+                print(f"  • Warning: {warning}")
+        
+        if validation_result.warnings:
+            print("⚠️  Validation warnings (non-blocking):")
+            for warning in validation_result.warnings:
+                print(f"  • {warning}")
 
     def coordinate_template_validation(self, template_path: str) -> ValidationResult:
         """Coordinate with template-validator agent for post-generation validation."""
-        # This is a coordination function that would interface with the template-validator agent
-        # For now, return a basic validation result
-        return ValidationResult(
-            is_valid=True,
-            warnings=["Template validation agent integration pending"]
-        )
+        try:
+            import sys
+            from pathlib import Path
+            sys.path.insert(0, str(Path(__file__).parent))
+            from template_validator import PocketFlowValidator
+            
+            validator = PocketFlowValidator()
+            template_dir = Path(template_path)
+            
+            result = validator.validate_directory(template_dir)
+            
+            # Convert validation result format
+            return ValidationResult(
+                is_valid=result.is_valid,
+                errors=[issue.message for issue in result.errors],
+                warnings=[issue.message for issue in result.warnings],
+                corrections_applied=[]  # Corrections would be applied in a separate step
+            )
+            
+        except ImportError:
+            return ValidationResult(
+                is_valid=True,
+                warnings=["Template validation module not available - skipping validation"]
+            )
+        except Exception as e:
+            return ValidationResult(
+                is_valid=False,
+                errors=[f"Validation failed: {str(e)}"]
+            )
 
     def request_pattern_analysis(self, requirements: str) -> PatternRecommendation:
         """Request pattern analysis from pattern-recognizer agent."""
