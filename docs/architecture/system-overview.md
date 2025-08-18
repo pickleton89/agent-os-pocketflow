@@ -7,43 +7,67 @@
 
 ## Executive Summary
 
-The Agent OS + PocketFlow integration is a **meta-framework** that generates complete PocketFlow applications. This is NOT a PocketFlow application itself, but rather the system that creates PocketFlow applications for end-users.
+The Agent OS + PocketFlow integration is a **meta-framework** that generates educational PocketFlow templates with intentional placeholder TODOs. This is NOT a PocketFlow application itself, but rather the system that creates learning-oriented template projects for end-users to implement.
+
+**Key Principle**: Missing implementations in generated templates are features, not bugs. This framework creates starting points that teach proper implementation patterns.
 
 ## High-Level System Architecture
 
 ```mermaid
 graph TB
-    subgraph "Meta-Framework Repository (This Repo)"
+    subgraph "Meta-Framework Repository (THIS IS THE FRAMEWORK)"
         A[Agent OS Core] --> B[Integration Layer]
         B --> C[PocketFlow Generator]
         C --> D[Template System]
         D --> E[Validation Framework]
+        
+        subgraph "Sub-Agents Enhancement System"
+            SA1[Pattern Recognizer Agent]
+            SA2[Template Validator Agent] 
+            SA3[Dependency Orchestrator Agent]
+        end
+        
+        C --> SA1
+        SA1 --> C
+        C --> SA2
+        SA2 --> C
+        C --> SA3
+        SA3 --> C
     end
     
-    subgraph "Generated User Projects"
+    subgraph "Generated User Projects (FRAMEWORK OUTPUT)"
         F[Generated PocketFlow App]
         G[FastAPI Integration]
         H[Complete Test Suite]
         I[Design Documents]
+        J[Educational TODO Placeholders]
     end
     
     subgraph "System Installation"
-        J["~/.agent-os/"]
-        K[Global Templates]
-        L[Workflow Scripts]
+        K["~/.agent-os/"]
+        L[Global Templates]
+        M[Workflow Scripts]
+        N[Agent Configurations]
     end
     
     C --> F
     C --> G
     C --> H
     C --> I
-    D --> J
+    SA2 --> J
     D --> K
     D --> L
+    D --> M
+    SA1 --> N
+    SA2 --> N
+    SA3 --> N
     
     style A fill:#e1f5fe
     style C fill:#f3e5f5
     style F fill:#e8f5e8
+    style SA1 fill:#e3f2fd
+    style SA2 fill:#e8f5e8
+    style SA3 fill:#fff3e0
 ```
 
 ## Component Architecture
@@ -80,22 +104,31 @@ graph TB
 sequenceDiagram
     participant U as User
     participant A as Agent OS
+    participant PR as Pattern Recognizer
     participant G as Generator
     participant T as Templates
-    participant V as Validator
+    participant TV as Template Validator
+    participant DO as Dependency Orchestrator
     participant P as Generated Project
     
     U->>A: /create-spec workflow.yaml
+    A->>PR: Analyze requirements
+    PR->>PR: Identify optimal patterns
+    PR-->>A: Pattern recommendations
     A->>G: Generate PocketFlow app
     G->>T: Load templates
     T-->>G: Template content
     G->>G: Process YAML spec
-    G->>P: Create 12+ files
+    G->>DO: Request dependency config
+    DO->>DO: Generate dependencies
+    DO-->>G: pyproject.toml + configs
+    G->>P: Create 12+ files with placeholders
     P-->>G: Generated structure
-    G->>V: Validate generated code
-    V-->>G: Validation results
+    G->>TV: Validate generated templates
+    TV->>TV: Check structure + educational value
+    TV-->>G: Validation results
     G-->>A: Generation complete
-    A-->>U: Ready for implementation
+    A-->>U: Educational template ready for implementation
 ```
 
 ## Integration Points

@@ -17,6 +17,17 @@ graph TB
         F --> G[Validation Engine]
     end
     
+    subgraph "Sub-Agents System (NEW)"
+        SA1[Pattern Recognizer Agent]
+        SA2[Template Validator Agent]
+        SA3[Dependency Orchestrator Agent]
+        
+        SA1 --> SA4[Agent Coordination]
+        SA2 --> SA4
+        SA3 --> SA4
+        SA4 --> SA5[Performance Caching]
+    end
+    
     subgraph "Claude Code Integration"
         H[Orchestrator Agent] --> I[Planning System]
         I --> J[Cross-file Coordination]
@@ -32,6 +43,19 @@ graph TB
     C --> G
     H --> B
     N --> C
+    
+    D --> SA1
+    SA1 --> D
+    F --> SA2
+    SA2 --> F
+    F --> SA3
+    SA3 --> F
+    
+    style SA1 fill:#e3f2fd
+    style SA2 fill:#e8f5e8
+    style SA3 fill:#fff3e0
+    style SA4 fill:#f3e5f5
+    style SA5 fill:#fce4ec
 ```
 
 ## 1. Generator Engine
@@ -71,6 +95,55 @@ classDiagram
 - **Main Generator Class:** [`.agent-os/workflows/generator.py:36`](./.agent-os/workflows/generator.py:36)
 - **Workflow Generation:** [`.agent-os/workflows/generator.py:68`](./.agent-os/workflows/generator.py:68)
 - **Template Processing:** [`.agent-os/workflows/generator.py:61`](./.agent-os/workflows/generator.py:61)
+- **Sub-Agent Coordination:** [`.agent-os/workflows/generator.py:coordinate_template_validation`](./.agent-os/workflows/generator.py)
+
+## 1a. Sub-Agents System (NEW)
+
+**Location:** [`.claude/agents/`](../../.claude/agents/) and [`.agent-os/workflows/`](../../.agent-os/workflows/)
+
+### Sub-Agents Architecture
+```mermaid
+graph TB
+    subgraph "Pattern Recognition"
+        PR1[Requirements Analysis] --> PR2[Pattern Indicators]
+        PR2 --> PR3[Confidence Scoring]
+        PR3 --> PR4[Template Selection]
+    end
+    
+    subgraph "Template Validation"
+        TV1[Syntax Validation] --> TV2[Pattern Compliance]
+        TV2 --> TV3[Educational Quality]
+        TV3 --> TV4[Framework Philosophy]
+    end
+    
+    subgraph "Dependency Orchestration"
+        DO1[Pattern Dependencies] --> DO2[Tool Configuration]
+        DO2 --> DO3[Environment Setup]
+        DO3 --> DO4[Compatibility Check]
+    end
+    
+    subgraph "Coordination & Caching"
+        CC1[Agent Coordination] --> CC2[Performance Cache]
+        CC2 --> CC3[LRU Management]
+    end
+    
+    PR4 --> CC1
+    TV4 --> CC1
+    DO4 --> CC1
+```
+
+### Key Capabilities
+- **Pattern Recognizer**: Analyzes requirements and identifies optimal PocketFlow patterns
+- **Template Validator**: Ensures generated templates maintain educational quality and structural correctness
+- **Dependency Orchestrator**: Manages Python tooling and creates proper dependency configurations
+- **Intelligent Caching**: 100x+ performance improvements through pattern and dependency caching
+
+### Code Pointers
+- **Pattern Analyzer:** [`.agent-os/workflows/pattern_analyzer.py`](../../.agent-os/workflows/pattern_analyzer.py)
+- **Template Validator:** [`.agent-os/workflows/template_validator.py`](../../.agent-os/workflows/template_validator.py)
+- **Dependency Orchestrator:** [`.agent-os/workflows/dependency_orchestrator.py`](../../.agent-os/workflows/dependency_orchestrator.py)
+- **Agent Coordination:** [`.agent-os/workflows/agent_coordination.py`](../../.agent-os/workflows/agent_coordination.py)
+- **Agent Configs:** [`.claude/agents/`](../../.claude/agents/)
 
 ## 2. Template System
 

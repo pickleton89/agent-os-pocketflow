@@ -4,39 +4,154 @@
 
 ## Overview
 
-The generator workflow transforms YAML specifications into complete PocketFlow applications through a multi-stage pipeline. This document provides detailed visual documentation of each stage.
+> **⚠️ FRAMEWORK CONTEXT**: This generator workflow creates educational PocketFlow templates, NOT working applications. The generated templates contain intentional placeholder TODOs for end-users to implement.
 
-## Complete Generation Workflow
+The generator workflow transforms YAML specifications into educational PocketFlow template projects through a multi-stage pipeline enhanced by three intelligent sub-agents. This document provides detailed visual documentation of each stage.
+
+## Complete Generation Workflow (Including Sub-Agents)
 
 ```mermaid
 flowchart TD
     A[YAML Specification] --> B[Input Validation]
-    B --> C[Template Loading]
+    B --> PR[Pattern Recognizer Agent]
+    PR --> PR1[Analyze Requirements]
+    PR1 --> PR2[Identify Patterns]
+    PR2 --> PR3[Pattern Recommendations]
+    PR3 --> C[Template Loading]
     C --> D[Spec Processing]
     D --> E[Core File Generation]
     E --> F[API Integration]
     F --> G[Test Suite Generation]
     G --> H[Documentation Creation]
-    H --> I[Validation Pipeline]
-    I --> J[Project Assembly]
+    H --> DO[Dependency Orchestrator Agent]
+    DO --> DO1[Generate Dependencies]
+    DO1 --> DO2[Configure Tools]
+    DO2 --> DO3[Environment Setup]
+    DO3 --> I[Validation Pipeline]
+    I --> TV[Template Validator Agent]
+    TV --> TV1[Syntax Validation]
+    TV1 --> TV2[Educational Quality Check]
+    TV2 --> TV3[Framework Philosophy Check]
+    TV3 --> J[Project Assembly]
     J --> K[Quality Assurance]
-    K --> L[Generated PocketFlow App]
+    K --> L[Educational PocketFlow Template]
     
-    subgraph "Parallel Processing"
+    subgraph "Parallel Processing (Enhanced)"
         M[Node Generation]
         N[Flow Assembly]
         O[Schema Creation]
         P[Utility Generation]
+        Q[Educational Placeholders]
     end
     
     E --> M
     E --> N
     E --> O
     E --> P
+    TV --> Q
+    
+    subgraph "Sub-Agents Performance Cache"
+        PC[Pattern Cache]
+        DC[Dependency Cache]
+        VC[Validation Cache]
+    end
+    
+    PR --> PC
+    DO --> DC
+    TV --> VC
     
     style A fill:#e1f5fe
     style L fill:#e8f5e8
     style K fill:#fff3e0
+    style PR fill:#e3f2fd
+    style TV fill:#e8f5e8
+    style DO fill:#fff3e0
+    style Q fill:#f3e5f5
+```
+
+## 0. Sub-Agents Integration Workflow (NEW)
+
+### Pattern Recognition Phase
+**Location:** [`.agent-os/workflows/pattern_analyzer.py`](../../.agent-os/workflows/pattern_analyzer.py)
+
+```mermaid
+sequenceDiagram
+    participant G as Generator
+    participant PR as Pattern Recognizer
+    participant PC as Pattern Cache
+    participant DB as Pattern Database
+    
+    G->>PR: Analyze requirements text
+    PR->>PC: Check cache for analysis
+    PC-->>PR: Cache miss/hit
+    
+    alt Cache Miss
+        PR->>DB: Load pattern indicators
+        DB-->>PR: Pattern definitions
+        PR->>PR: Analyze indicators & score
+        PR->>PC: Cache results
+    else Cache Hit
+        PR->>PR: Use cached analysis
+    end
+    
+    PR-->>G: Pattern recommendation with confidence
+    G->>G: Apply pattern to template selection
+```
+
+### Template Validation Phase
+**Location:** [`.agent-os/workflows/template_validator.py`](../../.agent-os/workflows/template_validator.py)
+
+```mermaid
+sequenceDiagram
+    participant G as Generator
+    participant TV as Template Validator
+    participant VC as Validation Cache
+    participant VS as Validation System
+    
+    G->>TV: Validate generated template
+    TV->>VC: Check validation cache
+    VC-->>TV: Cache status
+    
+    alt New Template
+        TV->>VS: Run full validation suite
+        VS->>VS: Check syntax, patterns, quality
+        VS-->>TV: Validation results
+        TV->>VC: Cache validation results
+        TV->>TV: Apply corrections if needed
+    else Known Template
+        TV->>TV: Use cached validation
+    end
+    
+    TV-->>G: Validation report + corrections
+    G->>G: Apply educational enhancements
+```
+
+### Dependency Orchestration Phase
+**Location:** [`.agent-os/workflows/dependency_orchestrator.py`](../../.agent-os/workflows/dependency_orchestrator.py)
+
+```mermaid
+sequenceDiagram
+    participant G as Generator
+    participant DO as Dependency Orchestrator
+    participant DC as Dependency Cache
+    participant PM as Pattern Mapping
+    
+    G->>DO: Request dependencies for pattern
+    DO->>DC: Check dependency cache
+    DC-->>DO: Cache status
+    
+    alt New Pattern Configuration
+        DO->>PM: Load pattern dependencies
+        PM-->>DO: Dependency specifications
+        DO->>DO: Generate pyproject.toml
+        DO->>DO: Configure development tools
+        DO->>DC: Cache configuration
+    else Cached Configuration
+        DO->>DO: Use cached dependencies
+    end
+    
+    DO-->>G: Complete dependency config
+    G->>G: Include in generated project
 ```
 
 ## 1. Input Processing Stage
