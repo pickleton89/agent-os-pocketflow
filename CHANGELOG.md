@@ -5,6 +5,35 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.0] - 2025-01-18
+
+### Added
+- **📚 Complete Documentation Reorganization - Framework Clarity Enhancement** - Comprehensive restructuring of all documentation to eliminate framework vs usage confusion
+  - **New Documentation Structure**: Organized into logical categories (framework-development/, template-generation/, for-end-users/, architecture/, releases/, archive/)
+  - **Framework Context Reinforcement**: Every entry point now clearly states this IS the framework repository, not a project using it
+  - **Main Documentation Index**: Created comprehensive `docs/README.md` with prominent framework warning, decision tree, and clear navigation
+  - **Educational Philosophy Documentation**: New `template-generation/placeholders.md` explaining "TODOs as Features" with detailed code examples
+  - **Sub-Agents System Documentation**: Complete overview in `template-generation/sub-agents/overview.md` with coordination flow and performance metrics
+  - **Framework Testing Guide**: New `framework-development/TESTING.md` specifically for testing the framework itself (not applications built with it)
+  - **End-User Redirect Guide**: New `for-end-users/README.md` that clearly redirects template recipients to their generated project documentation
+  - **Template Generation System**: Comprehensive `template-generation/README.md` explaining the generation pipeline, patterns, and quality standards
+
+### Changed
+- **Documentation Context Updates**: Updated all moved files with proper framework development context
+- **Framework Quickstart**: Enhanced `framework-development/QUICKSTART.md` with clear contributor onboarding and framework-specific guidance
+- **File Organization**: Moved and reorganized 18+ documentation files from flat structure to logical hierarchy
+
+### Removed
+- **Redundant Documentation**: Removed duplicate template-validator quick-reference and troubleshooting files
+- **Completed Planning Documents**: Archived `FRAMEWORK_ANALYSIS_PLAN.md` and `architecture-documentation-plan.md` to prevent confusion
+- **Outdated Files**: Cleaned up files that blurred the framework vs usage distinction
+
+### Impact
+- **Framework Clarity**: Makes it impossible to confuse the framework repository with a project using the framework
+- **Improved Navigation**: Clear paths for contributors, end-users, and different use cases
+- **Educational Value**: Comprehensive explanation of placeholder philosophy and template generation system
+- **Maintainability**: Organized structure that scales with future framework enhancements
+
 ## [1.11.0] - 2025-01-18
 
 ### Completed

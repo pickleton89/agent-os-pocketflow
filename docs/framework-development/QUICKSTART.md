@@ -1,10 +1,14 @@
-# Developer Quick Start Guide
+# Framework Contributor Quick Start Guide
 
-> **New Contributor Onboarding for Agent OS + PocketFlow Framework**
+> **Contributing to the Agent OS + PocketFlow Framework**
 
-## 🚨 Understanding This Repository
+## ⚠️ CRITICAL: Framework Development Context
 
-**You are contributing to the framework itself, not using it.**
+**This guide is for contributing TO the framework, not using it.**
+
+## 🏗️ What This Repository IS
+
+**You are contributing to the meta-framework that generates templates for other projects.**
 
 This repository contains the Agent OS + PocketFlow **meta-framework** - the system that generates templates and workflows for other projects. Understanding this distinction is critical for effective contribution.
 
