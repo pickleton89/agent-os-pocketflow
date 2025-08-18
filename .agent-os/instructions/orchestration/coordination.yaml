@@ -40,6 +40,49 @@ coordination_map:
       - "type_safety_maintained"
       - "tdd_approach_applied"
 
+  # NEW AGENTS - Added for sub-agent implementation
+
+  template-validator:
+    triggers_on: ["template_generation_complete", "generator_completed"]
+    validates: ["structural_integrity", "pattern_compliance", "educational_placeholders"]
+    outputs: ["validation_reports", "structural_corrections"]
+    coordination_method: "post_generation_validation"
+    validation_gates:
+      - "python_syntax_valid"
+      - "pocketflow_patterns_correct"
+      - "pydantic_models_structured"
+      - "placeholder_quality_maintained"
+    quality_enforcement:
+      - "framework_vs_usage_distinction"
+      - "todo_stubs_educational"
+
+  pattern-recognizer:
+    triggers_on: ["requirements_analysis", "spec_creation", "pattern_identification"]
+    analyzes: ["user_requirements", "pattern_indicators", "complexity_assessment"]
+    outputs: ["pattern_recommendations", "template_selections", "workflow_structures"]
+    coordination_method: "requirements_driven_analysis"
+    integrates_with: ["pocketflow-orchestrator"]
+    validation_gates:
+      - "pattern_confidence_threshold"
+      - "requirement_coverage_complete"
+    quality_enforcement:
+      - "pattern_selection_rationale"
+      - "template_customization_appropriate"
+
+  dependency-orchestrator:
+    triggers_on: ["pattern_selected", "template_generated", "environment_setup"]
+    configures: ["python_environment", "development_tools", "dependency_specs"]
+    outputs: ["pyproject_templates", "tool_configs", "environment_specifications"]
+    coordination_method: "pattern_based_configuration"
+    depends_on: ["pattern-recognizer"]
+    validation_gates:
+      - "dependency_compatibility_verified"
+      - "tool_configuration_valid"
+      - "environment_reproducible"
+    quality_enforcement:
+      - "framework_dependency_separation"
+      - "pattern_specific_requirements"
+
 hooks:
   design_document_validation:
     file: "orchestration/orchestrator-hooks.md"
@@ -55,3 +98,20 @@ hooks:
     file: "orchestration/orchestrator-hooks.md"
     section: "validate_individual_task_completion"
     required_for: ["execute-task"]
+
+  # NEW HOOKS for sub-agents
+
+  sub_agent_coordination:
+    file: "orchestration/sub-agent-coordination.md"
+    section: "coordinate_template_validation"
+    required_for: ["template-validator"]
+
+  pattern_analysis_validation:
+    file: "orchestration/sub-agent-coordination.md" 
+    section: "validate_pattern_analysis"
+    required_for: ["pattern-recognizer"]
+
+  dependency_config_validation:
+    file: "orchestration/sub-agent-coordination.md"
+    section: "validate_dependency_configuration"
+    required_for: ["dependency-orchestrator"]

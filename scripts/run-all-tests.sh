@@ -61,6 +61,7 @@ declare -a TEST_SUITES=(
     "Integration:scripts/validation/validate-integration.sh:Core integration validation"
     "Design:scripts/validation/validate-design.sh:Design document validation" 
     "PocketFlow:scripts/validation/validate-pocketflow.sh:PocketFlow setup validation"
+    "Sub-Agents:scripts/validation/validate-sub-agents.sh:Sub-agent implementation validation"
     "Orchestration:scripts/validation/validate-orchestration.sh:Orchestration system validation"
     "End-to-End:scripts/validation/validate-end-to-end.sh:Complete end-to-end testing"
 )
@@ -70,6 +71,7 @@ declare -a QUICK_SUITES=(
     "Configuration:scripts/validation/validate-configuration.sh:Framework configuration validation"
     "Integration:scripts/validation/validate-integration.sh:Core integration validation"
     "PocketFlow:scripts/validation/validate-pocketflow.sh:PocketFlow setup validation"
+    "Sub-Agents:scripts/validation/validate-sub-agents.sh:Sub-agent implementation validation"
     "Orchestration:scripts/validation/validate-orchestration.sh:Orchestration system validation"
 )
 
@@ -209,6 +211,7 @@ ensure_scripts_executable() {
         "scripts/validation/validate-integration.sh"
         "scripts/validation/validate-design.sh"
         "scripts/validation/validate-pocketflow.sh"
+        "scripts/validation/validate-sub-agents.sh"
         "scripts/validation/validate-orchestration.sh"
         "scripts/validation/validate-end-to-end.sh"
         "scripts/validate-integration.sh"

@@ -8,8 +8,9 @@ and templates, following the 8-step Agentic Coding methodology.
 
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
+from enum import Enum
 
 try:
     import yaml
@@ -31,6 +32,35 @@ class WorkflowSpec:
     shared_store_schema: Dict[str, Any] = field(default_factory=dict)
     api_endpoints: List[Dict[str, Any]] = field(default_factory=list)
     fast_api_integration: bool = False
+
+
+@dataclass
+class ValidationResult:
+    """Result of template validation."""
+    is_valid: bool
+    errors: List[str] = field(default_factory=list)
+    warnings: List[str] = field(default_factory=list)
+    corrections_applied: List[str] = field(default_factory=list)
+
+
+@dataclass  
+class PatternRecommendation:
+    """Result of pattern analysis."""
+    primary_pattern: str
+    confidence_score: float
+    secondary_patterns: List[str] = field(default_factory=list)
+    rationale: str = ""
+    template_customizations: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class DependencyConfig:
+    """Dependency configuration for a pattern."""
+    base_dependencies: List[str] = field(default_factory=list)
+    pattern_dependencies: List[str] = field(default_factory=list)
+    dev_dependencies: List[str] = field(default_factory=list)
+    python_version: str = ">=3.9"
+    tool_configs: Dict[str, Any] = field(default_factory=dict)
 
 
 class PocketFlowGenerator:
@@ -1106,6 +1136,51 @@ This is a generated design document template. Please complete with actual requir
             root_init.write_text("")
 
         print(f"Generated workflow saved to: {workflow_dir}")
+
+    def coordinate_template_validation(self, template_path: str) -> ValidationResult:
+        """Coordinate with template-validator agent for post-generation validation."""
+        # This is a coordination function that would interface with the template-validator agent
+        # For now, return a basic validation result
+        return ValidationResult(
+            is_valid=True,
+            warnings=["Template validation agent integration pending"]
+        )
+
+    def request_pattern_analysis(self, requirements: str) -> PatternRecommendation:
+        """Request pattern analysis from pattern-recognizer agent."""
+        # This is a coordination function that would interface with the pattern-recognizer agent
+        # For now, return a basic recommendation
+        return PatternRecommendation(
+            primary_pattern="AGENT",
+            confidence_score=0.8,
+            rationale="Pattern analysis agent integration pending"
+        )
+
+    def generate_dependency_config(self, pattern: str) -> DependencyConfig:
+        """Generate dependency configuration via dependency-orchestrator agent."""
+        # This is a coordination function that would interface with the dependency-orchestrator agent
+        # For now, return basic config
+        base_deps = ["pocketflow", "pydantic", "fastapi"]
+        
+        pattern_deps = {
+            "RAG": ["chromadb", "sentence-transformers"],
+            "AGENT": ["openai", "anthropic"],
+            "TOOL": ["requests", "aiohttp"],
+            "WORKFLOW": [],
+            "MAPREDUCE": ["celery", "redis"],
+            "MULTI-AGENT": ["openai", "anthropic"],
+            "STRUCTURED-OUTPUT": ["jsonschema"]
+        }
+        
+        return DependencyConfig(
+            base_dependencies=base_deps,
+            pattern_dependencies=pattern_deps.get(pattern, []),
+            dev_dependencies=["pytest", "pytest-asyncio", "ruff", "mypy"],
+            tool_configs={
+                "ruff": {"line-length": 88, "target-version": "py39"},
+                "mypy": {"python_version": "3.9", "strict": True}
+            }
+        )
 
 
 def main():

@@ -60,7 +60,7 @@ echo ""
 echo "📥 Downloading Claude Code subagents to ~/.claude/agents/"
 
 # List of agent files to download
-agents=("test-runner" "context-fetcher" "git-workflow" "file-creator" "date-checker")
+agents=("test-runner" "context-fetcher" "git-workflow" "file-creator" "date-checker" "template-validator" "pattern-recognizer" "dependency-orchestrator")
 
 for agent in "${agents[@]}"; do
     if [ -f "$HOME/.claude/agents/${agent}.md" ]; then
