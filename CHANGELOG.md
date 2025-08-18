@@ -5,6 +5,34 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.30] - 2025-01-18
+
+### Added
+- **Sub-Agent Implementation Document** - Created comprehensive PRD and implementation roadmap for three new sub-agents to enhance framework capabilities
+  - **Template Validator Agent**: Validates generated PocketFlow templates for structural correctness without completing user implementations
+    - Ensures proper Python syntax, PocketFlow pattern compliance, and type safety in generated templates
+    - Validates workflow graph connectivity and error handling patterns
+    - Auto-invokes after template generation to maintain framework quality
+  - **Pattern Recognizer Agent**: Analyzes user requirements and identifies optimal PocketFlow patterns (RAG, Agent, Tool, Hybrid)
+    - Maps natural language requirements to appropriate PocketFlow architectures
+    - Generates pattern-specific boilerplate code and workflow structures
+    - Creates initial design documentation with pattern selection rationale
+  - **Dependency Orchestrator Agent**: Manages Python tooling and environment configuration for generated templates
+    - Configures UV environment, Ruff, and type checking for generated projects
+    - Creates appropriate pyproject.toml templates with pattern-specific dependencies
+    - Ensures proper testing infrastructure setup
+  - **5-Week Implementation Roadmap**: Detailed phase-by-phase implementation plan with technical specifications
+    - Complete YAML frontmatter configurations for each agent
+    - Integration points with existing orchestration system
+    - Testing and validation requirements with success metrics
+  - **Framework vs Usage Distinction Maintained**: All agents enhance template generation capabilities without implementing end-user functionality
+  - **Documentation**: Complete implementation guide at `docs/sub-agents-implementation.md` serving as authoritative roadmap
+
+### Enhanced
+- **Framework Architecture Planning**: Strategic enhancement of template generation intelligence and validation capabilities
+- **Quality Assurance Framework**: Comprehensive testing and validation specifications for framework integrity
+- **Orchestration System Integration**: Detailed coordination points with existing framework components
+
 ## [1.10.29] - 2025-08-16
 
 ### Completed
