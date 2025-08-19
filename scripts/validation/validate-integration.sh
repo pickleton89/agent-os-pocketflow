@@ -3,7 +3,7 @@
 echo "🧪 Testing Agent OS + PocketFlow Integration..."
 
 # Test 1: Directory structure
-if [[ -d ".agent-os/instructions/orchestration" ]]; then
+if [[ -d "$HOME/.agent-os/instructions/orchestration" ]]; then
     echo "✅ Orchestration directory exists"
 else
     echo "❌ Orchestration directory missing"
@@ -20,9 +20,9 @@ fi
 
 # Test 3: Extension modules
 local extensions=(
-    ".agent-os/instructions/extensions/llm-workflow-extension.md"
-    ".agent-os/instructions/extensions/design-first-enforcement.md"
-    ".agent-os/instructions/extensions/pocketflow-integration.md"
+    "$HOME/.agent-os/instructions/extensions/llm-workflow-extension.md"
+    "$HOME/.agent-os/instructions/extensions/design-first-enforcement.md"
+    "$HOME/.agent-os/instructions/extensions/pocketflow-integration.md"
 )
 
 for ext in "${extensions[@]}"; do
@@ -35,7 +35,7 @@ for ext in "${extensions[@]}"; do
 done
 
 # Test 4: Coordination configuration
-if [[ -f ".agent-os/instructions/orchestration/coordination.yaml" ]]; then
+if [[ -f "$HOME/.agent-os/instructions/orchestration/coordination.yaml" ]]; then
     echo "✅ Coordination configuration found"
 else
     echo "❌ Coordination configuration missing"

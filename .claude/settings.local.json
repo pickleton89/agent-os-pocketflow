@@ -49,12 +49,14 @@
       "Bash(sed:*)",
       "Bash(uv build:*)",
       "Bash(true)",
-      "mcp__graphiti__get_episodes"
+      "mcp__graphiti__get_episodes",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
     "additionalDirectories": [
-      "/private/tmp/test-output/testworkflow"
+      "/private/tmp/test-output/testworkflow",
+      "/Users/jeffkiefer/.agent-os/instructions/core"
     ]
   }
 }

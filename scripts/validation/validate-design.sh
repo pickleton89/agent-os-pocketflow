@@ -3,9 +3,8 @@
 echo "📋 Validating design document..."
 
 if [[ ! -f "docs/design.md" ]]; then
-    echo "⚠️  docs/design.md not found - this is expected for new projects"
-    echo "✅ Design document validation passed (no design.md required for initial setup)"
-    exit 0
+    echo "❌ docs/design.md not found"
+    exit 1
 fi
 
 # Check for required sections
