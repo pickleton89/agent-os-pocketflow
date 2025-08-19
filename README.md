@@ -105,9 +105,54 @@ Agent OS (Workflow Management) + PocketFlow (LLM Orchestration) = Intelligent De
 - **Quality Gates**: Ruff linting, ty type checking, and pytest integration
 - **Template System**: Auto-generation of working PocketFlow, FastAPI, and task templates
 
+## 🚀 Getting Started
+
+### How to Install and Use This Framework
+
+**Agent OS + PocketFlow** provides a complete development platform for building intelligent LLM applications. Here's how to get started:
+
+#### Option 1: Quick Start (Recommended)
+```bash
+# Install Agent OS base installation with Claude Code support
+curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup/base.sh | bash -s -- --claude-code
+
+# Setup your first project
+cd your-project
+curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup/project.sh | bash
+```
+
+#### Option 2: Manual Installation
+1. **Base Installation** (customize standards and templates)
+2. **Project Installation** (self-contained per project)
+3. **Generate Workflows** (create PocketFlow applications)
+
+See detailed instructions in [Installation Guide](#installation-guide) below.
+
+### What You Get
+
+✅ **Complete Python/FastAPI Development Stack** - Modern Python 3.12+, FastAPI, Pydantic, uv toolchain  
+✅ **8-Step Agentic Coding Methodology** - Structured workflow from requirements through optimization  
+✅ **Design-First LLM Development** - Mandatory design documents with Mermaid diagrams  
+✅ **Type-Safe Architecture** - Pydantic validation with comprehensive schemas  
+✅ **Quality-First Development** - Integrated Ruff, ty (type checking), and pytest tooling  
+✅ **Intelligent Workflow Generation** - Automatic creation of complete PocketFlow implementations  
+✅ **PocketFlow Orchestrator Agent** - AI planning agent for complex workflow coordination
+
+---
+
 ## 📖 Documentation Navigation
 
 ### Quick Navigation by Purpose
+
+**🚀 Using the Framework:**  
+- **[Installation Guide](#installation-guide)** - Complete setup instructions (v1.4.0)
+- **[Implementation Guide](#implementation-guide)** - How to create projects with the framework
+- **[Generated Project Structure](#generated-project-structure)** - What the framework produces
+- **[Common Workflows](#common-workflows)** - Typical development patterns
+
+**👥 Received a Generated Template?**
+- **[For End-Users Guide](docs/for-end-users/README.md)** - You probably want your generated project docs
+- The documentation you need is WITH your generated template, not here
 
 **🏗️ Contributing to the Framework:**
 - **[Framework Development Guide](docs/framework-development/QUICKSTART.md)** - Get started contributing
@@ -119,110 +164,196 @@ Agent OS (Workflow Management) + PocketFlow (LLM Orchestration) = Intelligent De
 - **[Template Generation Overview](docs/template-generation/README.md)** - How the framework creates templates
 - **[Sub-Agents System](docs/template-generation/sub-agents/overview.md)** - Template enhancement agents
 - **[Placeholder Philosophy](docs/template-generation/placeholders.md)** - Why TODOs are features
-- **[Generated Project Structure](#generated-project-structure)** - What the framework produces
-
-**👥 Received a Generated Template?**
-- **[For End-Users Guide](docs/for-end-users/README.md)** - You probably want your generated project docs
-- The documentation you need is WITH your generated template, not here
-
-**🚀 Installing and Using the Framework:**  
-- **[System Installation](#system-installation)** - Install the framework system-wide
-- **[Project Setup](#project-setup)** - Use the framework in your projects
-- **[Automatic Code Generation](#automatic-code-generation-optional)** - See what the framework creates
 
 **📚 Additional Resources:**
 - **[Release Notes](docs/releases/)** - Version history and changes
 - **[Historical Documentation](docs/archive/)** - Previous planning and discussions
 
-## Core Components
+---
 
-**🔧 Generator System** ([`.agent-os/workflows/generator.py`](./.agent-os/workflows/generator.py))
-- Creates complete PocketFlow projects from YAML specs
-- Generates 12+ files per workflow pattern
-- Template substitution and validation system
+## Installation Guide
 
-**✅ Validation Framework** ([`./scripts/validation/`](./scripts/validation/))
-- 75+ tests ensuring framework reliability
-- Integration, orchestration, and end-to-end validation  
-- Template Validator agent with comprehensive quality checks
-- Run with [`./scripts/run-all-tests.sh`](./scripts/run-all-tests.sh)
+### Agent OS v1.4.0 Installation System
 
-**🤖 Sub-Agents System** ([`docs/template-generation/sub-agents/`](docs/template-generation/sub-agents/))
-- **Pattern Recognizer Agent**: Analyzes requirements and identifies optimal PocketFlow patterns
-- **Template Validator Agent**: Validates generated templates for structural correctness and educational value
-- **Dependency Orchestrator Agent**: Manages Python tooling and dependency configuration
-- Intelligent coordination with performance caching (100x+ speedups on repeated requests)
-- Framework vs usage distinction enforcement throughout template generation
+The Agent OS + PocketFlow framework uses a **two-phase installation system** that provides flexibility and self-contained project setups:
 
-**📋 Template System** ([`templates/`](templates/))
-- PocketFlow, FastAPI, and task templates
-- Variable substitution and code generation
-- Standards enforcement and best practices
+1. **Base Installation** (Optional but recommended) - System-wide standards and templates
+2. **Project Installation** (Required per project) - Self-contained, committable project setup
 
-**🎯 Standards & Guidelines** ([`standards/`](standards/))
-- [PocketFlow Guidelines](standards/pocket-flow.md) - Framework patterns and best practices
-- [Code Style](standards/code-style.md) - Python, FastAPI, and testing standards
-- [Tech Stack](standards/tech-stack.md) - Technology choices and rationale
+### Phase 1: Base Installation
 
-## Quick Start
+The base installation provides customizable standards and templates that can be shared across projects.
 
-### Framework Development Setup
+**Choose your AI development environment:**
 
-**This repository IS the framework** - these instructions are for contributing to and improving the framework itself.
-
-**Framework Development:**
 ```bash
-# Clone the framework repository for development
-git clone https://github.com/pickleton89/agent-os-pocketflow.git
-cd agent-os-pocketflow
+# Agent OS with Claude Code support
+curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup/base.sh | bash -s -- --claude-code
 
-# Install framework development dependencies
-uv init
-uv add --dev pytest ruff ty
+# Agent OS with Cursor support  
+curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup/base.sh | bash -s -- --cursor
 
-# Test the framework itself
-./scripts/run-all-tests.sh
-
-# Verify framework components
-ls -la setup/  # Contains base.sh and project.sh for end-users
-ls -la pocketflow-tools/  # Contains generator and validation tools
+# Agent OS with both Claude Code & Cursor support
+curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup/base.sh | bash -s -- --claude-code --cursor
 ```
 
-**End-User Installation**: This framework provides `setup/base.sh` and `setup/project.sh` scripts that end-users run to install the framework. End-user installation instructions are provided with their generated projects, not here.
+**What this installs:**
+- Agent OS framework files to `~/.agent-os/` (or your chosen location)
+- Customizable standards and templates
+- Configuration file (`config.yml`) for project customization
+- Base templates that project installations will copy from
 
-**For Framework Contributors**: Continue to [Framework Development Guide](docs/framework-development/QUICKSTART.md) to work on improving the framework.
+**After installation:**
+- Customize your standards in `~/.agent-os/standards/`
+- Modify templates in `~/.agent-os/templates/`
+- Configure preferences in `~/.agent-os/config.yml`
 
-### Framework Architecture: v1.4.0 Two-Phase System
+### Phase 2: Project Installation
 
-**What the Framework Creates for End-Users:**
-- **Base Installation** (`~/.agent-os/`): Shared standards and templates
-- **Project Installation** (`.agent-os/`): Self-contained copies for each project  
-- **Generated Templates**: PocketFlow applications with educational placeholders
+Each project gets its own self-contained Agent OS installation that's committed to git and provides complete independence.
 
-**Framework Benefits Delivered:**
-- **No external references**: Projects become self-contained  
-- **Team collaboration**: Generated `.agent-os/` directories are committable
-- **Project customization**: Different standards per project
-- **Template consistency**: All projects follow framework patterns
-
-### Framework Code Generation System
-
-**What This Framework Generates:** 
-This meta-framework includes a Python-based generator that creates educational PocketFlow templates with intentional placeholder TODOs. Framework developers work on improving this generation system.
-
-**Framework Development Testing:**
 ```bash
-# Test the generator in framework repository
-cd pocketflow-tools
-python generator.py example-workflow-spec.yaml
-python test-generator.py
-python test-full-generation.py
+# Navigate to your project directory
+cd your-project-directory
 
-# View generated template examples (with intentional placeholders)
-ls -la testcontentanalyzer/  # Framework validation example
+# Install Agent OS + PocketFlow for this project
+curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup/project.sh | bash
 ```
 
-**For End-Users**: The framework installation provides workflow commands and template generation. Usage instructions are provided with their generated projects, not here.
+**What this creates:**
+- Self-contained `.agent-os/` directory in your project
+- No external references - completely independent
+- Project-specific standards and templates
+- PocketFlow workflow generation capabilities
+- Claude Code agent configurations
+- Committable to git for team collaboration
+
+**Benefits of this approach:**
+- **Team Collaboration**: `.agent-os/` directories are committable and shareable
+- **Project Customization**: Different standards and templates per project
+- **No External Dependencies**: Projects work independently of base installation
+- **Version Control**: All Agent OS configurations are versioned with your code
+
+### Verification
+
+After installation, verify your setup:
+
+```bash
+# Check base installation (if installed)
+ls -la ~/.agent-os/
+
+# Check project installation
+ls -la .agent-os/
+
+# Test workflow generation (in project directory)
+claude-code --workflow "Create a simple content analyzer using PocketFlow"
+```
+
+---
+
+## Implementation Guide
+
+### Creating Your First PocketFlow Application
+
+Once installed, you can create intelligent LLM applications using the integrated workflow system:
+
+#### 1. Design-First Development
+
+All PocketFlow applications start with mandatory design documentation:
+
+```bash
+# The system will automatically create docs/design.md when you start a workflow
+# This includes:
+# - Problem statement and requirements
+# - Architecture overview with Mermaid diagrams  
+# - PocketFlow pattern selection (Agent, Workflow, RAG, etc.)
+# - Implementation plan with validation criteria
+```
+
+#### 2. Generate Complete PocketFlow Implementation
+
+```bash
+# Use Claude Code to generate a complete PocketFlow application
+claude-code --workflow "Create a content analysis system that processes documents and extracts key insights"
+
+# This generates 12+ files including:
+# - main.py (FastAPI app with PocketFlow integration)
+# - nodes.py (PocketFlow nodes with type-safe implementations)  
+# - flow.py (PocketFlow orchestration logic)
+# - schemas/models.py (Pydantic validation models)
+# - tests/ (Comprehensive test suite)
+# - docs/design.md (Architecture documentation)
+```
+
+#### 3. Implementation Workflow
+
+The system enforces a structured development process:
+
+1. **Requirements Analysis** - Define what you're building
+2. **Design Documentation** - Create `docs/design.md` with Mermaid diagrams
+3. **Pattern Selection** - Choose optimal PocketFlow pattern
+4. **Code Generation** - Auto-generate complete implementation templates
+5. **Implementation** - Fill in business logic in generated templates
+6. **Testing** - Run comprehensive test suites
+7. **Validation** - Ensure quality gates pass
+8. **Optimization** - Performance and reliability improvements
+
+#### 4. Quality Gates
+
+Every implementation includes automated quality assurance:
+
+```bash
+# The system automatically runs:
+uv run ruff check .     # Code linting
+uv run ty               # Type checking  
+uv run pytest          # Test execution
+```
+
+### Common Development Patterns
+
+#### Creating a Simple Agent
+```bash
+claude-code --workflow "Create a chatbot agent that answers questions about our product documentation"
+# Generates: Agent pattern with single LLM integration
+```
+
+#### Building a RAG System  
+```bash
+claude-code --workflow "Create a RAG system that searches company knowledge base and provides contextual answers"
+# Generates: RAG pattern with vector search and context injection
+```
+
+#### Complex Multi-Agent Workflow
+```bash
+claude-code --workflow "Create a content analysis pipeline with document processing, sentiment analysis, and report generation"
+# Generates: Multi-Agent pattern with orchestrated sub-workflows
+```
+
+---
+
+## Common Workflows
+
+### Development Lifecycle
+
+**Starting a New Project:**
+1. Run project installation in your directory
+2. Define requirements and create design document
+3. Use Claude Code to generate PocketFlow implementation
+4. Implement business logic in generated templates
+5. Run tests and quality gates
+6. Deploy with confidence
+
+**Adding New Features:**
+1. Update `docs/design.md` with new requirements
+2. Generate additional PocketFlow components
+3. Integrate with existing workflow
+4. Validate with comprehensive testing
+
+**Team Collaboration:**
+1. Commit `.agent-os/` directory to git
+2. Team members get consistent standards and templates
+3. Shared workflow generation and validation
+4. Consistent code quality across team
 
 ## Generated Project Structure
 
@@ -306,6 +437,102 @@ agent-os-pocketflow/
 - **Repository Streamlining**: Eliminated 5x duplication with single source of truth architecture
 - **Comprehensive Error Handling**: Detailed feedback and validation throughout installation
 - **Integration Validation**: Complete system health checks and dependency verification
+
+---
+
+## Framework Development
+
+### Contributing to the Framework
+
+**This repository IS the framework** - these instructions are for contributing to and improving the framework itself.
+
+#### Framework Development Setup
+
+**Framework Development:**
+```bash
+# Clone the framework repository for development
+git clone https://github.com/pickleton89/agent-os-pocketflow.git
+cd agent-os-pocketflow
+
+# Install framework development dependencies
+uv init
+uv add --dev pytest ruff ty
+
+# Test the framework itself
+./scripts/run-all-tests.sh
+
+# Verify framework components
+ls -la setup/  # Contains base.sh and project.sh for end-users
+ls -la pocketflow-tools/  # Contains generator and validation tools
+```
+
+**End-User Installation**: This framework provides `setup/base.sh` and `setup/project.sh` scripts that end-users run to install the framework. End-user installation instructions are provided with their generated projects, not here.
+
+**For Framework Contributors**: Continue to [Framework Development Guide](docs/framework-development/QUICKSTART.md) to work on improving the framework.
+
+#### Framework Architecture: v1.4.0 Two-Phase System
+
+**What the Framework Creates for End-Users:**
+- **Base Installation** (`~/.agent-os/`): Shared standards and templates
+- **Project Installation** (`.agent-os/`): Self-contained copies for each project  
+- **Generated Templates**: PocketFlow applications with educational placeholders
+
+**Framework Benefits Delivered:**
+- **No external references**: Projects become self-contained  
+- **Team collaboration**: Generated `.agent-os/` directories are committable
+- **Project customization**: Different standards per project
+- **Template consistency**: All projects follow framework patterns
+
+#### Framework Code Generation System
+
+**What This Framework Generates:** 
+This meta-framework includes a Python-based generator that creates educational PocketFlow templates with intentional placeholder TODOs. Framework developers work on improving this generation system.
+
+**Framework Development Testing:**
+```bash
+# Test the generator in framework repository
+cd pocketflow-tools
+python generator.py example-workflow-spec.yaml
+python test-generator.py
+python test-full-generation.py
+
+# View generated template examples (with intentional placeholders)
+ls -la testcontentanalyzer/  # Framework validation example
+```
+
+**For End-Users**: The framework installation provides workflow commands and template generation. Usage instructions are provided with their generated projects, not here.
+
+### Core Framework Components
+
+**🔧 Generator System** ([`.agent-os/workflows/generator.py`](./.agent-os/workflows/generator.py))
+- Creates complete PocketFlow projects from YAML specs
+- Generates 12+ files per workflow pattern
+- Template substitution and validation system
+
+**✅ Validation Framework** ([`./scripts/validation/`](./scripts/validation/))
+- 75+ tests ensuring framework reliability
+- Integration, orchestration, and end-to-end validation  
+- Template Validator agent with comprehensive quality checks
+- Run with [`./scripts/run-all-tests.sh`](./scripts/run-all-tests.sh)
+
+**🤖 Sub-Agents System** ([`docs/template-generation/sub-agents/`](docs/template-generation/sub-agents/))
+- **Pattern Recognizer Agent**: Analyzes requirements and identifies optimal PocketFlow patterns
+- **Template Validator Agent**: Validates generated templates for structural correctness and educational value
+- **Dependency Orchestrator Agent**: Manages Python tooling and dependency configuration
+- Intelligent coordination with performance caching (100x+ speedups on repeated requests)
+- Framework vs usage distinction enforcement throughout template generation
+
+**📋 Template System** ([`templates/`](templates/))
+- PocketFlow, FastAPI, and task templates
+- Variable substitution and code generation
+- Standards enforcement and best practices
+
+**🎯 Standards & Guidelines** ([`standards/`](standards/))
+- [PocketFlow Guidelines](standards/pocket-flow.md) - Framework patterns and best practices
+- [Code Style](standards/code-style.md) - Python, FastAPI, and testing standards
+- [Tech Stack](standards/tech-stack.md) - Technology choices and rationale
+
+---
 
 ## Documentation & Resources
 
