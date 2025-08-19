@@ -31,23 +31,36 @@ When your tasks involve creating LLM applications, the framework automatically:
 
 ## 🚀 Installation
 
-**Same simple 2-step process as standard Agent OS:**
+**Simple one-command setup with automatic context detection:**
 
-### Step 1: Install Base Framework
+### Quick Start (Recommended)
 
 ```bash
-# Install enhanced Agent OS to ~/.agent-os/
-curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --claude-code
-
-# Or for Cursor:
-curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --cursor
+# Auto-detect context and install appropriately
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup.sh | bash
 ```
 
-### Step 2: Setup Your Project
+The setup script intelligently detects your context and guides you through the appropriate installation:
+- **Base Installation**: Installs framework to `~/.agent-os/` 
+- **Project Setup**: Installs into your current project directory
+- **Migration**: Upgrades existing installations to v1.4.0
+
+### Manual Installation (Advanced)
 
 ```bash
+# Step 1: Install base framework to ~/.agent-os/
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup.sh | bash -s base --claude-code
+
+# Step 2: Setup your project (run from project directory)
 cd /path/to/your-project
-~/.agent-os/setup/project.sh
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup.sh | bash -s project
+```
+
+### Migration from Older Versions
+
+```bash
+# Migrate existing Agent OS installations to v1.4.0
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup.sh | bash -s migrate
 ```
 
 **That's it! Installation complete.**

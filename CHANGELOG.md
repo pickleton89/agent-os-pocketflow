@@ -5,6 +5,36 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-ALPHA8] - 2025-08-19
+
+### 🎯 MILESTONE: Setup Scripts Architecture Overhaul
+
+#### ✅ Setup Scripts Consolidation Complete
+- **🧹 Eliminated Script Redundancy**: Removed 2 obsolete setup scripts (809 lines total)
+  - Removed `setup-claude-code.sh` (96 lines) - functionality integrated into `setup/base.sh --claude-code`
+  - Removed `setup-legacy.sh` (713 lines) - replaced by v1.4.0 two-phase installation system
+  - Net codebase reduction: 498 lines (-11% bloat elimination)
+- **🎯 Intelligent Entry Point**: Created new `setup.sh` (311 lines) with advanced capabilities
+  - **Auto-Detection**: Intelligent context detection (new install vs migration vs project setup)
+  - **Interactive Guidance**: User-friendly confirmations with clear explanations of recommended actions
+  - **Context-Aware Routing**: Automatically routes to appropriate `setup/` scripts based on detected context
+  - **Comprehensive Help**: Detailed help system with practical examples and usage scenarios
+  - **Backward Compatibility**: Maintains full compatibility while modernizing user interface
+
+#### 🏗️ Streamlined Architecture
+- **Before**: 7 setup scripts, 4,476 total lines, multiple confusing entry points
+- **After**: 6 setup scripts, 3,978 total lines, single intelligent router
+- **User Experience**: Single command installation with auto-detection: `curl -sSL .../setup.sh | bash`
+- **Validation Strategy**: Kept `validate-migration.sh` separate as comprehensive standalone diagnostic tool
+
+#### 📚 Documentation Updates
+- **README.md**: Updated installation instructions to feature new single-command setup
+- **CLAUDE.md**: Updated framework component references to reflect script consolidation
+- **Clear Migration Path**: Provided guidance for users upgrading from older installation methods
+
+#### 🎉 Framework Maturity Achievement
+This consolidation represents a significant framework maturity milestone, transforming the installation experience from multiple confusing entry points to a single intelligent system that guides users appropriately based on their specific context and needs.
+
 ## [2.0.0-ALPHA7] - 2025-08-19
 
 ### 📝 Documentation Overhaul - Final Clarity

@@ -93,7 +93,8 @@ python test-full-generation.py
 - The `.claude/agents/pocketflow-orchestrator.md` file defines an agent for END-USER projects
 - The generator creates templates with intentional placeholder code
 - TODO stubs in generated files are starting points, not bugs to fix
-- `setup/base.sh` and `setup/project.sh` replace old `setup.sh` and `setup-claude-code.sh`
+- `setup.sh` provides intelligent routing to `setup/base.sh` and `setup/project.sh` based on context
+- Old `setup-claude-code.sh` and `setup-legacy.sh` have been removed (obsolete)
 
 # Memory
 
