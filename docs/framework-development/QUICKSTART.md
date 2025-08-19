@@ -150,17 +150,26 @@ graph LR
 
 ### 1. Framework Development Setup
 
+**v1.4.0 Two-Phase Setup Process**
+
 ```bash
 # Clone the framework repository
 git clone https://github.com/pickleton89/agent-os-pocketflow.git
 cd agent-os-pocketflow
 
-# Install development dependencies
+# Install development dependencies (for framework development)
 uv init
 uv add --dev pytest ruff ty
 
-# Run validation tests
+# FRAMEWORK TESTING: Run validation tests on framework code
 ./scripts/run-all-tests.sh
+
+# OPTIONAL: Set up base installation for testing generated output
+cd ~
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --claude-code
+
+# OPTIONAL: Test base installation
+~/.agent-os/scripts/run-all-tests.sh
 ```
 
 ### 2. Making Framework Changes
@@ -184,17 +193,37 @@ git commit -m "enhance: Improve generator template logic"
 
 ### 3. Testing Generated Output
 
+**Framework Repository Testing (developing the generator):**
 ```bash
-# Test the generator system
-cd .agent-os/workflows
+# Test the generator system in framework repository
+cd pocketflow-tools
 python generator.py example-workflow-spec.yaml
 
-# Validate generated workflow
-python validate-generation.py ./generated-workflow/
+# Run generator validation tests
+python test-generator.py
+python test-full-generation.py
+```
 
-# Test generated code works
-cd generated-workflow
-uv run pytest
+**Integration Testing (validating framework generates working templates):**
+```bash
+# FRAMEWORK DEVELOPERS: Test that our generator creates valid templates
+# Note: This creates a temporary user project to test our framework output
+
+mkdir ~/test-framework-output
+cd ~/test-framework-output
+
+# Install Agent OS into test project (testing our installation system)
+~/.agent-os/setup/project.sh
+
+# Test that generated templates work when PocketFlow is available
+# (This validates our framework creates working educational templates)
+uv init
+uv add pocketflow fastapi pydantic
+uv add --dev pytest ruff ty
+
+# Copy generated template to test it works
+cp -r /path/to/framework/pocketflow-tools/testcontentanalyzer/* .
+uv run pytest  # Validates framework generates working templates
 ```
 
 ## ❌ What NOT to Do

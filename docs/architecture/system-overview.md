@@ -2,7 +2,7 @@
 
 > **Framework Type:** Meta-Framework that generates PocketFlow applications  
 > **Status:** Production Ready  
-> **Installation Location:** `~/.agent-os/`  
+> **Architecture:** v1.4.0 Two-Phase Installation (Base: `~/.agent-os/`, Projects: `.agent-os/`)  
 > **Generated Projects:** Use PocketFlow as dependency
 
 ## Executive Summary
@@ -43,11 +43,11 @@ graph TB
         J[Educational TODO Placeholders]
     end
     
-    subgraph "System Installation"
-        K["~/.agent-os/"]
-        L[Global Templates]
-        M[Workflow Scripts]
-        N[Agent Configurations]
+    subgraph "v1.4.0 Installation Architecture"
+        K["Base Installation (~/.agent-os/)"]
+        L["Project Installations (.agent-os/)"]
+        M[Global Templates & Standards]
+        N[Self-Contained Project Configs]
     end
     
     C --> F
@@ -167,7 +167,7 @@ graph LR
 ## System Boundaries
 
 ### What This Framework Does
-- ✅ Installs to `~/.agent-os/` globally
+- ✅ v1.4.0 Two-Phase Architecture: Base (`~/.agent-os/`) + Project (`.agent-os/`) installations
 - ✅ Generates PocketFlow applications for users
 - ✅ Provides templates and validation
 - ✅ Manages workflow standards
@@ -178,20 +178,26 @@ graph LR
 - ✅ Run in production environments
 - ✅ Use orchestrator agent for planning
 
-## Installation Architecture
+## Installation Architecture (v1.4.0)
 
 ```mermaid
 graph TD
-    A[Clone Meta-Framework] --> B[Run ./setup.sh]
-    B --> C[Install to ~/.agent-os/]
-    C --> D[Setup Claude Code Integration]
-    D --> E[Validate Installation]
-    E --> F[Ready for Project Generation]
+    A[Clone Meta-Framework] --> B[Build Framework]
+    B --> C[Base Installation: setup/base.sh --claude-code]
+    C --> D[Install to ~/.agent-os/ with standards]
+    D --> E[Validate Base Installation]
     
-    F --> G[Create User Project]
-    G --> H[Generate PocketFlow App]
-    H --> I[Implement Business Logic]
-    I --> J[Deploy Application]
+    E --> F[Per-Project Setup]
+    F --> G[Project Installation: ~/.agent-os/setup/project.sh]
+    G --> H[Copy to .agent-os/ in project]
+    H --> I[Self-contained project ready]
+    
+    I --> J[Generate PocketFlow App]
+    J --> K[Implement Business Logic]
+    K --> L[Deploy Application]
+    
+    style C fill:#e1f5fe
+    style G fill:#f3e5f5
 ```
 
 ## Key Architectural Decisions

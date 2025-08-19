@@ -166,107 +166,63 @@ Agent OS (Workflow Management) + PocketFlow (LLM Orchestration) = Intelligent De
 
 ## Quick Start
 
-### System Installation (One-Time Setup)
+### Framework Development Setup
 
-**Important**: This installs Agent OS + PocketFlow **system-wide** in your home directory (`~/.agent-os/`), not in your project directory. This allows you to use the framework across multiple projects.
+**This repository IS the framework** - these instructions are for contributing to and improving the framework itself.
 
+**Framework Development:**
 ```bash
-# Clone this integrated repository
+# Clone the framework repository for development
 git clone https://github.com/pickleton89/agent-os-pocketflow.git
 cd agent-os-pocketflow
 
-# Run the production-ready setup script (installs to ~/.agent-os/)
-./setup.sh
-
-# Setup Claude Code integration with PocketFlow Orchestrator
-./setup-claude-code.sh
-
-# Validate your installation (75+ comprehensive tests)
-./scripts/run-all-tests.sh
-```
-
-### Project Setup (For Each New Project)
-
-After system installation, set up your Python project with the required dependencies:
-
-```bash
-# Create and navigate to your new project directory
-mkdir my-pocketflow-app
-cd my-pocketflow-app
-
-# Initialize Python project with uv (recommended package manager)
+# Install framework development dependencies
 uv init
-
-# Add core PocketFlow dependencies
-uv add pocketflow fastapi pydantic uvicorn
-
-# Add development dependencies
 uv add --dev pytest ruff ty
 
-# Create basic project structure
-mkdir -p {docs,schemas,utils,tests}
-touch docs/design.md main.py flow.py nodes.py
+# Test the framework itself
+./scripts/run-all-tests.sh
 
-# Initialize git repository
-git init
+# Verify framework components
+ls -la setup/  # Contains base.sh and project.sh for end-users
+ls -la pocketflow-tools/  # Contains generator and validation tools
 ```
 
-### Using Agent OS in Your Projects
+**End-User Installation**: This framework provides `setup/base.sh` and `setup/project.sh` scripts that end-users run to install the framework. End-user installation instructions are provided with their generated projects, not here.
 
-Once installed system-wide, you can use Agent OS in any project directory. The integration **automatically detects** when to use PocketFlow orchestration:
+**For Framework Contributors**: Continue to [Framework Development Guide](docs/framework-development/QUICKSTART.md) to work on improving the framework.
 
-**Automatic PocketFlow Orchestrator Invocation**:
-- When you say: "think", "plan", "design", "architect", "implement"
-- For LLM/AI feature development
-- When creating specifications or workflows
-- For complex problem-solving requiring multiple steps
+### Framework Architecture: v1.4.0 Two-Phase System
 
-**For new Python/PocketFlow projects** (run these in your project directory):
+**What the Framework Creates for End-Users:**
+- **Base Installation** (`~/.agent-os/`): Shared standards and templates
+- **Project Installation** (`.agent-os/`): Self-contained copies for each project  
+- **Generated Templates**: PocketFlow applications with educational placeholders
+
+**Framework Benefits Delivered:**
+- **No external references**: Projects become self-contained  
+- **Team collaboration**: Generated `.agent-os/` directories are committable
+- **Project customization**: Different standards per project
+- **Template consistency**: All projects follow framework patterns
+
+### Framework Code Generation System
+
+**What This Framework Generates:** 
+This meta-framework includes a Python-based generator that creates educational PocketFlow templates with intentional placeholder TODOs. Framework developers work on improving this generation system.
+
+**Framework Development Testing:**
 ```bash
-# Navigate to your project directory first
-cd my-pocketflow-app
-
-# These commands access the system-wide Agent OS installation
-/plan-product    # → Engages PocketFlow Orchestrator for strategic planning
-/create-spec     # → Design-first workflow with mandatory design docs
-/execute-tasks   # → Quality-gated implementation with validation
-```
-
-**For existing codebases** (any language):
-```bash
-# Navigate to your existing project
-cd my-existing-project
-
-# Analyze and intelligently integrate Agent OS
-/analyze-product
-```
-
-### Automatic Code Generation (Optional)
-
-**What is Workflow Generation?** 
-The system includes a Python-based code generator that can automatically create complete PocketFlow applications from YAML specifications. This means you can describe your LLM workflow in a simple YAML file, and the generator will create all the Python files, tests, and documentation for you.
-
-**When to use it:**
-- Quick prototyping of PocketFlow applications
-- Learning PocketFlow patterns through generated examples
-- Creating starting templates for complex workflows
-
-```bash
-# Option 1: Use the built-in example generator
-cd ~/.agent-os/workflows
-./generate-example.sh
-
-# Option 2: Generate from your own YAML specification
-python generator.py your-workflow-spec.yaml
-
-# Option 3: See working examples
-ls -la testcontentanalyzer/  # Generated PocketFlow template with TODO placeholders (framework validation example)
-
-# Test the generation system
+# Test the generator in framework repository
+cd pocketflow-tools
+python generator.py example-workflow-spec.yaml
+python test-generator.py
 python test-full-generation.py
+
+# View generated template examples (with intentional placeholders)
+ls -la testcontentanalyzer/  # Framework validation example
 ```
 
-**Note**: Most users will create PocketFlow applications manually using the Agent OS workflow commands (`/plan-product`, `/create-spec`, `/execute-tasks`) rather than using the code generator.
+**For End-Users**: The framework installation provides workflow commands and template generation. Usage instructions are provided with their generated projects, not here.
 
 ## Generated Project Structure
 

@@ -4,9 +4,11 @@
 This repository contains the Agent OS + PocketFlow system itself - NOT a project using it.
 
 ### What This Repository Does
-- Provides the Agent OS system that gets installed to `~/.agent-os/`
+- Provides the Agent OS + PocketFlow framework following v1.4.0 architecture:
+  - **Base Installation**: Framework installs to `~/.agent-os/` (or chosen location) with customizable standards
+  - **Project Installation**: Self-contained `.agent-os/` copies in each end-user project
 - Contains the workflow generator that creates PocketFlow templates for end-user projects
-- Includes validation scripts and setup tools for system installation
+- Includes validation scripts and setup tools (`setup/base.sh`, `setup/project.sh`)
 - Defines the orchestrator agent configuration for END-USER projects (not this repo)
 
 ### Framework Development Guidelines
@@ -38,15 +40,22 @@ This repository contains the Agent OS + PocketFlow system itself - NOT a project
 
 ### Testing the Framework
 ```bash
-# Run framework validation tests
+# FRAMEWORK REPOSITORY TESTING (this repo):
+# Test the framework code itself
 ./scripts/run-all-tests.sh
 
 # Test the generator system  
-cd .agent-os/workflows
+cd pocketflow-tools
 python test-generator.py
+python test-full-generation.py
 
-# Test specific validation suites
+# Test specific framework validation suites
 ./scripts/validation/validate-integration.sh
+./scripts/validation/validate-orchestration.sh
+
+# FRAMEWORK GENERATES installation scripts for end-users
+# (The setup/base.sh and setup/project.sh files are framework output)
+# End-user installation testing happens in their projects, not here
 ```
 
 ### CRITICAL FRAMEWORK vs USAGE DISTINCTION
@@ -73,9 +82,18 @@ python test-generator.py
 **ALWAYS apply this distinction when reviewing code, identifying bugs, or making improvements. Template generation bugs (syntax errors, broken generators) are real issues. Missing implementations in generated templates are intentional design.**
 
 ### Architecture Reminders
+
+#### v1.4.0 Architecture (Base + Project Installations)
+- **Base Installation** (`~/.agent-os/`): Customizable standards, reusable across projects
+- **Project Installation** (`.agent-os/` in each project): Self-contained, committable to git
+- **Framework Repository** (this repo): Creates both base and project installation files
+- **Migration Required**: Old single-location installations must migrate to new two-phase system
+
+#### Framework Components
 - The `.claude/agents/pocketflow-orchestrator.md` file defines an agent for END-USER projects
 - The generator creates templates with intentional placeholder code
 - TODO stubs in generated files are starting points, not bugs to fix
+- `setup/base.sh` and `setup/project.sh` replace old `setup.sh` and `setup-claude-code.sh`
 
 # Memory
 

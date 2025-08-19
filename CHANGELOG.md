@@ -5,6 +5,33 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-ALPHA5] - 2025-08-19
+
+### 🎯 MAJOR MILESTONE: Agent OS v1.4.0 Migration Step 5 Complete - Documentation Update
+
+#### ✅ Step 5: Framework Documentation Overhaul (COMPLETED)
+- **📚 Complete Documentation Rewrite**: All framework documentation updated for v1.4.0 architecture and strict framework vs usage compliance
+  - **README.md**: Transformed from end-user installation guide to framework development setup guide
+  - **CLAUDE.md**: Fixed testing procedures to focus on framework components, not user installations
+  - **Migration Guide**: Complete rewrite as "Framework Architecture Changes" for contributors, not end-users
+  - **QUICKSTART.md**: Clarified integration testing as framework validation, not user guidance
+  - **Architecture Documentation**: Updated system overview for v1.4.0 two-phase installation system
+- **🚨 CRITICAL Framework vs Usage Violations Fixed**: Rigorous "fresh eyes" review identified and corrected major principle violations
+  - **Removed all end-user installation instructions** from framework repository (belong in generated projects)
+  - **Eliminated user project setup guidance** that violated "this repository IS the framework" principle
+  - **Reframed all testing contexts** from user installation to framework component validation
+  - **Fixed migration guide scope** from user migration to framework contributor architecture changes
+- **🎯 v1.4.0 Architecture Documentation**: Framework perspective on two-phase installation system
+  - **Base Installation**: Framework creates setup/base.sh for user's ~/.agent-os/ installation
+  - **Project Installation**: Framework creates setup/project.sh for self-contained .agent-os/ in projects
+  - **Framework Development**: Clear procedures for testing both installation script types
+  - **Template Generation**: Updated documentation for project-specific standards support
+- **✅ Framework Principle Enforcement**: Restored strict adherence to core framework development principles
+  - **This repository IS the framework**: All documentation focuses on framework development, not usage
+  - **Template placeholders are features**: Missing implementations in generated templates are intentional
+  - **Framework creates starting points**: Not finished applications, but educational templates for developers
+  - **Clear separation maintained**: Framework development vs end-user usage contexts properly distinguished
+
 ## [2.0.0-ALPHA4] - 2025-08-19
 
 ### 🎯 MAJOR MILESTONE: Agent OS v1.4.0 Migration Step 4 Complete - Migration Tools
