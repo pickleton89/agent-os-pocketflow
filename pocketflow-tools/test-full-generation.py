@@ -8,8 +8,12 @@ import sys
 import shutil
 from pathlib import Path
 
-# Add the parent directory to the path
+# Add the current directory to the path for relative imports
 sys.path.insert(0, str(Path(__file__).parent))
+
+# If running from project root, adjust path to find pocketflow-tools
+if not Path("generator.py").exists() and Path("pocketflow-tools/generator.py").exists():
+    sys.path.insert(0, str(Path("pocketflow-tools")))
 
 from generator import WorkflowSpec, PocketFlowGenerator
 

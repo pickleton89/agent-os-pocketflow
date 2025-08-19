@@ -10,6 +10,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any
 from dataclasses import dataclass, field
+import logging
 
 try:
     import yaml
@@ -60,6 +61,9 @@ class DependencyConfig:
     dev_dependencies: List[str] = field(default_factory=list)
     python_version: str = ">=3.9"
     tool_configs: Dict[str, Any] = field(default_factory=dict)
+
+
+logger = logging.getLogger(__name__)
 
 
 class PocketFlowGenerator:
