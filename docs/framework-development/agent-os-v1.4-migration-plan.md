@@ -22,6 +22,97 @@ We modified `setup.sh` to install Agent OS files to `$HOME/.agent-os/` instead o
 ### Discovery of v1.4.0 Changes
 During our architectural review, we learned that Agent OS v1.4.0 has completely restructured its installation system, making our initial fix insufficient.
 
+---
+## Actual Changelog: Agent OS v1.4.0
+
+### Changelog
+All notable changes to Agent OS will be documented in this file.
+
+The format is based on Keep a Changelog, and this project adheres to Semantic Versioning.
+
+#### 1.4.0 - 2025-08-17
+BIG updates in this one! Thanks for all the feedback, requests and support 🙏
+
+#### All New Installation Process
+The way Agent OS gets installed is structured differently from prior versions. The new system works as follows:
+
+There are 2 installation processes:
+- Your "Base installation" (now optional, but still recommended!)
+- Your "Project installation"
+
+##### "Base installation"
+
+- Installs all of the Agent OS files to a location of your choosing on your system where they can be customized (especially your standards) and maintained.
+- Project installations copy files from your base installation, so they can be customized and self-contained within each individual project.
+- Your base installation now has a config.yml
+
+To install the Agent OS base installation,
+
+1. cd to a location of your choice (your system's home folder is a good choice).
+
+2. Run one of these commands:
+
+- Agent OS with Claude Code support: curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup/base.sh | bash -s -- --claude-code
+- Agent OS with Cursor support: curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup/base.sh | bash -s -- --cursor
+- Agent OS with Claude Code & Cursor support: curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup/base.sh | bash -s -- --claude-code --cursor
+3. Customize your /standards (just like earlier versions)
+
+##### Project installation
+
+- Now each project codebase gets it's own self-contained installation of Agent OS. It no longer references instructions or standards that reside elsewhere on your system. These all get installed directly into your project's .agent-os folder, which brings several benefits:
+  - No external references = more reliable Agent OS commands & workflows.
+  - You can commit your instructions, standards, Claude Code commands and agents to your project's github repo for team access.
+
+  - You can customize standards differently per project than what's in your base installation.
+Your project installation command will be based on where you installed the Agent OS base installation.
+
+  - If you've installed it to your system's home folder, then your project installation command will be ~/.agent-os/setup/project.sh.
+  - If you've installed it elsewhere, your command will be /path/to/agent-os/setup/project.sh (after your base installation, it will show you your project installation command. It's a good idea to save it or make an alias if you work on many projects.)
+  - If (for whatever reason) you didn't install the base installation, you can still install Agent OS directly into a project, by pulling it directly off of the public github repo using the following command.
+
+    - Note: This means your standards folder won't inherit your defaults from a base installation. You'd need to customize the files in the standards folder for this project. curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup/project.sh | bash -s -- --no-base --claude-code --cursor
+
+#### Agent OS config.yml
+When you install the Agent OS base installation, that now includes a config.yml file. Currently this file is used for:
+
+- Tracking the Agent OS version you have installed
+- Which coding agents (Claude Code, Cursor) you're using
+- Project Types (new! read on...)
+
+#### Project Types
+If you work on different types of projects, you can define different sets of standards, code style, and instructions for each!
+
+  - By default, a new installation of Agent OS into a project will copy its instructions and standards from your base installation's /instructions and /standards.
+  - You can define additional project types by doing the following:
+    - Setup a folder (typically inside your base installation's .agent-os folder, but it can be anywhere on your system) which contains /instructions and /standards folders (copy these from your base install, then customize).
+    - Define the project type's folder location on your system in your base install's config.yml
+  - Using project types:
+    - If you've named a project type, 'ruby-on-rails', when running your project install command, add the flag --project-type=ruby-on-rails.
+    - To make a project type your default for new projects, set it's name as the value for default_project_type in config.yml
+
+#### Removed or changed in version 1.4.0:
+This update does away with the old installation script files:
+
+- setup.sh (replaced by /setup/base.sh and /setup/project.sh)
+- setup-claude-code.sh (now you add --claude-code flag to the install commands or enable it in your Agent OS config.yml)
+- setup-cursor.sh (now you add --cursor flag to the install commands or enable it in your Agent OS config.yml)
+Claude Code Agent OS commands now should not be installed in the ~/.agent-os/.claude/commands folder. Now, these are copied from ~/.agent-os/commands into each project's ~/.claude/commands folder (this prevents duplicate commands showing in in Claude Code's commands list). The same approach applies to Claude Code subagents files.
+
+#### Upgrading to version 1.4.0
+Follow these steps to update a previous version to 1.4.0:
+
+1. If you've customized any files in /instructions, back those up now. They will be overwritten.
+
+2. Navigate to your home directory (or whichever location you want to have your Agent OS base installation)
+
+3. Run the following to command, which includes flags to overwrite your /instructions (remove the --cursor flag if not using Cursor): curl -sSL https://raw.githubusercontent.com/buildermethods/agent-os/main/setup/base.sh | bash -s -- --overwrite-instructions --claude-code --cursor
+
+4. If your ~/.claude/commands contain Agent OS commands, remove those and copy the versions that are now in your base installation's commands folder into your project's .claude/commands folder.
+
+5. Navigate to your project. Run your project installation command to install Agent OS instructions and standards into your project's installation. If your Agent OS base installation is in your system's home folder (like previous versions), then your project installation will be: ~/.agent-os/setup/project.sh
+
+---
+
 ## Agent OS v1.4.0 Architectural Changes
 
 ### Previous Architecture (pre-v1.4.0)
