@@ -50,13 +50,16 @@
       "Bash(uv build:*)",
       "Bash(true)",
       "mcp__graphiti__get_episodes",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(/Users/jeffkiefer/Documents/projects/agent-os-pocketflow/setup/project.sh:*)",
+      "Bash(git -C /Users/jeffkiefer/Documents/projects/agent-os-pocketflow status)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
     "additionalDirectories": [
       "/private/tmp/test-output/testworkflow",
-      "/Users/jeffkiefer/.agent-os/instructions/core"
+      "/Users/jeffkiefer/.agent-os/instructions/core",
+      "/private/tmp/test-fixes"
     ]
   }
 }
