@@ -1,269 +1,300 @@
-# Contributing to the Agent OS + PocketFlow Framework
+# Contributing to Agent OS + PocketFlow Framework
 
-> **Important:** You are contributing to the framework itself, not using it. See [meta-framework context](#meta-framework-context).
+## ⚠️ IMPORTANT: This IS the Framework Repository
 
-## Meta-Framework Context
+**You are viewing the Agent OS + PocketFlow framework itself - NOT a project using it.**
 
-### 🚨 Critical Understanding
+| Framework Repository (This Repo) | Usage Repository (End-User Projects) |
+|----------------------------------|-------------------------------------|
+| 🏗️ **We BUILD** the generator | 🚀 **They USE** generated templates |
+| 🔧 **We CREATE** template systems | ✅ **They IMPLEMENT** business logic |
+| 📝 **We WRITE** placeholder TODOs | 💻 **They COMPLETE** placeholder TODOs |
+| 🧪 **We TEST** the framework itself | ✅ **They TEST** their applications |
+| 📦 **Dependencies**: Template generation tools | 📦 **Dependencies**: PocketFlow + runtime libs |
 
-**This repository IS the framework** - you are developing the system that generates PocketFlow templates for other projects.
+**Key Principle**: Missing implementations in generated templates are **features, not bugs**. This framework creates starting points for developers, not finished applications.
 
 **Framework Development (this repo):**
 - Improve generator logic in [`.agent-os/workflows/generator.py`](./.agent-os/workflows/generator.py)
 - Enhance validation scripts in [`./scripts/validation/`](./scripts/validation/)
-- Develop templates that other projects will use
-- Test the framework itself, not applications built with it
+- Develop the system that creates workflows for others
+- Template placeholders and TODO stubs are intentional design features
 
-**Framework Usage (other repos):**
-- Where developers install PocketFlow as a dependency
-- Where generated templates become working applications
-- Where the orchestrator agent runs and is useful
+**Framework Usage (your projects):**
+- Where you install PocketFlow as a dependency
+- Where generated templates become working applications  
+- Where the orchestrator agent is useful for planning
+- Where placeholder code gets implemented
 
-### ❌ What NOT to Do in This Repository
+> **New Contributors:** You're working on the meta-system that generates educational templates, not implementing those templates.
 
-**Don't "Fix" TODO Placeholders:**
-```python
-# ❌ Wrong - These are intentional templates for end-users!
-class SomeNode(Node):
-    def exec(self, prep_result):
-        # TODO: Implement your logic here  ← Don't "fix" this!
-```
+## Framework Development Setup
 
-**Don't Install PocketFlow Here:**
-```bash
-# ❌ Wrong - PocketFlow gets installed in target projects
-uv add pocketflow  # This framework creates projects that use PocketFlow
-```
+**This repository IS the framework** - these instructions are for contributing to and improving the framework itself.
 
-**Don't Invoke the Orchestrator Agent:**
-```bash
-# ❌ Wrong - Orchestrator is for end-user projects using the framework
-/plan-product  # This command is for projects that have installed the framework
-```
-
-**Don't Expect Application Tests:**
-- Import errors in generated test files are expected (PocketFlow installs in target projects)
-- Missing dependencies are intentional (the generator creates templates, not working apps)
-- This repository tests the framework itself, not applications built with it
-
-### ✅ What TO Do
-
-**Improve the Meta-System:**
-- Enhance template generation quality
-- Add validation for framework components
-- Improve the system that creates workflows for others
-- Update documentation about framework development
-
-## Quick Reference
-
-- **New to the project?** Read [`docs/DEVELOPER_QUICKSTART.md`](docs/DEVELOPER_QUICKSTART.md)
-- **Architecture questions?** See [`docs/architecture-documentation-plan.md`](docs/architecture-documentation-plan.md)
-- **Core components?** Check the [README Core Components section](README.md#core-components)
-
----
-
-# PocketFlow Implementation Guidelines
-
-## Quick PR Review Checklist
-
-Use this checklist when reviewing AI-generated PocketFlow designs and code:
-
-### Flow Design ✓
-- [ ] Flow is linear unless truly an agent; trivial I/O not modeled as nodes
-- [ ] Batch used anywhere we iterate per item (files/anomalies/issues/insights)
-- [ ] No over-branching of simple workflows - reserve branching for agent patterns
-- [ ] Nodes have single responsibilities (not monolithic)
-
-### Utilities ✓
-- [ ] Utilities = external I/O; **no LLM prompts** inside utilities
-- [ ] LLM calls stay in node `exec()` methods for transparency
-- [ ] Utilities are narrow and focused (not over-ambitious)
-
-### Shared Store Schema ✓
-- [ ] Shared store schema is concrete, minimal, and every field is consumed
-- [ ] No vague schemas ("anomalies", "engagement score")
-- [ ] No bloat fields without consumers
-
-### Node Contract & Execution ✓
-- [ ] Node contract honored: `prep()` reads, `exec()` is pure (no shared/self), `post()` writes & routes
-- [ ] **No `try/except` in `exec()` or utilities** for flow control; use retries/fallbacks
-- [ ] No accessing shared store from `exec()`
-- [ ] No stashing state on `self`
-
-### Context & Scaling ✓
-- [ ] No arbitrary context truncation; chunk if needed
-- [ ] Modern LLMs handle large contexts - avoid "sample first 10 lines" patterns
-
-### Analysis & Business Logic ✓
-- [ ] Reports are deterministic; LLMs used only where judgment/context is needed
-- [ ] Action spaces (for agents) are small, explicit, and testable
-- [ ] Metrics and outputs map to business context
-- [ ] No string concatenation where LLM calls would add value
-
-### Deliverables & Outputs ✓
-- [ ] No redundant nodes duplicating work
-- [ ] Single artifact per purpose; reuse intermediate products
-- [ ] Only create assets if consumers need them
-
-## Detailed Guidelines
-
-### 1. Flow Design Patterns
-
-#### ✅ DO: Use BatchNode for List Processing
-```python
-class ParallelProcessorNode(BatchNode):
-    """Process multiple items in parallel"""
-    # Use when exec operates on "for each item" pattern
-```
-
-#### ❌ DON'T: Include Trivial I/O as Nodes
-```python
-# Wrong - inflates graph
-class LoadCSVNode(Node): pass
-class SaveOutputNode(Node): pass
-
-# Right - keep in main.py/post steps
-```
-
-### 2. Utility Function Patterns
-
-#### ✅ DO: Keep Utilities for Real I/O
-```python
-async def fetch_api_data(url: str) -> dict:
-    """Utility for external API calls"""
-    # Real-world I/O operation
-```
-
-#### ❌ DON'T: Hide LLM Calls in Utilities
-```python
-# Wrong - breaks transparency
-def analyze_with_llm(data):
-    return llm_client.chat(prompt)
-
-# Right - LLM prompts in node exec()
-class AnalyzeNode(AsyncNode):
-    async def exec_async(self, prep_result):
-        prompt = f"Analyze this data: {prep_result}"
-        return await llm_client.chat(prompt)
-```
-
-### 3. Error Handling Patterns
-
-#### ✅ DO: Use PocketFlow's Built-in Error Handling
-```python
-class MyNode(AsyncNode):
-    max_retries = 3
-    wait = 2.0
-    
-    async def exec_async(self, prep_result):
-        # Let exceptions bubble up
-        return await risky_operation(prep_result)
-    
-    async def exec_fallback(self, prep_result, error):
-        return "fallback_result"
-```
-
-#### ❌ DON'T: Use Try/Except in exec() or Utilities
-```python
-# Wrong - fights PocketFlow's retry system
-async def exec_async(self, prep_result):
-    try:
-        return await operation()
-    except Exception:
-        return "error"  # This breaks retries!
-```
-
-### 4. Node Contract Patterns
-
-#### ✅ DO: Follow prep/exec/post Separation
-```python
-class MyNode(AsyncNode):
-    def prep(self, shared: Dict[str, Any]) -> Any:
-        """Read everything needed from shared store"""
-        return {
-            'input_data': shared['input_data'],
-            'config': shared.get('config', {})
-        }
-    
-    async def exec_async(self, prep_result: Any) -> Any:
-        """Pure function - only uses prep_result"""
-        return process_data(prep_result['input_data'])
-    
-    def post(self, shared: Dict[str, Any], prep_result: Any, exec_result: Any) -> None:
-        """Write results and choose next action"""
-        shared['processed_data'] = exec_result
-```
-
-#### ❌ DON'T: Access Shared Store in exec()
-```python
-# Wrong - breaks separation of concerns
-async def exec_async(self, prep_result):
-    data = self.shared['input_data']  # Should be in prep()
-    result = process(data)
-    self.shared['result'] = result    # Should be in post()
-```
-
-### 5. FastAPI Integration Patterns
-
-#### ✅ DO: Let PocketFlow Handle Errors
-```python
-@router.post("/analyze")
-async def analyze_endpoint(request: AnalyzeRequest):
-    shared = {"request_data": request.dict()}
-    
-    # Let PocketFlow handle retries and errors
-    flow = MyFlow()
-    await flow.run_async(shared)
-    
-    if "error" in shared:
-        raise HTTPException(status_code=422, detail=shared["error_message"])
-    
-    return AnalyzeResponse(**shared["result"])
-```
-
-#### ❌ DON'T: Wrap Flow Execution in Try/Catch
-```python
-# Wrong - prevents PocketFlow error handling
-try:
-    await flow.run_async(shared)
-    return response
-except Exception as e:
-    raise HTTPException(status_code=500, detail=str(e))
-```
-
-## Validation Commands
-
-Before submitting PRs, run these commands:
+### Getting Started with Framework Development
 
 ```bash
-# Lint and format
-uv run ruff check --fix .
-uv run ruff format .
+# Clone the framework repository for development
+git clone https://github.com/pickleton89/agent-os-pocketflow.git
+cd agent-os-pocketflow
 
-# Type checking
-uv run ty check
+# Install framework development dependencies
+uv init
+uv add --dev pytest ruff ty
 
-# Run tests
-uv run pytest
+# Test the framework itself
+./scripts/run-all-tests.sh
 
-# Validate PocketFlow patterns
-uv run python .agent-os/scripts/validate-generation.py <workflow-path>
+# Verify framework components
+ls -la setup/  # Contains base.sh and project.sh for end-users
+ls -la pocketflow-tools/  # Contains generator and validation tools
 ```
 
-## Common Anti-Patterns to Avoid
+**End-User Installation**: This framework provides `setup/base.sh` and `setup/project.sh` scripts that end-users run to install the framework. End-user installation instructions are in the main [README.md](README.md).
 
-1. **Magic Numbers**: Use configuration instead of hardcoded values
-2. **Premature Optimization**: Start simple, optimize when needed  
-3. **Over-Engineering**: Keep utilities narrow and focused
-4. **Hidden Dependencies**: Make all external calls explicit
-5. **Context Truncation**: Use chunking strategies instead of arbitrary limits
+### Framework Architecture: v1.4.0 Two-Phase System
 
-## Resources
+**What the Framework Creates for End-Users:**
+- **Base Installation** (`~/.agent-os/`): Shared standards and templates
+- **Project Installation** (`.agent-os/`): Self-contained copies for each project  
+- **Generated Templates**: PocketFlow applications with educational placeholders
 
-- [PocketFlow Documentation](docs/)
-- [Agent OS Standards](standards/)
-- [Workflow Templates](templates/)
+**Framework Benefits Delivered:**
+- **No external references**: Projects become self-contained  
+- **Team collaboration**: Generated `.agent-os/` directories are committable
+- **Project customization**: Different standards per project
+- **Template consistency**: All projects follow framework patterns
 
----
+### Framework Code Generation System
 
-*This checklist is derived from PocketFlow best practices and should be used for all code reviews.*
+**What This Framework Generates:** 
+This meta-framework includes a Python-based generator that creates educational PocketFlow templates with intentional placeholder TODOs. Framework developers work on improving this generation system.
+
+**Framework Development Testing:**
+```bash
+# Test the generator in framework repository
+cd pocketflow-tools
+python generator.py example-workflow-spec.yaml
+python test-generator.py
+python test-full-generation.py
+
+# View generated template examples (with intentional placeholders)
+ls -la testcontentanalyzer/  # Framework validation example
+```
+
+## Core Framework Components
+
+### 🔧 Generator System ([`.agent-os/workflows/generator.py`](./.agent-os/workflows/generator.py))
+- Creates complete PocketFlow projects from YAML specs
+- Generates 12+ files per workflow pattern
+- Template substitution and validation system
+
+### ✅ Validation Framework ([`./scripts/validation/`](./scripts/validation/))
+- 75+ tests ensuring framework reliability
+- Integration, orchestration, and end-to-end validation  
+- Template Validator agent with comprehensive quality checks
+- Run with [`./scripts/run-all-tests.sh`](./scripts/run-all-tests.sh)
+
+### 🤖 Sub-Agents System ([`docs/template-generation/sub-agents/`](docs/template-generation/sub-agents/))
+- **Pattern Recognizer Agent**: Analyzes requirements and identifies optimal PocketFlow patterns
+- **Template Validator Agent**: Validates generated templates for structural correctness and educational value
+- **Dependency Orchestrator Agent**: Manages Python tooling and dependency configuration
+- Intelligent coordination with performance caching (100x+ speedups on repeated requests)
+- Framework vs usage distinction enforcement throughout template generation
+
+### 📋 Template System ([`templates/`](templates/))
+- PocketFlow, FastAPI, and task templates
+- Variable substitution and code generation
+- Standards enforcement and best practices
+
+### 🎯 Standards & Guidelines ([`standards/`](standards/))
+- [PocketFlow Guidelines](standards/pocket-flow.md) - Framework patterns and best practices
+- [Code Style](standards/code-style.md) - Python, FastAPI, and testing standards
+- [Tech Stack](standards/tech-stack.md) - Technology choices and rationale
+
+## Framework Architecture Overview
+
+This integration combines the best of both frameworks in a **4-phase implementation** that creates an intelligent, self-orchestrating development platform:
+
+```
+Agent OS (Workflow Management) + PocketFlow (LLM Orchestration) = Intelligent Development Platform
+```
+
+### Implementation Architecture
+
+**Phase 1: Modular Foundation** ✅ Complete
+- Modular `.agent-os/instructions/{core,extensions,orchestration}` architecture
+- Extension system for conditional feature logic
+- Cross-file coordination framework with dependency management
+
+**Phase 2: Orchestration System** ✅ Complete  
+- PocketFlow Orchestrator Agent with intelligent planning capabilities
+- Automatic orchestrator invocation for LLM/AI features and complex tasks
+- Cross-file coordination with validation gates and error handling
+
+**Phase 3: Templates & Code Generation** ✅ Complete
+- Comprehensive workflow generator creating 12+ files per PocketFlow pattern
+- Support for all PocketFlow patterns (Agent, Workflow, RAG, MapReduce, Multi-Agent, Structured Output)
+- Complete template system with auto-generation and variable substitution
+
+**Phase 4: Integration Testing & Setup** ✅ Complete
+- Production-ready setup script with 9-phase installation process
+- Comprehensive validation framework with 75+ tests across 5 test suites
+- End-to-end testing with 100% pass rate and quality assurance
+
+### Key Integration Components
+
+- **Streamlined Repository Structure**: Single source of truth eliminating 5x duplication
+- **PocketFlow Orchestrator**: AI agent for strategic planning and workflow coordination  
+- **Workflow Generator**: Python system creating complete PocketFlow implementations from YAML specs
+- **Validation Framework**: 5 comprehensive test suites ensuring system reliability
+- **Design-First Enforcement**: Mandatory design documents with blocking mechanisms
+- **Quality Gates**: Ruff linting, ty type checking, and pytest integration
+- **Template System**: Auto-generation of working PocketFlow, FastAPI, and task templates
+
+## Repository Structure
+
+This integrated repository contains:
+
+```
+agent-os-pocketflow/
+├── .agent-os/                    # Core Agent OS integration
+│   ├── instructions/             # Modular instruction system
+│   │   ├── core/                 # Core workflow instructions
+│   │   ├── extensions/           # PocketFlow-specific extensions
+│   │   └── orchestration/        # Cross-file coordination
+│   ├── templates/                # Template system
+│   │   ├── pocketflow-templates.md
+│   │   ├── fastapi-templates.md
+│   │   └── task-templates.md
+│   ├── workflows/                # Generated workflows
+│   │   ├── generator.py          # Workflow generation engine
+│   │   └── examples/             # Example implementations
+│   └── scripts/                  # Validation and testing
+├── .claude/                      # Claude Code integration
+│   └── agents/
+│       └── pocketflow-orchestrator.md  # AI planning agent
+├── scripts/                      # Setup and validation scripts
+│   ├── run-all-tests.sh         # Master test runner
+│   ├── validate-integration.sh   # Integration validation
+│   └── validation/               # 5 comprehensive test suites
+├── docs/                         # Documentation
+├── templates/                    # Global templates
+├── standards/                    # Development standards
+└── instructions/                 # Core instruction files
+```
+
+## Integration Features & Capabilities
+
+### 🎯 Intelligent Orchestration
+- **PocketFlow Orchestrator Agent**: AI planning agent automatically invoked for complex tasks
+- **Design-First Enforcement**: Mandatory `docs/design.md` with blocking mechanisms before implementation
+- **Cross-File Coordination**: Robust dependency management preventing execution without prerequisites
+- **Quality Gates**: Pre-commit validation with ruff linting, ty type checking, and pytest testing
+
+### 🔧 Workflow Generation System
+- **Comprehensive Generator**: Creates 12+ files per workflow from YAML specifications
+- **All PocketFlow Patterns**: Support for Agent, Workflow, RAG, MapReduce, Multi-Agent, Structured Output
+- **Template System**: Auto-generation with variable substitution and proper file structure
+- **Validation Framework**: Generated code quality assurance with comprehensive error reporting
+
+### 📊 Validation & Testing
+- **75+ Comprehensive Tests**: 5 test suites covering integration, orchestration, design, PocketFlow, and end-to-end
+- **Master Test Runner**: Quick mode (3 essential tests) and full mode (5 comprehensive suites)
+- **Production Readiness**: 100% pass rate validation ensuring system reliability
+- **Quality Assurance**: Integration with development toolchain for comprehensive validation
+
+### 🚀 Production-Ready Setup
+- **Setup Script v2.0.0**: 9-phase installation process with comprehensive validation
+- **Repository Streamlining**: Eliminated 5x duplication with single source of truth architecture
+- **Comprehensive Error Handling**: Detailed feedback and validation throughout installation
+- **Integration Validation**: Complete system health checks and dependency verification
+
+## Framework Documentation
+
+### Development Resources
+- **[Framework Development Guide](docs/framework-development/QUICKSTART.md)** - Get started contributing
+- **[Framework Testing](docs/framework-development/TESTING.md)** - Testing the framework itself
+- **[Architecture Documentation](docs/architecture/)** - System internals and design
+- **[Template Generation Overview](docs/template-generation/README.md)** - How the framework creates templates
+- **[Sub-Agents System](docs/template-generation/sub-agents/overview.md)** - Template enhancement agents
+- **[Placeholder Philosophy](docs/template-generation/placeholders.md)** - Why TODOs are features
+- **[Complete Documentation Hub](docs/)** - Organized documentation with clear navigation
+- **Generated Examples**: Working PocketFlow implementations in `.agent-os/workflows/examples/`
+
+### External Resources
+- **[Agent OS Docs](https://buildermethods.com/agent-os)** - Original Agent OS documentation and guides
+- **[PocketFlow Docs](https://the-pocket.github.io/PocketFlow/)** - Complete PocketFlow framework documentation
+- **[PocketFlow GitHub](https://github.com/The-Pocket/PocketFlow)** - Source code and examples
+
+## Testing the Framework
+
+### Quick Test (Framework Validation)
+```bash
+./scripts/run-all-tests.sh --quick
+```
+
+### Full Test Suite (All 75+ Tests)
+```bash
+./scripts/run-all-tests.sh
+```
+
+### Individual Test Suites
+```bash
+# Integration tests
+./scripts/validation/validate-integration.sh
+
+# Orchestration tests  
+./scripts/validation/validate-orchestration.sh
+
+# Design validation
+./scripts/validation/validate-design.sh
+
+# PocketFlow validation
+./scripts/validation/validate-pocketflow.sh
+
+# End-to-end tests
+./scripts/validation/validate-end-to-end.sh
+```
+
+### Generator Testing
+```bash
+cd pocketflow-tools
+python test-generator.py
+python test-full-generation.py
+```
+
+## Development Workflow
+
+1. **Fork and Clone**: Fork this repository and clone your fork
+2. **Install Dependencies**: Run `uv init && uv add --dev pytest ruff ty`
+3. **Run Tests**: Ensure all tests pass with `./scripts/run-all-tests.sh`
+4. **Make Changes**: Improve generator logic, templates, or validation
+5. **Test Changes**: Run relevant test suites to validate your changes
+6. **Document**: Update documentation if needed
+7. **Submit PR**: Create a pull request with clear description
+
+## Getting Help
+
+- **Issues**: Report bugs or request features via [GitHub Issues](https://github.com/pickleton89/agent-os-pocketflow/issues)
+- **Discussions**: Ask questions in [GitHub Discussions](https://github.com/pickleton89/agent-os-pocketflow/discussions)
+- **Documentation**: Check the [docs/](docs/) directory for detailed guides
+
+## Integration Development Story
+
+This integration represents a **real-world demonstration** of the Agentic Coding methodology in action - transforming AI coding from documentation-focused (6.5/10) to workflow-enforced (9/10) intelligent development.
+
+**Built with Agentic Coding**: This entire 4-phase integration was developed using the Agentic Coding methodology with [Claude Code](https://claude.ai/code) as the AI development partner. The project exemplifies the "humans design, agents code" philosophy:
+
+**Phase-by-Phase Development**:
+- **Human-led Strategic Design**: 4-phase implementation plan, architecture decisions, integration requirements
+- **AI-assisted Implementation**: 75+ validation tests, workflow generation system, orchestration framework
+- **Collaborative Quality Assurance**: Comprehensive validation framework ensuring production readiness
+- **Iterative Integration**: Cross-file coordination, design-first enforcement, and quality gates
+
+**Production Results**:
+- **Complete System Integration**: All 4 phases implemented with 100% validation success
+- **Intelligent Orchestration**: Automatic PocketFlow orchestrator invocation for complex tasks
+- **Quality-First Development**: Mandatory design documents, validation gates, and comprehensive testing
+- **Production-Ready Framework**: 9-phase setup system with 75+ tests ensuring reliability

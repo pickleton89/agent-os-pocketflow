@@ -5,6 +5,33 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-ALPHA7] - 2025-08-19
+
+### 📝 Documentation Overhaul - Final Clarity
+
+#### ✅ README.md Complete Rewrite
+- **Separated User Documentation from Contributing**: 
+  - Created CONTRIBUTING.md for all framework development content
+  - README.md now focuses exclusively on installation and usage
+- **Fixed Critical Misunderstandings**:
+  - Clarified this IS the framework that generates templates for others
+  - Corrected installation URLs to point to this repository (pickleton89/agent-os-pocketflow)
+  - Removed confusing "Step 3" that doesn't exist in Agent OS
+- **Simplified Installation Instructions**:
+  - Clear 2-step process matching standard Agent OS
+  - Detailed explanation of where files get installed
+  - Prerequisites and system requirements added
+- **Corrected Usage Documentation**:
+  - PocketFlow generation happens AUTOMATICALLY during `/execute-tasks`
+  - No manual generator commands needed by users
+  - Framework handles template generation internally
+- **Framework vs Usage Clarity**:
+  - Clear distinction between framework repository and end-user projects
+  - Intentional TODO placeholders explained as educational features
+
+#### 🎯 Key Insight Documented
+The PocketFlow generator is integrated INTO Agent OS commands, not a separate manual process. When users run `/execute-tasks` and their tasks involve LLM applications, the framework automatically generates PocketFlow templates.
+
 ## [2.0.0-ALPHA6] - 2025-08-19
 
 ### 🎉 MAJOR MILESTONE: Agent OS v1.4.0 Migration Complete - All Steps Finished
