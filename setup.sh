@@ -95,12 +95,17 @@ check_prerequisites() {
 }
 
 create_directory_structure() {
-    # Create main directories
-    local directories=(
-        ".agent-os/instructions/core"
-        ".agent-os/instructions/extensions" 
-        ".agent-os/instructions/orchestration"
-        ".agent-os/workflows"
+    # Create Agent OS directories in home directory
+    local agent_os_directories=(
+        "$HOME/.agent-os/instructions/core"
+        "$HOME/.agent-os/instructions/extensions" 
+        "$HOME/.agent-os/instructions/orchestration"
+        "$HOME/.agent-os/workflows"
+        "$HOME/.agent-os/standards"
+    )
+    
+    # Create local project directories (only if in a project directory)
+    local project_directories=(
         ".claude/agents"
         ".claude/commands"
         "scripts/validation"
@@ -114,21 +119,32 @@ create_directory_structure() {
         "tests/integration"
     )
     
-    for dir in "${directories[@]}"; do
+    # Create Agent OS directories in home
+    for dir in "${agent_os_directories[@]}"; do
         mkdir -p "$dir"
         log_success "Created directory: $dir"
     done
+    
+    # Create project directories locally (only if we're in a git repo)
+    if git rev-parse --git-dir > /dev/null 2>&1; then
+        for dir in "${project_directories[@]}"; do
+            mkdir -p "$dir"
+            log_success "Created directory: $dir"
+        done
+    fi
 }
 
 install_core_files() {
-    # Create symlink to instructions/core instead of copying
+    # Copy core instruction files to home directory
     if [[ -d "instructions/core" ]]; then
-        if [[ ! -L ".agent-os/instructions/core" ]]; then
-            ln -s ../../instructions/core .agent-os/instructions/core
-            log_success "Linked core instruction files"
-        else
-            log_info "Core instructions already linked"
-        fi
+        cp -r instructions/core/* "$HOME/.agent-os/instructions/core/"
+        log_success "Copied core instruction files to ~/.agent-os/"
+    fi
+    
+    # Copy standards to home directory
+    if [[ -d "standards" ]]; then
+        cp -r standards/* "$HOME/.agent-os/standards/"
+        log_success "Copied standards to ~/.agent-os/"
     fi
     
     # Update file references to use modular includes
@@ -137,9 +153,9 @@ install_core_files() {
 
 update_instruction_file_includes() {
     local files=(
-        ".agent-os/instructions/core/create-spec.md"
-        ".agent-os/instructions/core/execute-tasks.md"
-        ".agent-os/instructions/core/plan-product.md"
+        "$HOME/.agent-os/instructions/core/create-spec.md"
+        "$HOME/.agent-os/instructions/core/execute-tasks.md"
+        "$HOME/.agent-os/instructions/core/plan-product.md"
     )
     
     for file in "${files[@]}"; do
@@ -158,7 +174,7 @@ install_extensions() {
     # Create extension files for modular features
     
     # LLM/AI workflow extension
-    cat > .agent-os/instructions/extensions/llm-workflow-extension.md << 'EOF'
+    cat > "$HOME/.agent-os/instructions/extensions/llm-workflow-extension.md" << 'EOF'
 # LLM/AI Workflow Extension
 
 ## Design Document Requirement (LLM/AI Features Only)
@@ -185,7 +201,7 @@ Generate complete PocketFlow implementation:
 EOF
     
     # Design-first enforcement
-    cat > .agent-os/instructions/extensions/design-first-enforcement.md << 'EOF'
+    cat > "$HOME/.agent-os/instructions/extensions/design-first-enforcement.md" << 'EOF'
 # Design-First Enforcement
 
 ## Validation Gate: Design Document Required
@@ -216,7 +232,7 @@ fi
 EOF
 
     # PocketFlow integration extension
-    cat > .agent-os/instructions/extensions/pocketflow-integration.md << 'EOF'
+    cat > "$HOME/.agent-os/instructions/extensions/pocketflow-integration.md" << 'EOF'
 # PocketFlow Integration Extension
 
 ## Auto-Detection and Orchestration
@@ -245,7 +261,7 @@ EOF
 
 setup_orchestration() {
     # Create coordination configuration
-    cat > .agent-os/instructions/orchestration/coordination.yaml << 'EOF'
+    cat > "$HOME/.agent-os/instructions/orchestration/coordination.yaml" << 'EOF'
 # Agent OS + PocketFlow Coordination Configuration
 coordination_map:
   plan-product:
@@ -286,7 +302,7 @@ hooks:
 EOF
     
     # Create orchestrator hooks
-    cat > .agent-os/instructions/orchestration/orchestrator-hooks.md << 'EOF'
+    cat > "$HOME/.agent-os/instructions/orchestration/orchestrator-hooks.md" << 'EOF'
 # Orchestration Hooks System
 
 ## Hook: design_document_validation
@@ -326,7 +342,7 @@ EOF
 EOF
 
     # Create dependency validation
-    cat > .agent-os/instructions/orchestration/dependency-validation.md << 'EOF'
+    cat > "$HOME/.agent-os/instructions/orchestration/dependency-validation.md" << 'EOF'
 # Dependency Validation System
 
 ## Purpose
@@ -495,9 +511,9 @@ validate_installation() {
     
     # Check directory structure
     local required_dirs=(
-        ".agent-os/instructions/core"
-        ".agent-os/instructions/extensions"
-        ".agent-os/instructions/orchestration"
+        "$HOME/.agent-os/instructions/core"
+        "$HOME/.agent-os/instructions/extensions"
+        "$HOME/.agent-os/instructions/orchestration"
         ".claude/agents"
         "scripts/validation"
         "src/nodes"
@@ -514,12 +530,12 @@ validate_installation() {
     
     # Check critical files
     local critical_files=(
-        ".agent-os/instructions/orchestration/coordination.yaml"
-        ".agent-os/instructions/orchestration/orchestrator-hooks.md"
-        ".agent-os/instructions/orchestration/dependency-validation.md"
-        ".agent-os/instructions/extensions/llm-workflow-extension.md"
-        ".agent-os/instructions/extensions/design-first-enforcement.md"
-        ".agent-os/instructions/extensions/pocketflow-integration.md"
+        "$HOME/.agent-os/instructions/orchestration/coordination.yaml"
+        "$HOME/.agent-os/instructions/orchestration/orchestrator-hooks.md"
+        "$HOME/.agent-os/instructions/orchestration/dependency-validation.md"
+        "$HOME/.agent-os/instructions/extensions/llm-workflow-extension.md"
+        "$HOME/.agent-os/instructions/extensions/design-first-enforcement.md"
+        "$HOME/.agent-os/instructions/extensions/pocketflow-integration.md"
         ".claude/agents/pocketflow-orchestrator.md"
     )
     
@@ -553,7 +569,7 @@ create_validation_scripts() {
 echo "🧪 Testing Agent OS + PocketFlow Integration..."
 
 # Test 1: Directory structure
-if [[ -d ".agent-os/instructions/orchestration" ]]; then
+if [[ -d "$HOME/.agent-os/instructions/orchestration" ]]; then
     echo "✅ Orchestration directory exists"
 else
     echo "❌ Orchestration directory missing"
@@ -570,9 +586,9 @@ fi
 
 # Test 3: Extension modules
 local extensions=(
-    ".agent-os/instructions/extensions/llm-workflow-extension.md"
-    ".agent-os/instructions/extensions/design-first-enforcement.md"
-    ".agent-os/instructions/extensions/pocketflow-integration.md"
+    "$HOME/.agent-os/instructions/extensions/llm-workflow-extension.md"
+    "$HOME/.agent-os/instructions/extensions/design-first-enforcement.md"
+    "$HOME/.agent-os/instructions/extensions/pocketflow-integration.md"
 )
 
 for ext in "${extensions[@]}"; do
@@ -585,7 +601,7 @@ for ext in "${extensions[@]}"; do
 done
 
 # Test 4: Coordination configuration
-if [[ -f ".agent-os/instructions/orchestration/coordination.yaml" ]]; then
+if [[ -f "$HOME/.agent-os/instructions/orchestration/coordination.yaml" ]]; then
     echo "✅ Coordination configuration found"
 else
     echo "❌ Coordination configuration missing"

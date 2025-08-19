@@ -5,6 +5,35 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-PLANNING] - 2025-08-19
+
+### Critical Discovery
+- **🚨 MAJOR ARCHITECTURAL INCOMPATIBILITY DISCOVERED**: Agent OS v1.4.0 fundamental changes require complete framework overhaul
+  - **Setup Script Bug Fixed**: Resolved critical installation failure where `setup.sh` installed locally but `setup-claude-code.sh` expected global installation
+  - **Agent OS v1.4.0 Analysis**: Base Agent OS maintainer completely restructured architecture to two-tier system (base + project installations)
+  - **Compatibility Crisis**: Current framework structure fundamentally incompatible with v1.4.0 patterns
+  - **Migration Plan Created**: Comprehensive restructuring plan documented in `docs/framework-development/agent-os-v1.4-migration-plan.md`
+
+### Required Changes (In Planning)
+- **Directory Restructuring**: Complete reorganization to match v1.4.0 patterns
+  - Create `setup/base.sh` and `setup/project.sh` installation scripts
+  - Implement `config.yml` configuration system
+  - Rename `.agent-os/workflows/` to `pocketflow-tools/`
+  - Move commands from `instructions/` to `commands/` directory
+- **Installation System Overhaul**: New two-tier installation matching Agent OS v1.4.0
+- **Migration Tools**: Create migration path for existing users
+- **Framework Position Clarification**: Position as enhanced Agent OS distribution with PocketFlow capabilities
+
+### Breaking Changes (Planned)
+- **Installation Process**: Complete change from single `setup.sh` to `setup/base.sh` + `setup/project.sh`
+- **Directory Structure**: Major reorganization of framework layout
+- **File Locations**: Agent OS files will move from local to global installation paths
+
+### Status
+- **Current Phase**: Planning and architectural analysis complete
+- **Next Phase**: Implementation of v1.4.0-compatible structure
+- **Risk Level**: HIGH - Major breaking changes required for compatibility
+
 ## [1.12.0] - 2025-01-18
 
 ### Added
