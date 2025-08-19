@@ -5,6 +5,37 @@ All notable changes to Agent OS will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-ALPHA2] - 2025-08-19
+
+### 🎯 MAJOR MILESTONE: Agent OS v1.4.0 Migration Phase 2 Complete - setup/base.sh
+
+#### ✅ Step 2: Enhanced Base Installation Script (COMPLETED)
+- **🚀 setup/base.sh Implementation**: Complete 860-line framework installer with all requirements
+  - **Base installation logic** with comprehensive command-line options (--claude-code, --cursor, --pocketflow, --force)
+  - **Enhanced instructions installation** supporting both local development and remote repository modes
+  - **PocketFlow tools installation** with complete toolchain (generators, analyzers, validators, orchestrators)
+  - **Dynamic configuration creation** reflecting user settings and installation paths
+  - **Self-contained project.sh generation** for end-user project installations
+- **🔧 Critical Bug Fixes Applied**:
+  - Fixed missing directory creation in remote download mode (would cause installation failures)
+  - Corrected instruction file paths for Claude Code integration (core/ subdirectory structure)
+  - Added configuration updates to properly reflect user settings (--claude-code, --cursor flags)
+  - Implemented comprehensive templates installation system
+  - Added realpath fallback for enhanced system compatibility
+- **⚙️ Agent OS v1.4.0 Full Compatibility**: Script maintains perfect v1.4.0 compatibility while adding PocketFlow enhancements
+  - Two-tier architecture: base installation + project-specific installations
+  - Enhanced instructions with PocketFlow additions preserved
+  - Claude Code/Cursor integration following v1.4.0 patterns
+  - Self-contained project installations with proper dependency management
+
+#### 🎯 Framework Development Context Validated
+- **Framework Installer**: Correctly installs the Agent OS + PocketFlow system itself (not applications using it)
+- **Template System**: Installs generators and validation tools for creating end-user projects
+- **Proper Separation**: Maintains clear distinction between framework components and end-user applications
+
+### Next Phase
+- **Phase 2 Continuation**: Step 3 - Develop setup/project.sh for individual project installations
+
 ## [2.0.0-ALPHA1] - 2025-08-19
 
 ### 🎯 MAJOR MILESTONE: Agent OS v1.4.0 Migration Phase 1 Complete
