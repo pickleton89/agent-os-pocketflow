@@ -22,7 +22,6 @@ DEFAULT_INSTALL_PATH="$HOME/.agent-os"
 # Installation options (can be set via command line arguments)
 INSTALL_PATH="$DEFAULT_INSTALL_PATH"
 ENABLE_CLAUDE_CODE=false
-ENABLE_CURSOR=false
 ENABLE_POCKETFLOW=true  # Default enabled in our enhanced version
 OVERWRITE_INSTRUCTIONS=false
 FORCE_INSTALL=false
@@ -58,10 +57,6 @@ parse_arguments() {
                 ;;
             --claude-code)
                 ENABLE_CLAUDE_CODE=true
-                shift
-                ;;
-            --cursor)
-                ENABLE_CURSOR=true
                 shift
                 ;;
             --no-pocketflow)
@@ -104,7 +99,6 @@ USAGE:
 OPTIONS:
     --install-path PATH      Install to custom path (default: ~/.agent-os)
     --claude-code           Enable Claude Code integration
-    --cursor                Enable Cursor integration  
     --no-pocketflow         Disable PocketFlow enhancements (standard Agent OS only)
     --overwrite-instructions Overwrite existing instructions directory
     --force                 Force installation even if directory exists
@@ -117,8 +111,8 @@ EXAMPLES:
     # With Claude Code support
     $0 --claude-code
     
-    # With both Claude Code and Cursor support
-    $0 --claude-code --cursor
+    # With Claude Code support
+    $0 --claude-code
     
     # Custom installation path
     $0 --install-path ~/my-agent-os --claude-code
@@ -208,11 +202,10 @@ create_directory_structure() {
         "$INSTALL_PATH/templates"
     )
     
-    # Claude Code/Cursor directories
+    # Claude Code directories
     local ide_dirs=(
         "$INSTALL_PATH/claude-code/agents"
         "$INSTALL_PATH/claude-code/commands"
-        "$INSTALL_PATH/cursor"
     )
     
     # Create core directories
@@ -230,7 +223,7 @@ create_directory_structure() {
     fi
     
     # Create IDE directories if needed
-    if [[ "$ENABLE_CLAUDE_CODE" == "true" ]] || [[ "$ENABLE_CURSOR" == "true" ]]; then
+    if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then
         for dir in "${ide_dirs[@]}"; do
             mkdir -p "$dir"
             log_success "Created: $dir"
@@ -391,7 +384,6 @@ create_configuration() {
         
         # Update configuration with user settings
         sed -i.bak "s/claude_code: .*/claude_code: $ENABLE_CLAUDE_CODE/g" "$config_file"
-        sed -i.bak "s/cursor: .*/cursor: $ENABLE_CURSOR/g" "$config_file"
         sed -i.bak "s/pocketflow: .*/pocketflow: $ENABLE_POCKETFLOW/g" "$config_file"
         sed -i.bak "s|base_installation: \".*\"|base_installation: \"$INSTALL_PATH\"|g" "$config_file"
         rm -f "$config_file.bak"
@@ -410,7 +402,6 @@ updated: "$(date +'%Y-%m-%d')"
 # Tool configuration
 tools:
   claude_code: $ENABLE_CLAUDE_CODE
-  cursor: $ENABLE_CURSOR
   pocketflow: $ENABLE_POCKETFLOW
 
 # PocketFlow-specific configuration
@@ -451,7 +442,6 @@ features:
   template_validation: $ENABLE_POCKETFLOW
   dependency_orchestration: $ENABLE_POCKETFLOW
   claude_code_integration: $ENABLE_CLAUDE_CODE
-  cursor_integration: $ENABLE_CURSOR
 EOF
     fi
     
@@ -490,7 +480,6 @@ BASE_INSTALL_PATH="$(dirname "$(dirname "$(realpath "$0")")")"
 # Options
 ENABLE_POCKETFLOW=true
 ENABLE_CLAUDE_CODE=false
-ENABLE_CURSOR=false
 
 # Parse arguments
 parse_arguments() {
@@ -506,10 +495,6 @@ parse_arguments() {
                 ;;
             --claude-code)
                 ENABLE_CLAUDE_CODE=true
-                shift
-                ;;
-            --cursor)
-                ENABLE_CURSOR=true
                 shift
                 ;;
             --help)
@@ -537,7 +522,6 @@ OPTIONS:
     --pocketflow            Enable PocketFlow features (default)
     --no-pocketflow         Disable PocketFlow features
     --claude-code           Enable Claude Code integration
-    --cursor                Enable Cursor integration
     --help                  Show this help message
 
 EXAMPLES:
@@ -580,12 +564,6 @@ install_project() {
         project_dirs+=(
             ".claude/commands"
             ".claude/agents"
-        )
-    fi
-    
-    if [[ "$ENABLE_CURSOR" == "true" ]]; then
-        project_dirs+=(
-            ".cursor"
         )
     fi
     
@@ -643,7 +621,6 @@ created: "$(date +'%Y-%m-%d')"
 # Tool configuration
 tools:
   claude_code: $ENABLE_CLAUDE_CODE
-  cursor: $ENABLE_CURSOR
   pocketflow: $ENABLE_POCKETFLOW
 
 # Project paths
@@ -883,7 +860,6 @@ main() {
     log_info "Starting Enhanced Agent OS + PocketFlow installation..."
     log_info "Installation path: $INSTALL_PATH"
     log_info "Claude Code: $(if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then echo "Enabled"; else echo "Disabled"; fi)"
-    log_info "Cursor: $(if [[ "$ENABLE_CURSOR" == "true" ]]; then echo "Enabled"; else echo "Disabled"; fi)"
     log_info "PocketFlow: $(if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then echo "Enabled"; else echo "Disabled"; fi)"
     echo ""
     

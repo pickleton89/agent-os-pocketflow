@@ -22,7 +22,6 @@ REPO_URL="https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main
 BASE_INSTALL_PATH=""
 ENABLE_POCKETFLOW=true
 ENABLE_CLAUDE_CODE=false
-ENABLE_CURSOR=false
 NO_BASE_INSTALL=false
 PROJECT_TYPE="pocketflow-enhanced"
 FORCE_INSTALL=false
@@ -132,10 +131,6 @@ parse_arguments() {
                 ENABLE_CLAUDE_CODE=true
                 shift
                 ;;
-            --cursor)
-                ENABLE_CURSOR=true
-                shift
-                ;;
             --project-type)
                 if [[ -z "$2" ]]; then
                     log_error "--project-type requires a type argument"
@@ -176,7 +171,6 @@ OPTIONS:
     --pocketflow           Enable PocketFlow features (default)
     --no-pocketflow        Disable PocketFlow features (standard Agent OS only)
     --claude-code          Enable Claude Code integration
-    --cursor               Enable Cursor integration
     --project-type TYPE    Project type (default: pocketflow-enhanced)
     --force                Force installation even if .agent-os exists
     --help                 Show this help message
@@ -198,7 +192,7 @@ EXAMPLES:
     $0 --no-pocketflow --claude-code
     
     # Standalone installation (no base required)
-    $0 --no-base --claude-code --cursor
+    $0 --no-base --claude-code
     
     # Custom project type
     $0 --project-type python-pocketflow --claude-code
@@ -351,17 +345,11 @@ create_project_structure() {
         )
     fi
     
-    # Claude Code/Cursor directories
+    # Claude Code directories
     if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then
         core_dirs+=(
             ".claude/commands"
             ".claude/agents"
-        )
-    fi
-    
-    if [[ "$ENABLE_CURSOR" == "true" ]]; then
-        core_dirs+=(
-            ".cursor"
         )
     fi
     
@@ -583,40 +571,6 @@ install_claude_code_integration() {
     fi
 }
 
-# Install Cursor integration
-install_cursor_integration() {
-    if [[ "$ENABLE_CURSOR" != "true" ]]; then
-        log_info "Skipping Cursor integration (not enabled)"
-        return 0
-    fi
-    
-    log_info "Installing Cursor integration..."
-    
-    # Create basic cursor configuration
-    cat > ".cursor/cursor-rules" << EOF
-# Enhanced Agent OS + PocketFlow Rules for Cursor
-
-## Project Type: $PROJECT_TYPE
-
-### Core Instructions
-- Follow Agent OS standards and best practices
-- Use instructions in .agent-os/instructions/ for guidance
-- Refer to standards in .agent-os/standards/ for coding style
-
-EOF
-
-    if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
-        cat >> ".cursor/cursor-rules" << EOF
-### PocketFlow Integration
-- Use workflow generators in .agent-os/pocketflow-tools/
-- Follow PocketFlow patterns for LLM workflows
-- Validate templates using provided validators
-
-EOF
-    fi
-    
-    log_success "Created Cursor configuration"
-}
 
 # Create project configuration
 create_project_configuration() {
@@ -635,7 +589,6 @@ project_type: "$PROJECT_TYPE"
 # Tool configuration
 tools:
   claude_code: $ENABLE_CLAUDE_CODE
-  cursor: $ENABLE_CURSOR
   pocketflow: $ENABLE_POCKETFLOW
 
 # Project paths
@@ -724,11 +677,6 @@ validate_installation() {
         )
     fi
     
-    if [[ "$ENABLE_CURSOR" == "true" ]]; then
-        required_dirs+=(
-            ".cursor"
-        )
-    fi
     
     for dir in "${required_dirs[@]}"; do
         if [[ ! -d "$dir" ]]; then
@@ -797,11 +745,6 @@ EOF
         echo ""
     fi
     
-    if [[ "$ENABLE_CURSOR" == "true" ]]; then
-        log_info "Cursor Integration:"
-        echo "  • Rules configured in .cursor/cursor-rules"
-        echo ""
-    fi
     
     echo "📖 Documentation: https://github.com/pickleton89/agent-os-pocketflow"
     echo "🚀 Start with: /plan-product"
@@ -816,7 +759,6 @@ main() {
     log_info "Starting Enhanced Agent OS + PocketFlow project installation..."
     log_info "Project Type: $PROJECT_TYPE"
     log_info "Claude Code: $(if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then echo "Enabled"; else echo "Disabled"; fi)"
-    log_info "Cursor: $(if [[ "$ENABLE_CURSOR" == "true" ]]; then echo "Enabled"; else echo "Disabled"; fi)"
     log_info "PocketFlow: $(if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then echo "Enabled"; else echo "Disabled"; fi)"
     echo ""
     
@@ -828,7 +770,6 @@ main() {
     install_standards
     install_pocketflow_tools
     install_claude_code_integration
-    install_cursor_integration
     create_project_configuration
     update_gitignore
     validate_installation

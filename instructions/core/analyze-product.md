@@ -366,7 +366,7 @@ encoding: UTF-8
   - [ ] All product documentation reflects actual codebase
   - [ ] Roadmap shows completed and planned features accurately
   - [ ] Tech stack matches installed dependencies
-  - [ ] CLAUDE.md or .cursorrules configured (if applicable)
+  - [ ] CLAUDE.md configured (if applicable)
 </verification_checklist>
 
 <summary_template>

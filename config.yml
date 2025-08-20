@@ -9,7 +9,6 @@ updated: "2025-08-19"
 # Tool configuration
 tools:
   claude_code: true
-  cursor: true
   pocketflow: true            # Our enhancement
 
 # PocketFlow-specific configuration
@@ -60,4 +59,3 @@ features:
   template_validation: true
   dependency_orchestration: true
   claude_code_integration: true
-  cursor_integration: true

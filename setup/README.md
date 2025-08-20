@@ -18,8 +18,8 @@ curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main
 # Custom installation path
 curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --install-path ~/my-agent-os
 
-# With Claude Code and Cursor support
-curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --claude-code --cursor
+# With Claude Code support
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --claude-code
 ```
 
 ### 2. Project Installation (`project.sh`)

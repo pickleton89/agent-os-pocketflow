@@ -42,7 +42,6 @@ show_help() {
     echo ""
     echo "BASE INSTALLATION OPTIONS:"
     echo "  --claude-code     Enable Claude Code integration"
-    echo "  --cursor          Enable Cursor integration"
     echo "  --path PATH       Custom installation path (default: ~/.agent-os)"
     echo ""
     echo "PROJECT INSTALLATION OPTIONS:"

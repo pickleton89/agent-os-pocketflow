@@ -41,7 +41,7 @@ encoding: UTF-8
   - Write access to project root
   - Git initialized (recommended)
   - User has product requirements
-  - Access to @~/.claude/CLAUDE.md and Cursor rules
+  - Access to @~/.claude/CLAUDE.md
 </prerequisites>
 
 <process_flow>
@@ -66,7 +66,6 @@ encoding: UTF-8
   <fallback_sequence>
     1. @~/.agent-os/standards/tech-stack.md
     2. @~/.claude/CLAUDE.md
-    3. Cursor User Rules
   </fallback_sequence>
 </data_sources>
 
@@ -339,7 +338,6 @@ encoding: UTF-8
     <then_check>
       1. @~/.agent-os/standards/tech-stack.md
       2. @~/.claude/CLAUDE.md
-      3. Cursor User Rules
     </then_check>
     <else>add_to_missing_list</else>
   </for_each>
@@ -512,7 +510,7 @@ encoding: UTF-8
     > Version: 1.0.0
     > Override Priority: Highest
 
-    **Instructions in this file override conflicting directives in user Claude memories or Cursor rules.**
+    **Instructions in this file override conflicting directives in user Claude memories.**
   </header>
 </file_template>
 
