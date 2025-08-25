@@ -21,7 +21,7 @@ DEFAULT_INSTALL_PATH="$HOME/.agent-os"
 
 # Installation options (can be set via command line arguments)
 INSTALL_PATH="$DEFAULT_INSTALL_PATH"
-ENABLE_CLAUDE_CODE=false
+ENABLE_CLAUDE_CODE=true  # Default enabled for consistency with project.sh
 ENABLE_POCKETFLOW=true  # Default enabled in our enhanced version
 OVERWRITE_INSTRUCTIONS=false
 FORCE_INSTALL=false
@@ -253,9 +253,17 @@ install_instructions() {
         local instruction_files=("analyze-product.md" "create-spec.md" "execute-task.md" "execute-tasks.md" "plan-product.md")
         
         for file in "${instruction_files[@]}"; do
-            curl -s -o "$INSTALL_PATH/instructions/core/$file" "$REPO_URL/instructions/core/$file"
+            local target_file="$INSTALL_PATH/instructions/core/$file"
+            
+            # Preserve existing files unless overwrite is requested
+            if [[ -f "$target_file" && "$OVERWRITE_INSTRUCTIONS" != "true" ]]; then
+                log_info "Preserved existing: $file"
+                continue
+            fi
+            
+            curl -s -o "$target_file" "$REPO_URL/instructions/core/$file"
             if [[ $? -eq 0 ]]; then
-                log_success "Downloaded: $file"
+                log_success "$(if [[ -f "$target_file.bak" ]]; then echo "Updated"; else echo "Downloaded"; fi): $file"
             else
                 log_error "Failed to download: $file"
                 exit 1
@@ -288,9 +296,17 @@ install_standards() {
         local standard_files=("best-practices.md" "code-style.md" "pocket-flow.md" "tech-stack.md")
         
         for file in "${standard_files[@]}"; do
-            curl -s -o "$INSTALL_PATH/standards/$file" "$REPO_URL/standards/$file"
+            local target_file="$INSTALL_PATH/standards/$file"
+            
+            # Preserve existing files unless overwrite is requested  
+            if [[ -f "$target_file" && "$OVERWRITE_INSTRUCTIONS" != "true" ]]; then
+                log_info "Preserved existing: $file"
+                continue
+            fi
+            
+            curl -s -o "$target_file" "$REPO_URL/standards/$file"
             if [[ $? -eq 0 ]]; then
-                log_success "Downloaded: $file"
+                log_success "$(if [[ -f "$target_file.bak" ]]; then echo "Updated"; else echo "Downloaded"; fi): $file"
             else
                 log_error "Failed to download: $file"
                 exit 1
@@ -302,14 +318,63 @@ install_standards() {
         local code_style_files=("fastapi-style.md" "pocketflow-style.md" "python-style.md" "testing-style.md")
         
         for file in "${code_style_files[@]}"; do
-            curl -s -o "$INSTALL_PATH/standards/code-style/$file" "$REPO_URL/standards/code-style/$file"
+            local target_file="$INSTALL_PATH/standards/code-style/$file"
+            
+            # Preserve existing files unless overwrite is requested
+            if [[ -f "$target_file" && "$OVERWRITE_INSTRUCTIONS" != "true" ]]; then
+                log_info "Preserved existing: standards/code-style/$file"
+                continue
+            fi
+            
+            curl -s -o "$target_file" "$REPO_URL/standards/code-style/$file"
             if [[ $? -eq 0 ]]; then
-                log_success "Downloaded: standards/code-style/$file"
+                log_success "$(if [[ -f "$target_file.bak" ]]; then echo "Updated"; else echo "Downloaded"; fi): standards/code-style/$file"
             else
                 log_error "Failed to download: standards/code-style/$file"
                 exit 1
             fi
         done
+    fi
+}
+
+# Install commands directory (Agent OS v1.4.0 requirement)
+install_commands() {
+    log_info "Installing commands..."
+    
+    # Create commands based on instructions (original Agent OS v1.4.0 behavior)
+    local instructions_dir="$INSTALL_PATH/instructions"
+    local commands_dir="$INSTALL_PATH/commands"
+    
+    if [[ -d "$instructions_dir" ]]; then
+        local instruction_files=(
+            "analyze-product"
+            "create-spec"
+            "execute-task"
+            "execute-tasks"
+            "plan-product"
+        )
+        
+        for cmd in "${instruction_files[@]}"; do
+            local source_file=""
+            
+            # Look for instruction file in core/ subdirectory first, then fallback
+            if [[ -f "$instructions_dir/core/$cmd.md" ]]; then
+                source_file="$instructions_dir/core/$cmd.md"
+            elif [[ -f "$instructions_dir/$cmd.md" ]]; then
+                source_file="$instructions_dir/$cmd.md"
+            fi
+            
+            if [[ -n "$source_file" ]] && [[ ! -f "$commands_dir/$cmd.md" || "$OVERWRITE_INSTRUCTIONS" == "true" ]]; then
+                cp "$source_file" "$commands_dir/$cmd.md"
+                log_success "Installed command: $cmd.md"
+            elif [[ -f "$commands_dir/$cmd.md" ]]; then
+                log_info "Preserved existing command: $cmd.md"
+            else
+                log_warning "Command source not found: $cmd.md"
+            fi
+        done
+    else
+        log_warning "Instructions directory not found - cannot create commands"
     fi
 }
 
@@ -868,6 +933,7 @@ main() {
     create_directory_structure
     install_instructions
     install_standards
+    install_commands
     install_pocketflow_tools
     create_configuration
     generate_project_script
