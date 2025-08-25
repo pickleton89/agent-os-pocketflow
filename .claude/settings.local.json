@@ -54,7 +54,10 @@
       "Bash(/Users/jeffkiefer/Documents/projects/agent-os-pocketflow/setup/project.sh:*)",
       "Bash(git -C /Users/jeffkiefer/Documents/projects/agent-os-pocketflow status)",
       "Bash(./scripts/validation/validate-design.sh:*)",
-      "Bash(./scripts/validation/validate-pocketflow.sh:*)"
+      "Bash(./scripts/validation/validate-pocketflow.sh:*)",
+      "Read(//Users/jeffkiefer/.claude/**)",
+      "Read(//Users/jeffkiefer/.claude/agents/**)",
+      "Bash(./setup/base.sh:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
@@ -63,7 +66,8 @@
       "/Users/jeffkiefer/.agent-os/instructions/core",
       "/private/tmp/test-fixes",
       "/private/tmp/test-project/.agent-os",
-      "/Users/jeffkiefer/.agent-os"
+      "/Users/jeffkiefer/.agent-os",
+      "/tmp"
     ]
   }
 }

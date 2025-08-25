@@ -734,8 +734,8 @@ install_claude_code_integration() {
         done
     fi
     
-    if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
-        # Add PocketFlow-specific agents
+    if [[ "$ENABLE_POCKETFLOW" == "true" ]] && [[ ! -d "$source_agents_dir" ]]; then
+        # Add PocketFlow-specific agents (only if not copied locally)
         local pocketflow_agents=(
             "pocketflow-orchestrator.md"
             "pattern-recognizer.md"
