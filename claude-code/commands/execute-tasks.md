@@ -2,7 +2,7 @@
 description: Task Execution Rules for Agent OS
 globs:
 alwaysApply: false
-version: 2.0 # Major updates for PocketFlow integration
+version: 2.1 # Updated to use 3-phase execution model from v1.4.1
 encoding: UTF-8
 ---
 
@@ -452,9 +452,9 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 </step>
 
-<step number="5" name="task_execution_loop">
+<step number="5.5" name="task_execution_loop">
 
-### Step 5: Task Execution Loop
+### Step 5.5: Task Execution Loop
 
 <step_metadata>
   <purpose>Execute all parent tasks using individual task processor</purpose>
@@ -531,511 +531,85 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 </step>
 
-<step number="6" name="final_validation">
+<step number="6" name="post_execution_workflow">
 
-### Step 6: Final Validation & Workflow Completion
+### Step 6: Post-Execution Workflow
 
 <step_metadata>
-  <validates>overall workflow completion</validates>
-  <confirms>all tasks completed successfully</confirms>
-  <purpose>workflow finalization and cleanup</purpose>
+  <delegates>post-execution-tasks.md for completion workflow</delegates>
+  <handles>testing, git operations, documentation, and reporting</handles>
+  <implements>3-phase execution model from Agent OS v1.4.1</implements>
 </step_metadata>
 
-<workflow_validation>
-  <task_completion_check>
-    VERIFY: All selected parent tasks marked as [COMPLETED] in tasks.md
-    CONFIRM: No tasks remain in [IN_PROGRESS] or [FAILED] status
-    VALIDATE: Each completed task meets acceptance criteria
-  </task_completion_check>
+After all tasks in tasks.md have been implemented, use @.agent-os/instructions/core/post-execution-tasks.md to run the complete series of steps we always execute when finishing and delivering a new feature.
+
+<post_execution_workflow>
+  <phase_model>
+    **3-Phase Execution Model:**
+    - **Pre-execution**: Context gathering and planning (Steps 1-5)
+    - **Execution**: Task implementation (Step 5.5 loop)
+    - **Post-execution**: Testing, validation, and delivery (this step)
+  </phase_model>
   
-  <integration_verification>
-    RUN: Full test suite to ensure all components work together
-    CHECK: All PocketFlow integrations function correctly (if applicable)
-    VALIDATE: Code quality standards met (ruff, ty checks pass)
-    CONFIRM: No critical errors or warnings remain
-  </integration_verification>
+  <delegated_responsibilities>
+    The post-execution-tasks.md workflow handles:
+    - PocketFlow implementation validation (if LLM/AI components)
+    - Full test suite execution
+    - Git workflow and PR creation
+    - Task completion verification
+    - Roadmap progress updates
+    - Enhanced recap document generation
+    - Completion summary and notification
+  </delegated_responsibilities>
+</post_execution_workflow>
+
+<enhanced_features>
+  <pocketflow_validation>
+    - Validates design.md compliance for LLM/AI features
+    - Checks PocketFlow pattern implementation
+    - Verifies utility function contracts
+    - Ensures Node/Flow structure correctness
+  </pocketflow_validation>
   
-  <documentation_check>
-    VERIFY: All implementation matches specifications
-    UPDATE: Documentation reflects any implementation decisions
-    CONFIRM: Design documents align with final implementation (if LLM/AI components)
-  </documentation_check>
-</workflow_validation>
-
-<completion_reporting>
-  <progress_summary>
-    REPORT: Total tasks completed vs planned
-    HIGHLIGHT: Key features implemented
-    DOCUMENT: Any deviations from original plan
-    NOTE: Performance metrics and quality indicators
-  </progress_summary>
-  
-  <next_steps_guidance>
-    SUGGEST: Appropriate next actions for user
-    RECOMMEND: Testing procedures or deployment steps
-    IDENTIFY: Any follow-up tasks or improvements
-  </next_steps_guidance>
-</completion_reporting>
+  <enhanced_documentation>
+    - Creates recaps with PocketFlow pattern details
+    - Documents LLM providers and models used
+    - Includes design compliance status
+    - Captures technical implementation details
+  </enhanced_documentation>
+</enhanced_features>
 
 <instructions>
-  ACTION: Validate overall workflow completion
-  CONFIRM: All tasks executed successfully via execute-task.md
-  VERIFY: Integration and quality standards met
-  REPORT: Comprehensive completion summary to user
-  GUIDE: User on appropriate next steps
-</instructions>
-
-</step>
-
-<conditional_execution>
-  <detection_criteria>
-    - Check if docs/design.md exists (indicates LLM/AI implementation)
-    - Look for implemented nodes.py or flow.py files
-    - Identify utils/ directory with LLM-related functions
-    - Check for PocketFlow imports or usage in codebase
-  </detection_criteria>
-  <if_llm_implemented>
-    <action>Execute full adherence validation</action>
-    <blocking>true for major deviations from design</blocking>
-  </if_llm_implemented>
-  <if_no_llm_implementation>
-    <action>Skip this step entirely</action>
-    <message>Skipping design adherence check - no LLM/AI components implemented</message>
-  </if_no_llm_implementation>
-</conditional_execution>
-
-<adherence_validation>
-  <utility_functions>
-    - Verify all utility functions match documented input/output contracts
-    - Check function signatures align with design.md specifications
-    - Validate error handling matches documented patterns
-    - Ensure all promised utility functions are implemented
-  </utility_functions>
-  <shared_store_schema>
-    - Validate SharedStore schema implementation matches design
-    - Check all data transformations are properly defined
-    - Verify Pydantic models align with schema specifications
-    - Ensure consistent key naming throughout implementation
-  </shared_store_schema>
-  <node_implementation>
-    - Verify each node's prep/exec/post logic matches design specifications
-    - Check action strings match documented flow transitions
-    - Validate node responsibilities align with design document
-    - Ensure error handling converts to proper action strings
-  </node_implementation>
-  <flow_assembly>
-    - Validate flow connections match Mermaid diagram
-    - Check node transitions follow documented action strings
-    - Verify error handling and retry strategies are implemented
-    - Ensure integration points work as designed
-  </flow_assembly>
-</adherence_validation>
-
-<validation_checklist>
-  - [ ] All utility functions implemented with documented signatures
-  - [ ] SharedStore schema matches design document
-  - [ ] Node prep/exec/post methods follow design specifications
-  - [ ] Flow assembly matches Mermaid diagram
-  - [ ] Action strings and transitions implemented correctly
-  - [ ] Error handling follows design patterns
-  - [ ] Integration points work as documented
-</validation_checklist>
-
-<deviation_handling>
-  <minor_deviations>
-    - Document in implementation notes
-    - Update design.md if improvement discovered
-    - Ensure consistency across codebase
-  </minor_deviations>
-  <major_deviations>
-    - Stop implementation
-    - Discuss with user before proceeding
-    - Update design.md first if changes needed
-    - Re-validate entire approach
-  </major_deviations>
-</deviation_handling>
-
-<instructions>
-  DETECT: Check for LLM/AI implementation artifacts before executing
-  CONDITIONAL: Skip entirely if no LLM/AI components were implemented
-  VALIDATE: Implementation adheres to design.md specifications if LLM/AI present
-  CHECK: All documented components are implemented correctly
-  DOCUMENT: Any deviations from original design
-  BLOCK: Major changes without design document updates
-  MESSAGE: Clearly indicate whether step was executed or skipped
-  ENSURE: Implementation consistency with documented design
-</instructions>
-
-</step>
-
-<step number="7" name="task_status_updates">
-
-### Step 7: Task Status Updates
-
-<step_metadata>
-  <updates>tasks.md file</updates>
-  <timing>immediately after completion</timing>
-</step_metadata>
-
-<update_format>
-  <completed>- [x] Task description</completed>
-  <incomplete>- [ ] Task description</incomplete>
-  <blocked>
-    - [ ] Task description
-    ⚠️ Blocking issue: [DESCRIPTION]
-  </blocked>
-</update_format>
-
-<blocking_criteria>
-  <attempts>maximum 3 different approaches</attempts>
-  <action>document blocking issue</action>
-  <emoji>⚠️</emoji>
-</blocking_criteria>
-
-<instructions>
-  ACTION: Update tasks.md after each task completion
-  MARK: [x] for completed items immediately
-  DOCUMENT: Blocking issues with ⚠️ emoji
-  LIMIT: 3 attempts before marking as blocked
-</instructions>
-
-</step>
-
-<step number="7.5" subagent="test-runner" name="task_specific_test_verification">
-
-### Step 7.5: Task-Specific Test Verification
-
-<step_metadata>
-  <uses>test-runner subagent</uses>
-  <purpose>focused testing before full suite</purpose>
-  <runs>only tests related to current tasks</runs>
-</step_metadata>
-
-Use the test-runner subagent to run and verify only the tests specific to the current tasks being worked on (not the full test suite) to ensure the features are working correctly.
-
-<focused_test_execution>
-  <run_only>
-    - All new tests written for current tasks
-    - All tests updated during these tasks
-    - Tests directly related to implemented features
-  </run_only>
-  <skip>
-    - Full test suite (done later in Step 8)
-    - Unrelated test files
-  </skip>
-</focused_test_execution>
-
-<final_verification>
-  IF any test failures:
-    - Debug and fix the specific issue
-    - Re-run only the failed tests
-  ELSE:
-    - Confirm all task tests passing
-    - Ready to proceed to full test suite
-</final_verification>
-
-<instructions>
-  ACTION: Use test-runner subagent
-  REQUEST: "Run tests for [current tasks' test files]"
-  WAIT: For test-runner analysis
-  PROCESS: Returned failure information
-  VERIFY: 100% pass rate for task-specific tests
-  CONFIRM: These features' tests are complete before full suite
-</instructions>
-
-</step>
-
-<step number="8" name="test_suite_verification">
-
-### Step 8: Run All Tests
-
-<step_metadata>
-  <runs>entire test suite</runs>
-  <ensures>no regressions</ensures>
-</step_metadata>
-
-<test_execution>
-  <order>
-    1. Run Ruff for linting and formatting: `ruff check --fix . && ruff format .`
-    2. Run ty for type checking: `uvx ty check`
-    3. Verify new tests pass (using Pytest as specified in tech stack)
-    4. Run entire test suite (using Pytest as specified in tech stack)
-    5. Fix any failures
-  </order>
-  <requirement>100% pass rate for all checks</requirement>
-</test_execution>
-
-<failure_handling>
-  <action>troubleshoot and fix</action>
-  <priority>before proceeding</priority>
-</failure_handling>
-
-<instructions>
-  ACTION: Run complete test suite, including linting, formatting, and type checking.
-  VERIFY: All checks pass, including new tests.
-  FIX: Any failures before continuing.
-  BLOCK: Do not proceed with failing checks or tests.
-</instructions>
-
-</step>
-
-<step number="8.5" name="type_safety_validation">
-
-### Step 8.5: Type Safety Validation
-
-<step_metadata>
-  <validates>comprehensive type safety across codebase</validates>
-  <ensures>Pydantic model enforcement</ensures>
-  <checks>FastAPI documentation generation</checks>
-  <condition>Python projects with modern type safety stack</condition>
-</step_metadata>
-
-<conditional_execution>
-  <detection_criteria>
-    - Check @.agent-os/product/tech-stack.md for Python 3.8+
-    - Look for Pydantic usage in dependencies or code
-    - Identify FastAPI framework usage
-    - Check for type hints and mypy/ty configuration
-    - Look for schemas/ directory with Pydantic models
-  </detection_criteria>
-  <if_modern_python_stack>
-    <action>Execute comprehensive type safety validation</action>
-    <blocking>true for type errors or validation failures</blocking>
-  </if_modern_python_stack>
-  <if_basic_python_or_other_lang>
-    <action>Skip advanced validation, run basic type checking only</action>
-    <message>Skipping comprehensive type safety validation - not using modern Python stack</message>
-    <fallback>Run basic linting and available type checking</fallback>
-  </if_basic_python_or_other_lang>
-</conditional_execution>
-
-<type_safety_checks>
-  <function_type_hints>
-    - Verify all functions have complete type hints for parameters and returns
-    - Check no usage of bare `Any` types without justification
-    - Validate Optional vs required parameter declarations
-    - Ensure async functions properly typed with return types
-  </function_type_hints>
-  <pydantic_validation>
-    - Test all Pydantic models validate correctly at boundaries
-    - Verify validation rules work as expected with invalid data
-    - Check custom validators function properly
-    - Ensure model inheritance and composition work correctly
-  </pydantic_validation>
-  <fastapi_integration>
-    - Validate automatic documentation generation works
-    - Check request/response model integration
-    - Test error response models return proper status codes
-    - Verify dependency injection typing is correct
-  </fastapi_integration>
-  <shared_store_schema>
-    - Validate SharedStore schema enforcement with Pydantic
-    - Test data transformations maintain type consistency
-    - Check no untyped dictionary access patterns
-    - Ensure SharedStore keys follow naming conventions
-  </shared_store_schema>
-</type_safety_checks>
-
-<validation_commands>
-  <type_checking>
-    <command>uvx ty check</command>
-    <requirement>zero type errors</requirement>
-    <fixes>address all type inconsistencies before proceeding</fixes>
-  </type_checking>
-  <pydantic_testing>
-    <command>pytest -k "test_model" -v</command>
-    <requirement>all model validation tests pass</requirement>
-    <coverage>test both valid and invalid data scenarios</coverage>
-  </pydantic_testing>
-  <fastapi_docs>
-    <validation>check /docs and /redoc endpoints load properly</validation>
-    <schema>validate OpenAPI schema generation is complete</schema>
-  </fastapi_docs>
-</validation_commands>
-
-<blocking_issues>
-  <type_errors>
-    - Any mypy/ty errors must be resolved
-    - No bare Any types without explicit justification
-    - All function signatures must be complete
-  </type_errors>
-  <model_failures>
-    - Pydantic validation must work correctly
-    - Custom validators must handle edge cases
-    - Error messages must be user-friendly
-  </model_failures>
-  <api_documentation>
-    - FastAPI docs must generate without errors
-    - Request/response models must appear correctly
-    - Example values must be meaningful
-  </api_documentation>
-</blocking_issues>
-
-<instructions>
-  DETECT: Check tech stack and dependencies for modern Python usage
-  CONDITIONAL: Execute full validation for modern Python stack, basic checking otherwise
-  VALIDATE: Comprehensive type safety if Pydantic/FastAPI detected
-  RUN: All appropriate type checking and validation commands
-  VERIFY: Pydantic models enforce boundaries correctly (if applicable)
-  CHECK: FastAPI documentation generation works properly (if applicable)
-  FALLBACK: Run basic linting and available type checking for non-modern stacks
-  MESSAGE: Clearly indicate level of validation performed
-  BLOCK: Progression if any applicable type safety issues detected
-  FIX: All type errors before continuing to next step
-</instructions>
-
-</step>
-
-<step number="9" name="git_workflow">
-
-### Step 9: Git Workflow
-
-<step_metadata>
-  <creates>
-    - git commit
-    - github push
-    - pull request
-  </creates>
-</step_metadata>
-
-<commit_process>
-  <commit>
-    <message>descriptive summary of changes</message>
-    <format>conventional commits if applicable</format>
-  </commit>
-  <push>
-    <target>spec branch</target>
-    <remote>origin</remote>
-  </push>
-  <pull_request>
-    <title>descriptive PR title</title>
-    <description>functionality recap</description>
-  </pull_request>
-</commit_process>
-
-<pr_template>
-  ## Summary
-
-  [BRIEF_DESCRIPTION_OF_CHANGES]
-
-  ## Changes Made
-
-  - [CHANGE_1]
-  - [CHANGE_2]
-
-  ## Testing
-
-  - [TEST_COVERAGE]
-  - All tests passing ✓
-</pr_template>
-
-<instructions>
-  ACTION: Commit all changes with descriptive message
-  PUSH: To GitHub on spec branch
-  CREATE: Pull request with detailed description
-</instructions>
-
-</step>
-
-<step number="10" name="roadmap_progress_check">
-
-### Step 10: Roadmap Progress Check
-
-<step_metadata>
-  <checks>@.agent-os/product/roadmap.md</checks>
-  <updates>if spec completes roadmap item</updates>
-</step_metadata>
-
-<roadmap_criteria>
-  <update_when>
-    - spec fully implements roadmap feature
-    - all related tasks completed
-    - tests passing
-  </update_when>
-  <caution>only mark complete if absolutely certain</caution>
-</roadmap_criteria>
-
-<instructions>
-  ACTION: Review roadmap.md for related items
-  EVALUATE: If current spec completes roadmap goals
-  UPDATE: Mark roadmap items complete if applicable
-  VERIFY: Certainty before marking complete
-</instructions>
-
-</step>
-
-<step number="11" name="completion_notification">
-
-### Step 11: Task Completion Notification
-
-<step_metadata>
-  <plays>system sound</plays>
-  <alerts>user of completion</alerts>
-</step_metadata>
-
-<notification_command>
-  afplay /System/Library/Sounds/Glass.aiff
-</notification_command>
-
-<instructions>
-  ACTION: Play completion sound
-  PURPOSE: Alert user that task is complete
-</instructions>
-
-</step>
-
-<step number="12" name="completion_summary">
-
-### Step 12: Completion Summary
-
-<step_metadata>
-  <creates>summary message</creates>
-  <format>structured with emojis</format>
-</step_metadata>
-
-<summary_template>
-  ## ✅ What's been done
-
-  1. **[FEATURE_1]** - [ONE_SENTENCE_DESCRIPTION]
-  2. **[FEATURE_2]** - [ONE_SENTENCE_DESCRIPTION]
-
-  ## ⚠️ Issues encountered
-
-  [ONLY_IF_APPLICABLE]
-  - **[ISSUE_1]** - [DESCRIPTION_AND_REASON]
-
-  ## 👀 Ready to test in browser
-
-  [ONLY_IF_APPLICABLE]
-  1. [STEP_1_TO_TEST]
-  2. [STEP_2_TO_TEST]
-
-  ## 📦 Pull Request
-
-  View PR: [GITHUB_PR_URL]
-</summary_template>
-
-<summary_sections>
-  <required>
-    - functionality recap
-    - pull request info
-  </required>
-  <conditional>
-    - issues encountered (if any)
-    - testing instructions (if testable in browser)
-  </conditional>
-</summary_sections>
-
-<instructions>
-  ACTION: Create comprehensive summary
-  INCLUDE: All required sections
-  ADD: Conditional sections if applicable
-  FORMAT: Use emoji headers for scannability
+  ACTION: Delegate complete post-execution workflow
+  EXECUTE: @.agent-os/instructions/core/post-execution-tasks.md
+  WAIT: For full completion before concluding
+  TRUST: Post-execution workflow to handle all finalization steps
+  REPORT: Only final summary once post-execution completes
 </instructions>
 
 </step>
 
 </process_flow>
+
+<execution_summary>
+  <workflow_phases>
+    1. **Pre-execution** (Steps 1-5): Context gathering, validation, and preparation
+    2. **Execution** (Step 5): Task implementation loop via execute-task.md  
+    3. **Post-execution** (Step 6): Testing, validation, and delivery via post-execution-tasks.md
+  </workflow_phases>
+  
+  <pocketflow_integration>
+    - Design document validation ensures LLM/AI features are properly planned
+    - PocketFlow patterns are recognized and implemented correctly
+    - Enhanced validation and documentation capture LLM/AI implementation details
+  </pocketflow_integration>
+  
+  <quality_assurance>
+    - 3-phase model ensures systematic completion
+    - Post-execution validation catches integration issues
+    - Enhanced recap system provides better project tracking
+  </quality_assurance>
+</execution_summary>
 
 ## Development Standards
 
