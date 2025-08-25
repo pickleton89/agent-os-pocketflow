@@ -202,10 +202,9 @@ create_directory_structure() {
         "$INSTALL_PATH/templates"
     )
     
-    # Claude Code directories
+    # Claude Code directories (only agents, commands are in base commands/ directory)
     local ide_dirs=(
         "$INSTALL_PATH/claude-code/agents"
-        "$INSTALL_PATH/claude-code/commands"
     )
     
     # Create core directories
@@ -664,8 +663,9 @@ install_project() {
     
     # Copy Claude Code files if enabled
     if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then
-        if [[ -d "$BASE_INSTALL_PATH/claude-code/commands" ]]; then
-            cp -r "$BASE_INSTALL_PATH/claude-code/commands"/* ".claude/commands/"
+        # Copy commands from base commands directory (Agent OS v1.4.0 architecture)
+        if [[ -d "$BASE_INSTALL_PATH/commands" ]]; then
+            cp -r "$BASE_INSTALL_PATH/commands"/* ".claude/commands/"
             log_success "Copied Claude Code commands"
         fi
         
@@ -745,35 +745,7 @@ install_claude_code_integration() {
     
     log_info "Installing Claude Code integration..."
     
-    # Create command files based on instructions
-    local instructions_dir="$INSTALL_PATH/instructions"
-    local commands_dir="$INSTALL_PATH/claude-code/commands"
-    
-    if [[ -d "$instructions_dir" ]]; then
-        # Create command files from instructions
-        local instruction_files=(
-            "analyze-product"
-            "create-spec" 
-            "execute-task"
-            "execute-tasks"
-            "plan-product"
-        )
-        
-        for cmd in "${instruction_files[@]}"; do
-            if [[ -f "$instructions_dir/core/$cmd.md" ]]; then
-                cp "$instructions_dir/core/$cmd.md" "$commands_dir/$cmd.md"
-                log_success "Created Claude Code command: $cmd.md"
-            elif [[ -f "$instructions_dir/$cmd.md" ]]; then
-                # Fallback for older structure
-                cp "$instructions_dir/$cmd.md" "$commands_dir/$cmd.md"
-                log_success "Created Claude Code command: $cmd.md"
-            else
-                log_warning "Instruction file not found: $cmd.md"
-            fi
-        done
-    fi
-    
-    # Install Claude Code agents
+    # Install Claude Code agents (commands are handled by install_commands function)
     local agents_dir="$INSTALL_PATH/claude-code/agents"
     local source_agents_dir="$(dirname "$(dirname "$(realpath "$0")")")/claude-code/agents"
     
@@ -838,7 +810,6 @@ validate_installation() {
     
     if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then
         required_dirs+=(
-            "$INSTALL_PATH/claude-code/commands"
             "$INSTALL_PATH/claude-code/agents"
         )
     fi
