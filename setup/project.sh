@@ -328,11 +328,12 @@ check_existing_installation() {
 create_project_structure() {
     log_info "Creating project directory structure..."
     
-    # Core Agent OS directories (v1.4.0 compatible)
+    # Minimal project directories (inherits from base installation)
     local core_dirs=(
         ".agent-os"
-        ".agent-os/instructions"
-        ".agent-os/standards"
+        ".agent-os/instructions/project"
+        ".agent-os/instructions/meta"
+        ".agent-os/standards/project"
     )
     
     # PocketFlow enhancement directories
@@ -360,89 +361,78 @@ create_project_structure() {
     done
 }
 
-# Install instructions from base or repository
+# Install instructions - minimal project configuration only
 install_instructions() {
-    log_info "Installing instructions..."
+    log_info "Installing project configuration instructions..."
     
-    if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/instructions" ]]; then
-        # Copy from base installation
-        if safe_copy "$BASE_INSTALL_PATH/instructions"/* ".agent-os/instructions/" "instructions"; then
-            log_success "Copied instructions from base installation"
-        else
-            log_error "Failed to copy instructions from base installation"
-            exit 1
-        fi
+    # Create minimal instruction structure for project-specific content only
+    mkdir -p ".agent-os/instructions/project"
+    mkdir -p ".agent-os/instructions/meta"
+    
+    # Create project-specific instruction file that references base installation
+    cat > ".agent-os/instructions/project/README.md" << EOF
+# Project Instructions
+
+This project uses Agent OS + PocketFlow framework instructions from the base installation.
+
+## Core Instructions Location
+- Base instructions: \$HOME/.agent-os/instructions/core/
+- Claude Code commands: .claude/commands/ (symlinked to base)
+
+## Project-Specific Instructions
+Place any project-specific instruction overrides in this directory.
+
+## Usage
+The framework automatically inherits from base installation. Only add files here
+if you need to customize behavior for this specific project.
+EOF
+    
+    # Download meta instructions only (project-specific)
+    if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -f "$BASE_INSTALL_PATH/instructions/meta/pre-flight.md" ]]; then
+        ln -sf "$BASE_INSTALL_PATH/instructions/meta/pre-flight.md" ".agent-os/instructions/meta/pre-flight.md"
+        log_success "Linked meta instructions from base installation"
     else
-        # Download from repository (standalone mode)
-        log_info "Downloading instructions from repository..."
-        
-        # Create subdirectories
-        mkdir -p ".agent-os/instructions/core"
-        mkdir -p ".agent-os/instructions/meta"
-        
-        local instruction_files=("analyze-product.md" "create-spec.md" "execute-task.md" "execute-tasks.md" "plan-product.md")
-        
-        for file in "${instruction_files[@]}"; do
-            if safe_download "$REPO_URL/instructions/core/$file" ".agent-os/instructions/core/$file" "$file"; then
-                log_success "Downloaded: $file"
-            else
-                log_error "Failed to download: $file"
-                exit 1
-            fi
-        done
-        
-        # Download meta instructions
-        if ! safe_download "$REPO_URL/instructions/meta/pre-flight.md" ".agent-os/instructions/meta/pre-flight.md" "pre-flight.md"; then
+        # Download from repository if no base
+        if safe_download "$REPO_URL/instructions/meta/pre-flight.md" ".agent-os/instructions/meta/pre-flight.md" "pre-flight.md"; then
+            log_success "Downloaded meta instructions"
+        else
             log_warning "Failed to download pre-flight.md (optional)"
         fi
     fi
+    
+    log_success "Project instruction configuration created"
 }
 
-# Install standards from base or repository
+# Install standards - minimal project configuration only
 install_standards() {
-    log_info "Installing standards..."
+    log_info "Installing project standards configuration..."
     
+    # Create project-specific standards directory for overrides only
+    cat > ".agent-os/standards/project/README.md" << EOF
+# Project Standards
+
+This project inherits coding standards from the base Agent OS + PocketFlow installation.
+
+## Base Standards Location
+- Framework standards: \$HOME/.agent-os/standards/
+- Includes: best-practices.md, code-style.md, tech-stack.md, pocket-flow.md
+
+## Project-Specific Standards
+Place any project-specific standard overrides in this directory.
+Files here will take precedence over base installation standards.
+
+## Usage
+The framework automatically inherits base standards. Only add files here
+if you need to customize standards for this specific project.
+EOF
+    
+    # Create symlink to base standards for easy reference (but don't duplicate)
     if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/standards" ]]; then
-        # Copy from base installation
-        if safe_copy "$BASE_INSTALL_PATH/standards"/* ".agent-os/standards/" "standards"; then
-            log_success "Copied standards from base installation"
-        else
-            log_error "Failed to copy standards from base installation"
-            exit 1
-        fi
-    else
-        # Download from repository (standalone mode)
-        log_info "Downloading standards from repository..."
-        
-        local standard_files=("best-practices.md" "code-style.md" "tech-stack.md")
-        
-        if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
-            standard_files+=("pocket-flow.md")
-        fi
-        
-        for file in "${standard_files[@]}"; do
-            if safe_download "$REPO_URL/standards/$file" ".agent-os/standards/$file" "$file"; then
-                log_success "Downloaded: $file"
-            else
-                log_error "Failed to download: $file"
-                exit 1
-            fi
-        done
-        
-        # Download code style subdirectory if PocketFlow is enabled
-        if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
-            mkdir -p ".agent-os/standards/code-style"
-            local code_style_files=("fastapi-style.md" "pocketflow-style.md" "python-style.md" "testing-style.md")
-            
-            for file in "${code_style_files[@]}"; do
-                if safe_download "$REPO_URL/standards/code-style/$file" ".agent-os/standards/code-style/$file" "standards/code-style/$file"; then
-                    log_success "Downloaded: standards/code-style/$file"
-                else
-                    log_warning "Failed to download: standards/code-style/$file"
-                fi
-            done
-        fi
+        ln -sf "$BASE_INSTALL_PATH/standards" ".agent-os/standards/base"
+        log_success "Linked to base standards (no duplication)"
     fi
+    
+    log_success "Project standards configuration created"
 }
 
 # Install PocketFlow tools
@@ -455,13 +445,27 @@ install_pocketflow_tools() {
     log_info "Installing PocketFlow tools..."
     
     if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/pocketflow-tools" ]]; then
-        # Copy from base installation
-        if safe_copy "$BASE_INSTALL_PATH/pocketflow-tools"/* ".agent-os/pocketflow-tools/" "PocketFlow tools"; then
-            log_success "Copied PocketFlow tools from base installation"
-        else
-            log_error "Failed to copy PocketFlow tools from base installation"
-            exit 1
-        fi
+        # Create symlink to base installation (no duplication)
+        ln -sf "$BASE_INSTALL_PATH/pocketflow-tools" ".agent-os/pocketflow-tools-base"
+        
+        # Create project-specific tools directory for customizations
+        mkdir -p ".agent-os/pocketflow-tools"
+        cat > ".agent-os/pocketflow-tools/README.md" << EOF
+# Project PocketFlow Tools
+
+This project inherits PocketFlow tools from the base installation.
+
+## Base Tools Location
+- Framework tools: .agent-os/pocketflow-tools-base/ (symlinked to base)
+- Includes: generator.py, pattern_analyzer.py, template_validator.py, etc.
+
+## Project-Specific Tools
+Place any project-specific tool customizations in this directory.
+
+## Usage
+Use tools from base installation. Add custom tools here only if needed for this project.
+EOF
+        log_success "Linked to base PocketFlow tools (no duplication)"
     else
         # Download from repository (standalone mode)
         log_info "Downloading PocketFlow tools from repository..."
@@ -505,7 +509,7 @@ install_pocketflow_tools() {
     fi
 }
 
-# Install Claude Code integration
+# Install Claude Code integration with symlinks to avoid duplication
 install_claude_code_integration() {
     if [[ "$ENABLE_CLAUDE_CODE" != "true" ]]; then
         log_info "Skipping Claude Code integration (not enabled)"
@@ -514,60 +518,52 @@ install_claude_code_integration() {
     
     log_info "Installing Claude Code integration..."
     
-    # Copy command files from instructions
-    local instruction_files=(
-        "analyze-product"
-        "create-spec"
-        "execute-task"
-        "execute-tasks"
-        "plan-product"
-    )
-    
-    for cmd in "${instruction_files[@]}"; do
-        if [[ -f ".agent-os/instructions/core/$cmd.md" ]]; then
-            if safe_copy ".agent-os/instructions/core/$cmd.md" ".claude/commands/$cmd.md" "Claude Code command $cmd.md"; then
-                log_success "Created Claude Code command: $cmd.md"
-            else
-                log_warning "Failed to create Claude Code command: $cmd.md"
-            fi
-        else
-            log_warning "Instruction file not found: $cmd.md"
-        fi
-    done
-    
-    # Install Claude Code agents
-    if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/claude-code/agents" ]]; then
-        if safe_copy "$BASE_INSTALL_PATH/claude-code/agents"/* ".claude/agents/" "Claude Code agents"; then
-            log_success "Copied Claude Code agents from base installation"
-        else
-            log_warning "Failed to copy Claude Code agents from base installation"
-        fi
-    else
-        # Download basic agents from repository
-        local agent_files=(
-            "context-fetcher.md"
-            "date-checker.md"
-            "file-creator.md"
-            "test-runner.md"
-        )
-        
-        if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
-            agent_files+=(
-                "pocketflow-orchestrator.md"
-                "pattern-recognizer.md"
-                "template-validator.md"
-                "dependency-orchestrator.md"
-            )
-        fi
-        
-        for agent in "${agent_files[@]}"; do
-            if ! safe_download "$REPO_URL/claude-code/agents/$agent" ".claude/agents/$agent" "$agent"; then
-                log_warning "Could not download $agent - will create minimal version"
-                # Create minimal agent file
-                echo "# $agent" > ".claude/agents/$agent"
-                echo "This agent provides enhanced functionality. Please check the repository for the latest version." >> ".claude/agents/$agent"
+    # Create symlinks to base installation commands (no duplication)
+    if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/claude-code/commands" ]]; then
+        log_info "Creating symlinks to base installation commands..."
+        for cmd_file in "$BASE_INSTALL_PATH/claude-code/commands"/*.md; do
+            if [[ -f "$cmd_file" ]]; then
+                local cmd_name=$(basename "$cmd_file")
+                ln -sf "$cmd_file" ".claude/commands/$cmd_name"
+                log_success "Linked Claude Code command: $cmd_name"
             fi
         done
+    else
+        log_warning "Base installation not found - using global Claude Code commands"
+        # Check if global Claude commands exist
+        if [[ -d "$HOME/.claude/commands" ]]; then
+            for cmd_file in "$HOME/.claude/commands"/*.md; do
+                if [[ -f "$cmd_file" ]]; then
+                    local cmd_name=$(basename "$cmd_file")
+                    ln -sf "$cmd_file" ".claude/commands/$cmd_name"
+                    log_success "Linked global Claude Code command: $cmd_name"
+                fi
+            done
+        fi
+    fi
+    
+    # Create symlinks to base installation agents (no duplication)
+    if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/claude-code/agents" ]]; then
+        log_info "Creating symlinks to base installation agents..."
+        for agent_file in "$BASE_INSTALL_PATH/claude-code/agents"/*.md; do
+            if [[ -f "$agent_file" ]]; then
+                local agent_name=$(basename "$agent_file")
+                ln -sf "$agent_file" ".claude/agents/$agent_name"
+                log_success "Linked Claude Code agent: $agent_name"
+            fi
+        done
+    else
+        log_warning "Base installation not found - using global Claude Code agents"
+        # Check if global Claude agents exist
+        if [[ -d "$HOME/.claude/agents" ]]; then
+            for agent_file in "$HOME/.claude/agents"/*.md; do
+                if [[ -f "$agent_file" ]]; then
+                    local agent_name=$(basename "$agent_file")
+                    ln -sf "$agent_file" ".claude/agents/$agent_name"
+                    log_success "Linked global Claude Code agent: $agent_name"
+                fi
+            done
+        fi
     fi
 }
 
