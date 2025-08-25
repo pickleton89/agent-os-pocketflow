@@ -366,7 +366,8 @@ install_instructions() {
     
     if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/instructions" ]]; then
         # Copy full instructions from base installation (v1.4.0 self-contained design)
-        if safe_copy "$BASE_INSTALL_PATH/instructions"/* ".agent-os/instructions/" "instructions"; then
+        cp -r "$BASE_INSTALL_PATH/instructions"/* ".agent-os/instructions/"
+        if [[ $? -eq 0 ]]; then
             log_success "Copied instructions from base installation"
         else
             log_error "Failed to copy instructions from base installation"
@@ -404,7 +405,8 @@ install_standards() {
     
     if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/standards" ]]; then
         # Copy full standards from base installation (v1.4.0 self-contained design)
-        if safe_copy "$BASE_INSTALL_PATH/standards"/* ".agent-os/standards/" "standards"; then
+        cp -r "$BASE_INSTALL_PATH/standards"/* ".agent-os/standards/"
+        if [[ $? -eq 0 ]]; then
             log_success "Copied standards from base installation"
         else
             log_error "Failed to copy standards from base installation"
@@ -456,7 +458,8 @@ install_pocketflow_tools() {
     
     if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/pocketflow-tools" ]]; then
         # Copy PocketFlow tools from base installation (v1.4.0 self-contained design)
-        if safe_copy "$BASE_INSTALL_PATH/pocketflow-tools"/* ".agent-os/pocketflow-tools/" "PocketFlow tools"; then
+        cp -r "$BASE_INSTALL_PATH/pocketflow-tools"/* ".agent-os/pocketflow-tools/"
+        if [[ $? -eq 0 ]]; then
             log_success "Copied PocketFlow tools from base installation"
         else
             log_error "Failed to copy PocketFlow tools from base installation"
