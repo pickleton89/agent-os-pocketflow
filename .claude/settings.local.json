@@ -72,7 +72,9 @@
       "Read(//Users/jeffkiefer/test-project/**)",
       "Read(//Users/jeffkiefer/test-project/**)",
       "Read(//Users/jeffkiefer/test-project/.claude/commands/**)",
-      "Bash(./setup/project.sh:*)"
+      "Bash(./setup/project.sh:*)",
+      "Bash(git clone:*)",
+      "Bash(git tag:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",

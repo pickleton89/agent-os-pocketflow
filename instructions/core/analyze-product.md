@@ -302,7 +302,7 @@ encoding: UTF-8
     <if_legacy_python>
       <apply>
         - Document current stack (Django/Flask/pip/poetry/black/mypy)
-        - Suggest migration path to uv/Ruff/ty stack in decisions.md
+        - Suggest migration path to uv/Ruff/ty stack in roadmap.md notes
         - Note specific differences from preferred uv/Ruff/ty defaults
       </apply>
     </if_legacy_python>
@@ -346,7 +346,7 @@ encoding: UTF-8
   ACTION: Update generated files to reflect reality
   MODIFY: Roadmap to show completed work
   VERIFY: Tech stack matches actual implementation
-  ADD: Historical context to decisions.md
+  ADD: Historical context notes to roadmap.md
   REFINE: LLM/AI specific documentation based on analysis.
 </instructions>
 

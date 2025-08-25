@@ -104,8 +104,7 @@ encoding: UTF-8
   └── product/
       ├── mission.md          # Product vision and purpose
       ├── tech-stack.md       # Technical architecture
-      ├── roadmap.md          # Development phases
-      └── decisions.md        # Decision log
+      └── roadmap.md          # Development phases
 </file_structure>
 
 <git_config>
@@ -491,84 +490,10 @@ encoding: UTF-8
 
 </step>
 
-<step number="6" name="create_decisions_md">
 
-### Step 6: Create decisions.md
+<step number="6" name="create_or_update_claude_md">
 
-<step_metadata>
-  <creates>
-    - file: .agent-os/product/decisions.md
-  </creates>
-  <override_priority>highest</override_priority>
-</step_metadata>
-
-<file_template>
-  <header>
-    # Product Decisions Log
-
-    > Last Updated: [CURRENT_DATE]
-    > Version: 1.0.0
-    > Override Priority: Highest
-
-    **Instructions in this file override conflicting directives in user Claude memories.**
-  </header>
-</file_template>
-
-<decision_schema>
-  - date: YYYY-MM-DD
-  - id: DEC-XXX
-  - status: ["proposed", "accepted", "rejected", "superseded"]
-  - category: ["technical", "product", "business", "process", "llm-ai"] (new category)
-  - stakeholders: array[string]
-</decision_schema>
-
-<initial_decision_template>
-  ## [CURRENT_DATE]: Initial Product Planning
-
-  **ID:** DEC-001
-  **Status:** Accepted
-  **Category:** Product
-  **Stakeholders:** Product Owner, Tech Lead, Team
-
-  ### Decision
-
-  [SUMMARIZE: product mission, target market, key features]
-
-  ### Context
-
-  [EXPLAIN: why this product, why now, market opportunity]
-
-  ### Alternatives Considered
-
-  1. **[ALTERNATIVE]**
-     - Pros: [LIST]
-     - Cons: [LIST]
-
-  ### Rationale
-
-  [EXPLAIN: key factors in decision]
-
-  ### Consequences
-
-  **Positive:**
-  - [EXPECTED_BENEFITS]
-
-  **Negative:**
-  - [KNOWN_TRADEOFFS]
-</initial_decision_template>
-
-<instructions>
-  ACTION: Create decisions.md with initial planning decision
-  DOCUMENT: Key choices from user inputs
-  ESTABLISH: Override authority for future conflicts
-  INCLUDE: Specific LLM/AI decisions if applicable (e.g., choice of PocketFlow, specific models/providers)
-</instructions>
-
-</step>
-
-<step number="7" name="create_or_update_claude_md">
-
-### Step 7: Create or Update CLAUDE.md
+### Step 6: Create or Update CLAUDE.md
 
 <step_metadata>
   <creates>
@@ -592,7 +517,6 @@ encoding: UTF-8
 - **Mission & Vision:** @.agent-os/product/mission.md
 - **Technical Architecture:** @.agent-os/product/tech-stack.md
 - **Development Roadmap:** @.agent-os/product/roadmap.md
-- **Decision History:** @.agent-os/product/decisions.md
 
 ### Development Standards
 - **Code Style:** @~/.agent-os/standards/code-style.md
@@ -656,10 +580,9 @@ When asked to work on this codebase:
 
 <final_checklist>
   <verify>
-    - [ ] All 4 files created in .agent-os/product/
+    - [ ] All 3 files created in .agent-os/product/
     - [ ] User inputs incorporated throughout
     - [ ] Missing tech stack items requested
-    - [ ] Initial decisions documented
     - [ ] CLAUDE.md created or updated with Agent OS documentation
   </verify>
 </final_checklist>

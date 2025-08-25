@@ -700,13 +700,11 @@ This instruction file uses modular templates from:
 
 <step_metadata>
   <evaluates>strategic impact</evaluates>
-  <updates>decisions.md if needed</updates>
 </step_metadata>
 
 <decision_analysis>
   <review_against>
     - @.agent-os/product/mission.md
-    - @.agent-os/product/decisions.md
   </review_against>
   <criteria>
     - changes product direction
@@ -723,17 +721,17 @@ This instruction file uses modular templates from:
     DOCUMENT decision_details
     ASK user_for_approval
     IF approved:
-      UPDATE decisions.md
+      UPDATE roadmap.md with notes if needed
   ELSE:
-    STATE "This spec is inline with the current mission and roadmap, so no need to post anything to our decisions log at this time."
+    STATE "This spec is inline with the current mission and roadmap, so no changes needed to product documentation at this time."
 </decision_tree>
 
 <instructions>
   ACTION: Analyze spec for strategic decisions
-  IDENTIFY: Up to 3 key decisions if any
-  REQUEST: User approval before updating
-  UPDATE: Add to decisions.md if approved
-  TAG: Decisions related to LLM/AI with 'llm-ai' category
+  IDENTIFY: Up to 3 key strategic considerations if any
+  REQUEST: User approval before updating product documentation
+  UPDATE: Add notes to roadmap.md if approved
+  NOTE: Strategic considerations related to LLM/AI should be documented
 </instructions>
 
 </step>

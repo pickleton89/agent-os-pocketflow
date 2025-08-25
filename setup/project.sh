@@ -342,6 +342,7 @@ create_project_structure() {
             ".agent-os/templates"
             ".agent-os/product"
             ".agent-os/specs"
+            ".agent-os/recaps"
         )
     fi
     
@@ -381,7 +382,7 @@ install_instructions() {
         mkdir -p ".agent-os/instructions/core"
         mkdir -p ".agent-os/instructions/meta"
         
-        local instruction_files=("analyze-product.md" "create-spec.md" "execute-task.md" "execute-tasks.md" "plan-product.md")
+        local instruction_files=("analyze-product.md" "create-spec.md" "execute-task.md" "execute-tasks.md" "plan-product.md" "post-execution-tasks.md")
         
         for file in "${instruction_files[@]}"; do
             if safe_download "$REPO_URL/instructions/core/$file" ".agent-os/instructions/core/$file" "$file"; then
@@ -524,6 +525,7 @@ install_claude_code_integration() {
         "execute-task"
         "execute-tasks"
         "plan-product"
+        "post-execution-tasks"
     )
     
     for cmd in "${instruction_files[@]}"; do

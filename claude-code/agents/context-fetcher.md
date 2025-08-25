@@ -18,7 +18,7 @@ You are a specialized information retrieval agent for Agent OS workflows and Poc
 
 ### Agent OS Files
 - Specs: spec.md, spec-lite.md, technical-spec.md, sub-specs/*
-- Product docs: mission.md, mission-lite.md, roadmap.md, tech-stack.md, decisions.md
+- Product docs: mission.md, mission-lite.md, roadmap.md, tech-stack.md
 - Standards: code-style.md, best-practices.md, language-specific styles
 - Tasks: tasks.md (specific task details)
 

@@ -249,7 +249,7 @@ install_instructions() {
         mkdir -p "$INSTALL_PATH/instructions/core"
         mkdir -p "$INSTALL_PATH/instructions/meta"
         
-        local instruction_files=("analyze-product.md" "create-spec.md" "execute-task.md" "execute-tasks.md" "plan-product.md")
+        local instruction_files=("analyze-product.md" "create-spec.md" "execute-task.md" "execute-tasks.md" "plan-product.md" "post-execution-tasks.md")
         
         for file in "${instruction_files[@]}"; do
             local target_file="$INSTALL_PATH/instructions/core/$file"
@@ -759,6 +759,8 @@ install_claude_code_integration() {
             "date-checker.md"
             "file-creator.md"
             "test-runner.md"
+            "project-manager.md"
+            "git-workflow.md"
         )
         
         for agent in "${agent_files[@]}"; do
