@@ -452,9 +452,9 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 </step>
 
-<step number="5" name="task_execution_loop">
+<step number="5.5" name="task_execution_loop">
 
-### Step 5: Task Execution Loop
+### Step 5.5: Task Execution Loop
 
 <step_metadata>
   <purpose>Execute all parent tasks using individual task processor</purpose>

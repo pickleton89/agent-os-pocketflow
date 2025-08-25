@@ -554,6 +554,8 @@ install_claude_code_integration() {
             "date-checker.md"
             "file-creator.md"
             "test-runner.md"
+            "project-manager.md"
+            "git-workflow.md"
         )
         
         if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
