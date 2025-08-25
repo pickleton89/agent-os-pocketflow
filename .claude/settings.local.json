@@ -71,7 +71,8 @@
       "Read(//Users/jeffkiefer/**)",
       "Read(//Users/jeffkiefer/test-project/**)",
       "Read(//Users/jeffkiefer/test-project/**)",
-      "Read(//Users/jeffkiefer/test-project/.claude/commands/**)"
+      "Read(//Users/jeffkiefer/test-project/.claude/commands/**)",
+      "Bash(./setup/project.sh:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",

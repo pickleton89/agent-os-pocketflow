@@ -37,7 +37,6 @@ show_help() {
     echo "INSTALLATION MODES:"
     echo "  base              Install Agent OS + PocketFlow to ~/.agent-os/"
     echo "  project           Install Agent OS into current project directory"
-    echo "  migrate           Migrate existing installation to v1.4.0"
     echo "  auto              Auto-detect context and choose appropriate mode"
     echo ""
     echo "BASE INSTALLATION OPTIONS:"
@@ -47,11 +46,6 @@ show_help() {
     echo "PROJECT INSTALLATION OPTIONS:"
     echo "  --no-base-install Skip base installation check"
     echo "  --type TYPE       Project type (default: pocketflow-enhanced)"
-    echo ""
-    echo "MIGRATION OPTIONS:"
-    echo "  --backup-path PATH    Custom backup location"
-    echo "  --dry-run            Show what would be done without executing"
-    echo "  --auto-confirm       Skip interactive confirmations"
     echo ""
     echo "GENERAL OPTIONS:"
     echo "  --force           Force installation even if target exists"
@@ -64,9 +58,6 @@ show_help() {
     echo ""
     echo "  # Project installation (requires base installation)"
     echo "  cd /path/to/your-project && $0 project"
-    echo ""
-    echo "  # Migrate existing installation"
-    echo "  $0 migrate"
     echo ""
     echo "  # Auto-detect and install"
     echo "  $0 auto"
@@ -92,11 +83,6 @@ detect_existing_installation() {
         return 0
     fi
     
-    # Check for legacy installation in project
-    if [ -d "$project_path" ] && [ -f "$project_path/instructions/core/architecture.md" ]; then
-        echo "legacy-project"
-        return 0
-    fi
     
     # Check for v1.4.0 project installation
     if [ -d "$project_path" ] && [ -f "$project_path/config.yml" ]; then
@@ -120,9 +106,6 @@ detect_context() {
                 echo "base"
             fi
             ;;
-        "legacy-project")
-            echo "migrate"
-            ;;
         "project")
             echo "project"
             ;;
@@ -137,6 +120,56 @@ detect_context() {
     esac
 }
 
+# Translate parameters for base.sh
+translate_base_args() {
+    local args="$@"
+    local translated_args=""
+    
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --path)
+                translated_args="$translated_args --install-path $2"
+                shift 2
+                ;;
+            *)
+                translated_args="$translated_args $1"
+                shift
+                ;;
+        esac
+    done
+    
+    echo "$translated_args"
+}
+
+# Translate parameters for project.sh
+translate_project_args() {
+    local args="$@"
+    local translated_args=""
+    
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --no-base-install)
+                translated_args="$translated_args --no-base"
+                shift
+                ;;
+            --type)
+                translated_args="$translated_args --project-type $2"
+                shift 2
+                ;;
+            --path)
+                translated_args="$translated_args --base-path $2"
+                shift 2
+                ;;
+            *)
+                translated_args="$translated_args $1"
+                shift
+                ;;
+        esac
+    done
+    
+    echo "$translated_args"
+}
+
 # Route to appropriate installer
 route_installation() {
     local mode="$1"
@@ -146,28 +179,29 @@ route_installation() {
     case "$mode" in
         "base")
             log_step "Routing to base installation..."
-            curl -sSL "${REPO_URL}/setup/base.sh" | bash -s -- $args
+            local base_args=$(translate_base_args $args)
+            curl -sSL "${REPO_URL}/setup/base.sh" | bash -s -- $base_args
             ;;
         "project")
             log_step "Routing to project installation..."
+            local project_args=$(translate_project_args $args)
             if [ -f "$HOME/.agent-os/setup/project.sh" ]; then
-                "$HOME/.agent-os/setup/project.sh" $args
+                "$HOME/.agent-os/setup/project.sh" $project_args
             else
                 log_warning "Base installation not found. Installing base first..."
-                curl -sSL "${REPO_URL}/setup/base.sh" | bash -s -- $args
+                local base_args=$(translate_base_args $args)
+                curl -sSL "${REPO_URL}/setup/base.sh" | bash -s -- $base_args
                 log_step "Now installing project components..."
-                "$HOME/.agent-os/setup/project.sh" $args
+                "$HOME/.agent-os/setup/project.sh" $project_args
             fi
-            ;;
-        "migrate")
-            log_step "Routing to migration script..."
-            curl -sSL "${REPO_URL}/setup/migrate.sh" | bash -s -- $args
             ;;
         "base-then-project")
             log_step "Installing base installation first..."
-            curl -sSL "${REPO_URL}/setup/base.sh" | bash -s -- $args
+            local base_args=$(translate_base_args $args)
+            curl -sSL "${REPO_URL}/setup/base.sh" | bash -s -- $base_args
             log_step "Now installing project components..."
-            "$HOME/.agent-os/setup/project.sh" $args
+            local project_args=$(translate_project_args $args)
+            "$HOME/.agent-os/setup/project.sh" $project_args
             ;;
         *)
             log_error "Unknown installation mode: $mode"
@@ -217,22 +251,6 @@ auto_detect_and_install() {
                 exit 0
             fi
             ;;
-        "migrate")
-            echo -e "${CYAN}📋 Context Analysis:${NC}"
-            echo "   • Working directory: $(pwd)"
-            echo "   • Existing installation: $installation"
-            echo "   • Legacy installation detected"
-            echo "   • Recommended action: Migration to v1.4.0"
-            echo ""
-            read -p "Migrate to Agent OS v1.4.0? [Y/n]: " -n 1 -r
-            echo
-            if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
-                route_installation "migrate" "$@"
-            else
-                log_info "Migration cancelled by user"
-                exit 0
-            fi
-            ;;
         "base-then-project")
             echo -e "${CYAN}📋 Context Analysis:${NC}"
             echo "   • Working directory: $(pwd)"
@@ -255,7 +273,6 @@ auto_detect_and_install() {
             echo "Please specify installation mode explicitly:"
             echo "  base     - Install to ~/.agent-os/"
             echo "  project  - Install to current project"
-            echo "  migrate  - Migrate existing installation"
             exit 1
             ;;
     esac
@@ -291,7 +308,7 @@ main() {
         "auto")
             auto_detect_and_install "$@"
             ;;
-        "base"|"project"|"migrate")
+        "base"|"project")
             route_installation "$mode" "$@"
             ;;
         *)

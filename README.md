@@ -16,8 +16,7 @@ This is Agent OS v1.4.0 enhanced with PocketFlow capabilities. When you use Agen
 - `/plan-product` - Define product vision and roadmap
 - `/analyze-product` - Add Agent OS to existing projects  
 - `/create-spec` - Detail feature requirements
-- `/create-tasks` - Break specs into implementable tasks
-- `/execute-tasks` - Implement features systematically
+- `/execute-tasks` - Create and implement features systematically
 
 ### ✅ Automatic PocketFlow Generation
 When your tasks involve creating LLM applications, the framework automatically:
@@ -43,7 +42,6 @@ curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main
 The setup script intelligently detects your context and guides you through the appropriate installation:
 - **Base Installation**: Installs framework to `~/.agent-os/` 
 - **Project Setup**: Installs into your current project directory
-- **Migration**: Upgrades existing installations to v1.4.0
 
 ### Manual Installation (Advanced)
 
@@ -56,11 +54,26 @@ cd /path/to/your-project
 curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup.sh | bash -s project
 ```
 
-### Migration from Older Versions
+### Installation Options
 
+The setup script supports various options:
+
+**Base Installation Options:**
 ```bash
-# Migrate existing Agent OS installations to v1.4.0
-curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup.sh | bash -s migrate
+# Custom installation path
+curl -sSL .../setup.sh | bash -s base --claude-code --path ~/my-agent-os
+
+# Force installation (overwrite existing)
+curl -sSL .../setup.sh | bash -s base --claude-code --force
+```
+
+**Project Installation Options:**
+```bash
+# Specify project type
+curl -sSL .../setup.sh | bash -s project --type python-pocketflow
+
+# Skip base installation check
+curl -sSL .../setup.sh | bash -s project --no-base-install --claude-code
 ```
 
 **That's it! Installation complete.**
@@ -87,10 +100,7 @@ Use standard Agent OS workflow. PocketFlow generation happens automatically when
 # Create detailed specification:
 /create-spec
 
-# Generate task checklist:
-/create-tasks
-
-# Implement tasks (PocketFlow templates generated automatically when needed):
+# Create and implement tasks (PocketFlow templates generated automatically when needed):
 /execute-tasks
 ```
 
