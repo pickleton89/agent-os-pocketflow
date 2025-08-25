@@ -21,7 +21,7 @@ REPO_URL="https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main
 # Installation options (can be set via command line arguments)
 BASE_INSTALL_PATH=""
 ENABLE_POCKETFLOW=true
-ENABLE_CLAUDE_CODE=false
+ENABLE_CLAUDE_CODE=true
 NO_BASE_INSTALL=false
 PROJECT_TYPE="pocketflow-enhanced"
 FORCE_INSTALL=false
