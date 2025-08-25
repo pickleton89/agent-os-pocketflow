@@ -14,8 +14,8 @@ PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
 # Configuration
-SCRIPT_VERSION="2.0.0"
-AGENT_OS_COMPATIBILITY="1.4.0"
+SCRIPT_VERSION="2.1.0"
+AGENT_OS_COMPATIBILITY="1.4.1"
 REPO_URL="https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main"
 DEFAULT_INSTALL_PATH="$HOME/.agent-os"
 
@@ -194,6 +194,8 @@ create_directory_structure() {
         "$INSTALL_PATH/standards"
         "$INSTALL_PATH/commands"
         "$INSTALL_PATH/setup"
+        "$INSTALL_PATH/agents"
+        "$INSTALL_PATH/recaps"
     )
     
     # PocketFlow enhancement directories
@@ -375,6 +377,32 @@ install_commands() {
     else
         log_warning "Instructions directory not found - cannot create commands"
     fi
+}
+
+# Install agents (v1.4.1 enhancement)
+install_agents() {
+    log_info "Installing agents..."
+    
+    local source_agents_dir="$(get_script_dir)/../claude-code/agents"
+    
+    if [[ -d "$source_agents_dir" ]]; then
+        # Install from local source (development mode)
+        log_info "Installing project-manager agent from local source"
+        cp "$source_agents_dir/project-manager.md" "$INSTALL_PATH/agents/"
+        log_success "Copied project-manager agent to $INSTALL_PATH/agents/"
+    else
+        # Download from repository
+        log_info "Downloading project-manager agent from repository..."
+        curl -s -o "$INSTALL_PATH/agents/project-manager.md" "$REPO_URL/claude-code/agents/project-manager.md"
+        if [[ $? -eq 0 ]]; then
+            log_success "Downloaded: project-manager.md"
+        else
+            log_error "Failed to download project-manager.md"
+            exit 1
+        fi
+    fi
+    
+    log_success "Agents installation complete"
 }
 
 # Install PocketFlow tools
@@ -907,6 +935,7 @@ main() {
     install_instructions
     install_standards
     install_commands
+    install_agents
     install_pocketflow_tools
     create_configuration
     generate_project_script

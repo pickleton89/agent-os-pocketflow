@@ -87,7 +87,8 @@
       "/tmp",
       "/Users/jeffkiefer/Documents/projects/zot-pocketflow-mcp/.claude/agents",
       "/Users/jeffkiefer/Documents/projects/zot-pocketflow-mcp",
-      "/Users/jeffkiefer/Documents/projects/TestingProject"
+      "/Users/jeffkiefer/Documents/projects/TestingProject",
+      "/Users/jeffkiefer/.agent-os/agents"
     ]
   }
 }

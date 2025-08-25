@@ -14,8 +14,8 @@ PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
 # Configuration
-SCRIPT_VERSION="2.0.0"
-AGENT_OS_COMPATIBILITY="1.4.0"
+SCRIPT_VERSION="2.1.0" 
+AGENT_OS_COMPATIBILITY="1.4.1"
 REPO_URL="https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main"
 
 # Installation options (can be set via command line arguments)
