@@ -75,7 +75,8 @@
       "Bash(./setup/project.sh:*)",
       "Bash(git clone:*)",
       "Bash(git tag:*)",
-      "Bash(afplay:*)"
+      "Bash(afplay:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",

@@ -24,6 +24,8 @@ INSTALL_PATH="$DEFAULT_INSTALL_PATH"
 ENABLE_CLAUDE_CODE=true  # Default enabled for consistency with project.sh
 ENABLE_POCKETFLOW=true  # Default enabled in our enhanced version
 OVERWRITE_INSTRUCTIONS=false
+OVERWRITE_STANDARDS=false
+UPDATE_POCKETFLOW_TOOLS=false
 FORCE_INSTALL=false
 
 # Logging functions
@@ -67,6 +69,14 @@ parse_arguments() {
                 OVERWRITE_INSTRUCTIONS=true
                 shift
                 ;;
+            --overwrite-standards)
+                OVERWRITE_STANDARDS=true
+                shift
+                ;;
+            --update-pocketflow-tools)
+                UPDATE_POCKETFLOW_TOOLS=true
+                shift
+                ;;
             --force)
                 FORCE_INSTALL=true
                 shift
@@ -101,6 +111,8 @@ OPTIONS:
     --claude-code           Enable Claude Code integration
     --no-pocketflow         Disable PocketFlow enhancements (standard Agent OS only)
     --overwrite-instructions Overwrite existing instructions directory
+    --overwrite-standards   Overwrite existing standards directory
+    --update-pocketflow-tools Update PocketFlow tools to latest version
     --force                 Force installation even if directory exists
     --help                  Show this help message
 
@@ -119,6 +131,15 @@ EXAMPLES:
     
     # Standard Agent OS only (no PocketFlow)
     $0 --no-pocketflow --claude-code
+    
+    # Update instructions only
+    $0 --overwrite-instructions --claude-code
+    
+    # Update standards only
+    $0 --overwrite-standards --claude-code
+    
+    # Update PocketFlow tools only
+    $0 --update-pocketflow-tools
 
 EOF
 }
@@ -300,7 +321,7 @@ install_standards() {
             local target_file="$INSTALL_PATH/standards/$file"
             
             # Preserve existing files unless overwrite is requested  
-            if [[ -f "$target_file" && "$OVERWRITE_INSTRUCTIONS" != "true" ]]; then
+            if [[ -f "$target_file" && "$OVERWRITE_STANDARDS" != "true" ]]; then
                 log_info "Preserved existing: $file"
                 continue
             fi
@@ -322,7 +343,7 @@ install_standards() {
             local target_file="$INSTALL_PATH/standards/code-style/$file"
             
             # Preserve existing files unless overwrite is requested
-            if [[ -f "$target_file" && "$OVERWRITE_INSTRUCTIONS" != "true" ]]; then
+            if [[ -f "$target_file" && "$OVERWRITE_STANDARDS" != "true" ]]; then
                 log_info "Preserved existing: standards/code-style/$file"
                 continue
             fi
@@ -407,12 +428,16 @@ install_agents() {
 
 # Install PocketFlow tools
 install_pocketflow_tools() {
-    if [[ "$ENABLE_POCKETFLOW" != "true" ]]; then
+    if [[ "$ENABLE_POCKETFLOW" != "true" ]] && [[ "$UPDATE_POCKETFLOW_TOOLS" != "true" ]]; then
         log_info "Skipping PocketFlow tools (--no-pocketflow specified)"
         return 0
     fi
     
-    log_info "Installing PocketFlow tools..."
+    if [[ "$UPDATE_POCKETFLOW_TOOLS" == "true" ]]; then
+        log_info "Updating PocketFlow tools..."
+    else
+        log_info "Installing PocketFlow tools..."
+    fi
     
     local source_dir="$(dirname "$(dirname "$(realpath "$0")")")/pocketflow-tools"
     
@@ -545,6 +570,7 @@ generate_project_script() {
     log_info "Generating project installation script..."
     
     local project_script="$INSTALL_PATH/setup/project.sh"
+    local update_script="$INSTALL_PATH/setup/update-project.sh"
     
     cat > "$project_script" << 'EOF'
 #!/bin/bash
@@ -762,6 +788,19 @@ EOF
     
     chmod +x "$project_script"
     log_success "Project installation script created: $project_script"
+    
+    # Copy update-project.sh script
+    local source_update_script="$(get_script_dir)/update-project.sh"
+    if [[ -f "$source_update_script" ]]; then
+        cp "$source_update_script" "$update_script"
+        chmod +x "$update_script"
+        log_success "Project update script created: $update_script"
+    else
+        log_warning "Update script not found in source, creating minimal version"
+        echo "#!/bin/bash" > "$update_script"
+        echo "echo 'Update script not available in this installation'" >> "$update_script"
+        chmod +x "$update_script"
+    fi
 }
 
 # Install Claude Code integration
@@ -913,6 +952,11 @@ EOF
     echo "   /analyze-product  - Analyze existing product"
     echo "   /create-spec      - Create feature specifications"  
     echo "   /execute-tasks    - Implement features"
+    echo ""
+    echo "5. Update Commands:"
+    echo "   $INSTALL_PATH/setup/update-project.sh --update-all"
+    echo "   $INSTALL_PATH/setup/base.sh --overwrite-instructions"
+    echo "   $INSTALL_PATH/setup/base.sh --overwrite-standards"
     echo ""
     echo "📖 Documentation: https://github.com/pickleton89/agent-os-pocketflow"
     echo ""

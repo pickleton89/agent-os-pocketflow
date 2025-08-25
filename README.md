@@ -30,53 +30,181 @@ When your tasks involve creating LLM applications, the framework automatically:
 
 ## 🚀 Installation
 
-**Simple one-command setup with automatic context detection:**
+Agent OS + PocketFlow uses a **two-phase installation architecture** compatible with Agent OS v1.4.0:
 
-### Quick Start (Recommended)
+1. **Base Installation** → Installs the framework to `~/.agent-os/` (shared across projects)
+2. **Project Installation** → Installs into each project's `.agent-os/` directory (self-contained)
 
+### 📋 Installation Architecture
+
+```
+~/.agent-os/                    # Base Installation (Framework)
+├── instructions/               # Core Agent OS instructions
+├── standards/                  # Your customizable coding standards
+├── pocketflow-tools/          # PocketFlow generators & validators
+├── templates/                 # PocketFlow application templates
+└── setup/
+    ├── project.sh            # Project installation script
+    └── update-project.sh     # Project update script
+
+your-project/                   # Project Installation (Self-contained)
+├── .agent-os/                 # Project-specific Agent OS files
+│   ├── instructions/          # Copied from base installation
+│   ├── standards/             # Copied from base installation
+│   ├── pocketflow-tools/      # PocketFlow tools for this project
+│   └── config.yml            # Project configuration
+├── .claude/                   # Claude Code integration (if enabled)
+│   ├── commands/              # Agent OS slash commands
+│   └── agents/               # Specialized AI agents
+└── [your project files]
+```
+
+## Installation Commands
+
+### 🎯 Quick Start (Recommended)
+
+**Auto-detect and install appropriately:**
 ```bash
-# Auto-detect context and install appropriately
 curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup.sh | bash
 ```
 
-The setup script intelligently detects your context and guides you through the appropriate installation:
-- **Base Installation**: Installs framework to `~/.agent-os/` 
-- **Project Setup**: Installs into your current project directory
+The script detects your context:
+- In empty directory → Installs base framework
+- In project directory with base installed → Installs project components
+- In project directory without base → Installs both base and project
 
-### Manual Installation (Advanced)
+### 🔧 Manual Installation (Full Control)
 
+#### Step 1: Base Installation
 ```bash
-# Step 1: Install base framework to ~/.agent-os/
-curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup.sh | bash -s base --claude-code
+# Basic base installation
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash
 
-# Step 2: Setup your project (run from project directory)
+# With Claude Code integration
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --claude-code
+
+# Custom installation location
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --install-path ~/my-agent-os --claude-code
+
+# Force overwrite existing installation
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --force --claude-code
+```
+
+#### Step 2: Project Installation
+```bash
+# Navigate to your project directory
 cd /path/to/your-project
-curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup.sh | bash -s project
+
+# Basic project installation (uses base from ~/.agent-os/)
+~/.agent-os/setup/project.sh
+
+# With Claude Code integration
+~/.agent-os/setup/project.sh --claude-code
+
+# Standalone installation (no base required)
+~/.agent-os/setup/project.sh --no-base --claude-code
+
+# Custom project type
+~/.agent-os/setup/project.sh --project-type python-pocketflow --claude-code
+
+# Force overwrite existing .agent-os directory
+~/.agent-os/setup/project.sh --force --claude-code
 ```
 
-### Installation Options
+### 📖 Installation Flags Reference
 
-The setup script supports various options:
+#### Base Installation Flags (`setup/base.sh`)
+| Flag | Description | Example |
+|------|-------------|---------|
+| `--install-path PATH` | Custom installation path | `--install-path ~/my-agent-os` |
+| `--claude-code` | Enable Claude Code integration | `--claude-code` |
+| `--no-pocketflow` | Install standard Agent OS only | `--no-pocketflow --claude-code` |
+| `--overwrite-instructions` | Update instructions only | `--overwrite-instructions` |
+| `--overwrite-standards` | Update standards only | `--overwrite-standards` |
+| `--update-pocketflow-tools` | Update PocketFlow tools only | `--update-pocketflow-tools` |
+| `--force` | Force complete overwrite | `--force` |
 
-**Base Installation Options:**
+#### Project Installation Flags (`setup/project.sh`)
+| Flag | Description | Example |
+|------|-------------|---------|
+| `--claude-code` | Enable Claude Code integration | `--claude-code` |
+| `--no-pocketflow` | Install standard Agent OS only | `--no-pocketflow` |
+| `--no-base` | Standalone mode (no base required) | `--no-base --claude-code` |
+| `--base-path PATH` | Custom base installation path | `--base-path ~/my-agent-os` |
+| `--project-type TYPE` | Set project type | `--project-type fastapi-pocketflow` |
+| `--force` | Overwrite existing `.agent-os` | `--force` |
+
+#### Project Types Available
+- `pocketflow-enhanced` (default) - Full Agent OS + PocketFlow
+- `standard-agent-os` - Standard Agent OS only
+- `python-pocketflow` - Python-optimized PocketFlow setup
+- `fastapi-pocketflow` - FastAPI + PocketFlow setup
+
+### 🔄 Updating Your Installation
+
+#### Update Base Installation
 ```bash
-# Custom installation path
-curl -sSL .../setup.sh | bash -s base --claude-code --path ~/my-agent-os
+# Update instructions only
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --overwrite-instructions --claude-code
 
-# Force installation (overwrite existing)
-curl -sSL .../setup.sh | bash -s base --claude-code --force
+# Update standards only (⚠️ overwrites customizations)
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --overwrite-standards --claude-code
+
+# Update PocketFlow tools only
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --update-pocketflow-tools
+
+# Update everything (⚠️ overwrites customizations)
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --overwrite-instructions --overwrite-standards --claude-code
 ```
 
-**Project Installation Options:**
+#### Update Project Installation
 ```bash
-# Specify project type
-curl -sSL .../setup.sh | bash -s project --type python-pocketflow
+# Update all project components from base
+~/.agent-os/setup/update-project.sh --update-all
 
-# Skip base installation check
-curl -sSL .../setup.sh | bash -s project --no-base-install --claude-code
+# Update specific components
+~/.agent-os/setup/update-project.sh --update-instructions
+~/.agent-os/setup/update-project.sh --update-standards
+~/.agent-os/setup/update-project.sh --update-pocketflow-tools
+
+# Update without backing up existing files
+~/.agent-os/setup/update-project.sh --update-all --no-backup
+
+# Force update even if no changes detected
+~/.agent-os/setup/update-project.sh --update-all --force
 ```
 
-**That's it! Installation complete.**
+### 🛠️ Common Installation Scenarios
+
+#### First-time Setup
+```bash
+# Install base framework and setup current project
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup.sh | bash
+```
+
+#### Adding to Existing Project
+```bash
+cd existing-project
+~/.agent-os/setup/project.sh --claude-code
+```
+
+#### Multiple Projects
+```bash
+# Base installation (once)
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --claude-code
+
+# Each project
+cd project-1 && ~/.agent-os/setup/project.sh --claude-code
+cd project-2 && ~/.agent-os/setup/project.sh --claude-code
+```
+
+#### Standalone Project (No Base)
+```bash
+cd my-project
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/project.sh | bash -s -- --no-base --claude-code
+```
+
+**Installation complete!** Your system now has Agent OS + PocketFlow ready to use.
 
 ---
 
@@ -171,10 +299,166 @@ The framework automatically selects the appropriate pattern based on your specif
 
 ---
 
+## 🔧 Troubleshooting
+
+### Common Issues & Solutions
+
+#### Installation Issues
+
+**"No base installation found"**
+```bash
+# Solution: Install base first, then project
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --claude-code
+cd your-project
+~/.agent-os/setup/project.sh --claude-code
+```
+
+**"Existing .agent-os directory found"**
+```bash
+# Solution: Use --force to overwrite or backup manually
+~/.agent-os/setup/project.sh --force --claude-code
+```
+
+**"Permission denied" errors**
+```bash
+# Solution: Ensure write permissions
+chmod +w ~/.agent-os
+chmod +w .
+```
+
+#### Update Issues
+
+**"Failed to copy instructions from base installation"**
+```bash
+# Solution: Verify base installation and re-update
+ls -la ~/.agent-os/instructions/
+~/.agent-os/setup/update-project.sh --update-instructions --force
+```
+
+**Custom standards got overwritten**
+```bash
+# Solution: Restore from backup (created automatically)
+ls -la .agent-os-backup-*
+cp .agent-os-backup-*/standards/* .agent-os/standards/
+```
+
+#### Usage Issues
+
+**Commands not found (/plan-product, etc.)**
+```bash
+# For Claude Code: Ensure .claude directory exists and restart Claude Code
+ls -la .claude/commands/
+# Re-install if missing:
+~/.agent-os/setup/project.sh --claude-code --force
+```
+
+**PocketFlow generation not working**
+```bash
+# Verify PocketFlow tools are installed
+ls -la .agent-os/pocketflow-tools/
+# Update if missing:
+~/.agent-os/setup/update-project.sh --update-pocketflow-tools
+```
+
+### Checking Your Installation
+
+#### Verify Base Installation
+```bash
+# Check base installation structure
+ls -la ~/.agent-os/
+cat ~/.agent-os/config.yml
+
+# Expected directories:
+# ~/.agent-os/instructions/
+# ~/.agent-os/standards/
+# ~/.agent-os/pocketflow-tools/
+# ~/.agent-os/setup/
+```
+
+#### Verify Project Installation
+```bash
+# Check project installation structure  
+ls -la .agent-os/
+cat .agent-os/config.yml
+
+# Expected directories:
+# .agent-os/instructions/
+# .agent-os/standards/
+# .agent-os/pocketflow-tools/ (if PocketFlow enabled)
+# .claude/commands/ (if Claude Code enabled)
+```
+
+#### Verify Installation Health
+```bash
+# Test base installation
+~/.agent-os/setup/project.sh --help
+
+# Test update mechanism
+~/.agent-os/setup/update-project.sh --help
+
+# Check PocketFlow tools
+ls -la ~/.agent-os/pocketflow-tools/generator.py
+```
+
+### Getting Clean State
+
+#### Reset Base Installation
+```bash
+# Backup customizations first
+cp -r ~/.agent-os/standards/ ~/agent-os-standards-backup/
+
+# Clean reinstall
+rm -rf ~/.agent-os
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --claude-code
+
+# Restore customizations
+cp -r ~/agent-os-standards-backup/* ~/.agent-os/standards/
+```
+
+#### Reset Project Installation
+```bash
+# Backup project-specific customizations
+cp -r .agent-os/ .agent-os-backup-manual/
+
+# Clean reinstall
+rm -rf .agent-os .claude
+~/.agent-os/setup/project.sh --claude-code
+
+# Restore specific customizations as needed
+```
+
+### Migration from Older Versions
+
+#### From v1.3.x or earlier Agent OS
+```bash
+# Remove old installation
+rm -rf ~/.agent-os
+
+# Install new version
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --claude-code
+
+# Reinstall in each project
+cd each-project
+~/.agent-os/setup/project.sh --claude-code
+```
+
+#### From Single-directory Installation
+```bash
+# If you have old single .agent-os installation, migrate to v1.4.0 architecture
+# Backup old installation
+cp -r .agent-os/ .agent-os-old-backup/
+
+# Install new base + project setup
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup.sh | bash
+```
+
+---
+
 ## 🤝 Support
 
 - **Issues:** [GitHub Issues](https://github.com/pickleton89/agent-os-pocketflow/issues)
 - **Agent OS Community:** [Builder Methods](https://buildermethods.com)
+- **Installation Help:** Check troubleshooting section above
 
 ---
 
