@@ -80,7 +80,8 @@
       "Read(//Users/jeffkiefer/.claude/**)",
       "Bash(gh repo edit:*)",
       "Bash(gh repo view:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Read(//Users/jeffkiefer/Documents/projects/local-agent-os-main/commands/**)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
