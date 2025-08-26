@@ -228,18 +228,18 @@ Complexity Levels:
 **Priority**: HIGH  
 **Estimated Effort**: 3-4 days
 
-#### Subtask 3.1: Remove Conditional Logic
+#### Subtask 3.1: Remove Conditional Logic ✅ COMPLETED
 **File**: `pocketflow-tools/generator.py`
-- [ ] Remove FastAPI detection as PocketFlow trigger
-- [ ] Make PocketFlow default for ALL specifications  
-- [ ] Remove `fast_api_integration` conditional logic
-- [ ] Update spec generation to always use PocketFlow patterns
+- [x] Remove FastAPI detection as PocketFlow trigger
+- [x] Make PocketFlow default for ALL specifications  
+- [x] Remove `fast_api_integration` conditional logic (always True)
+- [x] Update spec generation to always use PocketFlow patterns
 
-#### Subtask 3.2: Create Graduated Templates
-- [ ] Add SIMPLE_WORKFLOW pattern (3-node basic workflow)
-- [ ] Add BASIC_API pattern (request→process→response)
-- [ ] Add SIMPLE_ETL pattern (extract→transform→load)
-- [ ] Update node generation logic for simple patterns
+#### Subtask 3.2: Create Graduated Templates ✅ COMPLETED
+- [x] Add SIMPLE_WORKFLOW pattern (3-node basic workflow)
+- [x] Add BASIC_API pattern (request→process→response)
+- [x] Add SIMPLE_ETL pattern (extract→transform→load)
+- [x] Update node generation logic for simple patterns
 
 #### Subtask 3.3: Enhance Node Generation
 - [ ] Create smarter defaults for simple workflows
