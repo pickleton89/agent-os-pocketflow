@@ -1456,6 +1456,17 @@ graph TD
         for node in spec.nodes:
             # Default to Node (sync) unless explicitly specified as async
             node_type = node.get("type", "Node")
+            
+            # Validate node type
+            valid_node_types = {
+                "Node", "AsyncNode", "BatchNode", 
+                "AsyncBatchNode", "AsyncParallelBatchNode"
+            }
+            if node_type not in valid_node_types:
+                raise ValueError(
+                    f"Invalid node type '{node_type}' for node '{node['name']}'. "
+                    f"Valid types are: {', '.join(sorted(valid_node_types))}"
+                )
 
             # Use BatchNode for operations that process lists of items
             batch_comment = ""
