@@ -77,7 +77,10 @@
       "Bash(git tag:*)",
       "Bash(afplay:*)",
       "Bash(git restore:*)",
-      "Read(//Users/jeffkiefer/.claude/**)"
+      "Read(//Users/jeffkiefer/.claude/**)",
+      "Bash(gh repo edit:*)",
+      "Bash(gh repo view:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",

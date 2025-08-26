@@ -87,7 +87,7 @@ encoding: UTF-8
 
 </step>
 
-<step number="2" subagent="context-fetcher" name="context_analysis">
+<step number="2" name="context_analysis">
 
 ### Step 2: Context Analysis
 
@@ -124,11 +124,9 @@ encoding: UTF-8
 </context_gathering>
 
 <instructions>
-  ACTION: Use context-fetcher subagent
-  REQUEST: "Analyze complete context for current tasks: spec SRD, tasks.md, sub-specs, mission.md, tech-stack.md. Focus on requirements, technical specs, test specifications, and PocketFlow patterns if LLM/AI involved"
-  WAIT: For subagent completion
-  PROCESS: Returned context analysis
-  UNDERSTAND: How task fits into overall spec goals, paying special attention to LLM/AI components and PocketFlow patterns
+  ACTION: Read all spec documentation thoroughly
+  ANALYZE: Requirements and specifications for current task
+  UNDERSTAND: How task fits into overall spec goals, paying special attention to LLM/AI components and PocketFlow patterns.
 </instructions>
 
 </step>
@@ -405,7 +403,7 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 </step>
 
-<step number="5" subagent="git-workflow" name="git_branch_management">
+<step number="5" name="git_branch_management">
 
 ### Step 5: Git Branch Management
 
@@ -446,10 +444,7 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 </case_c_prompt>
 
 <instructions>
-  ACTION: Use git-workflow subagent
-  REQUEST: "Manage git branch for spec execution - check current branch, evaluate cases (match/main/different), and execute appropriate branch action with spec folder naming"
-  WAIT: For subagent completion
-  PROCESS: Branch management results
+  ACTION: Check current git branch
   EVALUATE: Which case applies
   EXECUTE: Appropriate branch action
   WAIT: Only for case C approval
@@ -536,29 +531,9 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 </step>
 
-<step number="6" subagent="test-runner" name="test_verification">
+<step number="6" name="post_execution_workflow">
 
-### Step 6: Test Verification
-
-<step_metadata>
-  <uses>test-runner subagent</uses>
-  <purpose>Execute test suite after task completion</purpose>
-  <validates>implementation correctness</validates>
-</step_metadata>
-
-<instructions>
-  ACTION: Use test-runner subagent
-  REQUEST: "Execute full test suite to verify task implementation correctness, including PocketFlow pattern validation if LLM/AI components present"
-  WAIT: For subagent completion
-  PROCESS: Test results and validation
-  VERIFY: All tests pass before proceeding
-</instructions>
-
-</step>
-
-<step number="7" subagent="project-manager" name="post_execution_workflow">
-
-### Step 7: Post-Execution Workflow
+### Step 6: Post-Execution Workflow
 
 <step_metadata>
   <delegates>post-execution-tasks.md for completion workflow</delegates>
@@ -572,7 +547,7 @@ After all tasks in tasks.md have been implemented, use @.agent-os/instructions/c
   <phase_model>
     **3-Phase Execution Model:**
     - **Pre-execution**: Context gathering and planning (Steps 1-5)
-    - **Execution**: Task implementation (Step 5 loop)
+    - **Execution**: Task implementation (Step 5.5 loop)
     - **Post-execution**: Testing, validation, and delivery (this step)
   </phase_model>
   
@@ -605,12 +580,9 @@ After all tasks in tasks.md have been implemented, use @.agent-os/instructions/c
 </enhanced_features>
 
 <instructions>
-  ACTION: Use project-manager subagent
-  REQUEST: "Execute complete post-execution workflow using post-execution-tasks.md: handle git operations, documentation updates, roadmap progress, and create enhanced recap with PocketFlow details if applicable"
-  WAIT: For subagent completion
-  PROCESS: Final workflow results
-  DELEGATE: Complete post-execution workflow
+  ACTION: Delegate complete post-execution workflow
   EXECUTE: @.agent-os/instructions/core/post-execution-tasks.md
+  WAIT: For full completion before concluding
   TRUST: Post-execution workflow to handle all finalization steps
   REPORT: Only final summary once post-execution completes
 </instructions>
@@ -638,3 +610,61 @@ After all tasks in tasks.md have been implemented, use @.agent-os/instructions/c
     - Enhanced recap system provides better project tracking
   </quality_assurance>
 </execution_summary>
+
+## Development Standards
+
+<standards>
+  <code_style>
+    <follow>@.agent-os/product/code-style.md</follow>
+    <enforce>strictly</enforce>
+  </code_style>
+  <best_practices>
+    <follow>@.agent-os/product/dev-best-practices.md</follow>
+    <apply>all directives</apply>
+  </best_practices>
+  <testing>
+    <coverage>comprehensive</coverage>
+    <approach>test-driven development</approach>
+  </testing>
+  <documentation>
+    <commits>clear and descriptive</commits>
+    <pull_requests>detailed descriptions</pull_requests>
+  </documentation>
+</standards>
+
+## Error Handling
+
+<error_protocols>
+  <blocking_issues>
+    - document in tasks.md
+    - mark with ⚠️ emoji
+    - include in summary
+  </blocking_issues>
+  <test_failures>
+    - fix before proceeding
+    - never commit broken tests
+  </test_failures>
+  <technical_roadblocks>
+    - attempt 3 approaches
+    - document if unresolved
+    - seek user input
+  </technical_roadblocks>
+</error_protocols>
+
+<final_checklist>
+  <verify>
+    - [ ] Task implementation complete
+    - [ ] All tests passing
+    - [ ] tasks.md updated
+    - [ ] Code committed and pushed
+    - [ ] Pull request created
+    - [ ] Roadmap checked/updated
+    - [ ] Summary provided to user
+  </verify>
+</final_checklist>
+
+## Orchestration Integration
+
+@include orchestration/orchestrator-hooks.md
+
+This instruction integrates with the orchestrator system for coordinated task execution.

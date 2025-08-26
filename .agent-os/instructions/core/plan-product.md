@@ -46,7 +46,7 @@ encoding: UTF-8
 
 <process_flow>
 
-<step number="1" subagent="context-fetcher" name="gather_user_input">
+<step number="1" name="gather_user_input">
 
 ### Step 1: Gather User Input
 
@@ -80,10 +80,7 @@ encoding: UTF-8
 </error_template>
 
 <instructions>
-  ACTION: Use context-fetcher subagent
-  REQUEST: "Collect all required inputs from user: main_idea, key_features (min 3), target_users (min 1), tech_stack preferences, involves_llm_ai (boolean), project initialization status"
-  WAIT: For subagent completion
-  PROCESS: Returned information
+  ACTION: Collect all required inputs from user
   VALIDATION: Ensure all inputs provided before proceeding
   FALLBACK: Check configuration files for tech stack defaults
   ERROR: Use error_template if inputs missing
@@ -91,34 +88,7 @@ encoding: UTF-8
 
 </step>
 
-<step number="1a" subagent="pocketflow-orchestrator" name="llm_project_planning">
-
-### Step 1a: LLM/AI Project Planning (Conditional)
-
-<step_metadata>
-  <conditional>involves_llm_ai == true</conditional>
-  <purpose>Enhanced planning for LLM/AI projects using PocketFlow patterns</purpose>
-</step_metadata>
-
-<conditional_execution>
-  <detection_criteria>
-    <check>involves_llm_ai boolean from Step 1 == true</check>
-    <check>user mentions LLM, AI, or machine learning in features</check>
-    <check>user mentions chatbots, agents, or AI workflows</check>
-  </detection_criteria>
-</conditional_execution>
-
-<instructions>
-  ACTION: Use pocketflow-orchestrator subagent
-  REQUEST: "Analyze LLM/AI project requirements and recommend optimal PocketFlow patterns (Agent, RAG, Workflow, MapReduce, Multi-Agent, Structured Output) based on feature analysis. Emphasize design-first methodology requirements."
-  WAIT: For subagent completion
-  PROCESS: PocketFlow pattern recommendations and architectural guidance
-  SKIP: If involves_llm_ai == false
-</instructions>
-
-</step>
-
-<step number="2" subagent="file-creator" name="create_documentation_structure">
+<step number="2" name="create_documentation_structure">
 
 ### Step 2: Create Documentation Structure
 
@@ -144,17 +114,14 @@ encoding: UTF-8
 </git_config>
 
 <instructions>
-  ACTION: Use file-creator subagent
-  REQUEST: "Create .agent-os/product/ directory structure with mission.md, tech-stack.md, and roadmap.md placeholder files"
-  WAIT: For subagent completion
-  PROCESS: Returned confirmation
+  ACTION: Create directory structure as specified
   VALIDATION: Verify write permissions before creating
   PROTECTION: Confirm before overwriting existing files
 </instructions>
 
 </step>
 
-<step number="3" subagent="file-creator" name="create_mission_md">
+<step number="3" name="create_mission_md">
 
 ### Step 3: Create mission.md
 
@@ -319,17 +286,14 @@ encoding: UTF-8
 </section>
 
 <instructions>
-  ACTION: Use file-creator subagent
-  REQUEST: "Create .agent-os/product/mission.md with complete template structure including Pitch, Users, Problem, Differentiators, Key Features, and AI/LLM Strategy (if applicable) sections using data from Step 1"
-  WAIT: For subagent completion
-  PROCESS: Generated mission.md content
+  ACTION: Create mission.md using all section templates
   FILL: Use data from Step 1 user inputs
   FORMAT: Maintain exact template structure
 </instructions>
 
 </step>
 
-<step number="4" subagent="file-creator" name="create_tech_stack_md">
+<step number="4" name="create_tech_stack_md">
 
 ### Step 4: Create tech-stack.md
 
@@ -421,10 +385,7 @@ encoding: UTF-8
 </missing_items_template>
 
 <instructions>
-  ACTION: Use file-creator subagent
-  REQUEST: "Create .agent-os/product/tech-stack.md with modern Python defaults (Python 3.12+, FastAPI, Pydantic, uv, Ruff, pytest) and conditional LLM/AI additions (PocketFlow, ChromaDB) based on project requirements"
-  WAIT: For subagent completion
-  PROCESS: Generated tech-stack.md content
+  ACTION: Document all tech stack choices with modern Python defaults
   RESOLUTION: Check user input first, then config files, then apply defaults
   DEFAULTS: Use Python 3.12+ with FastAPI, Pydantic, uv, Ruff, and pytest unless user specifies otherwise
   REQUEST: Ask for any missing items using template
@@ -434,7 +395,7 @@ encoding: UTF-8
 
 </step>
 
-<step number="5" subagent="file-creator" name="create_roadmap_md">
+<step number="5" name="create_roadmap_md">
 
 ### Step 5: Create roadmap.md
 
@@ -516,10 +477,7 @@ encoding: UTF-8
 </conditional_roadmap>
 
 <instructions>
-  ACTION: Use file-creator subagent
-  REQUEST: "Create .agent-os/product/roadmap.md with 5 development phases, effort estimates (XS/S/M/L/XL), and conditional LLM/AI-specific requirements including PocketFlow patterns and design-first methodology"
-  WAIT: For subagent completion
-  PROCESS: Generated roadmap.md content
+  ACTION: Create 5 development phases
   PRIORITIZE: Based on dependencies and mission importance
   ESTIMATE: Use effort_scale for all features
   VALIDATE: Ensure logical progression between phases
@@ -533,7 +491,7 @@ encoding: UTF-8
 </step>
 
 
-<step number="6" subagent="file-creator" name="create_or_update_claude_md">
+<step number="6" name="create_or_update_claude_md">
 
 ### Step 6: Create or Update CLAUDE.md
 
@@ -607,10 +565,7 @@ When asked to work on this codebase:
 </merge_behavior>
 
 <instructions>
-  ACTION: Use file-creator subagent
-  REQUEST: "Create or update project root CLAUDE.md file with Agent OS Documentation section, preserving existing content and following merge behavior rules"
-  WAIT: For subagent completion
-  PROCESS: File creation or update confirmation
+  ACTION: Check if CLAUDE.md exists in project root
   MERGE: Replace "Agent OS Documentation" section if it exists
   APPEND: Add section to end if file exists but section doesn't
   CREATE: Create new file with template content if file doesn't exist
