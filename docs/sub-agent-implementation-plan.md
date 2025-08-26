@@ -34,6 +34,7 @@ REQUEST: "Find [ITEM_NAME] from file"
 
 #### [ ] Update `/instructions/core/plan-product.md`
 - [ ] Step 1: Add `subagent="context-fetcher"` for gathering user input
+- [ ] Step 1a: Add `subagent="pocketflow-orchestrator"` for LLM/AI project planning (conditional)
 - [ ] Step 2: Add `subagent="file-creator"` for creating documentation structure  
 - [ ] Step 3: Add `subagent="file-creator"` for mission.md creation
 - [ ] Step 4: Add `subagent="file-creator"` for tech-stack.md creation
@@ -82,6 +83,11 @@ description: When this agent should be invoked
 tools: Tool1, Tool2, Tool3  # Optional - inherits all if omitted
 ---
 ```
+
+**Current Issues Found:**
+- **Non-standard YAML fields**: Files contain `auto_invoke_triggers`, `coordination_aware`, `generates_code`, `color` which aren't recognized by Claude Code
+- **Inconsistent tools format**: Some use arrays `[Tool1, Tool2]`, others use comma-separated strings
+- **Missing PocketFlow invocation**: `pocketflow-orchestrator` should be invoked for LLM/AI projects during planning
 
 ### Phase 3: Update Setup Scripts
 
@@ -149,7 +155,48 @@ tools: Tool1, Tool2, Tool3  # Optional - inherits all if omitted
 - Original Repo: https://github.com/buildermethods/agent-os
 - Enhanced Fork: https://github.com/pickleton89/agent-os-pocketflow
 
+## Detailed Sub-Agent File Issues
+
+### Files Requiring YAML Header Standardization
+
+#### 1. **pocketflow-orchestrator.md**
+**Current Issues:**
+- Contains `auto_invoke_triggers`, `coordination_aware`, `generates_code` (non-standard fields)
+- Tools format: `[Read, Write, Grep, Glob, Bash, Edit, MultiEdit, TodoWrite, Task]` (array format)
+
+**Required Fix:**
+```yaml
+---
+name: pocketflow-orchestrator
+description: MUST BE USED PROACTIVELY for planning, designing, and orchestrating complex Agent OS workflows using PocketFlow's graph-based architecture. Automatically invoked for LLM/AI features and complex planning tasks.
+tools: Read, Write, Grep, Glob, Bash, Edit, MultiEdit, TodoWrite, Task
+---
+```
+
+#### 2. **context-fetcher.md**
+**Current Issues:**
+- Contains `color: blue` (non-standard field)
+- Tools format: `Read, Grep, Glob` (correct format)
+
+#### 3. **dependency-orchestrator.md**
+**Current Issues:**
+- Likely contains non-standard fields (needs verification)
+
+#### 4. **template-validator.md**
+**Current Issues:**
+- Likely contains non-standard fields (needs verification)
+
+#### 5. **pattern-recognizer.md** 
+**Current Issues:**
+- Likely contains non-standard fields (needs verification)
+
+### Required Actions
+1. **Audit all 10 sub-agent files** for non-standard YAML fields
+2. **Remove non-standard fields**: `auto_invoke_triggers`, `coordination_aware`, `generates_code`, `color`
+3. **Standardize tools format**: Use comma-separated strings, not arrays
+4. **Preserve functionality**: Move important triggers into descriptions using "MUST BE USED PROACTIVELY"
+
 ## Status
 - Created: 2025-08-26
-- Status: Planning Phase
+- Status: Implementation Phase - Sub-Agent YAML Standardization
 - Last Updated: 2025-08-26

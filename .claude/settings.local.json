@@ -76,7 +76,8 @@
       "Bash(git clone:*)",
       "Bash(git tag:*)",
       "Bash(afplay:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Read(//Users/jeffkiefer/.claude/**)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
