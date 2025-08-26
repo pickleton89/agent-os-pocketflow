@@ -112,33 +112,33 @@ encoding: UTF-8
     - overall mission alignment
     - technical standards
     - best practices
-    - PocketFlow Principles (if LLM/AI involved)
+    - PocketFlow Principles (universal architecture)
   </product_level>
   <stack_specific_checks>
     - Verify Pydantic models in `schemas/` directory
     - Check existing FastAPI routes and middleware
     - Identify FastMCP tools already implemented
     - Review current utility functions in `utils/`
-    - Assess PocketFlow nodes and flows (if applicable)
+    - Assess PocketFlow nodes and flows (universal architecture)
   </stack_specific_checks>
 </context_gathering>
 
 <instructions>
   ACTION: Read all spec documentation thoroughly
   ANALYZE: Requirements and specifications for current task
-  UNDERSTAND: How task fits into overall spec goals, paying special attention to LLM/AI components and PocketFlow patterns.
+  UNDERSTAND: How task fits into overall spec goals and PocketFlow architecture patterns.
 </instructions>
 
 </step>
 
 <step number="2.5" name="design_document_validation">
 
-### Step 2.5: Design Document Validation (LLM/AI Components Only)
+### Step 2.5: Design Document Validation (Universal)
 
 <step_metadata>
   <validates>docs/design.md existence and completeness</validates>
   <blocks>implementation without proper design</blocks>
-  <condition>only if LLM/AI components detected</condition>
+  <condition>universal for all projects</condition>
 </step_metadata>
 
 <validation_requirements>
@@ -163,56 +163,45 @@ encoding: UTF-8
   </quality_checks>
 </validation_requirements>
 
-<conditional_execution>
-  <detection_criteria>
-    - Check @.agent-os/product/tech-stack.md for PocketFlow or LLM framework
-    - Look for LLM-related tasks in spec tasks.md
-    - Identify mentions of nodes.py, flow.py, or utils/ in technical specs
-    - Check for AI/ML-related dependencies or requirements
-  </detection_criteria>
-  <if_llm_detected>
-    <action>Execute full validation process</action>
-    <blocking>true - cannot proceed without complete design.md</blocking>
-  </if_llm_detected>
-  <if_no_llm>
-    <action>Skip this step entirely</action>
-    <message>Skipping design document validation - no LLM/AI components detected</message>
-  </if_no_llm>
-</conditional_execution>
+<universal_execution>
+  <action>Execute full validation process for all projects</action>
+  <blocking>true - cannot proceed without complete design.md</blocking>
+  <rationale>All projects use PocketFlow architecture with appropriate patterns</rationale>
+</universal_execution>
 
 <validation_process>
-  <step1>Check if tech stack includes PocketFlow or LLM/AI components</step1>
-  <step2>If LLM/AI components detected, verify docs/design.md exists</step2>
-  <step3>Read and validate all required sections are present and complete</step3>
-  <step4>Validate Mermaid diagram syntax if present</step4>
-  <step5>Ensure all utility functions have input/output contracts</step5>
+  <step1>Verify docs/design.md exists for all projects</step1>
+  <step2>Read and validate all required sections are present and complete</step2>
+  <step3>Validate Mermaid diagram syntax if present</step3>
+  <step4>Ensure all utility functions have input/output contracts</step4>
+  <step5>Verify PocketFlow pattern selection and implementation plan</step5>
   <step6>Block progression if validation fails</step6>
 </validation_process>
 
 <blocking_message>
   ❌ **Design Document Required**
   
-  This task involves LLM/AI components but `docs/design.md` is missing or incomplete.
+  This project uses PocketFlow architecture but `docs/design.md` is missing or incomplete.
   
   **Missing/Incomplete Sections:**
   - [LIST_MISSING_SECTIONS]
   
   **Required Actions:**
-  1. Create or complete `docs/design.md` using the PocketFlow template
+  1. Create or complete `docs/design.md` using the appropriate PocketFlow pattern template
   2. Ensure all sections are filled with specific details
   3. Validate Mermaid diagrams are syntactically correct
   4. Specify input/output contracts for all utility functions
+  5. Define the PocketFlow pattern (WORKFLOW, TOOL, AGENT, RAG, etc.)
   
   Implementation cannot proceed without a complete design document.
   Please create the design document first or ask me to help create it.
 </blocking_message>
 
 <instructions>
-  DETECT: Check multiple sources to determine if LLM/AI components involved
-  CONDITIONAL: Skip entirely if no LLM/AI components detected
-  VALIDATE: docs/design.md exists and is complete if LLM/AI components present
+  VALIDATE: docs/design.md exists and is complete for all projects
   BLOCK: Implementation progression if design document missing or incomplete
-  MESSAGE: Clearly indicate whether step was executed or skipped
+  VERIFY: PocketFlow pattern selection is appropriate for project type
+  ENSURE: All required sections are present and detailed
   GUIDE: User to create proper design documentation before proceeding
 </instructions>
 
@@ -310,8 +299,8 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
     - **Phase 0**: Create Pydantic schemas with validation (if needed)
     - **Phase 1**: Implement utility functions with type hints
     - **Phase 2**: Create FastAPI endpoints (if applicable)
-    - **Phase 3**: Implement PocketFlow nodes (for LLM/AI)
-    - **Phase 4**: Assemble PocketFlow flows (for LLM/AI)
+    - **Phase 3**: Implement PocketFlow nodes (universal architecture)
+    - **Phase 4**: Assemble PocketFlow flows (universal architecture)
     - **Phase 5**: Integration and testing
   </phase_sequence>
   <type_safety_planning>
@@ -322,7 +311,7 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
     - Validate schema enforcement at all boundaries
   </type_safety_planning>
   <pocketflow_specifics>
-    - **If LLM/AI components are involved:**
+    - **For all projects using PocketFlow architecture:**
       - Reference design.md for implementation guidance
       - Follow PocketFlow sequence: Utilities first, then Nodes, then Flows
       - Plan for SharedStore schema implementation
@@ -330,7 +319,7 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
       - Outline of `prep`, `exec`, `post` logic for each relevant Node
       - Details on `utils/` function creation/usage
       - Plan for structured output (YAML/JSON) if applicable
-      - Approach for handling chat history, caching, logging for LLM calls
+      - Pattern-specific considerations (WORKFLOW, TOOL, AGENT, RAG, MAPREDUCE)
       - Considerations for BatchNode/BatchFlow for large inputs/parallelization
   </pocketflow_specifics>
 </plan_structure>
@@ -361,12 +350,12 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 <instructions>
   ACTION: Create detailed execution plan following proper phase sequence
   STRUCTURE: Follow Phase 0→1→2→3→4→5 progression for implementation
-  REFERENCE: design.md for LLM/AI components to guide implementation
+  REFERENCE: design.md for all PocketFlow components to guide implementation
   PLAN: Type safety validation and Pydantic model creation upfront
   DISPLAY: Plan to user for review
   WAIT: For explicit approval before proceeding
   BLOCK: Do not proceed without affirmative permission
-  DETAIL: PocketFlow specifics and phase sequencing if LLM/AI components are present
+  DETAIL: PocketFlow specifics and phase sequencing for universal architecture
 </instructions>
 
 </step>
@@ -565,7 +554,7 @@ After all tasks in tasks.md have been implemented, use @.agent-os/instructions/c
 
 <enhanced_features>
   <pocketflow_validation>
-    - Validates design.md compliance for LLM/AI features
+    - Validates design.md compliance for all PocketFlow features
     - Checks PocketFlow pattern implementation
     - Verifies utility function contracts
     - Ensures Node/Flow structure correctness
@@ -573,7 +562,7 @@ After all tasks in tasks.md have been implemented, use @.agent-os/instructions/c
   
   <enhanced_documentation>
     - Creates recaps with PocketFlow pattern details
-    - Documents LLM providers and models used
+    - Documents providers and models used (when applicable)
     - Includes design compliance status
     - Captures technical implementation details
   </enhanced_documentation>
@@ -599,9 +588,9 @@ After all tasks in tasks.md have been implemented, use @.agent-os/instructions/c
   </workflow_phases>
   
   <pocketflow_integration>
-    - Design document validation ensures LLM/AI features are properly planned
+    - Design document validation ensures all features are properly planned
     - PocketFlow patterns are recognized and implemented correctly
-    - Enhanced validation and documentation capture LLM/AI implementation details
+    - Enhanced validation and documentation capture all implementation details
   </pocketflow_integration>
   
   <quality_assurance>

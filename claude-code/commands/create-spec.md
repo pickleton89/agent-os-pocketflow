@@ -110,13 +110,13 @@ This instruction file uses modular templates from:
   <mission>overall product vision</mission>
   <roadmap>current progress and plans</roadmap>
   <tech_stack>technical requirements</tech_stack>
-  <llm_integration_check>determine if spec involves LLM/AI components</llm_integration_check>
+  <pocketflow_pattern_analysis>determine appropriate PocketFlow pattern for all projects</pocketflow_pattern_analysis>
 </context_analysis>
 
 <instructions>
   ACTION: Read all three product documents
   ANALYZE: Spec alignment with each document
-  NOTE: Consider implications for implementation, especially LLM integration.
+  NOTE: Consider implications for implementation and PocketFlow architecture pattern selection.
 </instructions>
 
 </step>
@@ -142,14 +142,15 @@ This instruction file uses modular templates from:
     - UI/UX requirements
     - integration points
   </technical>
-  <llm_specifics>
-    - **For LLM/AI components:**
-      - Desired PocketFlow design pattern (Agent, Workflow, RAG, MapReduce, Multi-Agent, Structured Output)
-      - Specific LLM models/providers to use (if not already in tech stack)
-      - Data sources for RAG or knowledge base
-      - Expected input/output formats (structured output considerations)
-      - Latency or throughput requirements
-  </llm_specifics>
+  <pocketflow_specifics>
+    - **For all projects using PocketFlow architecture:**
+      - Desired PocketFlow design pattern (WORKFLOW, TOOL, AGENT, RAG, MAPREDUCE, STRUCTURED-OUTPUT)
+      - Specific providers/models to use (when applicable)
+      - Data sources and integrations required
+      - Expected input/output formats
+      - Performance requirements (latency, throughput)
+      - Pattern complexity level (Simple, Enhanced, Complex)
+  </pocketflow_specifics>
 </clarification_areas>
 
 <decision_tree>
@@ -173,7 +174,7 @@ This instruction file uses modular templates from:
   ACTION: Evaluate need for clarification
   ASK: Numbered questions if needed
   PROCEED: Only with clear requirements
-  PRIORITIZE: LLM-specific questions if the spec involves AI/LLM components.
+  PRIORITIZE: PocketFlow pattern and architecture questions for all projects.
 </instructions>
 
 </step>
@@ -241,20 +242,20 @@ This instruction file uses modular templates from:
 
 <step number="4.5" name="mandatory_design_document_creation">
 
-### Step 4.5: Mandatory Design Document Creation (LLM/AI Features Only)
+### Step 4.5: Mandatory Design Document Creation (Universal)
 
 <step_metadata>
   <creates>
     - file: docs/design.md
   </creates>
-  <condition>only if spec involves LLM/AI components</condition>
+  <condition>universal for all projects using PocketFlow architecture</condition>
   <priority>critical - blocks implementation progression</priority>
 </step_metadata>
 
 <design_document_requirement>
   <philosophy>
-    Following PocketFlow's "Agentic Coding" methodology: **Humans design, agents code**.
-    Design must be completed before any implementation begins.
+    Following PocketFlow's methodology: **Humans design, agents code**.
+    Design must be completed before any implementation begins for all projects.
   </philosophy>
   <blocking_condition>
     Implementation tasks CANNOT proceed without completed design.md
@@ -262,13 +263,13 @@ This instruction file uses modular templates from:
 </design_document_requirement>
 
 <template_reference>
-  **Template:** Use complete design document template from @templates/pocketflow-templates.md
-  **Sections Required:**
-  - Requirements (with design pattern classification)
+  **Template:** Use appropriate design document template from @templates/pocketflow-templates.md
+  **Sections Required (adapted to pattern complexity):**
+  - Requirements (with PocketFlow pattern classification)
   - Flow Design (with Mermaid diagram)
   - Utilities (with input/output contracts)
-  - Data Design (SharedStore schema)
-  - Node Design (prep/exec/post specifications)
+  - Data Design (SharedStore schema or data structures)
+  - Node Design (prep/exec/post specifications for chosen pattern)
 </template_reference>
 
 <validation_requirements>
@@ -284,11 +285,11 @@ This instruction file uses modular templates from:
 </validation_requirements>
 
 <instructions>
-  ACTION: Create docs/design.md using PocketFlow template
-  TEMPLATE: @templates/pocketflow-templates.md (Design Document Template)
+  ACTION: Create docs/design.md using appropriate PocketFlow pattern template
+  TEMPLATE: @templates/pocketflow-templates.md (Pattern-specific Design Document Template)
   BLOCK: Do not proceed to implementation steps without completed design
-  VALIDATE: Ensure all sections are filled with specific details
-  EMPHASIZE: This is the foundation for all subsequent implementation
+  VALIDATE: Ensure all sections are filled with specific details for chosen pattern
+  EMPHASIZE: This is the foundation for all subsequent PocketFlow implementation
 </instructions>
 
 </step>
@@ -354,7 +355,7 @@ This instruction file uses modular templates from:
     - Out of Scope
     - Expected Deliverable
     - API & Data Models
-    - LLM Workflow (if applicable)
+    - PocketFlow Architecture (universal)
   </required_sections>
 </file_template>
 
@@ -394,11 +395,11 @@ This instruction file uses modular templates from:
     **Include:** FastAPI endpoints, Pydantic models, error handling, PocketFlow integration
   </api_data_models>
 
-  <llm_workflow>
-    **Template:** Use LLM Workflow template from @templates/pocketflow-templates.md  
-    **Condition:** Only if spec involves LLM/AI components
-    **Include:** PocketFlow architecture, node specifications, design patterns
-  </llm_workflow>
+  <pocketflow_architecture>
+    **Template:** Use PocketFlow Architecture template from @templates/pocketflow-templates.md  
+    **Condition:** Universal for all projects
+    **Include:** PocketFlow pattern, node specifications, design patterns, appropriate complexity level
+  </pocketflow_architecture>
 </section_templates>
 
 <instructions>
@@ -455,8 +456,8 @@ This instruction file uses modular templates from:
   </pydantic_fastapi_sections>
   <pocketflow_sections>
     **Templates:** Use utility, SharedStore, and node templates from @templates/pocketflow-templates.md
-    **Condition:** Only if spec involves LLM/AI components
-    **Include:** Utility specifications, SharedStore schema, node implementations
+    **Condition:** Universal for all projects
+    **Include:** Utility specifications, data structures/SharedStore schema, node implementations for chosen pattern
   </pocketflow_sections>
 </spec_sections>
 
@@ -579,20 +580,20 @@ This instruction file uses modular templates from:
   - API responses
   - time-based tests
   
-  ### LLM-Specific Tests (if applicable)
-  - Prompt robustness tests
-  - Context retrieval accuracy tests
-  - Output format validation tests
+  ### PocketFlow Pattern Tests (universal)
+  - Pattern-specific workflow tests
+  - Node execution tests (prep/exec/post)
+  - Data flow validation tests
   - Performance tests (latency, throughput)
-  - Token usage tests
-  - End-to-end LLM workflow tests
+  - Integration tests for chosen pattern
+  - End-to-end PocketFlow workflow tests
 </test_template>
 
 <instructions>
   ACTION: Create comprehensive test specification
   ENSURE: All new functionality has test coverage
   SPECIFY: Mock requirements for external services
-  INCLUDE: LLM-specific tests if applicable
+  INCLUDE: PocketFlow pattern-specific tests for all projects
 </instructions>
 
 </step>
@@ -639,20 +640,19 @@ This instruction file uses modular templates from:
 </step_metadata>
 
 <template_selection>
-  <llm_ai_components>
-    **Template:** Use complete 8-phase template from @templates/task-templates.md
+  <pocketflow_architecture>
+    **Template:** Use appropriate PocketFlow template from @templates/task-templates.md
+    **Complex Patterns (AGENT, RAG, MAPREDUCE):** Full 8-phase template
     **Phases:** Design → Pydantic Schemas → Utilities → FastAPI → Nodes → Flow → Integration → Optimization
-  </llm_ai_components>
-  <traditional_features>
-    **Template:** Use simplified template from @templates/task-templates.md  
-    **Phases:** Data Models → Business Logic → FastAPI → Integration & Testing
-  </traditional_features>
+    **Simple Patterns (WORKFLOW, TOOL, STRUCTURED-OUTPUT):** Streamlined template  
+    **Phases:** Design → Data Models → Utilities → Nodes → Flow → Integration & Testing
+  </pocketflow_architecture>
 </template_selection>
 
 <instructions>
-  ACTION: Create task breakdown using appropriate template
-  TEMPLATE: Select from @templates/task-templates.md based on feature type
-  STRUCTURE: Follow 8-step methodology for LLM/AI or simplified for traditional features
+  ACTION: Create task breakdown using appropriate PocketFlow template
+  TEMPLATE: Select from @templates/task-templates.md based on pattern complexity
+  STRUCTURE: Follow full 8-phase for complex patterns or streamlined for simple patterns
   ORDER: Ensure proper phase dependencies
   VALIDATE: Include toolchain validation at every phase
 </instructions>
@@ -711,7 +711,7 @@ This instruction file uses modular templates from:
     - impacts roadmap priorities
     - introduces new technical patterns
     - affects user experience significantly
-    - **For LLM/AI components:** Introduces new LLM models/providers, changes core LLM patterns, or has significant cost/performance implications
+    - **For PocketFlow components:** Introduces new patterns/providers, changes core architecture patterns, or has significant cost/performance implications
   </criteria>
 </decision_analysis>
 
@@ -731,7 +731,7 @@ This instruction file uses modular templates from:
   IDENTIFY: Up to 3 key strategic considerations if any
   REQUEST: User approval before updating product documentation
   UPDATE: Add notes to roadmap.md if approved
-  NOTE: Strategic considerations related to LLM/AI should be documented
+  NOTE: Strategic considerations related to PocketFlow patterns should be documented
 </instructions>
 
 </step>
