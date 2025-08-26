@@ -81,7 +81,9 @@
       "Bash(gh repo edit:*)",
       "Bash(gh repo view:*)",
       "Bash(ls:*)",
-      "Read(//Users/jeffkiefer/Documents/projects/local-agent-os-main/commands/**)"
+      "Read(//Users/jeffkiefer/Documents/projects/local-agent-os-main/commands/**)",
+      "Bash(./scripts/validation/validate-end-to-end-scenarios.sh:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
