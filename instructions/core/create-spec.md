@@ -55,7 +55,7 @@ This instruction file uses modular templates from:
 
 <process_flow>
 
-<step number="1" name="spec_initiation">
+<step number="1" subagent="context-fetcher" name="spec_initiation">
 
 ### Step 1: Spec Initiation
 
@@ -86,14 +86,17 @@ This instruction file uses modular templates from:
 </option_b_flow>
 
 <instructions>
-  ACTION: Identify spec initiation method
+  ACTION: Use context-fetcher subagent
+  REQUEST: "Gather spec requirements through appropriate method - either suggest next roadmap item or accept user-provided spec idea. Ensure clear understanding of scope and objectives"
+  WAIT: For subagent completion
+  PROCESS: Spec initiation details
   ROUTE: Follow appropriate flow based on trigger
   WAIT: Ensure user agreement before proceeding
 </instructions>
 
 </step>
 
-<step number="2" name="context_gathering">
+<step number="2" subagent="context-fetcher" name="context_gathering">
 
 ### Step 2: Context Gathering
 
@@ -114,9 +117,12 @@ This instruction file uses modular templates from:
 </context_analysis>
 
 <instructions>
-  ACTION: Read all three product documents
+  ACTION: Use context-fetcher subagent
+  REQUEST: "Analyze context from mission.md, roadmap.md, and tech-stack.md for spec alignment. Focus on product vision, current progress, technical requirements, and LLM integration implications"
+  WAIT: For subagent completion
+  PROCESS: Context analysis results
   ANALYZE: Spec alignment with each document
-  NOTE: Consider implications for implementation, especially LLM integration.
+  NOTE: Consider implications for implementation, especially LLM integration
 </instructions>
 
 </step>
@@ -293,7 +299,7 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="5" name="spec_folder_creation">
+<step number="5" subagent="file-creator" name="spec_folder_creation">
 
 ### Step 5: Spec Folder Creation
 
@@ -321,7 +327,10 @@ This instruction file uses modular templates from:
 </example_names>
 
 <instructions>
-  ACTION: Create spec folder using stored date
+  ACTION: Use file-creator subagent
+  REQUEST: "Create spec folder .agent-os/specs/YYYY-MM-DD-spec-name/ using stored date and kebab-case naming (max 5 words)"
+  WAIT: For subagent completion
+  PROCESS: Folder creation confirmation
   FORMAT: Use kebab-case for spec name
   LIMIT: Maximum 5 words in name
   VERIFY: Folder created successfully
@@ -329,7 +338,7 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="6" name="create_spec_md">
+<step number="6" subagent="file-creator" name="create_spec_md">
 
 ### Step 6: Create spec.md
 
@@ -402,7 +411,10 @@ This instruction file uses modular templates from:
 </section_templates>
 
 <instructions>
-  ACTION: Create spec.md with all sections
+  ACTION: Use file-creator subagent
+  REQUEST: "Create spec.md with all required sections: Overview, User Stories, Spec Scope, Out of Scope, Expected Deliverable, API & Data Models, LLM Workflow (if applicable). Use referenced templates for complex sections"
+  WAIT: For subagent completion
+  PROCESS: Spec.md creation results
   TEMPLATES: Use referenced templates for complex sections
   FILL: Use spec details from steps 1-3
   MAINTAIN: Clear, concise descriptions
@@ -410,7 +422,7 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="7" name="create_technical_spec">
+<step number="7" subagent="file-creator" name="create_technical_spec">
 
 ### Step 7: Create Technical Specification
 
@@ -461,7 +473,10 @@ This instruction file uses modular templates from:
 </spec_sections>
 
 <instructions>
-  ACTION: Create sub-specs folder and technical-spec.md
+  ACTION: Use file-creator subagent
+  REQUEST: "Create sub-specs folder and technical-spec.md with technical requirements, approach options, external dependencies, and PocketFlow/FastAPI sections using referenced templates"
+  WAIT: For subagent completion
+  PROCESS: Technical specification creation
   TEMPLATES: Use referenced templates for detailed sections
   DOCUMENT: All technical decisions and requirements
   JUSTIFY: Any new dependencies
@@ -469,7 +484,7 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="8" name="create_database_schema">
+<step number="8" subagent="file-creator" name="create_database_schema">
 
 ### Step 8: Create Database Schema (Conditional)
 
@@ -508,14 +523,17 @@ This instruction file uses modular templates from:
 </schema_template>
 
 <instructions>
-  ACTION: Check if database changes needed
+  ACTION: Use file-creator subagent
+  REQUEST: "Check if database changes needed and create sub-specs/database-schema.md only if required with complete SQL/migration specifications, indexes, constraints, and rationale"
+  WAIT: For subagent completion
+  PROCESS: Database schema creation (if needed)
   CREATE: database-schema.md only if required
   INCLUDE: Complete SQL/migration specifications
 </instructions>
 
 </step>
 
-<step number="9" name="create_api_spec">
+<step number="9" subagent="file-creator" name="create_api_spec">
 
 ### Step 9: Create API Specification (Conditional)
 
@@ -539,14 +557,17 @@ This instruction file uses modular templates from:
 </template_reference>
 
 <instructions>
-  ACTION: Check if API changes needed
+  ACTION: Use file-creator subagent
+  REQUEST: "Check if API changes needed and create sub-specs/api-spec.md only if required using FastAPI template with endpoints, Pydantic models, PocketFlow integration, and status codes"
+  WAIT: For subagent completion
+  PROCESS: API specification creation (if needed)
   CREATE: api-spec.md only if required using FastAPI template
   DOCUMENT: All endpoints and controllers with proper patterns
 </instructions>
 
 </step>
 
-<step number="10" name="create_tests_spec">
+<step number="10" subagent="file-creator" name="create_tests_spec">
 
 ### Step 10: Create Tests Specification
 
@@ -589,7 +610,10 @@ This instruction file uses modular templates from:
 </test_template>
 
 <instructions>
-  ACTION: Create comprehensive test specification
+  ACTION: Use file-creator subagent
+  REQUEST: "Create comprehensive sub-specs/tests.md with unit tests, integration tests, feature tests, mocking requirements, and LLM-specific tests (prompt robustness, context retrieval, output validation, performance, token usage) if applicable"
+  WAIT: For subagent completion
+  PROCESS: Test specification creation
   ENSURE: All new functionality has test coverage
   SPECIFY: Mock requirements for external services
   INCLUDE: LLM-specific tests if applicable
@@ -627,7 +651,7 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="12" name="create_tasks">
+<step number="12" subagent="file-creator" name="create_tasks">
 
 ### Step 12: Create tasks.md
 
@@ -650,7 +674,10 @@ This instruction file uses modular templates from:
 </template_selection>
 
 <instructions>
-  ACTION: Create task breakdown using appropriate template
+  ACTION: Use file-creator subagent
+  REQUEST: "Create tasks.md with appropriate task breakdown - use 8-phase template for LLM/AI components (Design → Pydantic Schemas → Utilities → FastAPI → Nodes → Flow → Integration → Optimization) or simplified template for traditional features, ensuring proper phase dependencies and toolchain validation"
+  WAIT: For subagent completion
+  PROCESS: Task breakdown creation
   TEMPLATE: Select from @templates/task-templates.md based on feature type
   STRUCTURE: Follow 8-step methodology for LLM/AI or simplified for traditional features
   ORDER: Ensure proper phase dependencies

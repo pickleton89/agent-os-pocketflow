@@ -46,7 +46,7 @@ encoding: UTF-8
 
 <process_flow>
 
-<step number="1" name="analyze_existing_codebase">
+<step number="1" subagent="context-fetcher" name="analyze_existing_codebase">
 
 ### Step 1: Analyze Existing Codebase
 
@@ -138,7 +138,10 @@ encoding: UTF-8
 </conditional_analysis>
 
 <instructions>
-  ACTION: Thoroughly analyze the existing codebase with systematic detection
+  ACTION: Use context-fetcher subagent
+  REQUEST: "Analyze existing codebase for project structure, technology stack (focus on modern Python/FastAPI/Pydantic), implementation progress, PocketFlow components (nodes.py, flow.py, design.md, SharedStore usage), and code patterns. Detect uv/Ruff/ty toolchain usage."
+  WAIT: For subagent completion
+  PROCESS: Codebase analysis results
   DETECT: Modern Python stack and PocketFlow components specifically
   DOCUMENT: Current technologies, features, and patterns, including any existing PocketFlow implementations
   IDENTIFY: Architectural decisions already made
@@ -254,7 +257,7 @@ encoding: UTF-8
 
 </step>
 
-<step number="4" name="customize_generated_files">
+<step number="4" subagent="file-creator" name="customize_generated_files">
 
 ### Step 4: Customize Generated Documentation
 
@@ -343,11 +346,14 @@ encoding: UTF-8
 </roadmap_template>
 
 <instructions>
-  ACTION: Update generated files to reflect reality
+  ACTION: Use file-creator subagent
+  REQUEST: "Customize generated documentation to reflect existing product reality: update roadmap with completed features in Phase 0, verify tech stack matches implementation, add historical context, refine LLM/AI strategy based on PocketFlow analysis, and apply conditional documentation for modern Python/PocketFlow usage"
+  WAIT: For subagent completion
+  PROCESS: Documentation customization results
   MODIFY: Roadmap to show completed work
   VERIFY: Tech stack matches actual implementation
   ADD: Historical context notes to roadmap.md
-  REFINE: LLM/AI specific documentation based on analysis.
+  REFINE: LLM/AI specific documentation based on analysis
 </instructions>
 
 </step>

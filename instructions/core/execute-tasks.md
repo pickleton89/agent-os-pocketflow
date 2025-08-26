@@ -87,7 +87,7 @@ encoding: UTF-8
 
 </step>
 
-<step number="2" name="context_analysis">
+<step number="2" subagent="context-fetcher" name="context_analysis">
 
 ### Step 2: Context Analysis
 
@@ -124,9 +124,11 @@ encoding: UTF-8
 </context_gathering>
 
 <instructions>
-  ACTION: Read all spec documentation thoroughly
-  ANALYZE: Requirements and specifications for current task
-  UNDERSTAND: How task fits into overall spec goals, paying special attention to LLM/AI components and PocketFlow patterns.
+  ACTION: Use context-fetcher subagent
+  REQUEST: "Analyze complete context for current tasks: spec SRD, tasks.md, sub-specs, mission.md, tech-stack.md. Focus on requirements, technical specs, test specifications, and PocketFlow patterns if LLM/AI involved"
+  WAIT: For subagent completion
+  PROCESS: Returned context analysis
+  UNDERSTAND: How task fits into overall spec goals, paying special attention to LLM/AI components and PocketFlow patterns
 </instructions>
 
 </step>
@@ -403,7 +405,7 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 </step>
 
-<step number="5" name="git_branch_management">
+<step number="5" subagent="git-workflow" name="git_branch_management">
 
 ### Step 5: Git Branch Management
 
@@ -444,7 +446,10 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 </case_c_prompt>
 
 <instructions>
-  ACTION: Check current git branch
+  ACTION: Use git-workflow subagent
+  REQUEST: "Manage git branch for spec execution - check current branch, evaluate cases (match/main/different), and execute appropriate branch action with spec folder naming"
+  WAIT: For subagent completion
+  PROCESS: Branch management results
   EVALUATE: Which case applies
   EXECUTE: Appropriate branch action
   WAIT: Only for case C approval
@@ -531,9 +536,29 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 </step>
 
-<step number="6" name="post_execution_workflow">
+<step number="6" subagent="test-runner" name="test_verification">
 
-### Step 6: Post-Execution Workflow
+### Step 6: Test Verification
+
+<step_metadata>
+  <uses>test-runner subagent</uses>
+  <purpose>Execute test suite after task completion</purpose>
+  <validates>implementation correctness</validates>
+</step_metadata>
+
+<instructions>
+  ACTION: Use test-runner subagent
+  REQUEST: "Execute full test suite to verify task implementation correctness, including PocketFlow pattern validation if LLM/AI components present"
+  WAIT: For subagent completion
+  PROCESS: Test results and validation
+  VERIFY: All tests pass before proceeding
+</instructions>
+
+</step>
+
+<step number="7" subagent="project-manager" name="post_execution_workflow">
+
+### Step 7: Post-Execution Workflow
 
 <step_metadata>
   <delegates>post-execution-tasks.md for completion workflow</delegates>
@@ -580,9 +605,12 @@ After all tasks in tasks.md have been implemented, use @.agent-os/instructions/c
 </enhanced_features>
 
 <instructions>
-  ACTION: Delegate complete post-execution workflow
+  ACTION: Use project-manager subagent
+  REQUEST: "Execute complete post-execution workflow using post-execution-tasks.md: handle git operations, documentation updates, roadmap progress, and create enhanced recap with PocketFlow details if applicable"
+  WAIT: For subagent completion
+  PROCESS: Final workflow results
+  DELEGATE: Complete post-execution workflow
   EXECUTE: @.agent-os/instructions/core/post-execution-tasks.md
-  WAIT: For full completion before concluding
   TRUST: Post-execution workflow to handle all finalization steps
   REPORT: Only final summary once post-execution completes
 </instructions>
