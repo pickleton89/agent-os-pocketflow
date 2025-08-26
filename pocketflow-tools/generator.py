@@ -31,7 +31,7 @@ class WorkflowSpec:
     utilities: List[Dict[str, Any]] = field(default_factory=list)
     shared_store_schema: Dict[str, Any] = field(default_factory=dict)
     api_endpoints: List[Dict[str, Any]] = field(default_factory=list)
-    fast_api_integration: bool = False
+    fast_api_integration: bool = True
 
 
 @dataclass
@@ -122,16 +122,11 @@ class PocketFlowGenerator:
             recommendation.primary_pattern
         )
         
-        # Determine if FastAPI integration is needed
-        fast_api_integration = any(
-            indicator in description.lower() 
-            for indicator in ["api", "endpoint", "service", "rest", "web"]
-        )
+        # Always enable FastAPI integration as part of universal PocketFlow architecture
+        fast_api_integration = True
         
-        # Generate API endpoints if FastAPI is enabled
-        api_endpoints = []
-        if fast_api_integration:
-            api_endpoints = [{
+        # Generate API endpoints for all workflows
+        api_endpoints = [{
                 "name": "Process",
                 "method": "post",
                 "path": "/process",
@@ -463,7 +458,7 @@ class PocketFlowGenerator:
         print(f"Generated Specification:")
         print(f"   Nodes: {len(spec.nodes)}")
         print(f"   Utilities: {len(spec.utilities)}")
-        print(f"   FastAPI Integration: {spec.fast_api_integration}")
+        print(f"   FastAPI Integration: Enabled (Universal)")
         
         # Step 3: Generate workflow files
         print(f"Generating workflow implementation...")
@@ -526,7 +521,7 @@ class PocketFlowGenerator:
 #### Generated Architecture
 - **Nodes Generated:** {len(spec.nodes)} specialized processing nodes
 - **Utilities Generated:** {len(spec.utilities)} pattern-specific utility functions
-- **API Integration:** {'Enabled' if spec.fast_api_integration else 'Disabled'}
+- **API Integration:** Enabled (Universal PocketFlow)
 - **Shared Store Schema:** Optimized for {recommendation.primary_pattern} pattern workflows
 
 ### Workflow Graph
@@ -597,16 +592,14 @@ class PocketFlowGenerator:
         # Generate flow
         output_files["flow.py"] = self._generate_flow(spec)
 
-        # Generate FastAPI integration if needed
-        if spec.fast_api_integration:
-            output_files["main.py"] = self._generate_fastapi_main(spec)
-            output_files["router.py"] = self._generate_fastapi_router(spec)
+        # Generate FastAPI integration for all workflows
+        output_files["main.py"] = self._generate_fastapi_main(spec)
+        output_files["router.py"] = self._generate_fastapi_router(spec)
 
         # Generate tests
         output_files["tests/test_nodes.py"] = self._generate_node_tests(spec)
         output_files["tests/test_flow.py"] = self._generate_flow_tests(spec)
-        if spec.fast_api_integration:
-            output_files["tests/test_api.py"] = self._generate_api_tests(spec)
+        output_files["tests/test_api.py"] = self._generate_api_tests(spec)
 
         # Generate tasks file
         output_files["tasks.md"] = self._generate_tasks(spec)
@@ -1002,8 +995,8 @@ uv run ty check
 ### Running the Application
 
 ```bash
-# Development server (if FastAPI enabled)
-{'uv run uvicorn main:app --reload' if spec.fast_api_integration else '# Run your workflow directly'}
+# Development server (FastAPI enabled for all workflows)
+uv run uvicorn main:app --reload
 
 # Or run the flow directly
 uv run python -c "from flow import {spec.name}Flow; import asyncio; flow = {spec.name}Flow(); asyncio.run(flow.run_async({{}}))"
@@ -1023,7 +1016,7 @@ This workflow implements the {spec.pattern} pattern with the following component
 
 ### FastAPI Integration
 
-{'✅ Enabled - API endpoints available at `/api/v1/`' if spec.fast_api_integration else '❌ Not enabled for this workflow'}
+✅ Enabled - API endpoints available at `/api/v1/`
 
 ## Project Structure
 
@@ -1042,8 +1035,8 @@ This workflow implements the {spec.pattern} pattern with the following component
 ├── nodes.py               # PocketFlow nodes
 ├── flow.py                # Main workflow
 ├── tests/                 # Test files
-{'├── main.py               # FastAPI application' if spec.fast_api_integration else ''}
-{'└── router.py             # API routes' if spec.fast_api_integration else ''}
+├── main.py               # FastAPI application
+└── router.py             # API routes
 ```
 
 ## Next Steps
@@ -1157,7 +1150,7 @@ Generated: {datetime.now().isoformat()[:10]}
 
 ### Design Pattern Classification
 **Primary Pattern:** {spec.pattern}
-**Secondary Patterns:** FastAPI Integration{"(enabled)" if spec.fast_api_integration else "(disabled)"}
+**Secondary Patterns:** FastAPI Integration (Universal)
 
 ### Input/Output Specification
 - **Input Format:** Request data from API or direct invocation
@@ -1238,7 +1231,7 @@ graph TD
         design_doc += f"- Pattern: {spec.pattern}\n"
         design_doc += f"- Nodes: {len(spec.nodes)}\n"
         design_doc += f"- Utilities: {len(spec.utilities)}\n"
-        design_doc += f"- FastAPI Integration: {'Enabled' if spec.fast_api_integration else 'Disabled'}\n"
+        design_doc += f"- FastAPI Integration: Enabled (Universal)\n"
         design_doc += "\nThis design document was generated automatically. Please review and complete with specific implementation details."
 
         return design_doc
@@ -1267,36 +1260,35 @@ graph TD
 
         models.extend(["", ""])
 
-        # Generate API models if FastAPI integration
-        if spec.fast_api_integration:
-            for endpoint in spec.api_endpoints:
-                # Request model
-                models.extend(
-                    [
-                        f"class {endpoint['name']}Request(BaseModel):",
-                        f'    """Request model for {endpoint["name"]} endpoint."""',
-                        "",
-                    ]
-                )
+        # Generate API models (always included in universal architecture)
+        for endpoint in spec.api_endpoints:
+            # Request model
+            models.extend(
+                [
+                    f"class {endpoint['name']}Request(BaseModel):",
+                    f'    """Request model for {endpoint["name"]} endpoint."""',
+                    "",
+                ]
+            )
 
-                for field in endpoint.get("request_fields", []):
-                    models.append(f"    {field['name']}: {field['type']}")
+            for field in endpoint.get("request_fields", []):
+                models.append(f"    {field['name']}: {field['type']}")
 
-                models.extend(["", ""])
+            models.extend(["", ""])
 
-                # Response model
-                models.extend(
-                    [
-                        f"class {endpoint['name']}Response(BaseModel):",
-                        f'    """Response model for {endpoint["name"]} endpoint."""',
-                        "",
-                    ]
-                )
+            # Response model
+            models.extend(
+                [
+                    f"class {endpoint['name']}Response(BaseModel):",
+                    f'    """Response model for {endpoint["name"]} endpoint."""',
+                    "",
+                ]
+            )
 
-                for field in endpoint.get("response_fields", []):
-                    models.append(f"    {field['name']}: {field['type']}")
+            for field in endpoint.get("response_fields", []):
+                models.append(f"    {field['name']}: {field['type']}")
 
-                models.extend(["", ""])
+            models.extend(["", ""])
 
         return "\n".join(models)
 
@@ -1838,10 +1830,9 @@ Following PocketFlow's 8-step Agentic Coding methodology:
 - [ ] 2.6 Create standalone main() functions for utility testing
 - [ ] 2.7 Verify all utility tests pass with mocked dependencies
 
-### Phase 3: FastAPI Endpoints (If Applicable)"""
+### Phase 3: FastAPI Endpoints (Universal Architecture)"""
 
-        if spec.fast_api_integration:
-            tasks += """
+        tasks += """
 - [ ] 3.1 Write tests for FastAPI endpoints (with mocked flows)
 - [x] 3.2 Create FastAPI application structure in `main.py` ✓ (Generated)
 - [x] 3.3 Implement route handlers with proper async patterns ✓ (Generated)
@@ -1849,10 +1840,6 @@ Following PocketFlow's 8-step Agentic Coding methodology:
 - [ ] 3.5 Implement error handling and status code mapping
 - [ ] 3.6 Add authentication and middleware (if required)
 - [ ] 3.7 Verify all FastAPI endpoint tests pass"""
-        else:
-            tasks += """
-- [ ] 3.1 FastAPI integration not required for this workflow
-- [ ] 3.2 Skip FastAPI-specific tasks"""
 
         tasks += """
 
@@ -1922,8 +1909,7 @@ The following files have been generated and need completion:
         for utility in spec.utilities:
             tasks += f"\n- `utils/{utility['name']}.py` - {utility['description']}"
 
-        if spec.fast_api_integration:
-            tasks += """
+        tasks += """
 
 ### FastAPI Files ✓
 - `main.py` - FastAPI application
@@ -1933,10 +1919,8 @@ The following files have been generated and need completion:
 
 ### Test Files ✓
 - `tests/test_nodes.py` - Node unit tests
-- `tests/test_flow.py` - Flow integration tests"""
-
-        if spec.fast_api_integration:
-            tasks += "\n- `tests/test_api.py` - API endpoint tests"
+- `tests/test_flow.py` - Flow integration tests
+- `tests/test_api.py` - API endpoint tests"""
 
         tasks += f"""
 
@@ -1949,7 +1933,7 @@ The following files have been generated and need completion:
 
 Generated on: {current_date}
 Workflow Pattern: {spec.pattern}
-FastAPI Integration: {"Enabled" if spec.fast_api_integration else "Disabled"}"""
+FastAPI Integration: Enabled (Universal)"""
 
         return tasks
 
