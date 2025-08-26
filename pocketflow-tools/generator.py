@@ -162,6 +162,24 @@ class PocketFlowGenerator:
         """Generate node specifications based on pattern type."""
         
         pattern_node_templates = {
+            # Simple Pattern Templates (Task 1.2 Implementation)
+            "SIMPLE_WORKFLOW": [
+                {"name": "InputProcessor", "description": "Process and validate input data", "type": "Node"},
+                {"name": "BusinessLogic", "description": "Execute core business operations", "type": "Node"},
+                {"name": "OutputFormatter", "description": "Format and prepare output data", "type": "Node"}
+            ],
+            "BASIC_API": [
+                {"name": "RequestValidator", "description": "Validate API request data", "type": "Node"},
+                {"name": "DataProcessor", "description": "Process business logic", "type": "Node"},
+                {"name": "ResponseBuilder", "description": "Build API response", "type": "Node"}
+            ],
+            "SIMPLE_ETL": [
+                {"name": "DataExtractor", "description": "Extract data from source", "type": "Node"},
+                {"name": "DataTransformer", "description": "Transform data according to business rules", "type": "Node"},
+                {"name": "DataLoader", "description": "Load data to destination", "type": "Node"}
+            ],
+            
+            # Enhanced Pattern Templates
             "RAG": [
                 {"name": "DocumentLoader", "description": "Load and preprocess documents for retrieval", "type": "Node"},
                 {"name": "EmbeddingGenerator", "description": "Generate embeddings for document chunks", "type": "AsyncNode"},
@@ -234,6 +252,70 @@ class PocketFlowGenerator:
         """Generate utility function specifications based on pattern."""
         
         pattern_utility_templates = {
+            # Simple Pattern Utilities (Task 1.2 Implementation)
+            "SIMPLE_WORKFLOW": [
+                {
+                    "name": "flow_controller",
+                    "description": "Control flow between workflow steps",
+                    "parameters": [
+                        {"name": "current_step", "type": "str"},
+                        {"name": "input_data", "type": "Dict[str, Any]"}
+                    ],
+                    "return_type": "Dict[str, Any]"
+                },
+                {
+                    "name": "state_manager",
+                    "description": "Manage workflow state and data",
+                    "parameters": [
+                        {"name": "state_data", "type": "Dict[str, Any]"},
+                        {"name": "operation", "type": "str"}
+                    ],
+                    "return_type": "Dict[str, Any]"
+                }
+            ],
+            "BASIC_API": [
+                {
+                    "name": "request_parser",
+                    "description": "Parse and validate API requests",
+                    "parameters": [
+                        {"name": "request_data", "type": "Dict[str, Any]"},
+                        {"name": "schema", "type": "Dict[str, Any]", "optional": True}
+                    ],
+                    "return_type": "Dict[str, Any]"
+                },
+                {
+                    "name": "response_formatter",
+                    "description": "Format API responses consistently",
+                    "parameters": [
+                        {"name": "data", "type": "Any"},
+                        {"name": "status_code", "type": "int", "optional": True}
+                    ],
+                    "return_type": "Dict[str, Any]"
+                }
+            ],
+            "SIMPLE_ETL": [
+                {
+                    "name": "data_validator",
+                    "description": "Validate data quality and format",
+                    "parameters": [
+                        {"name": "data", "type": "Any"},
+                        {"name": "validation_rules", "type": "Dict[str, Any]"}
+                    ],
+                    "return_type": "Dict[str, Any]"
+                },
+                {
+                    "name": "batch_processor",
+                    "description": "Process data in configurable batches",
+                    "parameters": [
+                        {"name": "data_source", "type": "Any"},
+                        {"name": "batch_size", "type": "int", "optional": True}
+                    ],
+                    "return_type": "List[Any]",
+                    "async": True
+                }
+            ],
+            
+            # Enhanced Pattern Utilities
             "RAG": [
                 {
                     "name": "vector_search",
