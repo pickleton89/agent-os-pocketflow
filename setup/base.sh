@@ -215,7 +215,6 @@ create_directory_structure() {
         "$INSTALL_PATH/standards"
         "$INSTALL_PATH/commands"
         "$INSTALL_PATH/setup"
-        "$INSTALL_PATH/agents"
         "$INSTALL_PATH/recaps"
     )
     
@@ -276,16 +275,20 @@ install_instructions() {
         
         for file in "${instruction_files[@]}"; do
             local target_file="$INSTALL_PATH/instructions/core/$file"
+            local file_existed=false
             
-            # Preserve existing files unless overwrite is requested
-            if [[ -f "$target_file" && "$OVERWRITE_INSTRUCTIONS" != "true" ]]; then
-                log_info "Preserved existing: $file"
-                continue
+            # Check if file exists before download
+            if [[ -f "$target_file" ]]; then
+                file_existed=true
+                if [[ "$OVERWRITE_INSTRUCTIONS" != "true" ]]; then
+                    log_info "Preserved existing: $file"
+                    continue
+                fi
             fi
             
             curl -s -o "$target_file" "$REPO_URL/instructions/core/$file"
             if [[ $? -eq 0 ]]; then
-                log_success "$(if [[ -f "$target_file.bak" ]]; then echo "Updated"; else echo "Downloaded"; fi): $file"
+                log_success "$(if [[ "$file_existed" == "true" ]]; then echo "Updated"; else echo "Downloaded"; fi): $file"
             else
                 log_error "Failed to download: $file"
                 exit 1
@@ -319,16 +322,20 @@ install_standards() {
         
         for file in "${standard_files[@]}"; do
             local target_file="$INSTALL_PATH/standards/$file"
+            local file_existed=false
             
-            # Preserve existing files unless overwrite is requested  
-            if [[ -f "$target_file" && "$OVERWRITE_STANDARDS" != "true" ]]; then
-                log_info "Preserved existing: $file"
-                continue
+            # Check if file exists before download
+            if [[ -f "$target_file" ]]; then
+                file_existed=true
+                if [[ "$OVERWRITE_STANDARDS" != "true" ]]; then
+                    log_info "Preserved existing: $file"
+                    continue
+                fi
             fi
             
             curl -s -o "$target_file" "$REPO_URL/standards/$file"
             if [[ $? -eq 0 ]]; then
-                log_success "$(if [[ -f "$target_file.bak" ]]; then echo "Updated"; else echo "Downloaded"; fi): $file"
+                log_success "$(if [[ "$file_existed" == "true" ]]; then echo "Updated"; else echo "Downloaded"; fi): $file"
             else
                 log_error "Failed to download: $file"
                 exit 1
@@ -341,16 +348,20 @@ install_standards() {
         
         for file in "${code_style_files[@]}"; do
             local target_file="$INSTALL_PATH/standards/code-style/$file"
+            local file_existed=false
             
-            # Preserve existing files unless overwrite is requested
-            if [[ -f "$target_file" && "$OVERWRITE_STANDARDS" != "true" ]]; then
-                log_info "Preserved existing: standards/code-style/$file"
-                continue
+            # Check if file exists before download
+            if [[ -f "$target_file" ]]; then
+                file_existed=true
+                if [[ "$OVERWRITE_STANDARDS" != "true" ]]; then
+                    log_info "Preserved existing: standards/code-style/$file"
+                    continue
+                fi
             fi
             
             curl -s -o "$target_file" "$REPO_URL/standards/code-style/$file"
             if [[ $? -eq 0 ]]; then
-                log_success "$(if [[ -f "$target_file.bak" ]]; then echo "Updated"; else echo "Downloaded"; fi): standards/code-style/$file"
+                log_success "$(if [[ "$file_existed" == "true" ]]; then echo "Updated"; else echo "Downloaded"; fi): standards/code-style/$file"
             else
                 log_error "Failed to download: standards/code-style/$file"
                 exit 1
@@ -400,31 +411,6 @@ install_commands() {
     fi
 }
 
-# Install agents (v1.4.1 enhancement)
-install_agents() {
-    log_info "Installing agents..."
-    
-    local source_agents_dir="$(get_script_dir)/../claude-code/agents"
-    
-    if [[ -d "$source_agents_dir" ]]; then
-        # Install from local source (development mode)
-        log_info "Installing project-manager agent from local source"
-        cp "$source_agents_dir/project-manager.md" "$INSTALL_PATH/agents/"
-        log_success "Copied project-manager agent to $INSTALL_PATH/agents/"
-    else
-        # Download from repository
-        log_info "Downloading project-manager agent from repository..."
-        curl -s -o "$INSTALL_PATH/agents/project-manager.md" "$REPO_URL/claude-code/agents/project-manager.md"
-        if [[ $? -eq 0 ]]; then
-            log_success "Downloaded: project-manager.md"
-        else
-            log_error "Failed to download project-manager.md"
-            exit 1
-        fi
-    fi
-    
-    log_success "Agents installation complete"
-}
 
 # Install PocketFlow tools
 install_pocketflow_tools() {
@@ -979,7 +965,6 @@ main() {
     install_instructions
     install_standards
     install_commands
-    install_agents
     install_pocketflow_tools
     create_configuration
     generate_project_script
