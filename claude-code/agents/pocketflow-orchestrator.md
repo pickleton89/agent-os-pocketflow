@@ -1,16 +1,7 @@
 ---
 name: pocketflow-orchestrator
 description: MUST BE USED PROACTIVELY for planning, designing, and orchestrating complex Agent OS workflows using PocketFlow's graph-based architecture. Automatically invoked for LLM/AI features and complex planning tasks.
-tools: [Read, Write, Grep, Glob, Bash, Edit, MultiEdit, TodoWrite, Task]
-auto_invoke_triggers:
-  - "think about"
-  - "plan"
-  - "design"
-  - "architect" 
-  - "implement"
-  - "create spec for"
-coordination_aware: true
-generates_code: true
+tools: Read, Write, Grep, Glob, Bash, Edit, MultiEdit, TodoWrite, Task
 ---
 
 # PocketFlow Strategic Planning & Orchestration Agent

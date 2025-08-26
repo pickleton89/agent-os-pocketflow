@@ -1,15 +1,7 @@
 ---
 name: dependency-orchestrator
 description: MUST BE USED PROACTIVELY for managing Python tooling and dependency configuration in generated PocketFlow templates. Automatically invoked during template generation.
-tools: [Read, Write, Edit, MultiEdit, Bash, Glob]
-auto_invoke_triggers:
-  - "setup dependencies"
-  - "configure environment"  
-  - "create project structure"
-  - "generate template"
-coordination_aware: true
-generates_code: true  
-dependency_specialist: true
+tools: Read, Write, Edit, MultiEdit, Bash, Glob
 ---
 
 # Dependency Orchestrator Agent

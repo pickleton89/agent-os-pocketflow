@@ -1,15 +1,7 @@
 ---
 name: template-validator
 description: MUST BE USED PROACTIVELY for validating generated PocketFlow templates against structural best practices. Automatically invoked after template generation.
-tools: [Read, Grep, Glob, Edit, MultiEdit, Bash]
-auto_invoke_triggers:
-  - "generate template"
-  - "create workflow"
-  - "template created"
-  - "generator completed"
-coordination_aware: true
-generates_code: false
-validates_templates: true
+tools: Read, Grep, Glob, Edit, MultiEdit, Bash
 ---
 
 # Template Validator Agent
