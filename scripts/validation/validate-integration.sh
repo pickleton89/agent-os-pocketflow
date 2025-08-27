@@ -2,9 +2,13 @@
 # Integration Validation Script
 echo "🧪 Testing Agent OS + PocketFlow Integration..."
 
-# Test 1: Directory structure
-if [[ -d "$HOME/.agent-os/instructions/orchestration" ]]; then
-    echo "✅ Orchestration directory exists"
+# Test 1: Directory structure (check project .agent-os first, then fall back to base)
+if [[ -d ".agent-os/instructions/orchestration" ]]; then
+    echo "✅ Project orchestration directory exists"
+    AGENT_OS_DIR=".agent-os"
+elif [[ -d "$HOME/.agent-os/instructions/orchestration" ]]; then
+    echo "✅ Base orchestration directory exists"
+    AGENT_OS_DIR="$HOME/.agent-os"
 else
     echo "❌ Orchestration directory missing"
     exit 1
@@ -19,10 +23,10 @@ else
 fi
 
 # Test 3: Extension modules
-local extensions=(
-    "$HOME/.agent-os/instructions/extensions/llm-workflow-extension.md"
-    "$HOME/.agent-os/instructions/extensions/design-first-enforcement.md"
-    "$HOME/.agent-os/instructions/extensions/pocketflow-integration.md"
+extensions=(
+    "$AGENT_OS_DIR/instructions/extensions/llm-workflow-extension.md"
+    "$AGENT_OS_DIR/instructions/extensions/design-first-enforcement.md"
+    "$AGENT_OS_DIR/instructions/extensions/pocketflow-integration.md"
 )
 
 for ext in "${extensions[@]}"; do
@@ -35,7 +39,7 @@ for ext in "${extensions[@]}"; do
 done
 
 # Test 4: Coordination configuration
-if [[ -f "$HOME/.agent-os/instructions/orchestration/coordination.yaml" ]]; then
+if [[ -f "$AGENT_OS_DIR/instructions/orchestration/coordination.yaml" ]]; then
     echo "✅ Coordination configuration found"
 else
     echo "❌ Coordination configuration missing"

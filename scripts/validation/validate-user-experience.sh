@@ -6,11 +6,7 @@
 
 set -e
 
-# Ensure we're using bash 4+ for associative arrays
-if [ "${BASH_VERSION%%.*}" -lt 4 ]; then
-    echo "This script requires bash 4.0 or later for associative arrays"
-    exit 1
-fi
+# Compatible with bash 3.2+ (macOS default)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -41,12 +37,21 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1" | tee -a "$LOG_FILE"
 }
 
-# Test scenarios for different complexity levels
-declare -A TEST_SCENARIOS
-TEST_SCENARIOS[simple_crud]="Simple CRUD Application"
-TEST_SCENARIOS[rest_api]="REST API Service"
-TEST_SCENARIOS[data_pipeline]="Data Processing Pipeline"
-TEST_SCENARIOS[business_workflow]="Complex Business Workflow"
+# Test scenarios for different complexity levels (bash 3.2 compatible)
+TEST_SCENARIO_KEYS=("simple_crud" "rest_api" "data_pipeline" "business_workflow")
+TEST_SCENARIO_NAMES=("Simple CRUD Application" "REST API Service" "Data Processing Pipeline" "Complex Business Workflow")
+
+# Function to get scenario name by key
+get_scenario_name() {
+    local key="$1"
+    for i in "${!TEST_SCENARIO_KEYS[@]}"; do
+        if [[ "${TEST_SCENARIO_KEYS[$i]}" == "$key" ]]; then
+            echo "${TEST_SCENARIO_NAMES[$i]}"
+            return
+        fi
+    done
+    echo "$key"
+}
 
 # Validation functions
 validate_pocketflow_structure() {
@@ -550,10 +555,11 @@ main() {
     local passed_tests=0
     
     # Run tests for each scenario
-    for scenario in "${!TEST_SCENARIOS[@]}"; do
+    for scenario in "${TEST_SCENARIO_KEYS[@]}"; do
         total_tests=$((total_tests + 1))
+        local scenario_name=$(get_scenario_name "$scenario")
         
-        if run_user_experience_test "$scenario" "${TEST_SCENARIOS[$scenario]}"; then
+        if run_user_experience_test "$scenario" "$scenario_name"; then
             passed_tests=$((passed_tests + 1))
         fi
         
