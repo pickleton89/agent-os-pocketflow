@@ -84,7 +84,8 @@
       "Read(//Users/jeffkiefer/Documents/projects/local-agent-os-main/commands/**)",
       "Bash(./scripts/validation/validate-end-to-end-scenarios.sh:*)",
       "Bash(timeout:*)",
-      "Bash(./scripts/validation/validate-user-experience.sh:*)"
+      "Bash(./scripts/validation/validate-user-experience.sh:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
