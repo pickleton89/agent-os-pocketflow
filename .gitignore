@@ -13,6 +13,9 @@ Thumbs.db
 *.swp
 *.swo
 
+# Claude Code personal configuration
+.claude/
+
 # Logs
 logs
 *.log
