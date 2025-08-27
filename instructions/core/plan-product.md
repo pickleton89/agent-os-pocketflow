@@ -259,7 +259,7 @@ encoding: UTF-8
     COMPLEXITY: Assess and assign appropriate complexity level
     PATTERNS: Select patterns based on feature analysis (WORKFLOW for simple, TOOL for APIs, AGENT for complex logic, etc.)
     DESIGN_FIRST: Emphasize mandatory docs/design.md for all projects
-    LLM_OPTIONAL: Include LLM providers only if features indicate AI/ML usage
+    UNIVERSAL_REQUIREMENT: Include appropriate providers and integrations for all PocketFlow projects
   </instructions>
 </section>
 
@@ -326,7 +326,7 @@ encoding: UTF-8
     - programming_language: "Python 3.12+"
     - application_framework: "FastAPI"
     - data_validation: "Pydantic"
-    - vector_store: "ChromaDB" (if LLM features detected)
+    - vector_store: "ChromaDB" (universal requirement for data storage and retrieval)
   </default_stack>
   
   <project_structure_inclusion>

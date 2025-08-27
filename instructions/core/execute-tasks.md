@@ -542,7 +542,7 @@ After all tasks in tasks.md have been implemented, use @.agent-os/instructions/c
   
   <delegated_responsibilities>
     The post-execution-tasks.md workflow handles:
-    - PocketFlow implementation validation (if LLM/AI components)
+    - PocketFlow implementation validation (universal requirement for all projects)
     - Full test suite execution
     - Git workflow and PR creation
     - Task completion verification

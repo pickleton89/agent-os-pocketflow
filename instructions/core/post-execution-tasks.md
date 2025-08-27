@@ -10,7 +10,7 @@ encoding: UTF-8
 
 ## Overview
 
-Follow these steps to validate implementation, mark progress updates, create a recap, and deliver the final report to the user. Enhanced with PocketFlow LLM/AI validation capabilities and integrated with the project-manager subagent.
+Follow these steps to validate implementation, mark progress updates, create a recap, and deliver the final report to the user. Enhanced with Universal PocketFlow validation capabilities and integrated with the project-manager subagent.
 
 <pre_flight_check>
   EXECUTE: @~/.agent-os/instructions/meta/pre-flight.md
@@ -210,7 +210,7 @@ Use the project-manager subagent to generate a comprehensive recap document for 
   <sections>
     - Summary: What was implemented
     - Implementation Details: Technical approach
-    - PocketFlow Patterns: LLM/AI specifics (if applicable)
+    - PocketFlow Patterns: Architecture specifics (universal requirement)
     - Challenges: Issues and resolutions
     - Testing: Coverage and validation
     - Future Considerations: Improvements and follow-ups
@@ -361,7 +361,7 @@ Use the project-manager subagent to generate a comprehensive recap document for 
 ## Quality Assurance
 
 <quality_checklist>
-  - [ ] PocketFlow validation completed (if LLM/AI components)
+  - [ ] PocketFlow validation completed (universal requirement)
   - [ ] All tests passing (linting, types, unit tests)
   - [ ] Task completion verified by project-manager
   - [ ] Roadmap updated (if applicable)  
@@ -384,6 +384,6 @@ Use the project-manager subagent to generate a comprehensive recap document for 
 
 This workflow integrates with:
 - **project-manager subagent**: For task verification, roadmap updates, and recap generation
-- **PocketFlow validation**: For LLM/AI component compliance checking
+- **PocketFlow validation**: For universal architecture compliance checking
 - **Recaps system**: Replacing deprecated decisions.md approach
 - **3-phase execution model**: As the final phase after pre-execution and execution

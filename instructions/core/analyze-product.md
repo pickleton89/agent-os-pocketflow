@@ -92,58 +92,58 @@ encoding: UTF-8
   </code_patterns>
 </analysis_areas>
 
-<conditional_analysis>
-  <python_stack_detection>
-    <detect_files>
+<universal_analysis>
+  <python_stack_requirements>
+    <required_files>
       - pyproject.toml (preferred uv format)
       - uv.lock (uv lockfile)
       - main.py with FastAPI imports (FastAPI application)
       - schemas/ directory with Pydantic models (modern structure)
       - ruff.toml or .ruff.toml (Ruff configuration)
-    </detect_files>
-    <if_python_detected>
-      <prioritize>
-        - FastAPI over Django/Flask for API projects
-        - Pydantic for all data validation
-        - uv as the sole package manager
-        - Ruff for linting and formatting
-        - ty for type checking (mypy wrapper)
-        - pytest for testing
-      </prioritize>
-    </if_python_detected>
-  </python_stack_detection>
+    </required_files>
+    <universal_stack>
+      <enforce>
+        - FastAPI for all API projects (universal requirement)
+        - Pydantic for all data validation (universal requirement)
+        - uv as the sole package manager (universal requirement)
+        - Ruff for linting and formatting (universal requirement)
+        - ty for type checking (universal requirement)
+        - pytest for testing (universal requirement)
+      </enforce>
+    </universal_stack>
+  </python_stack_requirements>
   
-  <pocketflow_detection>
-    <detect_files>
-      - nodes.py (PocketFlow nodes)
-      - flow.py (PocketFlow flows)
-      - docs/design.md (design-first approach)
-      - utils/ with LLM functions
-    </detect_files>
-    <detect_patterns>
+  <universal_pocketflow_analysis>
+    <required_files>
+      - nodes.py (PocketFlow nodes - universal requirement)
+      - flow.py (PocketFlow flows - universal requirement)
+      - docs/design.md (design-first approach - universal requirement)
+      - utils/ with domain-specific functions (universal requirement)
+    </required_files>
+    <required_patterns>
       - Node class inheritance (AsyncNode, BatchNode)
       - SharedStore usage patterns
       - prep/exec/post lifecycle methods
-      - LLM integration utilities
-    </detect_patterns>
-    <if_pocketflow_detected>
+      - Domain-specific utility functions
+    </required_patterns>
+    <universal_documentation>
       <document>
-        - Existing PocketFlow patterns (Agent, RAG, etc.)
-        - Current node implementations
+        - PocketFlow patterns implemented (Agent, RAG, Workflow, etc.)
+        - All node implementations and architecture
         - SharedStore schema design
-        - LLM providers and models in use
+        - All integrations and utility functions
       </document>
-    </if_pocketflow_detected>
-  </pocketflow_detection>
-</conditional_analysis>
+    </universal_documentation>
+  </universal_pocketflow_analysis>
+</universal_analysis>
 
 <instructions>
-  ACTION: Thoroughly analyze the existing codebase with systematic detection
-  DETECT: Modern Python stack and PocketFlow components specifically
-  DOCUMENT: Current technologies, features, and patterns, including any existing PocketFlow implementations
-  IDENTIFY: Architectural decisions already made
-  PRIORITIZE: Modern Python/FastAPI/Pydantic stack when detected
-  NOTE: Development progress and completed work
+  ACTION: Thoroughly analyze the existing codebase with Universal PocketFlow requirements
+  ENFORCE: Modern Python stack and PocketFlow architecture universally
+  DOCUMENT: Current technologies, features, and patterns with Universal PocketFlow implementation
+  IDENTIFY: Architectural decisions already made and gaps to fill
+  REQUIRE: Modern Python/FastAPI/Pydantic stack universally
+  NOTE: Development progress and PocketFlow compliance status
 </instructions>
 
 </step>
@@ -165,16 +165,16 @@ encoding: UTF-8
   1. **Product Vision**: What problem does this solve? Who are the target users?
 
   2. **Current State**: Are there features I should know about that aren't obvious from the code?
-     - Specifically, if LLM/AI components are present, clarify their purpose, underlying models, and any specific PocketFlow patterns or designs used.
+     - Describe all PocketFlow patterns implemented, underlying integrations, and specific architectural designs used.
 
   3. **Roadmap**: What features are planned next? Any major refactoring planned?
-     - For planned LLM/AI features, specify desired PocketFlow patterns (Agent, Workflow, RAG, etc.).
+     - For planned features, specify desired PocketFlow patterns (Agent, Workflow, RAG, MapReduce, etc.).
 
   4. **Decisions**: Are there important technical or product decisions I should document?
-     - Include any strategic decisions related to LLM/AI models or framework choices (e.g., why PocketFlow was chosen).
+     - Include any strategic decisions related to framework choices and PocketFlow pattern selection.
 
   5. **Team Preferences**: Any coding standards or practices the team follows that I should capture?
-     - Emphasize PocketFlow-specific best practices for LLM development.
+     - Emphasize PocketFlow-specific best practices for all development.
 </context_questions>
 
 <instructions>
@@ -199,13 +199,13 @@ encoding: UTF-8
   <key_features>[IDENTIFIED_IMPLEMENTED_AND_PLANNED_FEATURES]</key_features>
   <target_users>[FROM_USER_CONTEXT]</target_users>
   <tech_stack>[DETECTED_FROM_CODEBASE_WITH_MODERN_PYTHON_PRIORITY]</tech_stack>
-  <involves_llm_ai>[TRUE/FALSE_BASED_ON_POCKETFLOW_ANALYSIS_AND_USER_INPUT]</involves_llm_ai>
+  <uses_pocketflow_architecture>[TRUE_UNIVERSAL_REQUIREMENT_ALL_PROJECTS]</uses_pocketflow_architecture>
 </execution_parameters>
 
 <tech_stack_resolution>
   <priority_order>
     1. **If Python detected**: Prioritize uv/Ruff/ty stack (FastAPI, Pydantic, uv, Ruff, ty)
-    2. **If PocketFlow detected**: Set involves_llm_ai to true, document existing patterns
+    2. **Universal PocketFlow**: Document all existing patterns, implement missing components
     3. **If legacy Python tools**: Document current state but suggest migration to uv/Ruff/ty
     4. **If other frameworks**: Document but suggest migration path to modern Python stack
   </priority_order>
@@ -241,7 +241,7 @@ encoding: UTF-8
 
   **Tech Stack**: [DETECTED_STACK_WITH_VERSIONS_AND_MODERN_PYTHON_PRIORITY]
 
-  **Involves LLMs/AI**: [TRUE/FALSE_WITH_POCKETFLOW_ANALYSIS]
+  **Uses PocketFlow Architecture**: [TRUE_UNIVERSAL_REQUIREMENT]
   
   **Detected Patterns**: [POCKETFLOW_PATTERNS_IF_APPLICABLE]
 </execution_prompt>
@@ -280,7 +280,7 @@ encoding: UTF-8
     - Add historical decisions that shaped current architecture
     - Document why certain technologies were chosen
     - Capture any pivots or major changes
-    - **For LLM/AI:** Document decisions related to PocketFlow adoption, specific LLM model choices, or major pattern implementations.
+    - **For PocketFlow:** Document decisions related to pattern selection, architectural choices, or major implementations.
   </decisions_documentation>
   <llm_strategy_refinement>
     - If LLM/AI components are present, refine the "AI/LLM Strategy" section in `mission.md` based on the analysis.
@@ -431,7 +431,7 @@ encoding: UTF-8
   </scenario>
   <scenario name="unclear_llm_usage">
     <condition>LLM/AI components detected but their purpose or pattern is unclear</condition>
-    <action>Ask user for clarification on LLM patterns (e.g., "Is this a RAG system or an Agent workflow?") or specific models.</action>
+    <action>Ask user for clarification on PocketFlow patterns (e.g., "Is this a RAG system, Agent workflow, or MapReduce pattern?") or specific architectural decisions.</action>
   </scenario>
   <scenario name="mixed_python_tooling">
     <condition>Multiple Python package managers or linting tools detected (e.g., poetry + pip, black + Ruff)</condition>
