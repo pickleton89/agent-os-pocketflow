@@ -89,7 +89,7 @@ test_hook_system_functional() {
     return 0
 }
 
-# Test 4: Extension Modules Loadable
+# Test 4: Extension Modules Template Quality
 test_extension_modules_loadable() {
     local extensions=(
         ".agent-os/instructions/extensions/llm-workflow-extension.md"
@@ -98,11 +98,28 @@ test_extension_modules_loadable() {
     )
     
     for ext in "${extensions[@]}"; do
+        # Basic file checks
         [[ -f "$ext" ]] || return 1
         [[ -s "$ext" ]] || return 1  # Check file is not empty
         
         # Check extension has proper structure
         grep -q "^# " "$ext" || return 1  # Has title
+        
+        # Template quality checks (framework-aligned)
+        grep -q "Template Generation Guide\|Template Output" "$ext" || return 1
+        
+        # Check for adequate TODO guidance (minimum 5 TODOs)
+        local todo_count=$(grep -c "TODO:" "$ext" || echo "0")
+        [[ $todo_count -ge 5 ]] || return 1
+        
+        # Check for framework boundary clarity
+        grep -q "end-user projects\|End-User Projects" "$ext" || return 1
+        
+        # Check for orchestrator integration guidance
+        grep -q "orchestrator\|Orchestrator" "$ext" || return 1
+        
+        # Check for code template examples
+        grep -q "```python\|```bash" "$ext" || return 1
     done
     
     return 0

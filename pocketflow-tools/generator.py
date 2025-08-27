@@ -90,12 +90,75 @@ class PocketFlowGenerator:
 
         # Load templates
         self.templates = self._load_templates()
+        
+        # Load enhanced extensions for better template generation
+        self.extensions = self._load_enhanced_extensions()
 
     def _load_templates(self) -> Dict[str, str]:
         """Load all template files."""
         templates = {}
         for template_file in self.templates_path.glob("*.md"):
             templates[template_file.stem] = template_file.read_text()
+        return templates
+    
+    def _load_enhanced_extensions(self) -> Dict[str, Any]:
+        """Load enhanced extensions for improved template generation."""
+        extensions = {}
+        
+        # Path to enhanced extensions
+        extensions_path = Path("instructions/extensions")
+        
+        if not extensions_path.exists():
+            # Fallback for different relative paths
+            extensions_path = Path("../instructions/extensions")
+            if not extensions_path.exists():
+                logging.warning("Enhanced extensions not found, using basic template generation")
+                return {}
+        
+        try:
+            # Load enhanced extensions with template extraction
+            extension_files = {
+                "design_enforcement": "design-first-enforcement.md",
+                "llm_workflow": "llm-workflow-extension.md", 
+                "pocketflow_integration": "pocketflow-integration.md"
+            }
+            
+            for key, filename in extension_files.items():
+                ext_file = extensions_path / filename
+                if ext_file.exists():
+                    content = ext_file.read_text()
+                    extensions[key] = self._parse_extension_templates(content)
+                else:
+                    logging.warning(f"Extension not found: {filename}")
+            
+        except Exception as e:
+            logging.warning(f"Failed to load enhanced extensions: {e}")
+            return {}
+        
+        return extensions
+    
+    def _parse_extension_templates(self, content: str) -> Dict[str, Any]:
+        """Parse extension content to extract template guidance."""
+        import re
+        
+        templates = {
+            "code_templates": [],
+            "todo_guidance": [],
+            "orchestrator_integration": []
+        }
+        
+        # Extract code templates (content between ```python or ```bash)
+        code_blocks = re.findall(r'```(?:python|bash)\n(.*?)```', content, re.DOTALL)
+        templates["code_templates"] = code_blocks
+        
+        # Extract TODO guidance lines
+        todo_lines = re.findall(r'#.*TODO:.*', content)
+        templates["todo_guidance"] = todo_lines
+        
+        # Extract orchestrator integration examples
+        orchestrator_matches = re.findall(r'claude-code.*orchestrator[^\n]*', content)
+        templates["orchestrator_integration"] = orchestrator_matches
+        
         return templates
     
     def generate_spec_from_analysis(self, name: str, description: str, recommendation: PatternRecommendation) -> WorkflowSpec:
@@ -154,7 +217,7 @@ class PocketFlowGenerator:
         )
         
     def _generate_nodes_from_pattern(self, pattern: str, workflow_suggestions: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Generate node specifications based on pattern type."""
+        """Generate node specifications based on pattern type with enhanced extension guidance."""
         
         pattern_node_templates = {
             # Simple Pattern Templates (Task 1.2 Implementation)
@@ -241,7 +304,76 @@ class PocketFlowGenerator:
                             default_nodes[i]["name"] = "".join(word.capitalize() for word in node_name.split("_"))
                             default_nodes[i]["description"] = f"Handle {node_name.replace('_', ' ')} operations"
         
-        return default_nodes
+        # Enhance nodes with extension guidance for better TODO templates
+        enhanced_nodes = self._enhance_nodes_with_extensions(default_nodes, pattern)
+        
+        return enhanced_nodes
+    
+    def _enhance_nodes_with_extensions(self, nodes: List[Dict[str, Any]], pattern: str) -> List[Dict[str, Any]]:
+        """Enhance node specifications with guidance from enhanced extensions."""
+        if not self.extensions:
+            return nodes
+        
+        # Add enhanced TODO guidance and orchestrator integration
+        for node in nodes:
+            # Add pattern-specific TODO guidance
+            if pattern == "RAG" and "llm_workflow" in self.extensions:
+                node["enhanced_todos"] = [
+                    "TODO: Implement vector similarity search for document retrieval",
+                    "TODO: Add context window management for large documents", 
+                    "TODO: Integrate with your preferred embedding model (OpenAI, Anthropic, etc.)",
+                    "TODO: Add error handling for retrieval failures",
+                    "TODO: Implement caching for frequently accessed documents"
+                ]
+            elif pattern == "AGENT" and "llm_workflow" in self.extensions:
+                node["enhanced_todos"] = [
+                    "TODO: Implement decision-making algorithm based on input context",
+                    "TODO: Add state management for agent memory and learning",
+                    "TODO: Integrate with LLM for dynamic reasoning capabilities",
+                    "TODO: Add action validation and safety constraints",
+                    "TODO: Implement feedback loop for continuous improvement"
+                ]
+            else:
+                # Generic enhanced TODO guidance
+                node["enhanced_todos"] = [
+                    f"TODO: Implement {node['name']} logic for {pattern} pattern",
+                    "TODO: Add comprehensive error handling and logging",
+                    "TODO: Add input validation and sanitization",  
+                    "TODO: Implement proper async/await patterns if needed",
+                    "TODO: Add metrics and monitoring for production use"
+                ]
+            
+            # Add orchestrator integration guidance
+            if "pocketflow_integration" in self.extensions:
+                orchestrator_examples = self.extensions["pocketflow_integration"].get("orchestrator_integration", [])
+                if orchestrator_examples:
+                    node["orchestrator_guidance"] = [
+                        "# Orchestrator Integration Example:",
+                        "# claude-code agent invoke pocketflow-orchestrator --task validate-node --node " + node['name'],
+                        "# Use this to validate node implementation during development"
+                    ]
+            
+            # Add framework boundary reminders
+            node["framework_reminders"] = [
+                "# NOTE: This is template code for end-user projects",
+                "# TODO: Customize this implementation for your specific use case",
+                "# TODO: Replace placeholder logic with actual business logic",
+                "# TODO: Add proper error handling and logging for production"
+            ]
+        
+        return nodes
+    
+    def _get_enhanced_todos_for_node(self, node: Dict[str, Any]) -> List[str]:
+        """Extract enhanced TODO guidance from node specification."""
+        return node.get("enhanced_todos", [])
+    
+    def _get_orchestrator_guidance_for_node(self, node: Dict[str, Any]) -> List[str]:
+        """Extract orchestrator guidance from node specification."""
+        return node.get("orchestrator_guidance", [])
+    
+    def _get_framework_reminders_for_node(self, node: Dict[str, Any]) -> List[str]:
+        """Extract framework boundary reminders from node specification.""" 
+        return node.get("framework_reminders", [])
     
     def _generate_utilities_from_pattern(self, pattern: str, suggested_utilities: List[str]) -> List[Dict[str, Any]]:
         """Generate utility function specifications based on pattern."""
@@ -1484,6 +1616,11 @@ graph TD
 
             # Get smart defaults based on node name/description
             smart_defaults = self._get_smart_node_defaults(node, is_async_node)
+            
+            # Generate enhanced TODO guidance from extensions
+            enhanced_todos = self._get_enhanced_todos_for_node(node)
+            orchestrator_guidance = self._get_orchestrator_guidance_for_node(node)
+            framework_reminders = self._get_framework_reminders_for_node(node)
 
             nodes_code.extend(
                 [
@@ -1492,22 +1629,68 @@ graph TD
                     f"    {node['description']}",
                     f'    """{batch_comment}',
                     "",
+                ]
+            )
+            
+            # Add framework reminders at class level
+            if framework_reminders:
+                for reminder in framework_reminders:
+                    nodes_code.append(f"    {reminder}")
+                nodes_code.append("")
+            
+            # Add orchestrator guidance at class level  
+            if orchestrator_guidance:
+                for guidance in orchestrator_guidance:
+                    nodes_code.append(f"    {guidance}")
+                nodes_code.append("")
+
+            nodes_code.extend([
                     "    def prep(self, shared: Dict[str, Any]) -> Any:",
                     '        """Data preparation and validation."""',
                     f'        logger.info(f"Preparing data for {node["name"]}")',
-                    "        # TODO: Customize this prep logic based on your needs",
+                    "",
+                    "        # Enhanced TODO guidance from framework extensions:",
+                ]
+            )
+            
+            # Add enhanced TODOs for prep method
+            prep_todos = enhanced_todos[:2] if enhanced_todos else ["# TODO: Customize this prep logic based on your needs"]
+            for todo in prep_todos:
+                nodes_code.append(f"        {todo}")
+            
+            nodes_code.extend([
                     f"        {smart_defaults['prep']}",
                     "",
                     exec_signature,
                     '        """Core processing logic."""',
                     f'        logger.info(f"Executing {node["name"]}")',
-                    "        # TODO: Customize this exec logic based on your needs",
+                    "",
+                    "        # Enhanced TODO guidance from framework extensions:",
+                ]
+            )
+            
+            # Add enhanced TODOs for exec method
+            exec_todos = enhanced_todos[2:4] if len(enhanced_todos) > 2 else ["# TODO: Customize this exec logic based on your needs"]
+            for todo in exec_todos:
+                nodes_code.append(f"        {todo}")
+            
+            nodes_code.extend([
                     f"        {smart_defaults['exec']}",
                     "",
                     "    def post(self, shared: Dict[str, Any], prep_result: Any, exec_result: Any) -> None:",
                     '        """Post-processing and result storage."""',
                     f'        logger.info(f"Post-processing for {node["name"]}")',
-                    "        # TODO: Customize this post logic based on your needs",
+                    "",
+                    "        # Enhanced TODO guidance from framework extensions:",
+                ]
+            )
+            
+            # Add enhanced TODOs for post method
+            post_todos = enhanced_todos[4:] if len(enhanced_todos) > 4 else ["# TODO: Customize this post logic based on your needs"]  
+            for todo in post_todos:
+                nodes_code.append(f"        {todo}")
+            
+            nodes_code.extend([
                     f"        {smart_defaults['post']}",
                     "",
                     "",
