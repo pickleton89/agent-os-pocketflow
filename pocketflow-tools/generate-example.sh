@@ -46,7 +46,7 @@ log_success "Workflow generated successfully"
 
 # Step 2: Validate generated workflow
 log_info "Step 2: Validating generated workflow..."
-if ! python3 .agent-os/scripts/validate-generation.py --workflow contentanalyzer; then
+if ! python3 scripts/validation/validate-generation.py --workflow contentanalyzer; then
     log_warning "Validation found issues (this is expected for example workflow)"
 else
     log_success "Validation passed"
@@ -146,7 +146,7 @@ echo "4. Add comprehensive tests"
 echo "5. Integrate with FastAPI if needed"
 echo ""
 echo "Validation command:"
-echo "  python3 .agent-os/scripts/validate-generation.py --workflow contentanalyzer"
+echo "  python3 scripts/validation/validate-generation.py --workflow contentanalyzer"
 echo ""
 echo "Clean up command:"
 echo "  rm -rf .agent-os/workflows/contentanalyzer/"
