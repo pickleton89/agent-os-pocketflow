@@ -85,7 +85,8 @@
       "Bash(./scripts/validation/validate-end-to-end-scenarios.sh:*)",
       "Bash(timeout:*)",
       "Bash(./scripts/validation/validate-user-experience.sh:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
