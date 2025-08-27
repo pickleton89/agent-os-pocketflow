@@ -213,6 +213,7 @@ create_directory_structure() {
         "$INSTALL_PATH"
         "$INSTALL_PATH/instructions"
         "$INSTALL_PATH/standards"
+        "$INSTALL_PATH/shared"
         "$INSTALL_PATH/commands"
         "$INSTALL_PATH/setup"
         "$INSTALL_PATH/recaps"
@@ -364,6 +365,35 @@ install_standards() {
                 log_success "$(if [[ "$file_existed" == "true" ]]; then echo "Updated"; else echo "Downloaded"; fi): standards/code-style/$file"
             else
                 log_error "Failed to download: standards/code-style/$file"
+                exit 1
+            fi
+        done
+    fi
+}
+
+# Install shared utilities
+install_shared() {
+    log_info "Installing shared utilities..."
+    
+    local source_dir="$(dirname "$(dirname "$(realpath "$0")")")/shared"
+    
+    if [[ -d "$source_dir" ]]; then
+        # Install from local source
+        cp -r "$source_dir"/* "$INSTALL_PATH/shared/"
+        log_success "Copied local shared utilities to $INSTALL_PATH/shared/"
+    else
+        # Download from repository
+        log_info "Downloading shared utilities from repository..."
+        local shared_files=("execution_utils.md")
+        
+        for file in "${shared_files[@]}"; do
+            local target_file="$INSTALL_PATH/shared/$file"
+            
+            curl -s -o "$target_file" "$REPO_URL/shared/$file"
+            if [[ $? -eq 0 ]]; then
+                log_success "Downloaded: $file"
+            else
+                log_error "Failed to download: $file"
                 exit 1
             fi
         done
@@ -964,6 +994,7 @@ main() {
     create_directory_structure
     install_instructions
     install_standards
+    install_shared
     install_commands
     install_pocketflow_tools
     create_configuration
