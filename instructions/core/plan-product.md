@@ -56,7 +56,6 @@ encoding: UTF-8
     - key_features: array[string] (minimum: 3)
     - target_users: array[string] (minimum: 1)
     - tech_stack: object
-    - involves_llm_ai: boolean (new)
   </required_inputs>
   <validation>blocking</validation>
 </step_metadata>
@@ -75,8 +74,7 @@ encoding: UTF-8
   2. List of key features (minimum 3)
   3. Target users and use cases (minimum 1)
   4. Tech stack preferences (e.g., "Python with Django", "Node.js with React")
-  5. Does this product involve LLMs or AI components? (yes/no)
-  6. Has the new application been initialized yet and we're inside the project folder? (yes/no)
+  5. Has the new application been initialized yet and we're inside the project folder? (yes/no)
 </error_template>
 
 <instructions>
@@ -144,7 +142,7 @@ encoding: UTF-8
     - The Problem
     - Differentiators
     - Key Features
-    - AI/LLM Strategy (new)
+    - Architecture Strategy
   </required_sections>
 </file_template>
 
@@ -239,49 +237,29 @@ encoding: UTF-8
   </constraints>
 </section>
 
-<section name="ai_llm_strategy">
+<section name="architecture_strategy">
   <template>
-    ## AI/LLM Strategy
+    ## Architecture Strategy
 
-    **Does this product incorporate AI/LLM components?** [YES/NO]
+    **Application Architecture:** PocketFlow-based design
 
-    **If YES:**
-    - **Primary LLM Framework:** PocketFlow
-    - **Development Methodology:** 8-step Agentic Coding process (Design-first approach)
-    - **Rationale:** Chosen for its minimalism, flexibility (Nodes, Flows, Shared Store), and suitability for Agentic Coding principles. It allows explicit graph-based design for Agents, Workflows, and RAG patterns. Follows "humans design, agents code" philosophy.
-    - **Key Patterns Utilized:** [LIST_POCKETFLOW_PATTERNS_TO_BE_USED_E.G._AGENT,_RAG,_WORKFLOW,_MAPREDUCE,_MULTI_AGENT,_STRUCTURED_OUTPUT]
-    - **Planned LLM Providers/Models:** [LIST_OF_LLM_PROVIDERS_AND_MODELS]
+    - **Primary Framework:** PocketFlow
+    - **Development Methodology:** Design-first approach with structured workflow patterns
+    - **Rationale:** Chosen for its minimalism, flexibility (Nodes, Flows, Shared Store), and scalability from simple workflows to complex multi-agent systems. It provides explicit graph-based design for all application patterns.
+    - **Key Patterns Utilized:** [LIST_POCKETFLOW_PATTERNS_TO_BE_USED_E.G._WORKFLOW,_TOOL,_AGENT,_RAG,_MAPREDUCE,_STRUCTURED_OUTPUT]
+    - **Complexity Level:** [SIMPLE_WORKFLOW/ENHANCED_WORKFLOW/COMPLEX_APPLICATION/LLM_APPLICATION]
     - **Utility Philosophy:** "Examples provided, implement your own" - custom utility functions for maximum flexibility
-    - **Design Requirements:** All LLM features require `docs/design.md` completion before implementation begins
+    - **Design Requirements:** All projects require `docs/design.md` completion before implementation begins
     - **Integration Pattern:** FastAPI endpoints → PocketFlow Flows → Node execution → Utility functions
+    - **LLM Providers/Models:** [LIST_IF_APPLICABLE, OTHERWISE_N/A]
   </template>
-  <conditional_execution>
-    <detection_criteria>
-      <check>involves_llm_ai boolean from Step 1</check>
-      <check>user mentions LLM, AI, or machine learning in features</check>
-      <check>user mentions chatbots, agents, or AI workflows</check>
-    </detection_criteria>
-    <if_llm_detected>
-      <action>Generate complete AI/LLM Strategy section</action>
-      <required_fields>
-        - Primary LLM Framework: PocketFlow
-        - Development Methodology: 8-step Agentic Coding
-        - Key Patterns Utilized: Based on feature analysis
-        - Design Requirements: Mandatory docs/design.md
-      </required_fields>
-    </if_llm_detected>
-    <if_no_llm>
-      <action>Skip this section entirely</action>
-      <message>No AI/LLM components detected - skipping AI strategy section</message>
-    </if_no_llm>
-  </conditional_execution>
   <instructions>
-    DETECT: Check multiple indicators for LLM/AI usage
-    CONDITIONAL: Generate section only if LLM/AI components confirmed
-    FILL: List relevant PocketFlow patterns based on initial feature ideas
-    FILL: List anticipated LLM providers/models
-    EMPHASIZE: Design-first methodology and utility function philosophy
-    SKIP: Section entirely if no LLM/AI involvement
+    UNIVERSAL: Generate this section for ALL products
+    PATTERN_MAPPING: Map project features to appropriate PocketFlow patterns
+    COMPLEXITY: Assess and assign appropriate complexity level
+    PATTERNS: Select patterns based on feature analysis (WORKFLOW for simple, TOOL for APIs, AGENT for complex logic, etc.)
+    DESIGN_FIRST: Emphasize mandatory docs/design.md for all projects
+    LLM_OPTIONAL: Include LLM providers only if features indicate AI/ML usage
   </instructions>
 </section>
 
@@ -321,14 +299,14 @@ encoding: UTF-8
   - type_checking: string (defaults to mypy/ty)
   - testing_framework: string (defaults to pytest)
   - database_system: string (defaults to SQLite)
-  - vector_store: string (defaults to ChromaDB, if LLM/AI)
+  - workflow_framework: string + version (defaults to PocketFlow)
+  - vector_store: string (defaults to ChromaDB, if needed)
   - frontend_framework: string (defaults to "None - API only")
   - application_hosting: string
   - database_hosting: string
   - deployment_solution: string
   - code_repository_url: string
-  - llm_framework: string + version (defaults to PocketFlow, if LLM/AI)
-  - llm_providers: array[string] (if LLM/AI)
+  - llm_providers: array[string] (if applicable)
 </required_items>
 
 <data_resolution>
@@ -342,40 +320,24 @@ encoding: UTF-8
   </for_each>
 </data_resolution>
 
-<conditional_tech_stack>
-  <llm_ai_detection>
-    <if_involves_llm_ai>true</if_involves_llm_ai>
-    <then_apply>
-      - llm_framework: "PocketFlow (latest)"
-      - vector_store: "ChromaDB" 
-      - programming_language: "Python 3.12+"
-      - application_framework: "FastAPI"
-      - data_validation: "Pydantic"
-    </then_apply>
-    <else_apply>
-      - llm_framework: "n/a"
-      - vector_store: "n/a"
-      - programming_language: "Python 3.12+" (default, user can override)
-      - application_framework: "FastAPI" (default, user can override)
-      - data_validation: "Pydantic" (default, user can override)
-    </else_apply>
-  </llm_ai_detection>
+<universal_tech_stack>
+  <default_stack>
+    - workflow_framework: "PocketFlow (latest)"
+    - programming_language: "Python 3.12+"
+    - application_framework: "FastAPI"
+    - data_validation: "Pydantic"
+    - vector_store: "ChromaDB" (if LLM features detected)
+  </default_stack>
   
-  <project_structure_selection>
-    <if_involves_llm_ai>true</if_involves_llm_ai>
-    <then_include>
+  <project_structure_inclusion>
+    <always_include>
       - nodes.py file for PocketFlow nodes
       - flow.py file for PocketFlow flows
       - docs/design.md (MANDATORY before implementation)
-      - utils/ directory with LLM utility functions
-    </then_include>
-    <else_include>
-      - Standard FastAPI structure only
-      - utils/ directory for business logic
-      - No PocketFlow-specific files required
-    </else_include>
-  </project_structure_selection>
-</conditional_tech_stack>
+      - utils/ directory for application-specific utility functions
+    </always_include>
+  </project_structure_inclusion>
+</universal_tech_stack>
 
 <missing_items_template>
   Please provide the following technical stack details:
@@ -389,8 +351,8 @@ encoding: UTF-8
   RESOLUTION: Check user input first, then config files, then apply defaults
   DEFAULTS: Use Python 3.12+ with FastAPI, Pydantic, uv, Ruff, and pytest unless user specifies otherwise
   REQUEST: Ask for any missing items using template
-  PRIORITIZE: PocketFlow for llm_framework if product involves AI/LLM
-  EMPHASIZE: Modern type-safe Python development stack as foundation
+  UNIVERSAL: PocketFlow for workflow_framework for all projects
+  EMPHASIZE: Modern type-safe Python development stack with PocketFlow architecture as foundation
 </instructions>
 
 </step>
@@ -427,19 +389,19 @@ encoding: UTF-8
     ### Must-Have Features
 
     - [ ] [FEATURE] - [DESCRIPTION] `[EFFORT]`
-        - **LLM Pattern:** [POCKETFLOW_PATTERN] (if applicable, e.g., Agent, RAG, Workflow)
-        - **Design Requirement:** `docs/design.md` must be completed before implementation (if LLM/AI)
+        - **PocketFlow Pattern:** [POCKETFLOW_PATTERN] (e.g., WORKFLOW, TOOL, AGENT, RAG, MAPREDUCE)
+        - **Design Requirement:** `docs/design.md` must be completed before implementation
 
     ### Should-Have Features
 
     - [ ] [FEATURE] - [DESCRIPTION] `[EFFORT]`
-        - **LLM Pattern:** [POCKETFLOW_PATTERN] (if applicable)
-        - **Design Requirement:** `docs/design.md` must be completed before implementation (if LLM/AI)
+        - **PocketFlow Pattern:** [POCKETFLOW_PATTERN]
+        - **Design Requirement:** `docs/design.md` must be completed before implementation
 
     ### Dependencies
 
     - [DEPENDENCY]
-    - Complete design documentation for any LLM/AI features before implementation begins
+    - Complete design documentation for all features before implementation begins
   </phase_template>
 </phase_structure>
 
@@ -459,33 +421,28 @@ encoding: UTF-8
   - XL: 3+ weeks
 </effort_scale>
 
-<conditional_roadmap>
-  <llm_ai_features>
-    <if_involves_llm_ai>true</if_involves_llm_ai>
-    <then_apply>
-      - Add "Design Document Creation" as prerequisite for LLM features
-      - Tag features with PocketFlow patterns (Agent, RAG, Workflow, etc.)
+<universal_roadmap>
+  <pocketflow_features>
+    <always_apply>
+      - Add "Design Document Creation" as prerequisite for all features
+      - Tag all features with appropriate PocketFlow patterns (WORKFLOW, TOOL, AGENT, RAG, MAPREDUCE, etc.)
       - Include design.md requirement in dependencies
-      - Enforce 8-step methodology progression
-    </then_apply>
-    <else_apply>
-      - Standard feature progression without PocketFlow requirements
-      - No design document prerequisites
-      - Standard FastAPI development phases
-    </else_apply>
-  </llm_ai_features>
-</conditional_roadmap>
+      - Enforce design-first methodology progression
+      - Map complexity from simple workflows to complex multi-agent systems
+    </always_apply>
+  </pocketflow_features>
+</universal_roadmap>
 
 <instructions>
   ACTION: Create 5 development phases
   PRIORITIZE: Based on dependencies and mission importance
   ESTIMATE: Use effort_scale for all features
   VALIDATE: Ensure logical progression between phases
-  CONDITIONAL: Apply LLM/AI-specific requirements only if detected
-  TAG: Features with relevant PocketFlow patterns if they involve LLMs/AI
-  ENFORCE: Design-first requirement for all LLM/AI features (docs/design.md)
-  EMPHASIZE: No implementation begins without completed design documentation for LLM features
-  FALLBACK: Standard FastAPI roadmap if no LLM/AI components
+  UNIVERSAL: Apply PocketFlow requirements to all projects
+  TAG: All features with relevant PocketFlow patterns (WORKFLOW, TOOL, AGENT, RAG, MAPREDUCE, etc.)
+  ENFORCE: Design-first requirement for all features (docs/design.md)
+  EMPHASIZE: No implementation begins without completed design documentation
+  PATTERN_MAP: Map project complexity to appropriate PocketFlow patterns
 </instructions>
 
 </step>
@@ -521,7 +478,7 @@ encoding: UTF-8
 ### Development Standards
 - **Code Style:** @~/.agent-os/standards/code-style.md
 - **Best Practices:** @~/.agent-os/standards/best-practices.md
-- **PocketFlow Principles:** @~/.agent-os/standards/best-practices.md (specifically for LLM components) (new)
+- **PocketFlow Principles:** @~/.agent-os/standards/best-practices.md (universal architecture standards)
 
 ### Project Management
 - **Active Specs:** @.agent-os/specs/
@@ -536,7 +493,7 @@ When asked to work on this codebase:
 2. **Then**, follow the appropriate instruction file:
    - For new features: @.agent-os/instructions/create-spec.md
    - For tasks execution: @.agent-os/instructions/execute-tasks.md
-3. **Always**, adhere to the standards in the files listed above, including PocketFlow principles for LLM-related tasks.
+3. **Always**, adhere to the standards in the files listed above, including PocketFlow principles for all development tasks.
 
 ## Important Notes
 
@@ -599,56 +556,37 @@ When asked to work on this codebase:
 ## Standard Project Structure
 
 <project_structure>
-  <conditional_structure>
-    <base_structure>
-      All projects get this foundation:
-      ```
-      project/
-      ├── main.py           # FastAPI app entry point
-      ├── schemas/          # Pydantic models
-      │   ├── __init__.py
-      │   ├── requests.py   # API request models
-      │   └── responses.py  # API response models
-      ├── utils/            # Custom utilities
-      │   ├── __init__.py
-      │   └── [business_utils].py
-      ├── tests/
-      │   ├── __init__.py
-      │   ├── test_models.py
-      │   └── test_endpoints.py
-      ├── pyproject.toml    # uv package management (preferred)
-      ├── uv.lock           # uv lockfile
-      ├── .gitignore
-      └── README.md
-      ```
-    </base_structure>
-    
-    <llm_ai_additions>
-      If LLM/AI components detected, add:
-      ```
-      project/
-      ├── nodes.py          # PocketFlow nodes
-      ├── flow.py           # PocketFlow flows  
-      ├── utils/
-      │   ├── call_llm.py   # LLM utility functions
-      │   └── [llm_utils].py
-      ├── docs/
-      │   └── design.md     # MANDATORY before implementation
-      └── tests/
-          └── test_flows.py # PocketFlow flow tests
-      ```
-    </llm_ai_additions>
-  </conditional_structure>
-  
-  <structure_selection>
-    <if_involves_llm_ai>true</if_involves_llm_ai>
-    <then_create>base_structure + llm_ai_additions</then_create>
-    <else_create>base_structure only</else_create>
-  </structure_selection>
+  <universal_structure>
+    All projects get this complete PocketFlow foundation:
+    ```
+    project/
+    ├── main.py           # FastAPI app entry point
+    ├── nodes.py          # PocketFlow nodes
+    ├── flow.py           # PocketFlow flows
+    ├── schemas/          # Pydantic models
+    │   ├── __init__.py
+    │   ├── requests.py   # API request models
+    │   └── responses.py  # API response models
+    ├── utils/            # Custom utilities
+    │   ├── __init__.py
+    │   └── [application_utils].py
+    ├── docs/
+    │   └── design.md     # MANDATORY before implementation
+    ├── tests/
+    │   ├── __init__.py
+    │   ├── test_models.py
+    │   ├── test_endpoints.py
+    │   └── test_flows.py # PocketFlow flow tests
+    ├── pyproject.toml    # uv package management (preferred)
+    ├── uv.lock           # uv lockfile
+    ├── .gitignore
+    └── README.md
+    ```
+  </universal_structure>
 </project_structure>
 
 <architecture_pattern>
-  This structure supports the integrated architecture:
+  This structure supports the universal PocketFlow architecture:
   
   ```
   FastAPI (main.py)
@@ -661,14 +599,16 @@ When asked to work on this codebase:
       ↓ executes tasks
   Utility Functions (utils/)
       ↓ interfaces with external services
-  FastMCP Tools (when multi-agent coordination needed)
+  Design Document (docs/design.md)
+      ↓ guides implementation
   ```
   
   This ensures:
   - **Type safety** at every boundary with Pydantic
   - **Clear separation** between API layer and business logic
   - **Modular design** with reusable nodes and utilities
-  - **Agent coordination** through FastMCP when needed
+  - **Design-first approach** for all features
+  - **Scalable patterns** from simple workflows to complex multi-agent systems
 </architecture_pattern>
 
 ## Orchestration Integration

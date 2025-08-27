@@ -195,27 +195,23 @@ Execute the parent task and all sub-tasks systematically following TDD approach 
 
 <execution_context_detection>
   <project_type_detection>
-    CHECK: If docs/design.md exists (indicates LLM/AI implementation)
-    LOOK: For PocketFlow imports or usage in codebase  
-    IDENTIFY: utils/ directory with LLM-related functions
-    DETERMINE: Standard task vs PocketFlow task execution
+    REQUIRE: docs/design.md exists (universal design-first methodology)
+    VERIFY: PocketFlow imports and architecture in codebase  
+    CONFIRM: utils/ directory with domain-specific functions
+    EXECUTE: Universal PocketFlow task implementation
   </project_type_detection>
 </execution_context_detection>
 
 <design_document_validation>
-  <llm_ai_components_only>
-    <conditional_execution>
-      IF LLM/AI components detected:
-        VALIDATE: docs/design.md exists and is complete
-        REQUIRE: All sections filled with specific details
-        VERIFY: Mermaid diagrams are syntactically correct
-        CONFIRM: Input/output contracts for all utility functions specified
-        BLOCK: Implementation if design document incomplete
-      ELSE:
-        SKIP: Design validation (no LLM/AI components)
-      END_IF
-    </conditional_execution>
-  </llm_ai_components_only>
+  <universal_requirement>
+    <mandatory_execution>
+      VALIDATE: docs/design.md exists and is complete for all projects
+      REQUIRE: All sections filled with specific details
+      VERIFY: Mermaid diagrams are syntactically correct
+      CONFIRM: Input/output contracts for all utility functions specified
+      BLOCK: Implementation if design document incomplete
+    </mandatory_execution>
+  </universal_requirement>
 </design_document_validation>
 
 <execution_standards>
@@ -229,9 +225,8 @@ Execute the parent task and all sub-tasks systematically following TDD approach 
   <tdd_approach>Test-driven development throughout</tdd_approach>
   
   <pocketflow_phase_execution>
-    <conditional_pocketflow_phases>
-      IF project_type == "pocketflow" OR LLM/AI components detected:
-        EXECUTE: PocketFlow 6-phase implementation:
+    <universal_pocketflow_phases>
+      EXECUTE: Universal PocketFlow 6-phase implementation for all projects:
         
         **Phase 0: Schema Design & Validation**
         - Create Pydantic schemas with comprehensive validation tests
@@ -274,14 +269,7 @@ Execute the parent task and all sub-tasks systematically following TDD approach 
         - Validate against design.md specifications
         - Test error scenarios and recovery paths
         - Ensure logging and monitoring work correctly
-      ELSE:
-        EXECUTE: Standard TDD workflow:
-        - Write failing tests first
-        - Implement minimal code to pass
-        - Refactor while keeping tests green
-        - Repeat for each subtask
-      END_IF
-    </conditional_pocketflow_phases>
+    </universal_pocketflow_phases>
   </pocketflow_phase_execution>
   
   <type_safety_enforcement>
@@ -320,9 +308,9 @@ Execute the parent task and all sub-tasks systematically following TDD approach 
 </subtask_execution_loop>
 
 <instructions>
-  ACTION: Detect project type and execution context first
-  VALIDATE: Design document if LLM/AI components present
-  EXECUTE: Appropriate phase-based implementation (PocketFlow or standard)
+  ACTION: Validate universal PocketFlow execution context
+  VALIDATE: Design document for all projects (universal requirement)
+  EXECUTE: Universal PocketFlow phase-based implementation
   FOLLOW: All coding standards and quality requirements
   IMPLEMENT: Each subtask systematically with proper testing
   MAINTAIN: Code quality and architectural consistency throughout

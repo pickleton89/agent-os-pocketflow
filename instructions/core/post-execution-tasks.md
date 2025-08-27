@@ -18,53 +18,47 @@ Follow these steps to validate implementation, mark progress updates, create a r
 
 <process_flow>
 
-<step number="1" name="pocketflow_validation" conditional="true">
+<step number="1" name="pocketflow_validation" universal="true">
 
-### Step 1: PocketFlow Implementation Validation (Conditional)
+### Step 1: PocketFlow Implementation Validation (Universal)
 
-**Condition**: Execute only if LLM/AI components are detected in the implementation.
+**Requirement**: Execute for all projects using universal PocketFlow architecture.
 
-<llm_ai_detection>
-  <check_criteria>
-    - Existence of docs/design.md file
-    - Presence of nodes.py or flow.py files
-    - PocketFlow pattern usage in tasks
-    - LLM-related utility functions in utils/
-    - AI/ML libraries in dependencies
-  </check_criteria>
-</llm_ai_detection>
+<universal_pocketflow_requirements>
+  <validation_criteria>
+    - Existence of docs/design.md file (mandatory)
+    - Presence of nodes.py and flow.py files (universal)
+    - PocketFlow pattern implementation in tasks
+    - Domain-specific utility functions in utils/
+    - Proper dependency management and tooling
+  </validation_criteria>
+</universal_pocketflow_requirements>
 
-<conditional_execution>
-  <if_llm_ai_detected>
-    <validation_checklist>
-      - [ ] docs/design.md exists and is complete
-      - [ ] Implementation follows design.md specifications
-      - [ ] PocketFlow patterns correctly implemented
-      - [ ] Node/Flow structure matches design
-      - [ ] Utility functions have proper type hints
-      - [ ] LLM calls include proper error handling
-      - [ ] Structured output validation works
-      - [ ] Chat history/caching implemented as designed
-    </validation_checklist>
-    
-    <validation_actions>
-      VERIFY: All PocketFlow components match design.md
-      CHECK: Node prep/exec/post methods implemented correctly
-      VALIDATE: Flow connections and transitions work
-      CONFIRM: Error handling converts to proper action strings
-      TEST: LLM integration functions as expected
-    </validation_actions>
-  </if_llm_ai_detected>
+<universal_execution>
+  <validation_checklist>
+    - [ ] docs/design.md exists and is complete
+    - [ ] Implementation follows design.md specifications
+    - [ ] PocketFlow patterns correctly implemented
+    - [ ] Node/Flow structure matches design
+    - [ ] Utility functions have proper type hints
+    - [ ] Domain logic includes proper error handling
+    - [ ] Data validation and processing works
+    - [ ] Architecture patterns implemented as designed
+  </validation_checklist>
   
-  <if_no_llm_ai>
-    <skip_message>Skipping PocketFlow validation - no LLM/AI components detected</skip_message>
-  </if_no_llm_ai>
-</conditional_execution>
+  <validation_actions>
+    VERIFY: All PocketFlow components match design.md
+    CHECK: Node prep/exec/post methods implemented correctly
+    VALIDATE: Flow connections and transitions work
+    CONFIRM: Error handling converts to proper action strings
+    TEST: All integrations function as expected
+  </validation_actions>
+</universal_execution>
 
 <instructions>
-  DETECT: Check for LLM/AI artifacts before executing
-  CONDITIONAL: Execute validation only if LLM/AI components present
-  VALIDATE: Complete PocketFlow pattern compliance
+  UNIVERSAL: Execute for all projects using PocketFlow architecture
+  VALIDATE: Complete PocketFlow pattern compliance for all projects
+  VERIFY: Universal design-first methodology compliance
   DOCUMENT: Any deviations found during validation
 </instructions>
 
