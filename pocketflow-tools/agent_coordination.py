@@ -2,7 +2,10 @@
 """
 Agent Coordination System for Pattern Recognizer
 
-Handles coordination between pattern-recognizer and pocketflow-orchestrator agents.
+Handles coordination between pattern-recognizer and the three PocketFlow sub-agents:
+- design-document-creator: PocketFlow design document creation specialist
+- strategic-planner: Product strategy and PocketFlow integration planning
+- workflow-coordinator: Template generation and workflow orchestration
 Implements handoff protocols and pattern override capabilities.
 """
 
@@ -18,7 +21,7 @@ logger = logging.getLogger(__name__)
 class CoordinationPhase(Enum):
     """Phases of agent coordination."""
     PATTERN_ANALYSIS = "pattern_analysis"
-    ORCHESTRATOR_PLANNING = "orchestrator_planning"
+    WORKFLOW_COORDINATION = "workflow_coordination"
     TEMPLATE_GENERATION = "template_generation"
     VALIDATION = "validation"
     COMPLETION = "completion"
@@ -47,7 +50,7 @@ class HandoffPackage:
     target_agent: str
     payload: Dict[str, Any]
     coordination_context: CoordinationContext
-    handoff_type: str  # "analysis_to_orchestrator", "orchestrator_to_validator", etc.
+    handoff_type: str  # "analysis_to_design_document_creator", "analysis_to_strategic_planner", "analysis_to_workflow_coordinator"
 
 
 class PatternOverrideManager:
@@ -135,21 +138,36 @@ class PatternOverrideManager:
 
 
 class AgentCoordinator:
-    """Coordinates between pattern-recognizer and pocketflow-orchestrator agents."""
+    """Coordinates between pattern-recognizer and the three PocketFlow sub-agents:
+    - design-document-creator: Handles design document creation and validation
+    - strategic-planner: Manages product strategy and integration planning
+    - workflow-coordinator: Coordinates template generation and workflow orchestration
+    """
     
     def __init__(self):
         self.override_manager = PatternOverrideManager()
         self.coordination_log = []
     
-    def create_handoff_to_orchestrator(self, context: CoordinationContext) -> HandoffPackage:
-        """Create handoff package from pattern-recognizer to pocketflow-orchestrator."""
+    def create_handoff_to_subagent(self, context: CoordinationContext, target_agent: str = None) -> HandoffPackage:
+        """Create handoff package from pattern-recognizer to specific PocketFlow agent.
         
-        logger.info("Creating handoff package for pocketflow-orchestrator")
+        Args:
+            context: Coordination context with pattern recommendation
+            target_agent: Optional specific target agent ('design-document-creator', 
+                         'strategic-planner', or 'workflow-coordinator'). 
+                         If None, determines from pattern type.
+        """
+        
+        # Determine target agent based on pattern type if not specified
+        if target_agent is None:
+            target_agent = self._determine_target_agent(context)
+        
+        logger.info(f"Creating handoff package for {target_agent}")
         
         if not context.pattern_recommendation:
-            raise ValueError("Pattern recommendation required for orchestrator handoff")
+            raise ValueError("Pattern recommendation required for PocketFlow agent handoff")
         
-        # Prepare payload for orchestrator
+        # Prepare payload for target agent
         payload = {
             "project_name": context.project_name,
             "requirements": context.requirements,
@@ -172,29 +190,54 @@ class AgentCoordinator:
         
         handoff = HandoffPackage(
             source_agent="pattern-recognizer",
-            target_agent="pocketflow-orchestrator",
+            target_agent=target_agent,
             payload=payload,
             coordination_context=context,
-            handoff_type="analysis_to_orchestrator"
+            handoff_type=f"analysis_to_{target_agent.replace('-', '_')}"
         )
         
         self._log_coordination("handoff_created", handoff.handoff_type, payload["coordination_metadata"]["coordination_id"])
         
         return handoff
     
-    def process_orchestrator_feedback(self, handoff: HandoffPackage, 
-                                    orchestrator_response: Dict[str, Any]) -> CoordinationContext:
-        """Process feedback from pocketflow-orchestrator."""
+    def _determine_target_agent(self, context: CoordinationContext) -> str:
+        """Determine appropriate target agent (design-document-creator, strategic-planner, or workflow-coordinator) based on pattern and context."""
         
-        logger.info("Processing orchestrator feedback")
+        if not context.pattern_recommendation:
+            # Default to workflow-coordinator for basic coordination needs
+            return "workflow-coordinator"
+        
+        pattern = context.pattern_recommendation.primary_pattern
+        
+        # Pattern recognition → workflow coordination mapping
+        from pattern_analyzer import PatternType
+        
+        # Design-focused patterns go to design-document-creator
+        if pattern in [PatternType.STRUCTURED_OUTPUT]:
+            return "design-document-creator"
+        
+        # Strategic/complex patterns go to strategic-planner  
+        if pattern in [PatternType.MULTI_AGENT, PatternType.MAPREDUCE, PatternType.HYBRID]:
+            return "strategic-planner"
+        
+        # Default workflow/template patterns go to workflow-coordinator
+        # This includes: RAG, AGENT, TOOL, WORKFLOW
+        return "workflow-coordinator"
+    
+    def process_subagent_feedback(self, handoff: HandoffPackage, 
+                                    subagent_response: Dict[str, Any]) -> CoordinationContext:
+        """Process feedback from PocketFlow agents (design-document-creator, strategic-planner, or workflow-coordinator)."""
+        
+        target_agent = handoff.target_agent
+        logger.info(f"Processing feedback from {target_agent}")
         
         context = handoff.coordination_context
-        context.orchestrator_feedback = orchestrator_response
+        context.orchestrator_feedback = subagent_response  # Keep field name for compatibility
         
-        # Check for pattern modifications from orchestrator
-        if "pattern_modifications" in orchestrator_response:
-            modifications = orchestrator_response["pattern_modifications"]
-            logger.info(f"Orchestrator suggested pattern modifications: {modifications}")
+        # Check for pattern modifications from PocketFlow agent
+        if "pattern_modifications" in subagent_response:
+            modifications = subagent_response["pattern_modifications"]
+            logger.info(f"{target_agent} suggested pattern modifications: {modifications}")
             
             # Apply modifications to pattern recommendation
             if "complexity_adjustment" in modifications:
@@ -206,17 +249,17 @@ class AgentCoordinator:
                 context.pattern_recommendation.workflow_suggestions["additional_nodes"] = additional_nodes
         
         # Update coordination history
-        context.coordination_history.append(f"Orchestrator feedback processed: {orchestrator_response.get('status', 'unknown')}")
+        context.coordination_history.append(f"{target_agent} feedback processed: {subagent_response.get('status', 'unknown')}")
         
         # Determine next phase
-        if orchestrator_response.get("status") == "approved":
+        if subagent_response.get("status") == "approved":
             context.phase = CoordinationPhase.TEMPLATE_GENERATION
-        elif orchestrator_response.get("status") == "needs_revision":
+        elif subagent_response.get("status") == "needs_revision":
             context.phase = CoordinationPhase.PATTERN_ANALYSIS  # Go back to analysis
         else:
-            context.phase = CoordinationPhase.ORCHESTRATOR_PLANNING  # Stay in planning
+            context.phase = CoordinationPhase.WORKFLOW_COORDINATION  # Stay in planning
         
-        self._log_coordination("feedback_processed", f"status_{orchestrator_response.get('status')}", context.coordination_history[-1])
+        self._log_coordination("feedback_processed", f"status_{subagent_response.get('status')}", context.coordination_history[-1])
         
         return context
     
@@ -262,7 +305,7 @@ class AgentCoordinator:
             "pattern_selected": context.pattern_recommendation.primary_pattern.value if context.pattern_recommendation else "none",
             "confidence_score": context.pattern_recommendation.confidence_score if context.pattern_recommendation else 0.0,
             "user_overrides_applied": bool(context.user_overrides),
-            "orchestrator_involved": bool(context.orchestrator_feedback),
+            "pocketflow_agent_involved": bool(context.orchestrator_feedback),
             "coordination_steps": len(context.coordination_history),
             "coordination_log": context.coordination_history,
             "final_customizations": context.pattern_recommendation.template_customizations if context.pattern_recommendation else {},
@@ -299,7 +342,7 @@ class AgentCoordinator:
 
 def coordinate_pattern_analysis(project_name: str, requirements: str, 
                               user_overrides: Optional[Dict[str, Any]] = None) -> CoordinationContext:
-    """High-level function to coordinate pattern analysis with orchestrator."""
+    """High-level function to coordinate pattern analysis with PocketFlow agents (design-document-creator, strategic-planner, workflow-coordinator)."""
     
     from pattern_analyzer import PatternAnalyzer
     
@@ -323,18 +366,25 @@ def coordinate_pattern_analysis(project_name: str, requirements: str,
         recommendation = coordinator.override_manager.apply_user_overrides(recommendation, user_overrides)
     
     context.pattern_recommendation = recommendation
-    context.phase = CoordinationPhase.ORCHESTRATOR_PLANNING
+    context.phase = CoordinationPhase.WORKFLOW_COORDINATION
     
     logger.info(f"Pattern analysis completed: {recommendation.primary_pattern.value} (confidence: {recommendation.confidence_score:.2f})")
     
     return context
 
 
-def create_orchestrator_handoff(context: CoordinationContext) -> HandoffPackage:
-    """Create handoff package for pocketflow-orchestrator."""
+def create_subagent_handoff(context: CoordinationContext, target_agent: str = None) -> HandoffPackage:
+    """Create handoff package for PocketFlow agent.
+    
+    Args:
+        context: Coordination context with pattern recommendation
+        target_agent: Optional specific target agent ('design-document-creator',
+                     'strategic-planner', or 'workflow-coordinator').
+                     If None, determines from pattern type.
+    """
     
     coordinator = AgentCoordinator()
-    return coordinator.create_handoff_to_orchestrator(context)
+    return coordinator.create_handoff_to_subagent(context, target_agent)
 
 
 # Example usage and testing
@@ -361,9 +411,13 @@ if __name__ == "__main__":
     print(f"Confidence: {context.pattern_recommendation.confidence_score:.2f}")
     
     # Test handoff creation
-    handoff = create_orchestrator_handoff(context)
+    handoff = create_subagent_handoff(context)
     print(f"Handoff created: {handoff.source_agent} -> {handoff.target_agent}")
     print(f"Payload keys: {list(handoff.payload.keys())}")
+    
+    # Test with specific target agent
+    design_handoff = create_subagent_handoff(context, "design-document-creator")
+    print(f"Design handoff: {design_handoff.source_agent} -> {design_handoff.target_agent}")
     
     # Test pattern override
     coordinator = AgentCoordinator()
