@@ -14,13 +14,22 @@ else
     exit 1
 fi
 
-# Test 2: Orchestrator agent
-if [[ -f ".claude/agents/pocketflow-orchestrator.md" ]]; then
-    echo "✅ Orchestrator agent found"
-else
-    echo "❌ Orchestrator agent missing"
-    exit 1
-fi
+# Test 2: Sub-agents (three focused agents replacing single orchestrator)
+agent_files=(
+    ".claude/agents/design-document-creator.md"
+    ".claude/agents/strategic-planner.md"
+    ".claude/agents/workflow-coordinator.md"
+)
+
+echo "🔍 Checking for three sub-agents..."
+for agent_file in "${agent_files[@]}"; do
+    if [[ -f "$agent_file" ]]; then
+        echo "✅ $(basename "$agent_file" .md) agent found"
+    else
+        echo "❌ $(basename "$agent_file" .md) agent missing"
+        exit 1
+    fi
+done
 
 # Test 3: Extension modules - Template Quality Validation
 extensions=(
@@ -62,11 +71,34 @@ validate_extension_quality() {
         return 1
     fi
     
-    # Test 5: Contains orchestrator integration examples
-    if ! grep -q "orchestrator\|Orchestrator" "$ext_file"; then
-        echo "❌ $ext_name missing orchestrator integration guidance"
-        return 1
-    fi
+    # Test 5: Contains appropriate sub-agent integration examples
+    case "$ext_name" in
+        "design-first-enforcement.md")
+            if ! grep -q "design-document-creator" "$ext_file"; then
+                echo "❌ $ext_name missing design-document-creator integration guidance"
+                return 1
+            fi
+            ;;
+        "llm-workflow-extension.md")
+            if ! grep -q "workflow-coordinator" "$ext_file"; then
+                echo "❌ $ext_name missing workflow-coordinator integration guidance"
+                return 1
+            fi
+            ;;
+        "pocketflow-integration.md")
+            if ! grep -q "strategic-planner" "$ext_file"; then
+                echo "❌ $ext_name missing strategic-planner integration guidance"
+                return 1
+            fi
+            ;;
+        *)
+            # Any extension should reference at least one sub-agent
+            if ! grep -q "design-document-creator\|strategic-planner\|workflow-coordinator" "$ext_file"; then
+                echo "❌ $ext_name missing sub-agent integration guidance"
+                return 1
+            fi
+            ;;
+    esac
     
     # Test 6: Contains code template examples
     if ! grep -q "```python\|```bash" "$ext_file"; then
@@ -156,9 +188,9 @@ validate_orchestrator_hooks() {
         return 1
     fi
     
-    # Test 4: Template sections contain orchestrator integration guidance
-    if ! grep -A 50 "## validate_design_document" "$hooks_file" | grep -q "claude-code.*orchestrator"; then
-        echo "❌ validate_design_document section missing orchestrator integration"
+    # Test 4: Template sections contain appropriate sub-agent integration guidance
+    if ! grep -A 50 "## validate_design_document" "$hooks_file" | grep -q "claude-code.*design-document-creator"; then
+        echo "❌ validate_design_document section missing design-document-creator integration"
         return 1
     fi
     

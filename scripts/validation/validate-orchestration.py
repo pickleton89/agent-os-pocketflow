@@ -39,38 +39,44 @@ class OrchestrationValidator:
         return self.report_results()
 
     def validate_orchestrator_agent(self):
-        """Validate the PocketFlow orchestrator agent exists and is properly configured."""
-        agent_path = self.claude_path / "agents" / "pocketflow-orchestrator.md"
-
-        if not agent_path.exists():
-            self.add_result(
-                "Orchestrator Agent", False, f"Agent file not found: {agent_path}"
-            )
-            return
-
-        # Check agent content
-        content = agent_path.read_text()
-        required_sections = [
-            "name: pocketflow-orchestrator",
-            "MUST BE USED PROACTIVELY",
-            "tools:",
-            "Core Mission",
-            "Strategic Planning & Pattern Analysis",
-            "Workflow Design & Visualization",
-            "Code Generation & Implementation",
-            "Coordination Protocol",
+        """Validate the three sub-agents exist and are properly configured."""
+        agents = [
+            ("design-document-creator.md", "design-document-creator"),
+            ("strategic-planner.md", "strategic-planner"),
+            ("workflow-coordinator.md", "workflow-coordinator")
         ]
-
-        missing_sections = [
-            section for section in required_sections if section not in content
-        ]
-
-        if missing_sections:
-            self.add_result(
-                "Orchestrator Agent", False, f"Missing sections: {missing_sections}"
-            )
+        
+        all_agents_valid = True
+        missing_agents = []
+        
+        for agent_filename, agent_name in agents:
+            agent_path = self.claude_path / "agents" / agent_filename
+            
+            if not agent_path.exists():
+                missing_agents.append(f"{agent_filename} not found")
+                all_agents_valid = False
+                continue
+                
+            # Check agent content
+            content = agent_path.read_text()
+            required_sections = [
+                f"name: {agent_name}",
+                "description:",
+                "tools:",
+            ]
+            
+            missing_sections = [
+                section for section in required_sections if section not in content
+            ]
+            
+            if missing_sections:
+                missing_agents.append(f"{agent_filename} missing: {missing_sections}")
+                all_agents_valid = False
+        
+        if all_agents_valid:
+            self.add_result("Sub-Agents", True)
         else:
-            self.add_result("Orchestrator Agent", True)
+            self.add_result("Sub-Agents", False, f"Issues: {missing_agents}")
 
     def validate_orchestration_hooks(self):
         """Validate orchestration hooks system."""

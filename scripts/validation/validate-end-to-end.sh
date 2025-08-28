@@ -218,18 +218,31 @@ test_test_structure_generation() {
 
 # Test 8: Agent Configuration Test
 test_agent_configuration() {
-    # Verify orchestrator agent is properly configured
-    [[ -f ".claude/agents/pocketflow-orchestrator.md" ]] || return 1
+    # Verify three sub-agents are properly configured
+    local agents=(
+        "design-document-creator.md:design-document-creator"
+        "strategic-planner.md:strategic-planner"
+        "workflow-coordinator.md:workflow-coordinator"
+    )
     
-    # Check YAML frontmatter
-    grep -q "^name: pocketflow-orchestrator" ".claude/agents/pocketflow-orchestrator.md" || return 1
-    grep -q "^description:" ".claude/agents/pocketflow-orchestrator.md" || return 1
-    grep -q "^tools:" ".claude/agents/pocketflow-orchestrator.md" || return 1
-    
-    # Check agent has substantive content
-    local line_count
-    line_count=$(wc -l < ".claude/agents/pocketflow-orchestrator.md")
-    [[ $line_count -gt 50 ]] || return 1
+    for agent_spec in "${agents[@]}"; do
+        local agent_file="${agent_spec%%:*}"
+        local agent_name="${agent_spec##*:}"
+        local agent_path=".claude/agents/$agent_file"
+        
+        # Check file exists
+        [[ -f "$agent_path" ]] || return 1
+        
+        # Check YAML frontmatter
+        grep -q "^name: $agent_name" "$agent_path" || return 1
+        grep -q "^description:" "$agent_path" || return 1
+        grep -q "^tools:" "$agent_path" || return 1
+        
+        # Check agent has substantive content
+        local line_count
+        line_count=$(wc -l < "$agent_path")
+        [[ $line_count -gt 50 ]] || return 1
+    done
     
     return 0
 }
@@ -331,7 +344,7 @@ test_claude_md_integration() {
     # For framework repository: Check that it properly identifies itself as framework
     grep -q "This IS the Framework" "CLAUDE.md" || return 1
     grep -q "Framework Development Guidelines" "CLAUDE.md" || return 1
-    grep -q "pocketflow-orchestrator.*for end-user projects" "CLAUDE.md" || return 1
+    grep -q "sub-agents.*for end-user projects" "CLAUDE.md" || return 1
     
     return 0
 }
@@ -340,7 +353,9 @@ test_claude_md_integration() {
 test_complete_system_health() {
     # Final comprehensive health check
     local critical_components=(
-        ".claude/agents/pocketflow-orchestrator.md"
+        ".claude/agents/design-document-creator.md"
+        ".claude/agents/strategic-planner.md"
+        ".claude/agents/workflow-coordinator.md"
         ".agent-os/instructions/orchestration/coordination.yaml"
         ".agent-os/instructions/orchestration/orchestrator-hooks.md"
         ".agent-os/instructions/extensions/pocketflow-integration.md"

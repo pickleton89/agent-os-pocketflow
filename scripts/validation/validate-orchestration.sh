@@ -39,14 +39,23 @@ run_test() {
     fi
 }
 
-# Test 1: Orchestrator Agent Exists
-test_orchestrator_agent_exists() {
-    [[ -f ".claude/agents/pocketflow-orchestrator.md" ]] || return 1
+# Test 1: Sub-Agents Exist (replacing single orchestrator)
+test_sub_agents_exist() {
+    local agents=(
+        ".claude/agents/design-document-creator.md"
+        ".claude/agents/strategic-planner.md" 
+        ".claude/agents/workflow-coordinator.md"
+    )
     
-    # Check required YAML frontmatter
-    grep -q "^name: pocketflow-orchestrator" ".claude/agents/pocketflow-orchestrator.md" || return 1
-    grep -q "^description:" ".claude/agents/pocketflow-orchestrator.md" || return 1
-    grep -q "^tools:" ".claude/agents/pocketflow-orchestrator.md" || return 1
+    for agent in "${agents[@]}"; do
+        [[ -f "$agent" ]] || return 1
+        
+        # Check required YAML frontmatter for each agent
+        local agent_name=$(basename "$agent" .md)
+        grep -q "^name: $agent_name" "$agent" || return 1
+        grep -q "^description:" "$agent" || return 1
+        grep -q "^tools:" "$agent" || return 1
+    done
     
     return 0
 }
@@ -115,8 +124,22 @@ test_extension_modules_loadable() {
         # Check for framework boundary clarity
         grep -q "end-user projects\|End-User Projects" "$ext" || return 1
         
-        # Check for orchestrator integration guidance
-        grep -q "orchestrator\|Orchestrator" "$ext" || return 1
+        # Check for appropriate sub-agent integration guidance
+        case "$(basename "$ext")" in
+            "design-first-enforcement.md")
+                grep -q "design-document-creator" "$ext" || return 1
+                ;;
+            "llm-workflow-extension.md")
+                grep -q "workflow-coordinator" "$ext" || return 1
+                ;;
+            "pocketflow-integration.md")
+                grep -q "strategic-planner" "$ext" || return 1
+                ;;
+            *)
+                # Any extension should reference at least one sub-agent  
+                grep -q "design-document-creator\|strategic-planner\|workflow-coordinator" "$ext" || return 1
+                ;;
+        esac
         
         # Check for code template examples
         grep -q "```python\|```bash" "$ext" || return 1
@@ -249,7 +272,7 @@ test_claude_md_integration() {
     # For framework repository: Check that it properly identifies itself as framework
     grep -q "This IS the Framework" "CLAUDE.md" || return 1
     grep -q "Framework Development Guidelines" "CLAUDE.md" || return 1
-    grep -q "pocketflow-orchestrator.*for end-user projects" "CLAUDE.md" || return 1
+    grep -q "sub-agents.*for end-user projects" "CLAUDE.md" || return 1
     
     return 0
 }
@@ -276,7 +299,9 @@ test_scripts_executable() {
 test_full_integration_ready() {
     # Final comprehensive check that everything is ready
     local critical_files=(
-        ".claude/agents/pocketflow-orchestrator.md"
+        ".claude/agents/design-document-creator.md"
+        ".claude/agents/strategic-planner.md"
+        ".claude/agents/workflow-coordinator.md"
         ".agent-os/instructions/orchestration/coordination.yaml"
         ".agent-os/instructions/orchestration/orchestrator-hooks.md"
         ".agent-os/instructions/extensions/pocketflow-integration.md"
@@ -298,7 +323,7 @@ main() {
     echo
     
     # Run all tests
-    run_test "Orchestrator Agent Exists" "test_orchestrator_agent_exists"
+    run_test "Sub-Agents Exist" "test_sub_agents_exist"
     run_test "Coordination Configuration Valid" "test_coordination_config_valid"
     run_test "Hook System Functional" "test_hook_system_functional"
     run_test "Extension Modules Loadable" "test_extension_modules_loadable"
