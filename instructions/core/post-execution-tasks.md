@@ -18,9 +18,50 @@ Follow these steps to validate implementation, mark progress updates, create a r
 
 <process_flow>
 
-<step number="1" name="pocketflow_validation" universal="true">
+<step number="1" subagent="test-runner" name="test_suite_verification">
 
-### Step 1: PocketFlow Implementation Validation (Universal)
+### Step 1: Run All Tests
+
+Use the test-runner subagent to run ALL tests in the application's test suite to ensure no regressions and fix any failures until all tests pass.
+
+<instructions>
+  ACTION: Use test-runner subagent
+  REQUEST: "Run the full test suite with comprehensive validation:
+            - Execute linting: uv run ruff check --fix .
+            - Execute formatting: uv run ruff format .
+            - Execute type checking: uv run ty check
+            - Execute unit tests: uv run pytest -v
+            - Ensure 100% pass rate for all categories"
+  WAIT: For test-runner analysis
+  PROCESS: Fix any reported failures
+  REPEAT: Until all tests pass
+</instructions>
+
+<test_execution>
+  <order>
+    1. Run linting and formatting
+    2. Run type checking
+    3. Run full test suite
+    4. Fix any failures
+  </order>
+  <requirement>100% pass rate across all categories</requirement>
+</test_execution>
+
+<failure_handling>
+  <action>troubleshoot and fix</action>
+  <priority>before proceeding</priority>
+</failure_handling>
+
+</step>
+
+<step number="2" name="pocketflow_validation" universal="true">
+
+### Step 2: PocketFlow Implementation Validation (Universal)
+
+<step_metadata>
+  <validates>PocketFlow architecture compliance</validates>
+  <ensures>universal design-first methodology</ensures>
+</step_metadata>
 
 **Requirement**: Execute for all projects using universal PocketFlow architecture.
 
@@ -60,51 +101,6 @@ Follow these steps to validate implementation, mark progress updates, create a r
   VALIDATE: Complete PocketFlow pattern compliance for all projects
   VERIFY: Universal design-first methodology compliance
   DOCUMENT: Any deviations found during validation
-</instructions>
-
-</step>
-
-<step number="2" name="test_suite_validation">
-
-### Step 2: Test Suite Validation
-
-<step_metadata>
-  <validates>all tests pass before delivery</validates>
-  <ensures>code quality standards met</ensures>
-</step_metadata>
-
-<test_execution_sequence>
-  <linting>
-    <command>uv run ruff check --fix .</command>
-    <command>uv run ruff format .</command>
-    <requirement>zero linting errors</requirement>
-  </linting>
-  
-  <type_checking>
-    <command>uv run ty check</command>
-    <requirement>zero type errors</requirement>
-  </type_checking>
-  
-  <unit_tests>
-    <command>uv run pytest -v</command>
-    <requirement>100% test pass rate</requirement>
-  </unit_tests>
-</test_execution_sequence>
-
-<failure_handling>
-  <on_failure>
-    - Document specific failures
-    - Fix issues before proceeding
-    - Re-run failed test categories
-    - Block delivery until all tests pass
-  </on_failure>
-</failure_handling>
-
-<instructions>
-  ACTION: Run complete test validation sequence
-  REQUIRE: All tests must pass before proceeding
-  FIX: Any failures immediately
-  BLOCK: Delivery if quality standards not met
 </instructions>
 
 </step>
@@ -226,132 +222,192 @@ Use the project-manager subagent to generate a comprehensive recap document for 
 
 </step>
 
-<step number="6" name="git_workflow_completion">
+<step number="6" subagent="git-workflow" name="git_workflow">
 
-### Step 6: Git Workflow Completion
+### Step 6: Git Workflow
 
 <step_metadata>
+  <uses>git-workflow subagent</uses>
   <commits>all changes</commits>
   <creates>pull request</creates>
-  <completes>delivery workflow</completes>
 </step_metadata>
 
-<git_workflow_sequence>
-  <commit_process>
-    <stage>git add -A</stage>
-    <commit>
-      <message>Descriptive summary of implemented features</message>
-      <format>Conventional commits style</format>
-      <attribution>
-        🤖 Generated with [Claude Code](https://claude.ai/code)
-        
-        Co-Authored-By: Claude &lt;noreply@anthropic.com&gt;
-      </attribution>
-    </commit>
-  </commit_process>
-  
-  <push_and_pr>
-    <push>git push origin [branch]</push>
-    <pull_request>
-      <title>Clear, descriptive PR title</title>
-      <description>
-        - Summary of changes
-        - Key features implemented  
-        - Testing coverage
-        - Any special considerations
-      </description>
-    </pull_request>
-  </push_and_pr>
-</git_workflow_sequence>
+Use the git-workflow subagent to create git commit, push to GitHub, and create pull request for the implemented features.
 
 <instructions>
-  ACTION: Complete git workflow with commit and PR
-  COMMIT: All changes with proper attribution
-  PUSH: To appropriate branch
-  CREATE: Pull request with comprehensive description
+  ACTION: Use git-workflow subagent
+  REQUEST: "Complete git workflow for [SPEC_NAME] feature:
+            - Spec: [SPEC_FOLDER_PATH]
+            - Changes: All modified files including PocketFlow components
+            - Target: main branch
+            - Description: [SUMMARY_OF_IMPLEMENTED_FEATURES]
+            - Include PocketFlow patterns and architecture details"
+  WAIT: For workflow completion
+  PROCESS: Save PR URL for summary
 </instructions>
+
+<commit_process>
+  <commit>
+    <message>descriptive summary of changes</message>
+    <format>conventional commits if applicable</format>
+    <attribution>
+      🤖 Generated with [Claude Code](https://claude.ai/code)
+      
+      Co-Authored-By: Claude &lt;noreply@anthropic.com&gt;
+    </attribution>
+  </commit>
+  <push>
+    <target>spec branch</target>
+    <remote>origin</remote>
+  </push>
+  <pull_request>
+    <title>descriptive PR title</title>
+    <description>functionality recap with PocketFlow details</description>
+  </pull_request>
+</commit_process>
 
 </step>
 
-<step number="7" name="completion_notification">
+<step number="7" subagent="project-manager" name="completion_notification">
 
-### Step 7: Completion Notification
+### Step 7: Task Completion Notification
 
 <step_metadata>
+  <uses>project-manager subagent</uses>
   <notifies>user of completion</step_metadata>
   <plays>completion sound</plays>
 </step_metadata>
 
-<notification_sequence>
-  <system_sound>
-    <command>afplay /System/Library/Sounds/Glass.aiff</command>
-    <purpose>Alert user of completion</purpose>
-  </system_sound>
-</notification_sequence>
+Use the project-manager subagent to play a system sound to alert the user that tasks are complete.
+
+<notification_command>
+  afplay /System/Library/Sounds/Glass.aiff
+</notification_command>
 
 <instructions>
-  ACTION: Play system completion sound
-  ALERT: User that all tasks are complete
+  ACTION: Use project-manager subagent
+  REQUEST: "Play completion sound to alert user:
+            - Execute: afplay /System/Library/Sounds/Glass.aiff
+            - Purpose: Alert user that task is complete"
+  PROCESS: Confirm sound played successfully
 </instructions>
 
 </step>
 
-<step number="8" name="delivery_summary">
+<step number="8" subagent="project-manager" name="completion_summary">
 
-### Step 8: Delivery Summary
+### Step 8: Completion Summary
 
 <step_metadata>
-  <creates>final user report</creates>
-  <summarizes>all completed work</step_metadata>
+  <uses>project-manager subagent</uses>
+  <creates>structured summary message</creates>
+  <includes>PocketFlow implementation details</includes>
 </step_metadata>
 
+Use the project-manager subagent to create a structured summary message with emojis showing what was done, any issues, testing instructions, and PR link.
+
+<instructions>
+  ACTION: Use project-manager subagent
+  REQUEST: "Create comprehensive completion summary:
+            - Include all implemented features with PocketFlow components
+            - Document any issues encountered and resolutions
+            - Add testing instructions if applicable
+            - Include PR link and next steps
+            - Format with emoji headers for scannability"
+  WAIT: For summary generation
+  PROCESS: Verify all key information included
+</instructions>
+
 <summary_template>
-  ## ✅ Implementation Complete
+  ## ✅ What's been done
+
+  1. **[FEATURE_1]** - [ONE_SENTENCE_DESCRIPTION]
+  2. **[FEATURE_2]** - [ONE_SENTENCE_DESCRIPTION]
+
+  ## 🏗️ PocketFlow Components (if applicable)
   
-  **Spec**: [SPEC_NAME]
-  **Features Implemented**: 
-  - [FEATURE_1] - [BRIEF_DESCRIPTION]
-  - [FEATURE_2] - [BRIEF_DESCRIPTION]
+  - **[COMPONENT_1]** - [DESCRIPTION]
+  - **Design compliance**: [STATUS]
+  - **Node/Flow patterns**: [PATTERNS]
+
+  ## ⚠️ Issues encountered
+
+  [ONLY_IF_APPLICABLE]
+  - **[ISSUE_1]** - [DESCRIPTION_AND_REASON]
+
+  ## 🧪 Ready to test in browser
+
+  [ONLY_IF_APPLICABLE]
+  1. [STEP_1_TO_TEST]
+  2. [STEP_2_TO_TEST]
+
+  ## 📦 Pull Request
+
+  View PR: [GITHUB_PR_URL]
   
-  **PocketFlow Components** (if applicable):
-  - [COMPONENT_1] - [DESCRIPTION]
+  ## 📋 Next Steps
   
-  **Testing**:
-  - All tests passing ✓
-  - Code quality standards met ✓
-  - Type safety validated ✓
-  
-  **Documentation**:
-  - Tasks marked complete in tasks.md ✓
-  - Roadmap updated (if applicable) ✓ 
-  - Recap created in .agent-os/recaps/ ✓
-  
-  **Pull Request**: [PR_URL]
-  
-  **Next Steps**:
   - [RECOMMENDED_ACTION_1]
   - [RECOMMENDED_ACTION_2]
 </summary_template>
 
-<conditional_sections>
-  <pocketflow_details>
-    **PocketFlow Implementation Details**:
-    - Design compliance: [STATUS]
-    - LLM providers used: [PROVIDERS]
-    - Node/Flow patterns: [PATTERNS]
-  </pocketflow_details>
+<summary_sections>
+  <required>
+    - functionality recap
+    - PocketFlow components (if applicable)
+    - pull request info
+    - next steps
+  </required>
+  <conditional>
+    - issues encountered (if any)
+    - testing instructions (if testable in browser)
+  </conditional>
+</summary_sections>
+
+</step>
+
+<step number="9" name="post_flight_verification">
+
+### Step 9: Post-Flight Rules Verification
+
+<step_metadata>
+  <validates>process_flow execution compliance</validates>
+  <ensures>instruction adherence and subagent utilization</ensures>
+</step_metadata>
+
+Execute post-flight verification to ensure all process_flow steps were executed according to instructions with proper subagent delegation.
+
+<post_flight_execution>
+  EXECUTE: @~/.agent-os/instructions/meta/post-flight-rules.md
+</post_flight_execution>
+
+<verification_scope>
+  <step_completion>
+    - Verify each numbered step (1-8) was actually executed
+    - Confirm step outputs match step requirements
+    - Document any skipped or modified steps
+  </step_completion>
   
-  <issues_encountered>
-    **Issues Resolved**:
-    - [ISSUE_1] - [RESOLUTION]
-  </issues_encountered>
-</conditional_sections>
+  <subagent_delegation>
+    - Confirm step 1 used test-runner subagent via Task tool
+    - Confirm steps 3, 4, 5, 7, 8 used project-manager subagent via Task tool
+    - Confirm step 6 used git-workflow subagent via Task tool
+    - Verify delegation occurred rather than direct execution
+    - Report any subagent bypassing with justification
+  </subagent_delegation>
+  
+  <instruction_compliance>
+    - Review execution vs written instructions
+    - Identify any misinterpretations or shortcuts
+    - Document deviations with impact assessment
+  </instruction_compliance>
+</verification_scope>
 
 <instructions>
-  ACTION: Generate comprehensive delivery summary
-  INCLUDE: All completed features and validation results
-  HIGHLIGHT: Key achievements and next steps
-  FORMAT: Clear, scannable structure with emojis
+  ACTION: Execute post-flight verification process
+  VALIDATE: All process_flow steps executed per instructions
+  VERIFY: Proper subagent delegation occurred
+  REPORT: Any compliance issues or deviations found
 </instructions>
 
 </step>
@@ -361,14 +417,15 @@ Use the project-manager subagent to generate a comprehensive recap document for 
 ## Quality Assurance
 
 <quality_checklist>
+  - [ ] All tests passing via test-runner subagent
   - [ ] PocketFlow validation completed (universal requirement)
-  - [ ] All tests passing (linting, types, unit tests)
   - [ ] Task completion verified by project-manager
-  - [ ] Roadmap updated (if applicable)  
-  - [ ] Recap generated and stored
-  - [ ] Git workflow completed with PR
+  - [ ] Roadmap updated (if applicable) by project-manager
+  - [ ] Recap generated and stored by project-manager
+  - [ ] Git workflow completed with PR via git-workflow subagent
   - [ ] User notified with completion sound
-  - [ ] Delivery summary provided
+  - [ ] Delivery summary provided by project-manager
+  - [ ] Post-flight verification completed
 </quality_checklist>
 
 <blocking_criteria>
@@ -383,7 +440,10 @@ Use the project-manager subagent to generate a comprehensive recap document for 
 ## Integration Notes
 
 This workflow integrates with:
-- **project-manager subagent**: For task verification, roadmap updates, and recap generation
+- **test-runner subagent**: For comprehensive test suite execution and validation
+- **project-manager subagent**: For task verification, roadmap updates, recap generation, and completion summaries
+- **git-workflow subagent**: For git commit, push, and pull request creation
 - **PocketFlow validation**: For universal architecture compliance checking
 - **Recaps system**: Replacing deprecated decisions.md approach
+- **Post-flight verification**: For process compliance and instruction adherence validation
 - **3-phase execution model**: As the final phase after pre-execution and execution
