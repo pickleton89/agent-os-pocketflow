@@ -62,4 +62,48 @@ This agent analyzes user requirements and identifies optimal PocketFlow patterns
 - **Triggers**: Auto-invokes during spec creation and planning phases
 - **Input**: User requirements from .agent-os/specs/ and .agent-os/product/
 - **Output**: Pattern recommendations and initial template structures
-- **Coordination**: Works closely with pocketflow-orchestrator and template-validator
+- **Coordination**: Works closely with design-document-creator, strategic-planner, workflow-coordinator, and template-validator
+
+## Agent Handoff Protocol
+
+This agent serves as a coordination hub for the three-agent architecture. Based on pattern analysis results, implement handoffs to specialized sub-agents:
+
+### Design Document Creation
+**Target Agent**: `design-document-creator`
+**Implementation Guidance**: 
+- TODO: Configure handoff triggers for design validation needs
+- TODO: Set up coordination for template structure documentation
+- TODO: Implement architecture decision routing
+
+### Strategic Planning
+**Target Agent**: `strategic-planner`
+**Implementation Guidance**:
+- TODO: Define handoff criteria for complex business requirements
+- TODO: Configure multi-pattern hybrid approach routing
+- TODO: Set up integration strategy coordination
+
+### Workflow Coordination
+**Target Agent**: `workflow-coordinator`
+**Implementation Guidance**:
+- TODO: Implement template generation handoff logic
+- TODO: Configure workflow graph coordination
+- TODO: Set up node structure validation routing
+
+## Pattern-to-Agent Mapping Reference
+
+Use this mapping guide when implementing handoff logic:
+
+### Design Patterns → design-document-creator
+- Architecture validation patterns
+- Template design documentation
+- System integration design patterns
+
+### Strategy Patterns → strategic-planner  
+- Business logic patterns
+- Multi-system integration strategies
+- Scalability and growth patterns
+
+### Workflow Patterns → workflow-coordinator
+- Template generation patterns
+- Node coordination patterns
+- Process automation workflows
