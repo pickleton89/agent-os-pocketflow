@@ -1,0 +1,9 @@
+Product Name: Task Manager API
+Description: A simple CRUD application for managing tasks
+Features:
+- Create tasks with title and description
+- List all tasks
+- Update task status
+- Delete tasks
+Technology Preferences: Python, FastAPI, SQLite
+Target Pattern: WORKFLOW

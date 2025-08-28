@@ -1,0 +1,9 @@
+Product Name: Sales Data ETL Pipeline
+Description: Data processing pipeline for sales analytics
+Features:
+- Extract data from multiple sources
+- Transform and clean data
+- Load into data warehouse
+- Generate reports
+Technology Preferences: Python, Pandas, PostgreSQL
+Target Pattern: MAPREDUCE

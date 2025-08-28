@@ -1,0 +1,13 @@
+name: "UserAuthService"
+pattern: "TOOL"
+description: "REST API service for user management and authentication"
+nodes:
+  - name: "AuthValidator"
+    type: "Node"
+    description: "Validate authentication requests"
+  - name: "UserManager"
+    type: "AsyncNode"
+    description: "Manage user operations"
+  - name: "TokenHandler"
+    type: "Node"
+    description: "Handle JWT tokens"
