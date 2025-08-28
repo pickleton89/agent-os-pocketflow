@@ -11,8 +11,10 @@
 - `pocketflow-tools/template_validator.py` - Post-generation validation
 - `pocketflow-tools/workflow_graph_generator.py` - Visual diagram generation
 
-**Agent Definition:**
-- `.claude/agents/pocketflow-orchestrator.md` - Agent specification for end-user projects
+**Agent Definitions:**
+- `.claude/agents/design-document-creator.md` - PocketFlow design document creation specialist
+- `.claude/agents/strategic-planner.md` - Product strategy and PocketFlow integration planning
+- `.claude/agents/workflow-coordinator.md` - Template generation and workflow orchestration
 
 **Setup System:**
 - `setup/base.sh` - Framework installation to `~/.agent-os/`
@@ -61,7 +63,7 @@ mkdir my-app && cd my-app
 
 ### Missing Agent Commands
 
-The pocketflow-orchestrator agent needs slash commands that:
+The workflow-coordinator agent needs slash commands that:
 
 ```bash
 /implement-workflow <name>  # Generate PocketFlow workflow from plan
@@ -72,7 +74,7 @@ The pocketflow-orchestrator agent needs slash commands that:
 
 ### Missing Agent-to-Tool Integration
 
-The pocketflow-orchestrator agent should use `Bash` tool calls to invoke:
+The workflow-coordinator agent should use `Bash` tool calls to invoke:
 
 ```python
 # Pattern analysis
@@ -114,7 +116,7 @@ python ~/.agent-os/pocketflow-tools/generator.py --help
 ## Solution Requirements
 
 ### Phase 1: Command Integration
-- Implement slash commands in pocketflow-orchestrator agent
+- Implement slash commands in workflow-coordinator agent
 - Add `Bash` tool integration to call Python framework tools
 - Create command routing and parameter passing
 
