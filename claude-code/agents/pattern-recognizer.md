@@ -2,6 +2,7 @@
 name: pattern-recognizer
 description: MUST BE USED PROACTIVELY for analyzing requirements and identifying optimal PocketFlow patterns. Automatically invoked during planning and spec creation.
 tools: Read, Write, Grep, Glob, Edit, MultiEdit, mcp__graphiti__search_memory_nodes
+color: red
 ---
 
 # Pattern Recognizer Agent
