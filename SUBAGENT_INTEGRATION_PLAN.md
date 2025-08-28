@@ -190,18 +190,149 @@ Step 6: Use the git-workflow subagent to handle version control operations...
 Step 7: Use the template-validator subagent to perform final quality validation...
 ```
 
+## Context Isolation & Information Flow Planning
+
+### Critical Architecture Constraint: Subagent Context Isolation
+
+**⚠️ IMPORTANT**: Subagents do not share memory or conversation history with the primary agent. Each subagent call is stateless and context-isolated. This requires explicit context passing and structured output formats.
+
+### Context Flow Requirements
+
+#### 1. Subagent Input Specification
+For each subagent call, we must explicitly define and provide:
+- **Required Context**: All necessary files, previous results, user requirements
+- **Input Format**: Structured data format for context passing
+- **Task Parameters**: Specific instructions and expected behavior
+- **Constraints**: Limitations and requirements for subagent execution
+
+#### 2. Subagent Output Specification  
+For each subagent call, we must explicitly define and expect:
+- **Output Format**: Structured format (markdown, JSON, specific templates)
+- **Required Information**: All data primary agent needs to continue workflow
+- **Integration Protocol**: How output integrates back into main instruction flow
+- **Error Handling**: Expected behavior for failure scenarios
+
+#### 3. Context-Safe Subagent Call Template
+
+**Standard Pattern**:
+```
+Use the [subagent-name] subagent to [specific task] with the following context:
+
+**Context to Provide**:
+- Current spec: [explicit spec details and location]
+- Required files: [specific file paths and expected content]
+- Previous results: [relevant outcomes from prior steps]
+- User requirements: [specific user needs and constraints]
+- Project state: [current project status and configuration]
+
+**Expected Output Format**: [structured specification]
+**Required Information in Output**: 
+- [specific data point 1]
+- [specific data point 2]
+- [integration requirements]
+
+The subagent must provide complete information for workflow continuation.
+```
+
+#### 4. Information Validation Checklist
+
+Before implementing any subagent call, validate:
+- [ ] **Complete Context**: All necessary information explicitly provided to subagent
+- [ ] **Self-Contained**: Subagent has everything needed without external context
+- [ ] **Structured Output**: Output format enables proper integration back to workflow
+- [ ] **No Information Loss**: Critical workflow data preserved through subagent handoff
+- [ ] **Error Recovery**: Fallback behavior defined for subagent failures
+- [ ] **Integration Path**: Clear process for using subagent output in next steps
+
+#### 5. Agent-Specific Context Requirements
+
+**context-fetcher**:
+- Input: Specific file paths, sections to extract, filtering criteria
+- Output: Extracted content with source attribution, context status
+- Integration: Parsed content available for use in subsequent steps
+
+**date-checker**:
+- Input: Date format requirements, validation criteria  
+- Output: Current date in specified format, validation status
+- Integration: Date available as variable for folder/file naming
+
+**file-creator**:
+- Input: Complete file specifications, template data, directory structure
+- Output: Created file paths, success status, error details
+- Integration: File creation confirmation enables next workflow steps
+
+**pattern-recognizer**:
+- Input: Complete requirements, existing project context, constraints
+- Output: Identified patterns with confidence scores, template recommendations
+- Integration: Pattern selection drives subsequent template and architecture decisions
+
+**project-manager**:
+- Input: Task specifications, completion criteria, current project state
+- Output: Task status updates, completion documentation, next action recommendations
+- Integration: Status updates enable workflow progression and documentation
+
+**test-runner**:
+- Input: Specific test targets, execution parameters, project configuration
+- Output: Test results with detailed failure analysis, success metrics
+- Integration: Test results inform implementation validation and next steps
+
+#### 6. Context Flow Validation Examples
+
+**Good Context Flow**:
+```
+Step 4: Use the date-checker subagent to determine current date for folder naming.
+
+Context to provide:
+- Date format requirement: YYYY-MM-DD
+- Validation criteria: reasonable date within 2024-2030 range
+- Usage context: spec folder naming in .agent-os/specs/
+
+Expected output: Current date in YYYY-MM-DD format
+Required for next step: Date variable for use in folder creation
+```
+
+**Poor Context Flow** (Missing Information):
+```
+Step 4: Use the date-checker subagent to get today's date.
+```
+*Missing: format requirements, validation criteria, usage context*
+
+#### 7. Output Integration Patterns
+
+**Template for Subagent Result Integration**:
+```
+[Subagent completes task and returns structured output]
+
+Primary Agent Processing:
+1. Validate subagent output format and completeness
+2. Extract required information for workflow continuation  
+3. Store critical data in workflow variables
+4. Proceed to next step with integrated context
+5. Handle any subagent errors or incomplete outputs
+```
+
+### Context Isolation Testing Strategy
+
+During implementation, test each subagent integration:
+1. **Isolation Test**: Verify subagent works with only provided context
+2. **Output Test**: Confirm output contains all required information
+3. **Integration Test**: Validate primary agent can continue workflow with subagent output
+4. **Error Test**: Ensure graceful handling of subagent failures
+5. **End-to-End Test**: Complete workflow with all subagent calls
+
 ## Implementation Strategy
 
 ### Phase 1: Standardize Existing Implementation (3 files)
-1. **Remove XML attributes** from execute-task.md, execute-tasks.md, post-execution-tasks.md
-2. **Keep natural language patterns**: "Use the [agent-name] subagent to [task description]..."
-3. **Enhance with missing agents** per mapping plan above
-4. **Test existing functionality** to ensure no regressions
+1. **Apply Context Isolation Standards** to all existing subagent calls
+2. **Remove XML attributes** from execute-task.md, execute-tasks.md, post-execution-tasks.md
+3. **Enhance natural language patterns** with explicit context specifications
+4. **Add missing agents** per mapping plan with full context flow planning
+5. **Test context isolation** to ensure no information loss
 
 ### Phase 2: Implement Missing Files (3 files)
-1. **create-spec.md** → Full implementation following base Agent OS pattern
-2. **analyze-product.md** → Add context-fetcher, pattern-recognizer, file-creator  
-3. **plan-product.md** → Add context-fetcher, pattern-recognizer, file-creator
+1. **create-spec.md** → Full implementation with context isolation compliance
+2. **analyze-product.md** → Add subagents with complete context specifications
+3. **plan-product.md** → Add subagents with structured input/output requirements
 
 ### Phase 3: Update pre-flight.md
 1. **Adopt base Agent OS structure** with frontmatter metadata
@@ -209,10 +340,12 @@ Step 7: Use the template-validator subagent to perform final quality validation.
 3. **Integrate with our coordination.yaml** orchestration system
 
 ### Phase 4: Testing and Validation
-1. **Test each instruction file** with actual subagent calls
-2. **Validate coordination** between instruction files and orchestration system
-3. **Ensure PocketFlow Universal Framework** integration remains intact
-4. **Update documentation** to reflect new subagent integration
+1. **Context Isolation Testing** for each subagent call per testing strategy
+2. **End-to-end workflow validation** with actual subagent integration
+3. **Information flow verification** ensuring no data loss between agents
+4. **Error handling validation** for subagent failures and recovery
+5. **PocketFlow Universal Framework** integration verification
+6. **Documentation updates** reflecting context isolation requirements
 
 ## Success Criteria
 
@@ -229,10 +362,12 @@ Step 7: Use the template-validator subagent to perform final quality validation.
 4. **Documentation Alignment**: Consistent with base Agent OS patterns
 
 ### Quality Indicators
-1. **Subagent Response Time**: Efficient agent invocation and response
-2. **Error Handling**: Graceful fallback when subagents unavailable
-3. **Context Management**: Proper information flow between agents and main instruction
-4. **User Experience**: Seamless integration invisible to end users
+1. **Context Isolation Compliance**: All subagent calls include complete context specifications
+2. **Information Preservation**: No critical data lost during subagent handoffs  
+3. **Structured Output Validation**: All subagent outputs enable workflow continuation
+4. **Error Recovery**: Graceful handling of subagent failures with fallback mechanisms
+5. **Integration Efficiency**: Smooth information flow between agents and main instruction
+6. **User Experience**: Seamless integration invisible to end users
 
 ## Risk Assessment
 
@@ -242,8 +377,9 @@ Step 7: Use the template-validator subagent to perform final quality validation.
 - **Performance impact** of multiple subagent calls per instruction
 
 ### Medium Risk  
-- **Coordination complexity** between multiple agents
-- **Context management** challenges with agent handoffs
+- **Context isolation complexity** requiring explicit information specifications
+- **Information loss** during subagent handoffs due to inadequate context passing
+- **Output format inconsistencies** preventing proper workflow integration
 - **Testing coverage** for all agent interaction scenarios
 
 ### Low Risk
@@ -253,11 +389,13 @@ Step 7: Use the template-validator subagent to perform final quality validation.
 
 ## Mitigation Strategies
 
-1. **Incremental Implementation**: Phase-by-phase rollout with testing at each stage
-2. **Fallback Mechanisms**: Graceful degradation when subagents unavailable  
-3. **Comprehensive Testing**: Validate each instruction file before and after changes
-4. **Documentation First**: Update all documentation before implementation
-5. **Backup Plans**: Maintain current working versions during transition
+1. **Context Isolation Standards**: Apply rigorous context specification and validation requirements
+2. **Structured Output Templates**: Define mandatory output formats for all subagents
+3. **Incremental Implementation**: Phase-by-phase rollout with context flow testing at each stage
+4. **Fallback Mechanisms**: Graceful degradation when subagents unavailable or context incomplete
+5. **Information Flow Testing**: Validate complete context preservation through all handoffs
+6. **Documentation First**: Update all documentation with context isolation requirements
+7. **Backup Plans**: Maintain current working versions during transition
 
 ## Timeline Estimate
 
