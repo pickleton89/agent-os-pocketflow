@@ -10,9 +10,16 @@
 
 **Progress Update:** post-execution-tasks.md now fully aligned with base Agent OS patterns using test-runner, project-manager (4x), and git-workflow subagents.
 
+**Architecture Update:** pocketflow-orchestrator has been split into 3 focused sub-agents following Claude Code best practices:
+- `design-document-creator` → PocketFlow design document creation specialist
+- `strategic-planner` → Product strategy and PocketFlow integration planning  
+- `workflow-coordinator` → Multi-agent workflow orchestration specialist
+
+This split addresses single responsibility violations and provides better focused functionality for end-user projects.
+
 ## Agent Census & Capabilities
 
-### Available Agents (10 Total)
+### Available Agents (12 Total)
 
 1. **context-fetcher** - Information retrieval specialist
    - **Purpose**: Retrieve specific sections from Agent OS and PocketFlow documentation files
@@ -54,12 +61,22 @@
    - **Capabilities**: uv/pytest setup, pyproject.toml generation, tool configuration
    - **Best For**: Setting up development environments, dependency management
 
-9. **pocketflow-orchestrator** - Strategic planning and workflow orchestration specialist
-   - **Purpose**: Central orchestrator for complex Agent OS + PocketFlow integration
-   - **Capabilities**: Strategic planning, design document creation, workflow orchestration
-   - **Best For**: Complex multi-component planning, design document generation
+9. **design-document-creator** - PocketFlow design document creation specialist
+   - **Purpose**: Create comprehensive docs/design.md files for PocketFlow projects
+   - **Capabilities**: Design document generation, PocketFlow pattern integration, Mermaid diagrams
+   - **Best For**: LLM/AI feature design documentation, PocketFlow architecture planning
 
-10. **git-workflow** - Version control operations specialist
+10. **strategic-planner** - Product strategy and PocketFlow integration planning specialist
+    - **Purpose**: Strategic product planning with PocketFlow architecture alignment
+    - **Capabilities**: Strategic roadmaps, PocketFlow pattern analysis, technology stack planning
+    - **Best For**: Product planning phases, strategic PocketFlow integration analysis
+
+11. **workflow-coordinator** - Multi-agent workflow orchestration specialist
+    - **Purpose**: Coordinate complex workflows involving multiple specialized agents
+    - **Capabilities**: Multi-agent coordination, context handoff management, implementation orchestration
+    - **Best For**: Complex multi-component workflows, agent coordination, process orchestration
+
+12. **git-workflow** - Version control operations specialist
     - **Purpose**: Handle git operations, branch management, commits, PRs
     - **Capabilities**: Branch management, commit operations, PR creation
     - **Best For**: Complete git workflows, automated version control operations
@@ -112,12 +129,14 @@
 **Target Agents**: 
 - `context-fetcher` → Read existing mission/roadmap files
 - `pattern-recognizer` → Analyze project for PocketFlow patterns
+- `strategic-planner` → Create strategic analysis and recommendations
 - `file-creator` → Create .agent-os/product/ structure
 
 **Implementation**:
 ```
 Step 1: Use the context-fetcher subagent to read existing mission.md and roadmap.md files...
 Step 3: Use the pattern-recognizer subagent to analyze project requirements for optimal PocketFlow patterns...
+Step 4: Use the strategic-planner subagent to create strategic analysis and PocketFlow integration recommendations...
 Step 7: Use the file-creator subagent to create .agent-os/product/ directory structure...
 ```
 
@@ -125,14 +144,16 @@ Step 7: Use the file-creator subagent to create .agent-os/product/ directory str
 **Current State**: No subagents
 **Target Agents**:
 - `context-fetcher` → Read mission and analyze existing plans
-- `pattern-recognizer` → Determine tech stack patterns
-- `file-creator` → Create roadmap.md and tech-stack.md
+- `strategic-planner` → Create comprehensive strategic plan and roadmap
+- `pattern-recognizer` → Validate recommended patterns
+- `file-creator` → Create roadmap.md and tech-stack.md files
 
 **Implementation**:
 ```
 Step 1: Use the context-fetcher subagent to gather existing product context...
-Step 4: Use the pattern-recognizer subagent to identify required technical patterns...
-Step 6: Use the file-creator subagent to create roadmap.md with Universal PocketFlow requirements...
+Step 3: Use the strategic-planner subagent to create comprehensive strategic plan and implementation roadmap...
+Step 5: Use the pattern-recognizer subagent to validate recommended technical patterns...
+Step 6: Use the file-creator subagent to create roadmap.md and tech-stack.md with strategic recommendations...
 ```
 
 ### 3. create-spec.md
@@ -140,8 +161,9 @@ Step 6: Use the file-creator subagent to create roadmap.md with Universal Pocket
 **Target Agents**:
 - `context-fetcher` → Read mission-lite.md, tech-stack.md
 - `date-checker` → Determine current date for folder naming
-- `file-creator` → Create spec folder, spec.md, sub-specs/, design.md
-- `pattern-recognizer` → Identify PocketFlow pattern for spec
+- `design-document-creator` → Create comprehensive docs/design.md for PocketFlow features
+- `pattern-recognizer` → Identify optimal PocketFlow pattern for spec
+- `file-creator` → Create spec folder structure and basic files
 
 **Implementation** (Following Base Agent OS Pattern):
 ```
@@ -149,9 +171,9 @@ Step 1: Use the context-fetcher subagent to identify spec initiation method...
 Step 2: Use the context-fetcher subagent to read mission-lite.md and tech-stack.md...
 Step 4: Use the date-checker subagent to determine current date for folder naming...
 Step 5: Use the file-creator subagent to create spec folder structure...
-Step 6: Use the file-creator subagent to create spec.md with Universal PocketFlow requirements...
-Step 7: Use the pattern-recognizer subagent to identify optimal PocketFlow pattern...
-Step 8: Use the file-creator subagent to create design.md (Universal requirement)...
+Step 6: Use the file-creator subagent to create spec folder structure and basic spec.md...
+Step 7: Use the pattern-recognizer subagent to identify optimal PocketFlow pattern for spec...
+Step 8: Use the design-document-creator subagent to create comprehensive docs/design.md for PocketFlow features...
 ```
 
 ### 4. execute-task.md (Enhance existing)
@@ -171,12 +193,14 @@ Step 7: Use the template-validator subagent to validate implementation quality..
 ### 5. execute-tasks.md (Enhance existing)
 **Current State**: context-fetcher
 **Add**:
+- `workflow-coordinator` → Orchestrate complex multi-task implementations
 - `test-runner` → Run comprehensive test suites
 - `template-validator` → Validate all generated components
 - `dependency-orchestrator` → Final environment validation
 
 **Implementation**:
 ```
+Step 2: Use the workflow-coordinator subagent to orchestrate complex multi-task implementation workflow...
 Step 4: Use the test-runner subagent to execute comprehensive test validation...
 Step 5: Use the template-validator subagent to validate all generated PocketFlow components...
 Step 6: Use the dependency-orchestrator subagent to verify final environment setup...
@@ -374,7 +398,7 @@ During implementation, test each subagent integration:
 4. **Universal PocketFlow**: Maintain our Universal Framework requirements
 
 ### Measurable Outcomes  
-1. **Agent Utilization**: All 10 agents properly mapped to instruction files
+1. **Agent Utilization**: All 12 agents properly mapped to instruction files
 2. **No Regressions**: Existing functionality continues to work
 3. **Enhanced Capabilities**: New subagent capabilities available in all workflows
 4. **Documentation Alignment**: Consistent with base Agent OS patterns
@@ -428,7 +452,7 @@ During implementation, test each subagent integration:
 ## Dependencies
 
 ### Technical Dependencies
-- All 10 subagents must be functional and accessible
+- All 12 subagents must be functional and accessible
 - Base Agent OS pre-flight.md pattern compatibility
 - Coordination.yaml orchestration system integration
 - PocketFlow Universal Framework preservation

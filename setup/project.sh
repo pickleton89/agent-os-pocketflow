@@ -560,7 +560,9 @@ install_claude_code_integration() {
         
         if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
             agent_files+=(
-                "pocketflow-orchestrator.md"
+                "design-document-creator.md"
+                "strategic-planner.md"
+                "workflow-coordinator.md"
                 "pattern-recognizer.md"
                 "template-validator.md"
                 "dependency-orchestrator.md"

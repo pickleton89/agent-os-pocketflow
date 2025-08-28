@@ -11,9 +11,9 @@
 4. If missing: Block progression with error
 
 ### Error States:
-- `design_document_missing`: Invoke orchestrator for creation
-- `design_incomplete`: Invoke orchestrator for completion  
-- `mermaid_diagram_missing`: Invoke orchestrator for diagram
+- `design_document_missing`: Invoke design-document-creator for creation
+- `design_incomplete`: Invoke design-document-creator for completion  
+- `mermaid_diagram_missing`: Invoke design-document-creator for diagram
 
 ## validate_design_document
 **Template for End-User Projects:** This section provides example validation logic that gets deployed to end-user projects.
@@ -29,7 +29,7 @@ validate_design_document() {
     # TODO: Implement design document existence check
     if [[ ! -f "$design_file" ]]; then
         echo "❌ Design document missing: $design_file"
-        echo "💡 Run: claude-code agent invoke pocketflow-orchestrator --task create-design"
+        echo "💡 Run: claude-code agent invoke design-document-creator"
         return 1
     fi
     
@@ -38,7 +38,7 @@ validate_design_document() {
     for section in "${required_sections[@]}"; do
         if ! grep -q "^## $section" "$design_file"; then
             echo "❌ Missing section: $section"
-            echo "💡 Run: claude-code agent invoke pocketflow-orchestrator --task complete-design"
+            echo "💡 Run: claude-code agent invoke design-document-creator"
             return 2
         fi
     done
@@ -83,7 +83,7 @@ validate_workflow_implementation() {
     # TODO: Implement workflow file existence check
     if [[ ! -f "$workflow_file" ]]; then
         echo "❌ Workflow missing: $workflow_file"
-        echo "💡 Run: claude-code agent invoke pocketflow-orchestrator --task generate-workflow --feature $feature_name"
+        echo "💡 Run: claude-code agent invoke workflow-coordinator --feature $feature_name"
         return 1
     fi
     
@@ -132,5 +132,5 @@ validate_workflow_implementation() {
 ### Implementation Logic:
 1. Detect if current task requires orchestration
 2. Check if orchestrator outputs exist
-3. If missing: Invoke pocketflow-orchestrator with context
+3. If missing: Invoke workflow-coordinator with context
 4. Wait for completion and validate outputs
