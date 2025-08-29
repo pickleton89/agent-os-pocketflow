@@ -296,6 +296,7 @@ Use the dependency-orchestrator subagent to verify the development environment i
     - Project pyproject.toml and dependency requirements
     - Required toolchain: uv, Ruff, ty, pytest configuration
     - PocketFlow installation and version requirements
+    - Pattern-specific dependencies from Step 4.5: [PATTERN_VALIDATION_FROM_STEP_4_5]
     - Any task-specific dependencies or tools needed
   </context_to_provide>
   
@@ -340,6 +341,24 @@ Execute the parent task and all sub-tasks systematically following TDD approach 
     EXECUTE: Universal PocketFlow task implementation
   </project_type_detection>
 </execution_context_detection>
+
+<pattern_integration>
+  <validated_pattern_application>
+    APPLY: Pattern validation results from Step 4.5 pattern-recognizer analysis:
+    - Use recommended PocketFlow pattern with confidence score and rationale
+    - Apply validation results and optimization suggestions  
+    - Follow specific node and flow recommendations for implementation
+    - Consider integration requirements with existing patterns
+    - Implementation guided by: [PATTERN_VALIDATION_FROM_STEP_4_5]
+  </validated_pattern_application>
+  
+  <pattern_compliance_execution>
+    INTEGRATE: Validated pattern recommendations into implementation phases
+    OPTIMIZE: Task execution using pattern-specific best practices
+    VALIDATE: Implementation follows recommended PocketFlow patterns
+    ENSURE: Architecture decisions align with pattern validation results
+  </pattern_compliance_execution>
+</pattern_integration>
 
 <design_document_validation>
   <universal_requirement>
@@ -473,7 +492,7 @@ Use the template-validator subagent to validate the quality of implemented code,
 <quality_validation_context>
   <context_to_provide>
     - Recently implemented code files and changes
-    - PocketFlow pattern compliance requirements
+    - PocketFlow pattern compliance requirements from Step 4.5: [PATTERN_VALIDATION_FROM_STEP_4_5]
     - Framework standards from best-practices.md and code-style.md
     - Task requirements and acceptance criteria
     - Generated templates or code structures
