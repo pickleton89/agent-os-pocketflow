@@ -63,8 +63,7 @@ else
 fi
 
 # 3. Analyze pattern
-cd ~/.agent-os/pocketflow-tools
-python pattern_analyzer.py "$REQUIREMENTS" > /tmp/pattern_analysis.txt
+python ~/.agent-os/pocketflow-tools/pattern_analyzer.py "$REQUIREMENTS" > /tmp/pattern_analysis.txt
 
 # 4. Extract recommended pattern
 PATTERN=$(grep "Primary Pattern:" /tmp/pattern_analysis.txt | cut -d' ' -f3)
@@ -76,14 +75,15 @@ pattern: $PATTERN
 description: "Generated from design documents"
 EOF
 
-# 6. Generate workflow
-python generator.py --spec /tmp/workflow_spec.yaml --output .agent-os/workflows
+# 6. Generate workflow (must run from ~/.agent-os where templates/ exists)
+cd ~/.agent-os
+python pocketflow-tools/generator.py --spec /tmp/workflow_spec.yaml --output .agent-os/workflows
 
 # 7. Set up dependencies
-python dependency_orchestrator.py --pattern $PATTERN --project-name <name>
+python pocketflow-tools/dependency_orchestrator.py --pattern $PATTERN --project-name <name>
 
 # 8. Validate generated templates
-python template_validator.py .agent-os/workflows/<name>/
+python pocketflow-tools/template_validator.py .agent-os/workflows/<name>/
 ```
 
 ### `/generate-pocketflow <name>` Implementation
@@ -93,8 +93,7 @@ echo "Please describe your workflow requirements:"
 # (In actual implementation, get user input)
 
 # 2. Analyze requirements
-cd ~/.agent-os/pocketflow-tools
-python pattern_analyzer.py "$USER_REQUIREMENTS" > /tmp/pattern_analysis.txt
+python ~/.agent-os/pocketflow-tools/pattern_analyzer.py "$USER_REQUIREMENTS" > /tmp/pattern_analysis.txt
 
 # 3. Extract pattern and generate
 PATTERN=$(grep "Primary Pattern:" /tmp/pattern_analysis.txt | cut -d' ' -f3)
@@ -106,22 +105,22 @@ pattern: $PATTERN
 description: "$USER_REQUIREMENTS"
 EOF
 
-python generator.py --spec /tmp/workflow_spec.yaml --output .agent-os/workflows
-python dependency_orchestrator.py --pattern $PATTERN --project-name <name>
+# Run from ~/.agent-os where templates/ exists
+cd ~/.agent-os
+python pocketflow-tools/generator.py --spec /tmp/workflow_spec.yaml --output .agent-os/workflows
+python pocketflow-tools/dependency_orchestrator.py --pattern $PATTERN --project-name <name>
 ```
 
 ### `/analyze-pattern <requirements_text>` Implementation
 ```bash
 # Directly analyze the provided requirements
-cd ~/.agent-os/pocketflow-tools
-python pattern_analyzer.py "<requirements_text>"
+python ~/.agent-os/pocketflow-tools/pattern_analyzer.py "<requirements_text>"
 ```
 
 ### `/validate-workflow <workflow_name>` Implementation
 ```bash
 # Validate the specified workflow
-cd ~/.agent-os/pocketflow-tools
-python template_validator.py .agent-os/workflows/<workflow_name>/
+python ~/.agent-os/pocketflow-tools/template_validator.py .agent-os/workflows/<workflow_name>/
 ```
 
 ## Framework Tool Integration
@@ -155,8 +154,7 @@ fi
 
 # Step 2: Analyze pattern using framework tool
 echo "🔍 Analyzing requirements to determine best PocketFlow pattern..."
-cd ~/.agent-os/pocketflow-tools
-analysis_output=$(python pattern_analyzer.py "$requirements" 2>/dev/null)
+analysis_output=$(python ~/.agent-os/pocketflow-tools/pattern_analyzer.py "$requirements" 2>/dev/null)
 pattern=$(echo "$analysis_output" | grep "Primary Pattern:" | awk '{print $3}')
 
 echo "📋 Recommended pattern: $pattern"
@@ -169,17 +167,18 @@ pattern: $pattern
 description: "Generated from requirements: $requirements"
 EOF
 
-# Step 4: Generate workflow structure
+# Step 4: Generate workflow structure (must run from ~/.agent-os where templates/ exists)
 echo "⚙️  Generating PocketFlow workflow structure..."
-python generator.py --spec "$spec_file" --output .agent-os/workflows
+cd ~/.agent-os
+python pocketflow-tools/generator.py --spec "$spec_file" --output .agent-os/workflows
 
 # Step 5: Setup dependencies
 echo "📦 Setting up dependencies..."
-python dependency_orchestrator.py --pattern "$pattern" --project-name "$workflow_name"
+python pocketflow-tools/dependency_orchestrator.py --pattern "$pattern" --project-name "$workflow_name"
 
 # Step 6: Validate generated templates
 echo "✅ Validating generated templates..."
-python template_validator.py ".agent-os/workflows/$workflow_name/"
+python pocketflow-tools/template_validator.py ".agent-os/workflows/$workflow_name/"
 
 echo "🎉 Workflow '$workflow_name' implementation complete!"
 echo "📁 Generated files available in: .agent-os/workflows/$workflow_name/"
@@ -197,15 +196,13 @@ echo "🤔 Analyzing requirements for PocketFlow generation..."
 # For demonstration - in real implementation, extract from user input
 requirements="Create an intelligent agent that can process documents"
 
-cd ~/.agent-os/pocketflow-tools
-
 # Analyze and generate
-analysis_output=$(python pattern_analyzer.py "$requirements")
+analysis_output=$(python ~/.agent-os/pocketflow-tools/pattern_analyzer.py "$requirements")
 pattern=$(echo "$analysis_output" | grep "Primary Pattern:" | awk '{print $3}')
 
 echo "🎯 Selected pattern: $pattern"
 
-# Create spec and generate
+# Create spec and generate (must run from ~/.agent-os where templates/ exists)
 spec_file="/tmp/${workflow_name}_spec.yaml"
 cat > "$spec_file" << EOF
 name: $workflow_name
@@ -213,8 +210,9 @@ pattern: $pattern
 description: "$requirements"
 EOF
 
-python generator.py --spec "$spec_file" --output .agent-os/workflows
-python dependency_orchestrator.py --pattern "$pattern" --project-name "$workflow_name"
+cd ~/.agent-os
+python pocketflow-tools/generator.py --spec "$spec_file" --output .agent-os/workflows
+python pocketflow-tools/dependency_orchestrator.py --pattern "$pattern" --project-name "$workflow_name"
 
 echo "✨ PocketFlow workflow '$workflow_name' generated successfully!"
 ```
@@ -227,8 +225,7 @@ requirements_text="Build a search system"
 
 echo "🔍 Analyzing pattern for: $requirements_text"
 
-cd ~/.agent-os/pocketflow-tools
-python pattern_analyzer.py "$requirements_text"
+python ~/.agent-os/pocketflow-tools/pattern_analyzer.py "$requirements_text"
 ```
 
 ### Bash Tool Integration for `/validate-workflow`
@@ -239,9 +236,8 @@ workflow_name="MyWorkflow"
 
 echo "🔍 Validating workflow: $workflow_name"
 
-cd ~/.agent-os/pocketflow-tools
 if [ -d ".agent-os/workflows/$workflow_name" ]; then
-    python template_validator.py ".agent-os/workflows/$workflow_name/"
+    python ~/.agent-os/pocketflow-tools/template_validator.py ".agent-os/workflows/$workflow_name/"
 else
     echo "❌ Workflow directory not found: .agent-os/workflows/$workflow_name"
 fi
