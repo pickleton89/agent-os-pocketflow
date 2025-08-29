@@ -148,6 +148,56 @@ encoding: UTF-8
 
 </step>
 
+<step number="1.5" subagent="pattern-recognizer" name="pocketflow_pattern_analysis">
+
+### Step 1.5: PocketFlow Pattern Analysis
+
+<step_metadata>
+  <uses>pattern-recognizer subagent</uses>
+  <analyzes>project requirements for optimal PocketFlow patterns</analyzes>
+  <purpose>identify appropriate architecture patterns during analysis</purpose>
+</step_metadata>
+
+Use the pattern-recognizer subagent to analyze the existing project for optimal PocketFlow patterns and architectural recommendations.
+
+<pattern_analysis_context>
+  <context_to_provide>
+    - Codebase analysis results from Step 1
+    - Detected technology stack and architectural patterns
+    - Existing PocketFlow implementation (if any)
+    - Project complexity and feature requirements
+    - Performance and scalability considerations
+    - Integration requirements with external services
+  </context_to_provide>
+  
+  <expected_output>
+    - Recommended PocketFlow patterns with confidence scores and rationale
+    - Analysis of current architecture vs. optimal PocketFlow patterns
+    - Specific recommendations for pattern implementation
+    - Migration path for existing non-PocketFlow code (if applicable)
+    - Integration strategy for identified patterns
+  </expected_output>
+  
+  <required_for_next_step>
+    Pattern analysis informs strategic planning and architecture recommendations
+  </required_for_next_step>
+</pattern_analysis_context>
+
+<instructions>
+  ACTION: Use pattern-recognizer subagent for comprehensive pattern analysis
+  REQUEST: "Analyze existing project for optimal PocketFlow pattern recommendations:
+            - Codebase analysis: [DETECTED_PROJECT_STRUCTURE_AND_FEATURES]
+            - Technology stack: [CURRENT_TECH_STACK_AND_DEPENDENCIES]
+            - Existing patterns: [CURRENT_ARCHITECTURE_ANALYSIS]
+            - Project complexity: [FEATURE_SCOPE_AND_REQUIREMENTS]
+            - Performance needs: [SCALABILITY_AND_INTEGRATION_REQUIREMENTS]
+            - Pattern options: Agent, RAG, Workflow, MapReduce, Multi-Agent, Structured Output"
+  PROCESS: Pattern recommendations and architectural guidance
+  APPLY: Pattern analysis results to strategic planning
+</instructions>
+
+</step>
+
 <step number="2" name="gather_product_context">
 
 ### Step 2: Gather Product Context
@@ -181,6 +231,73 @@ encoding: UTF-8
   ACTION: Ask user for product context
   COMBINE: Merge user input with codebase analysis
   PREPARE: Information for plan-product.md execution
+</instructions>
+
+</step>
+
+<step number="2.5" subagent="strategic-planner" name="strategic_analysis_and_recommendations">
+
+### Step 2.5: Strategic Analysis and PocketFlow Integration Recommendations
+
+<step_metadata>
+  <uses>strategic-planner subagent</uses>
+  <creates>strategic analysis and PocketFlow integration recommendations</creates>
+  <purpose>develop comprehensive strategic approach for Agent OS integration</purpose>
+</step_metadata>
+
+Use the strategic-planner subagent to create strategic analysis and comprehensive PocketFlow integration recommendations based on the codebase analysis and user context.
+
+<strategic_analysis_context>
+  <context_to_provide>
+    - Complete codebase analysis from Step 1
+    - PocketFlow pattern recommendations from Step 1.5
+    - User-provided product context and vision from Step 2
+    - Current development state and roadmap priorities
+    - Technical constraints and integration opportunities
+    - Team capabilities and development preferences
+  </context_to_provide>
+  
+  <expected_output>
+    - Strategic roadmap for Agent OS integration
+    - PocketFlow pattern implementation priority matrix
+    - Migration strategy for existing architecture
+    - Development phase recommendations with timelines
+    - Risk assessment and mitigation strategies
+    - Resource allocation and team development suggestions
+  </expected_output>
+  
+  <required_for_next_step>
+    Strategic recommendations guide plan-product execution and documentation generation
+  </required_for_next_step>
+</strategic_analysis_context>
+
+<comprehensive_strategic_planning>
+  <integration_strategy>
+    - Agent OS installation approach (retrofit vs. greenfield)
+    - PocketFlow pattern adoption sequence
+    - Existing codebase preservation and migration
+    - Team training and capability development
+  </integration_strategy>
+  
+  <implementation_roadmap>
+    - Phase-by-phase implementation plan
+    - Priority matrix for features and patterns
+    - Dependencies and prerequisite identification
+    - Timeline and milestone recommendations
+  </implementation_roadmap>
+</comprehensive_strategic_planning>
+
+<instructions>
+  ACTION: Use strategic-planner subagent for comprehensive strategic analysis
+  REQUEST: "Create strategic analysis and PocketFlow integration recommendations:
+            - Codebase state: [COMPLETE_ANALYSIS_FROM_STEP_1]
+            - Pattern analysis: [POCKETFLOW_RECOMMENDATIONS_FROM_STEP_1_5]
+            - Product context: [USER_VISION_AND_REQUIREMENTS_FROM_STEP_2]
+            - Current priorities: [EXISTING_ROADMAP_AND_DEVELOPMENT_STATE]
+            - Integration approach: [RETROFIT_AGENT_OS_WITH_POCKETFLOW_PATTERNS]
+            - Strategic focus: [OPTIMAL_MIGRATION_AND_IMPLEMENTATION_STRATEGY]"
+  PROCESS: Strategic recommendations and implementation roadmap
+  APPLY: Strategic analysis to plan-product execution parameters
 </instructions>
 
 </step>

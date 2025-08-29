@@ -187,6 +187,101 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 </step>
 
+<step number="4.5" subagent="pattern-recognizer" name="pocketflow_pattern_validation">
+
+### Step 4.5: PocketFlow Pattern Validation
+
+<step_metadata>
+  <uses>pattern-recognizer subagent</uses>
+  <validates>PocketFlow pattern compliance during implementation</validates>
+  <purpose>ensure optimal architecture pattern selection</purpose>
+</step_metadata>
+
+Use the pattern-recognizer subagent to validate that the current task aligns with appropriate PocketFlow patterns and identify any architecture optimization opportunities.
+
+<pattern_validation_context>
+  <context_to_provide>
+    - Current task description and requirements from tasks.md
+    - Existing project context from technical-spec.md analysis
+    - PocketFlow pattern options: Agent, RAG, Workflow, MapReduce, Multi-Agent, Structured Output
+    - Performance requirements: latency, throughput, scalability needs
+    - Current architecture decisions and constraints
+  </context_to_provide>
+  
+  <expected_output>
+    - Recommended PocketFlow pattern with confidence score and rationale
+    - Validation of current approach or suggested optimizations
+    - Specific node and flow recommendations for implementation
+    - Integration considerations with existing patterns
+  </expected_output>
+  
+  <required_for_next_step>
+    Pattern validation informs implementation approach and architecture decisions
+  </required_for_next_step>
+</pattern_validation_context>
+
+<instructions>
+  ACTION: Use pattern-recognizer subagent for task-specific pattern validation
+  REQUEST: "Analyze current task for optimal PocketFlow pattern compliance:
+            - Task requirements: [CURRENT_TASK_AND_SUBTASKS]
+            - Project context: [TECHNICAL_SPEC_ANALYSIS]
+            - Existing patterns: [CURRENT_PROJECT_ARCHITECTURE]
+            - Performance needs: [LATENCY_THROUGHPUT_SCALABILITY]
+            - Pattern options: Agent, RAG, Workflow, MapReduce, Multi-Agent, Structured Output"
+  PROCESS: Pattern recommendations and optimization suggestions
+  APPLY: Validated patterns to implementation strategy
+</instructions>
+
+</step>
+
+<step number="4.7" subagent="dependency-orchestrator" name="development_environment_validation">
+
+### Step 4.7: Development Environment Validation
+
+<step_metadata>
+  <uses>dependency-orchestrator subagent</uses>
+  <validates>proper tooling setup and environment readiness</validates>
+  <purpose>ensure implementation environment is properly configured</purpose>
+</step_metadata>
+
+Use the dependency-orchestrator subagent to verify the development environment is properly configured for the current task implementation.
+
+<environment_validation_context>
+  <context_to_provide>
+    - Current task requirements and technology stack needs
+    - Project pyproject.toml and dependency requirements
+    - Required toolchain: uv, Ruff, ty, pytest configuration
+    - PocketFlow installation and version requirements
+    - Any task-specific dependencies or tools needed
+  </context_to_provide>
+  
+  <expected_output>
+    - Environment setup validation results
+    - Missing dependencies or configuration issues
+    - Toolchain validation status (uv/Ruff/ty/pytest)
+    - Environment setup commands if needed
+    - PocketFlow readiness confirmation
+  </expected_output>
+  
+  <required_for_next_step>
+    Environment readiness enables reliable task implementation
+  </required_for_next_step>
+</environment_validation_context>
+
+<instructions>
+  ACTION: Use dependency-orchestrator subagent for environment validation
+  REQUEST: "Validate development environment for current task:
+            - Task requirements: [CURRENT_TASK_TECH_NEEDS]
+            - Project dependencies: [PYPROJECT_TOML_ANALYSIS]
+            - Toolchain: uv, Ruff, ty, pytest configuration status
+            - PocketFlow: Installation and version validation
+            - Environment: Current setup vs. required setup"
+  PROCESS: Environment validation results and setup recommendations
+  APPLY: Any necessary environment setup before implementation
+</instructions>
+
+</step>
+
 <step number="5" name="task_execution">
 
 ### Step 5: Task and Sub-task Execution
@@ -319,9 +414,66 @@ Execute the parent task and all sub-tasks systematically following TDD approach 
 
 </step>
 
-<step number="6" subagent="test-runner" name="task_test_verification">
+<step number="5.5" subagent="template-validator" name="implementation_quality_validation">
 
-### Step 6: Task-Specific Test Verification
+### Step 5.5: Implementation Quality Validation
+
+<step_metadata>
+  <uses>template-validator subagent</uses>
+  <validates>generated code quality before completion</validates>
+  <purpose>ensure implementation meets framework standards</purpose>
+</step_metadata>
+
+Use the template-validator subagent to validate the quality of implemented code, templates, and architecture compliance before proceeding to testing.
+
+<quality_validation_context>
+  <context_to_provide>
+    - Recently implemented code files and changes
+    - PocketFlow pattern compliance requirements
+    - Framework standards from best-practices.md and code-style.md
+    - Task requirements and acceptance criteria
+    - Generated templates or code structures
+  </context_to_provide>
+  
+  <expected_output>
+    - Code quality validation results with specific issues identified
+    - PocketFlow pattern compliance assessment
+    - Template structure and educational placeholder quality
+    - Recommendations for improvements before testing
+    - Approval status for progression to testing phase
+  </expected_output>
+  
+  <required_for_next_step>
+    Quality validation ensures reliable test execution and prevents flawed implementations
+  </required_for_next_step>
+</quality_validation_context>
+
+<blocking_validation>
+  IF template-validator identifies critical issues:
+    - Fix identified issues before proceeding
+    - Re-run validation until quality standards met
+  ELSE:
+    - Proceed to test verification with quality approval
+</blocking_validation>
+
+<instructions>
+  ACTION: Use template-validator subagent for implementation quality validation
+  REQUEST: "Validate implementation quality for current task:
+            - Code changes: [IMPLEMENTED_FILES_AND_CHANGES]
+            - PocketFlow compliance: [PATTERN_ADHERENCE_CHECK]
+            - Framework standards: [BEST_PRACTICES_COMPLIANCE]
+            - Task requirements: [ACCEPTANCE_CRITERIA_VALIDATION]
+            - Template quality: [STRUCTURE_AND_PLACEHOLDER_QUALITY]"
+  PROCESS: Quality validation results and improvement recommendations
+  BLOCK: Progression until quality standards are met
+  APPLY: Required improvements before testing phase
+</instructions>
+
+</step>
+
+<step number="6.5" subagent="test-runner" name="task_test_verification">
+
+### Step 6.5: Task-Specific Test Verification
 
 Use the test-runner subagent to run and verify only the tests specific to this parent task (not the full test suite) to ensure the feature is working correctly.
 
@@ -357,9 +509,9 @@ Use the test-runner subagent to run and verify only the tests specific to this p
 
 </step>
 
-<step number="7" name="task_status_updates">
+<step number="8" name="task_status_updates">
 
-### Step 7: Task Status Updates
+### Step 8: Task Status Updates
 
 Update the tasks.md file immediately after completing each task to track progress.
 

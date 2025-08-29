@@ -274,7 +274,7 @@ Use the git-workflow subagent to create git commit, push to GitHub, and create p
 
 <step_metadata>
   <uses>project-manager subagent</uses>
-  <notifies>user of completion</step_metadata>
+  <notifies>user of completion</notifies>
   <plays>completion sound</plays>
 </step_metadata>
 
