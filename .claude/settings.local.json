@@ -86,7 +86,8 @@
       "Bash(timeout:*)",
       "Bash(./scripts/validation/validate-user-experience.sh:*)",
       "Bash(git rm:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "WebFetch(domain:medium.com)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
