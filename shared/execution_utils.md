@@ -216,6 +216,218 @@ standard_errors:
     - User-friendly feedback
 ```
 
+## Subagent Context Flow Specifications
+
+### Context Isolation Architecture
+
+**⚠️ CRITICAL**: Subagents do not share memory or conversation history with the primary agent. Each subagent call is stateless and context-isolated, requiring explicit context passing and structured output formats.
+
+### Enhanced Context Flow Template (Phase 2 Pattern)
+
+**Standard Pattern**:
+```xml
+<step number="X.Y" subagent="agent-name" name="descriptive_name">
+### Step X.Y: Descriptive Step Title
+
+<step_metadata>
+  <uses>agent-name subagent</uses>
+  <validates>specific validation purpose</validates>
+  <purpose>clear explanation of why this subagent is needed</purpose>
+</step_metadata>
+
+Use the agent-name subagent to [specific task] with comprehensive context provision.
+
+<context_block_name_context>
+  <context_to_provide>
+    - Specific input requirement 1
+    - Specific input requirement 2
+    - Previous step outputs: [VARIABLE_NAME_FROM_STEP_X]
+    - User requirements and constraints
+    - Technical context and decisions
+  </context_to_provide>
+  
+  <expected_output>
+    - Specific output requirement 1
+    - Specific output requirement 2
+    - Structured data for next step integration
+    - Validation results or recommendations
+  </expected_output>
+  
+  <required_for_next_step>
+    Clear explanation of how this output integrates into subsequent steps
+  </required_for_next_step>
+</context_block_name_context>
+
+<failure_handling>
+  IF agent-name reports [specific failure conditions]:
+    - Specific recovery action 1
+    - Specific recovery action 2
+    - Fallback strategy (e.g., default Agent pattern)
+  ELSE:
+    - Proceed with successful execution path
+</failure_handling>
+
+<instructions>
+  ACTION: Use agent-name subagent for [specific purpose]
+  REQUEST: "Detailed request with all context variables populated"
+  PROCESS: Returned output and integrate into workflow
+  APPLY: Results to subsequent steps
+</instructions>
+</step>
+```
+
+### Agent-Specific Context Requirements
+
+**context-fetcher**:
+- Input: Specific file paths, sections to extract, filtering criteria
+- Output: Extracted content with source attribution, context status
+- Integration: Parsed content available for use in subsequent steps
+- Context Pattern: `<[purpose]_retrieval_context>` (e.g., `<best_practices_retrieval_context>`, `<code_style_retrieval_context>`)
+
+**pattern-recognizer**:
+- Input: Complete requirements, existing project context, constraints
+- Output: Identified patterns with confidence scores, template recommendations
+- Integration: Pattern selection drives subsequent template and architecture decisions
+- Context Pattern: `<pattern_validation_context>` for architectural analysis
+
+**strategic-planner**:
+- Input: Product vision, feature requirements, technical constraints
+- Output: Strategic recommendations with rationale, implementation priorities
+- Integration: Strategic decisions inform roadmap and architectural choices
+- Context Pattern: `<strategic_analysis_context>` for high-level planning
+
+**dependency-orchestrator**:
+- Input: Project requirements, current environment state, tool preferences
+- Output: Environment setup commands, dependency specifications, validation results
+- Integration: Environment readiness enables implementation phases
+- Context Pattern: `<environment_validation_context>` for environment setup
+
+**template-validator**:
+- Input: Generated code/templates, quality criteria, framework standards
+- Output: Validation results with specific issues and recommendations
+- Integration: Quality approval gates prevent progression of flawed implementations
+- Context Pattern: `<quality_validation_context>` for quality assurance
+
+**test-runner**:
+- Input: Test commands, scope specifications, failure analysis requirements
+- Output: Test results, failure analysis, quality metrics
+- Integration: Testing results inform implementation validation and next steps
+- Context Pattern: `<test_verification_context>` for testing validation
+
+### Context Flow Usage Examples
+
+**Example 1: Pattern Recognition Integration** (from execute-task.md):
+```xml
+<pattern_validation_context>
+  <context_to_provide>
+    - Current task description and requirements from tasks.md
+    - Existing project context from technical-spec.md analysis
+    - PocketFlow pattern options: Agent, RAG, Workflow, MapReduce, Multi-Agent, Structured Output
+    - Performance requirements: latency, throughput, scalability needs
+    - Current architecture decisions and constraints
+  </context_to_provide>
+  
+  <expected_output>
+    - Recommended PocketFlow pattern with confidence score and rationale
+    - Validation of current approach or suggested optimizations
+    - Specific node and flow recommendations for implementation
+    - Integration considerations with existing patterns
+  </expected_output>
+  
+  <required_for_next_step>
+    Pattern validation informs implementation approach and architecture decisions
+  </required_for_next_step>
+</pattern_validation_context>
+```
+
+**Example 2: Strategic Planning Integration** (from analyze-product.md):
+```xml
+<strategic_analysis_context>
+  <context_to_provide>
+    - Complete codebase analysis from Step 1
+    - PocketFlow pattern recommendations from Step 1.5
+    - User-provided product context and vision from Step 2
+    - Current development state and roadmap priorities
+    - Technical constraints and integration opportunities
+    - Team capabilities and development preferences
+  </context_to_provide>
+  
+  <expected_output>
+    - Strategic roadmap for Agent OS integration
+    - PocketFlow pattern implementation priority matrix
+    - Migration strategy for existing architecture
+    - Risk assessment and mitigation recommendations
+    - Timeline estimates and resource requirements
+  </expected_output>
+  
+  <required_for_next_step>
+    Strategic analysis provides foundation for plan-product execution and strategic approach validation
+  </required_for_next_step>
+</strategic_analysis_context>
+```
+
+**Example 3: Environment Validation Integration** (from execute-task.md):
+```xml
+<environment_validation_context>
+  <context_to_provide>
+    - Current task requirements and technology stack needs
+    - Project pyproject.toml and dependency requirements
+    - Required toolchain: uv, Ruff, ty, pytest configuration
+    - PocketFlow installation and version requirements
+    - Pattern-specific dependencies from Step 4.5: [PATTERN_VALIDATION_FROM_STEP_4_5]
+    - Any task-specific dependencies or tools needed
+  </context_to_provide>
+  
+  <expected_output>
+    - Environment setup validation results
+    - Missing dependencies or configuration issues
+    - Toolchain validation status (uv/Ruff/ty/pytest)
+    - Environment setup commands if needed
+    - PocketFlow readiness confirmation
+  </expected_output>
+  
+  <required_for_next_step>
+    Environment readiness enables reliable task implementation
+  </required_for_next_step>
+</environment_validation_context>
+
+<blocking_validation>
+  IF dependency-orchestrator identifies critical environment issues:
+    - Execute recommended setup commands immediately
+    - Install missing dependencies via uv add
+    - Configure toolchain settings as specified
+    - Re-validate environment until all requirements met
+    - BLOCK progression until environment fully ready
+  ELSE:
+    - Proceed to implementation with validated environment
+</blocking_validation>
+```
+
+### Information Flow Validation Checklist
+
+Before implementing any subagent call, validate:
+- [ ] **Complete Context**: All necessary information explicitly provided to subagent
+- [ ] **Self-Contained**: Subagent has everything needed without external context
+- [ ] **Structured Output**: Output format enables proper integration back to workflow
+- [ ] **No Information Loss**: Critical workflow data preserved through subagent handoff
+- [ ] **Error Recovery**: Fallback behavior defined for subagent failures
+- [ ] **Integration Path**: Clear process for using subagent output in next steps
+- [ ] **Variable Consistency**: Output variables properly referenced in subsequent steps
+
+### Quality Standards for Context Blocks
+
+**Required Elements**:
+1. `<context_to_provide>`: Explicit list of all inputs needed
+2. `<expected_output>`: Structured specification of required outputs
+3. `<required_for_next_step>`: Integration explanation for workflow continuation
+4. `<failure_handling>`: Error recovery and fallback strategies (where applicable)
+5. `<blocking_validation>`: Critical validation gates (for essential subagents)
+
+**Naming Conventions**:
+- Context blocks: `<[purpose]_context>` (e.g., `<pattern_validation_context>`)
+- Variable references: `[DESCRIPTIVE_NAME_FROM_STEP_X_Y]` (e.g., `[PATTERN_VALIDATION_FROM_STEP_4_5]`)
+- Step metadata: Always include `<uses>`, `<validates>`, `<purpose>` elements
+
 ## Integration Validation
 
 ### Cross-File Coordination
