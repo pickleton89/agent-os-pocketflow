@@ -1,6 +1,6 @@
 ---
 name: file-creator
-description: Use proactively to create files, directories, and apply templates for Agent OS workflows. Handles batch file creation with proper structure and boilerplate.
+description: MUST BE USED PROACTIVELY to create files, directories, and apply templates for Agent OS workflows. Handles batch file creation with proper structure and boilerplate.
 tools: Write, Bash, Read
 color: green
 ---

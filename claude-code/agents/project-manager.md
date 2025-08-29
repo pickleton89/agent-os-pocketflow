@@ -1,6 +1,6 @@
 ---
 name: project-manager
-description: Use proactively to check task completeness and update task and roadmap tracking docs. Enhanced with PocketFlow LLM/AI validation capabilities.
+description: MUST BE USED PROACTIVELY to check task completeness and update task and roadmap tracking docs. Enhanced with PocketFlow LLM/AI validation capabilities.
 tools: Read, Grep, Glob, Write, Bash
 color: cyan
 ---

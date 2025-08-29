@@ -1,6 +1,6 @@
 ---
 name: context-fetcher
-description: Use proactively to retrieve and extract relevant information from Agent OS documentation files and PocketFlow project structures. Checks if content is already in context before returning. Enhanced with design-first awareness for LLM/AI projects.
+description: MUST BE USED PROACTIVELY to retrieve and extract relevant information from Agent OS documentation files and PocketFlow project structures. Checks if content is already in context before returning. Enhanced with design-first awareness for LLM/AI projects.
 tools: Read, Grep, Glob
 color: blue
 ---
