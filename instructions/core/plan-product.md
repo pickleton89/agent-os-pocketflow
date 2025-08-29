@@ -141,6 +141,16 @@ Use the strategic-planner subagent to create a comprehensive strategic plan and 
   </pocketflow_integration_strategy>
 </comprehensive_planning_scope>
 
+<blocking_validation>
+  IF strategic-planner identifies unclear requirements or missing critical information:
+    - Request clarification of product vision and key features
+    - Gather additional technical constraints and preferences
+    - Re-run strategic planning with enhanced input
+    - BLOCK documentation creation until strategic foundation is solid
+  ELSE:
+    - Proceed to create documentation with validated strategic plan
+</blocking_validation>
+
 <instructions>
   ACTION: Use strategic-planner subagent for comprehensive strategic planning
   REQUEST: "Create comprehensive strategic plan and implementation roadmap:
@@ -478,6 +488,16 @@ Use the pattern-recognizer subagent to validate the recommended technical patter
     - Risk assessment for technical choices
   </implementation_validation>
 </technical_validation_scope>
+
+<failure_handling>
+  IF pattern-recognizer identifies conflicting technical requirements or validation failures:
+    - Review technical architecture decisions for inconsistencies
+    - Prioritize pattern candidates based on strategic importance
+    - Use fallback Agent pattern for complex or unclear cases
+    - Document technical trade-offs and architectural risks
+  ELSE:
+    - Proceed with validated pattern recommendations to roadmap creation
+</failure_handling>
 
 <instructions>
   ACTION: Use pattern-recognizer subagent for technical pattern validation

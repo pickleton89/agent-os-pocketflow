@@ -183,6 +183,15 @@ Use the pattern-recognizer subagent to analyze the existing project for optimal 
   </required_for_next_step>
 </pattern_analysis_context>
 
+<failure_handling>
+  IF pattern-recognizer reports insufficient codebase information or analysis failures:
+    - Request additional context about project architecture and goals
+    - Provide fallback analysis using standard project patterns
+    - Use general Agent pattern as default recommendation
+  ELSE:
+    - Proceed with pattern-specific strategic analysis
+</failure_handling>
+
 <instructions>
   ACTION: Use pattern-recognizer subagent for comprehensive pattern analysis
   REQUEST: "Analyze existing project for optimal PocketFlow pattern recommendations:
@@ -286,6 +295,16 @@ Use the strategic-planner subagent to create strategic analysis and comprehensiv
     - Timeline and milestone recommendations
   </implementation_roadmap>
 </comprehensive_strategic_planning>
+
+<blocking_validation>
+  IF strategic-planner identifies conflicting requirements or strategic gaps:
+    - Clarify product vision and technical constraints with user
+    - Request prioritization of competing architectural approaches
+    - Re-run strategic analysis with refined requirements
+    - BLOCK plan-product execution until strategic clarity achieved
+  ELSE:
+    - Proceed to plan-product with validated strategic parameters
+</blocking_validation>
 
 <instructions>
   ACTION: Use strategic-planner subagent for comprehensive strategic analysis

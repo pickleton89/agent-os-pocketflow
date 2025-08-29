@@ -264,6 +264,15 @@ Use the pattern-recognizer subagent to validate that the current task aligns wit
   </required_for_next_step>
 </pattern_validation_context>
 
+<failure_handling>
+  IF pattern-recognizer reports unclear requirements or analysis failures:
+    - Clarify task requirements and technical constraints
+    - Re-run pattern validation with enhanced context
+    - Use fallback Agent pattern if analysis inconclusive
+  ELSE:
+    - Proceed with validated pattern recommendations
+</failure_handling>
+
 <instructions>
   ACTION: Use pattern-recognizer subagent for task-specific pattern validation
   REQUEST: "Analyze current task for optimal PocketFlow pattern compliance:
@@ -312,6 +321,17 @@ Use the dependency-orchestrator subagent to verify the development environment i
     Environment readiness enables reliable task implementation
   </required_for_next_step>
 </environment_validation_context>
+
+<blocking_validation>
+  IF dependency-orchestrator identifies critical environment issues:
+    - Execute recommended setup commands immediately
+    - Install missing dependencies via uv add
+    - Configure toolchain settings as specified
+    - Re-validate environment until all requirements met
+    - BLOCK progression until environment fully ready
+  ELSE:
+    - Proceed to implementation with validated environment
+</blocking_validation>
 
 <instructions>
   ACTION: Use dependency-orchestrator subagent for environment validation
