@@ -87,7 +87,8 @@
       "Bash(./scripts/validation/validate-user-experience.sh:*)",
       "Bash(git rm:*)",
       "Bash(git log:*)",
-      "WebFetch(domain:medium.com)"
+      "WebFetch(domain:medium.com)",
+      "Bash(./scripts/validation/validate-sub-agents.sh:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
