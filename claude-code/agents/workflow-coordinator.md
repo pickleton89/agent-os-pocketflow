@@ -52,38 +52,157 @@ When a slash command is invoked, implement the following logic:
 
 ### `/implement-workflow <name>` Implementation
 ```bash
-# 1. Check for existing design documents
-ls docs/
+# Enhanced implementation with context-aware planning-to-implementation handoff
+workflow_name="<name>"
 
-# 2. If design docs exist, extract requirements
-if [ -f "docs/requirements.md" ]; then
-    REQUIREMENTS=$(cat docs/requirements.md | head -10)
+echo "🔍 Phase 2: Planning-to-Implementation Handoff for '$workflow_name'"
+
+# 1. Extract comprehensive project context from design documents
+echo "📋 Extracting project context from design documents..."
+context_file="/tmp/${workflow_name}_context.json"
+spec_file="/tmp/${workflow_name}_spec.yaml"
+
+# Use context manager to intelligently analyze all design documents
+python ~/.agent-os/pocketflow-tools/context_manager.py \
+    --workflow-name "$workflow_name" \
+    --output "$context_file" \
+    --spec "$spec_file" \
+    --verbose
+
+# 2. Validate context extraction succeeded
+if [ ! -f "$context_file" ]; then
+    echo "⚠️  No design documents found, proceeding with minimal context..."
+    echo "💡 Consider running /plan-product first to create design documents"
+    
+    # Fallback to basic pattern analysis
+    python ~/.agent-os/pocketflow-tools/pattern_analyzer.py "Generate workflow for: $workflow_name" > /tmp/pattern_analysis.txt
+    PATTERN=$(grep "Primary Pattern:" /tmp/pattern_analysis.txt | cut -d' ' -f3 || echo "WORKFLOW")
+    
+    # Create minimal spec
+    cat > "$spec_file" << EOF
+name: $workflow_name
+pattern: $PATTERN
+description: "Generated workflow for: $workflow_name"
+EOF
 else
-    REQUIREMENTS="Generate workflow for: <name>"
+    echo "✅ Context extracted successfully from design documents"
+    
+    # Show context summary
+    echo "📊 Project Context Summary:"
+    python -c "
+import json
+with open('$context_file', 'r') as f:
+    ctx = json.load(f)
+print(f'  Requirements found: {len(ctx.get(\"requirements\", []))}')
+print(f'  Technical stack: {len(ctx.get(\"technical_stack\", []))}')
+print(f'  Patterns detected: {\", \".join(ctx.get(\"patterns_detected\", []))}')
+print(f'  Source documents: {len(ctx.get(\"source_documents\", []))}')
+"
 fi
 
-# 3. Analyze pattern
-python ~/.agent-os/pocketflow-tools/pattern_analyzer.py "$REQUIREMENTS" > /tmp/pattern_analysis.txt
-
-# 4. Extract recommended pattern
-PATTERN=$(grep "Primary Pattern:" /tmp/pattern_analysis.txt | cut -d' ' -f3)
-
-# 5. Create workflow spec file
-cat > /tmp/workflow_spec.yaml << EOF
-name: <name>
-pattern: $PATTERN
-description: "Generated from design documents"
-EOF
-
-# 6. Generate workflow (must run from ~/.agent-os where templates/ exists)
+# 3. Generate workflow with enhanced context (must run from ~/.agent-os where templates/ exist)
+echo "⚙️  Generating PocketFlow workflow with context awareness..."
 cd ~/.agent-os
-python pocketflow-tools/generator.py --spec /tmp/workflow_spec.yaml --output .agent-os/workflows
 
-# 7. Set up dependencies
-python pocketflow-tools/dependency_orchestrator.py --pattern $PATTERN --project-name <name>
+if [ -f "$spec_file" ]; then
+    python pocketflow-tools/generator.py --spec "$spec_file" --output .agent-os/workflows
+    PATTERN=$(python -c """
+import yaml
+import sys
+try:
+    with open('${spec_file}', 'r') as f:
+        spec = yaml.safe_load(f)
+        print(spec.get('pattern', 'WORKFLOW'))
+except Exception as e:
+    print('WORKFLOW')
+    sys.stderr.write(f'Warning: Could not read spec file: {e}\\n')
+""")
+else
+    echo "❌ Specification file not found, using fallback generation"
+    python pocketflow-tools/generator.py --name "$workflow_name" --pattern WORKFLOW --output .agent-os/workflows
+    PATTERN="WORKFLOW"
+fi
 
-# 8. Validate generated templates
-python pocketflow-tools/template_validator.py .agent-os/workflows/<name>/
+# 4. Set up dependencies with pattern-specific orchestration
+echo "📦 Setting up dependencies for pattern: $PATTERN"
+python pocketflow-tools/dependency_orchestrator.py --pattern "$PATTERN" --project-name "$workflow_name"
+
+# 5. Validate generated templates with context feedback
+echo "✅ Validating generated templates..."
+validation_output="/tmp/${workflow_name}_validation.txt"
+python pocketflow-tools/template_validator.py ".agent-os/workflows/$workflow_name/" > "$validation_output" 2>&1
+
+# 6. Create feedback loop - save validation results for iteration
+if [ -f "$validation_output" ]; then
+    echo "📝 Validation Summary:"
+    cat "$validation_output" | tail -10
+    
+    # Check for validation issues
+    if grep -q "ERROR\|FAIL" "$validation_output"; then
+        echo "⚠️  Validation issues detected - see $validation_output for details"
+        echo "🔄 Consider running /validate-workflow $workflow_name for detailed analysis"
+    else
+        echo "✅ All validation checks passed!"
+    fi
+fi
+
+# 7. Create handoff documentation for implementation
+handoff_file=".agent-os/workflows/$workflow_name/IMPLEMENTATION_HANDOFF.md"
+if [ -f "$context_file" ]; then
+    cat > "$handoff_file" << EOF
+# Implementation Handoff: $workflow_name
+
+## Context Source
+Generated from planning documents with context-aware analysis.
+
+## Source Documents
+$(python -c "
+import json
+with open('$context_file', 'r') as f:
+    ctx = json.load(f)
+for doc in ctx.get('source_documents', []):
+    print(f'- {doc}')
+")
+
+## Key Requirements
+$(python -c "
+import json
+with open('$context_file', 'r') as f:
+    ctx = json.load(f)
+for i, req in enumerate(ctx.get('requirements', [])[:5]):
+    print(f'{i+1}. [{req[\"type\"].upper()}] {req[\"text\"]}')
+")
+
+## Implementation Notes
+- Pattern: $PATTERN
+- Complexity Level: $(python -c """
+import yaml
+import sys
+try:
+    with open('${spec_file}', 'r') as f:
+        spec = yaml.safe_load(f)
+        print(spec.get('complexity_level', 'unknown'))
+except Exception:
+    print('unknown')
+""" 2>/dev/null)
+- Context Analysis: $context_file
+- Validation Report: $validation_output
+
+## Next Steps
+1. Review generated templates in .agent-os/workflows/$workflow_name/
+2. Implement TODO placeholders according to requirements
+3. Run tests to validate implementation
+4. Refer to source documents for detailed requirements
+
+EOF
+    
+    echo "📋 Implementation handoff documentation created: $handoff_file"
+fi
+
+echo "🎉 Context-aware workflow '$workflow_name' implementation complete!"
+echo "📁 Generated files available in: .agent-os/workflows/$workflow_name/"
+echo "📊 Context analysis: $context_file"
+echo "🔍 Validation report: $validation_output"
 ```
 
 ### `/generate-pocketflow <name>` Implementation
@@ -119,8 +238,137 @@ python ~/.agent-os/pocketflow-tools/pattern_analyzer.py "<requirements_text>"
 
 ### `/validate-workflow <workflow_name>` Implementation
 ```bash
-# Validate the specified workflow
-python ~/.agent-os/pocketflow-tools/template_validator.py .agent-os/workflows/<workflow_name>/
+# Enhanced validation with feedback loops and actionable insights
+workflow_name="<workflow_name>"
+
+echo "🔍 Phase 2: Enhanced validation with feedback loops for '$workflow_name'"
+
+# 1. Check if workflow exists
+workflow_dir=".agent-os/workflows/$workflow_name"
+if [ ! -d "$workflow_dir" ]; then
+    echo "❌ Workflow directory not found: $workflow_dir"
+    echo "💡 Run /implement-workflow $workflow_name first"
+    exit 1
+fi
+
+# 2. Run comprehensive validation
+echo "🔍 Running comprehensive template validation..."
+validation_output="/tmp/${workflow_name}_validation.txt"
+python ~/.agent-os/pocketflow-tools/template_validator.py "$workflow_dir" > "$validation_output" 2>&1
+
+# 3. Look for context and spec files from implementation
+context_file="/tmp/${workflow_name}_context.json"
+spec_file="/tmp/${workflow_name}_spec.yaml"
+
+# 4. Generate intelligent feedback loops
+echo "🧠 Analyzing validation results with intelligent feedback..."
+feedback_report="/tmp/${workflow_name}_feedback.json"
+feedback_markdown="$workflow_dir/VALIDATION_FEEDBACK.md"
+
+python ~/.agent-os/pocketflow-tools/validation_feedback.py "$validation_output" \
+    --context "$context_file" \
+    --spec "$spec_file" \
+    --output "$feedback_report" \
+    --markdown "$feedback_markdown"
+
+# 5. Display validation summary
+echo "📊 Validation Results Summary:"
+if [ -f "$validation_output" ]; then
+    echo "  Raw validation output: $validation_output"
+fi
+
+if [ -f "$feedback_report" ]; then
+    echo "  Intelligent feedback: $feedback_report"
+    echo "  Human-readable report: $feedback_markdown"
+    
+    # Extract key metrics from feedback report
+    python -c "
+import json
+try:
+    with open('$feedback_report', 'r') as f:
+        feedback = json.load(f)
+    
+    summary = feedback.get('summary', {})
+    print(f'  Issues found: {summary.get(\"total_issues\", 0)}')
+    print(f'  Auto-fixable: {summary.get(\"auto_fixable\", 0)}')
+    print(f'  Manual review: {summary.get(\"manual_review\", 0)}')
+    print(f'  Context gaps: {summary.get(\"context_gaps\", 0)}')
+except Exception as e:
+    print(f'  Could not parse feedback: {e}')
+"
+fi
+
+# 6. Check validation status and provide next steps
+if grep -q "ERROR\|FAIL" "$validation_output" 2>/dev/null; then
+    echo "⚠️  Validation issues detected"
+    
+    if [ -f "$feedback_report" ]; then
+        echo "🔄 Feedback Loop Actions Available:"
+        
+        # Show auto-fixable actions
+        python -c "
+import json
+try:
+    with open('$feedback_report', 'r') as f:
+        feedback = json.load(f)
+    
+    auto_actions = feedback.get('immediate_actions', {}).get('auto_fix', [])
+    manual_actions = feedback.get('immediate_actions', {}).get('manual_review', [])
+    
+    if auto_actions:
+        print('  🤖 Auto-fixable actions:')
+        for action in auto_actions[:3]:  # Show first 3
+            print(f'    - {action}')
+    
+    if manual_actions:
+        print('  👤 Manual review needed:')
+        for action in manual_actions[:3]:  # Show first 3
+            print(f'    - {action}')
+    
+    suggestions = feedback.get('iteration_suggestions', [])
+    if suggestions:
+        high_priority = [s for s in suggestions if s.get('priority') == 'high']
+        if high_priority:
+            print('  🔥 High Priority Suggestions:')
+            for suggestion in high_priority[:2]:  # Show first 2
+                print(f'    - {suggestion.get(\"description\", \"Suggestion\")}')
+                
+except Exception as e:
+    print(f'  Could not parse feedback actions: {e}')
+"
+        
+        echo ""
+        echo "📋 Next Steps:"
+        echo "  1. Review detailed feedback: $feedback_markdown"
+        echo "  2. Address high-priority issues first"
+        echo "  3. Re-run validation after fixes: /validate-workflow $workflow_name"
+        echo "  4. Consider context improvements if needed"
+        
+    else
+        echo "📋 Next Steps:"
+        echo "  1. Review validation output: $validation_output"
+        echo "  2. Fix identified issues"
+        echo "  3. Re-run validation: /validate-workflow $workflow_name"
+    fi
+    
+else
+    echo "✅ All validation checks passed!"
+    echo "🎉 Workflow '$workflow_name' is ready for implementation"
+    
+    if [ -f "$feedback_markdown" ]; then
+        echo "📋 Implementation guidance available: $feedback_markdown"
+    fi
+    
+    echo ""
+    echo "📋 Implementation Next Steps:"
+    echo "  1. Review generated templates in: $workflow_dir"
+    echo "  2. Implement TODO placeholders according to requirements"
+    echo "  3. Run tests to validate implementation"
+    echo "  4. Consider iterative improvements based on feedback"
+fi
+
+echo ""
+echo "🔄 Feedback Loop Complete for '$workflow_name'"
 ```
 
 ## Framework Tool Integration
@@ -130,8 +378,30 @@ When implementing slash commands, use these framework tool paths:
 - **Workflow Generator**: `~/.agent-os/pocketflow-tools/generator.py`
 - **Dependency Orchestrator**: `~/.agent-os/pocketflow-tools/dependency_orchestrator.py`
 - **Template Validator**: `~/.agent-os/pocketflow-tools/template_validator.py`
+- **Context Manager**: `~/.agent-os/pocketflow-tools/context_manager.py` (Phase 2)
+- **Validation Feedback**: `~/.agent-os/pocketflow-tools/validation_feedback.py` (Phase 2)
 
 All tools should be executed from the `~/.agent-os/pocketflow-tools/` directory for proper import resolution.
+
+## Phase 2 Enhancements
+
+The workflow-coordinator has been enhanced with Phase 2 capabilities from INTEGRATION_GAP.md:
+
+### Planning-to-Implementation Handoff
+- **Context Manager**: Intelligently extracts requirements from design documents
+- **Specification Generation**: Creates comprehensive workflow specs from planning docs
+- **Handoff Documentation**: Generates IMPLEMENTATION_HANDOFF.md with context traceability
+
+### Context Awareness
+- **Document Analysis**: Parses multiple document types (requirements, roadmap, design, architecture)
+- **Pattern Detection**: Identifies PocketFlow patterns from requirements text
+- **Technical Stack Extraction**: Discovers technology preferences from design docs
+
+### Validation and Feedback Loops
+- **Intelligent Feedback**: Analyzes validation results and provides actionable insights
+- **Auto-fix Detection**: Identifies issues that can be automatically resolved
+- **Iteration Guidance**: Suggests specific improvement actions and priorities
+- **Context Gap Analysis**: Identifies missing information that could improve outcomes
 
 ## Practical Implementation with Bash Tool
 
