@@ -58,16 +58,9 @@
       "Read(//Users/jeffkiefer/.claude/**)",
       "Read(//Users/jeffkiefer/.claude/agents/**)",
       "Bash(./setup/base.sh:*)",
-      "Read(//Users/jeffkiefer/Documents/projects/zot-pocketflow-mcp/.claude/agents/**)",
-      "Read(//Users/jeffkiefer/Documents/projects/zot-pocketflow-mcp/.claude/**)",
-      "Read(//Users/jeffkiefer/Documents/projects/TestingProject/**)",
-      "Read(//Users/jeffkiefer/Documents/projects/TestingProject/**)",
       "Read(//Users/jeffkiefer/Documents/projects/TestingProject/.agent-os/**)",
       "Bash(git commit:*)",
-      "Read(//Users/jeffkiefer/.claude/**)",
-      "Read(//Users/jeffkiefer/test-agent-os/claude-code/**)",
-      "Read(//Users/jeffkiefer/test-agent-os-v1.4/claude-code/**)",
-      "Read(//Users/jeffkiefer/test-agent-os-v1.4/commands/**)",
+      "Read(//Users/jeffkiefer/.claude/**)",      
       "Read(//Users/jeffkiefer/**)",
       "Read(//Users/jeffkiefer/test-project/**)",
       "Read(//Users/jeffkiefer/test-project/**)",
@@ -81,7 +74,6 @@
       "Bash(gh repo edit:*)",
       "Bash(gh repo view:*)",
       "Bash(ls:*)",
-      "Read(//Users/jeffkiefer/Documents/projects/local-agent-os-main/commands/**)",
       "Bash(./scripts/validation/validate-end-to-end-scenarios.sh:*)",
       "Bash(timeout:*)",
       "Bash(./scripts/validation/validate-user-experience.sh:*)",
@@ -93,16 +85,10 @@
     "deny": [],
     "defaultMode": "acceptEdits",
     "additionalDirectories": [
-      "/private/tmp/test-output/testworkflow",
-      "/Users/jeffkiefer/.agent-os/instructions/core",
-      "/private/tmp/test-fixes",
-      "/private/tmp/test-project/.agent-os",
-      "/Users/jeffkiefer/.agent-os",
-      "/tmp",
-      "/Users/jeffkiefer/Documents/projects/zot-pocketflow-mcp/.claude/agents",
-      "/Users/jeffkiefer/Documents/projects/zot-pocketflow-mcp",
-      "/Users/jeffkiefer/Documents/projects/TestingProject",
-      "/Users/jeffkiefer/.agent-os/agents"
+  "/private/tmp/test-output/testworkflow",
+  "/private/tmp/test-fixes",
+  "/private/tmp/test-project/.agent-os",
+  "/Users/jeffkiefer/.agent-os/agents"
     ]
   }
 }

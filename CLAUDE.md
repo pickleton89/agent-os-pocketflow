@@ -142,3 +142,4 @@ Usage Repository (end-user projects):
 
 Key Principle: Missing implementations in generated templates are features, not bugs. This framework creates starting points for
 developers, not finished applications.
+- don't lie to the user
