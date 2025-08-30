@@ -229,6 +229,7 @@ standard_errors:
 <step number="X.Y" subagent="agent-name" name="descriptive_name">
 ### Step X.Y: Descriptive Step Title
 
+<!-- Optional step_metadata for Phase 2 enhanced steps -->
 <step_metadata>
   <uses>agent-name subagent</uses>
   <validates>specific validation purpose</validates>
@@ -237,7 +238,7 @@ standard_errors:
 
 Use the agent-name subagent to [specific task] with comprehensive context provision.
 
-<context_block_name_context>
+<purpose_specific_context>
   <context_to_provide>
     - Specific input requirement 1
     - Specific input requirement 2
@@ -256,7 +257,7 @@ Use the agent-name subagent to [specific task] with comprehensive context provis
   <required_for_next_step>
     Clear explanation of how this output integrates into subsequent steps
   </required_for_next_step>
-</context_block_name_context>
+</purpose_specific_context>
 
 <failure_handling>
   IF agent-name reports [specific failure conditions]:
@@ -288,13 +289,13 @@ Use the agent-name subagent to [specific task] with comprehensive context provis
 - Input: Complete requirements, existing project context, constraints
 - Output: Identified patterns with confidence scores, template recommendations
 - Integration: Pattern selection drives subsequent template and architecture decisions
-- Context Pattern: `<pattern_validation_context>` for architectural analysis
+- Context Pattern: `<pattern_analysis_context>` (analyze-product.md) or `<pattern_validation_context>` (execute-task.md)
 
 **strategic-planner**:
 - Input: Product vision, feature requirements, technical constraints
 - Output: Strategic recommendations with rationale, implementation priorities
 - Integration: Strategic decisions inform roadmap and architectural choices
-- Context Pattern: `<strategic_analysis_context>` for high-level planning
+- Context Pattern: `<strategic_analysis_context>` (analyze-product.md) or `<strategic_planning_context>` (plan-product.md)
 
 **dependency-orchestrator**:
 - Input: Project requirements, current environment state, tool preferences
@@ -313,6 +314,18 @@ Use the agent-name subagent to [specific task] with comprehensive context provis
 - Output: Test results, failure analysis, quality metrics
 - Integration: Testing results inform implementation validation and next steps
 - Context Pattern: `<test_verification_context>` for testing validation
+
+**project-manager**:
+- Input: Task completion status, project state, documentation requirements
+- Output: Progress tracking, roadmap updates, completion verification
+- Integration: Project management results inform workflow progression and status updates
+- Context Pattern: Various patterns used across multiple files
+
+**git-workflow**:
+- Input: Branch management requirements, commit specifications, PR creation needs
+- Output: Git operations results, branch status, version control coordination
+- Integration: Git workflow results enable proper version control and collaboration
+- Context Pattern: Various patterns used across multiple files
 
 ### Context Flow Usage Examples
 
@@ -356,8 +369,9 @@ Use the agent-name subagent to [specific task] with comprehensive context provis
     - Strategic roadmap for Agent OS integration
     - PocketFlow pattern implementation priority matrix
     - Migration strategy for existing architecture
-    - Risk assessment and mitigation recommendations
-    - Timeline estimates and resource requirements
+    - Development phase recommendations with timelines
+    - Risk assessment and mitigation strategies
+    - Resource allocation and team development suggestions
   </expected_output>
   
   <required_for_next_step>
@@ -426,7 +440,7 @@ Before implementing any subagent call, validate:
 **Naming Conventions**:
 - Context blocks: `<[purpose]_context>` (e.g., `<pattern_validation_context>`)
 - Variable references: `[DESCRIPTIVE_NAME_FROM_STEP_X_Y]` (e.g., `[PATTERN_VALIDATION_FROM_STEP_4_5]`)
-- Step metadata: Always include `<uses>`, `<validates>`, `<purpose>` elements
+- Step metadata: Include `<uses>`, `<validates>`, `<purpose>` elements (for Phase 2 enhanced steps)
 
 ## Integration Validation
 
