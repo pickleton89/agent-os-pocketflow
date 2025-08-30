@@ -564,16 +564,13 @@ Use the test-runner subagent to run and verify only the tests specific to this p
   <context_to_provide>
     - Test files created or modified for current parent task
     - Feature implementation from Step 5 that needs verification
-    - Test framework configuration (pytest with uv)
-    - Task-specific test directories and naming patterns
     - Feature acceptance criteria from tasks.md
   </context_to_provide>
   
   <expected_output>
     - Test execution results with pass/fail status
     - Detailed failure information if tests fail
-    - Coverage metrics for implemented features
-    - Performance metrics if applicable
+    - Coverage and performance metrics
     - Suggestions for fixing any failures
   </expected_output>
   

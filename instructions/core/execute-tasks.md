@@ -219,28 +219,24 @@ encoding: UTF-8
 
 Use the context-fetcher subagent to retrieve relevant sections from @~/.agent-os/standards/best-practices.md that apply to the current task's technology stack and feature type.
 
-<context_retrieval_context>
+<best_practices_retrieval_context>
   <context_to_provide>
     - Target file: @~/.agent-os/standards/best-practices.md
-    - Current task technology stack from technical-spec.md analysis
-    - Feature type being implemented from tasks.md
-    - Testing requirements for current task
-    - Code organization needs based on project structure
+    - Current task technology stack and feature type
+    - Testing and code organization requirements
     - PocketFlow patterns if applicable to project
   </context_to_provide>
   
   <expected_output>
     - Relevant best practices sections with source references
-    - Technology-specific guidelines and patterns
-    - Testing approach recommendations
-    - Code organization standards applicable to task
+    - Technology-specific guidelines and testing approaches
     - Framework-specific best practices (if PocketFlow project)
   </expected_output>
   
   <required_for_next_step>
     Best practices inform implementation standards and quality requirements in Step 3
   </required_for_next_step>
-</context_retrieval_context>
+</best_practices_retrieval_context>
 
 <selective_reading>
   <search_best_practices>
@@ -272,28 +268,24 @@ Use the context-fetcher subagent to retrieve relevant sections from @~/.agent-os
 
 Use the context-fetcher subagent to retrieve relevant code style rules from @~/.agent-os/standards/code-style.md for the languages and file types being used in this task.
 
-<context_retrieval_context>
+<code_style_retrieval_context>
   <context_to_provide>
     - Target file: @~/.agent-os/standards/code-style.md
-    - Programming languages identified for current task
-    - File types being created or modified
-    - Component patterns from task requirements
-    - Testing file conventions and standards
+    - Programming languages and file types for current task
+    - Component and testing conventions
     - PocketFlow patterns being implemented
   </context_to_provide>
   
   <expected_output>
     - Language-specific style rules and conventions
-    - File naming and organization standards
-    - Component structure patterns and templates
-    - Testing style guidelines and conventions
+    - Component structure and testing style guidelines
     - Framework-specific styles (FastAPI, PocketFlow patterns)
   </expected_output>
   
   <required_for_next_step>
     Code style rules ensure consistent implementation in Step 3
   </required_for_next_step>
-</context_retrieval_context>
+</code_style_retrieval_context>
 
 <selective_reading>
   <search_code_style>

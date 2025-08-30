@@ -26,18 +26,15 @@ Use the test-runner subagent to run ALL tests in the application's test suite to
 
 <test_execution_context>
   <context_to_provide>
-    - Test scope: Full application test suite with comprehensive validation
-    - Test framework configuration: pytest with uv execution environment
-    - Required test categories: linting (ruff check --fix), formatting (ruff format), type checking (ty check), unit tests (pytest -v)
-    - Coverage requirements: 100% pass rate across all test categories
+    - Test scope: Full application test suite
+    - Required test categories: linting, formatting, type checking, unit tests
     - Implementation features: All completed spec tasks requiring verification
   </context_to_provide>
   
   <expected_output>
-    - Test execution results with pass/fail status for each category
-    - Detailed failure information and debugging context for any failed tests
-    - Coverage metrics and validation confirmation
-    - Specific remediation steps for failures
+    - Test execution results with pass/fail status
+    - Detailed failure information for any failed tests
+    - Coverage metrics and remediation steps
   </expected_output>
   
   <required_for_next_step>
@@ -140,25 +137,21 @@ Use the test-runner subagent to run ALL tests in the application's test suite to
 
 Use the project-manager subagent to verify all tasks in the current spec are properly completed and update task tracking documentation.
 
-<project_management_context>
+<task_verification_context>
   <context_to_provide>
-    - Current spec folder location and task tracking requirements
-    - tasks.md file path and completion verification standards
-    - Implementation acceptance criteria and validation requirements
-    - Task completion status and any blocking issues documentation
+    - Current spec tasks.md and completion verification standards
+    - Implementation acceptance criteria and blocking issues
   </context_to_provide>
   
   <expected_output>
-    - Task completion verification results with specific completion status
-    - Updated task tracking documentation with accurate markings
-    - Identification of any incomplete tasks or missed subtasks
-    - Validation confirmation that implementation meets acceptance criteria
+    - Task completion verification results and updated tracking
+    - Identification of any incomplete tasks or validation issues
   </expected_output>
   
   <required_for_next_step>
-    Complete task verification ensures systematic progress tracking before roadmap updates
+    Complete task verification ensures progress tracking before roadmap updates
   </required_for_next_step>
-</project_management_context>
+</task_verification_context>
 
 <completion_criteria>
   - All parent tasks marked [x] in tasks.md
@@ -191,25 +184,21 @@ Use the project-manager subagent to verify all tasks in the current spec are pro
 
 Use the project-manager subagent to check if the completed spec fulfills any roadmap milestones and update roadmap.md accordingly.
 
-<project_management_context>
+<roadmap_update_context>
   <context_to_provide>
     - Current spec implementation details and completed features
-    - roadmap.md file location and milestone tracking requirements
     - Completion criteria: fully implemented features with passing tests
-    - Progress tracking standards and documentation requirements
   </context_to_provide>
   
   <expected_output>
-    - Roadmap milestone completion analysis with specific determinations
-    - Updated roadmap.md with completed milestone markings and progress percentages
-    - Documentation of completion dates and implementation status
+    - Roadmap milestone completion analysis and updated roadmap.md
     - Cautious verification that only fully-ready features are marked complete
   </expected_output>
   
   <required_for_next_step>
-    Roadmap updates maintain accurate project progress tracking for recap generation
+    Roadmap updates maintain project progress tracking for recap generation
   </required_for_next_step>
-</project_management_context>
+</roadmap_update_context>
 
 <update_criteria>
   <cautious_approach>
@@ -244,26 +233,24 @@ Use the project-manager subagent to check if the completed spec fulfills any roa
 
 Use the project-manager subagent to generate a comprehensive recap document for the completed spec in the .agent-os/recaps/ directory.
 
-<project_management_context>
+<recap_generation_context>
   <context_to_provide>
-    - Current spec details and all completed implementation features
-    - .agent-os/recaps/ directory location for recap document storage
-    - Implementation summary with technical approach and architecture details
+    - Current spec details and completed implementation features
+    - Implementation summary with technical approach and architecture
     - PocketFlow patterns used and architectural decisions (universal requirement)
     - Testing approach, coverage metrics, and validation results
   </context_to_provide>
   
   <expected_output>
-    - Comprehensive completion recap document stored in .agent-os/recaps/
-    - Implementation summary with technical details and PocketFlow patterns
-    - Documentation of challenges encountered and solutions implemented
+    - Comprehensive completion recap document in .agent-os/recaps/
+    - Implementation summary with PocketFlow patterns and challenges
     - Testing approach and coverage information with future considerations
   </expected_output>
   
   <required_for_next_step>
-    Completion recap provides project documentation before git workflow and final delivery
+    Completion recap provides project documentation before git workflow
   </required_for_next_step>
-</project_management_context>
+</recap_generation_context>
 
 <recap_template>
   <filename>SPEC_NAME_recap.md</filename>
@@ -384,26 +371,6 @@ Use the project-manager subagent to play a system sound to alert the user that t
     - Proceed with successful notification
 </notification_failure_handling>
 
-Use the project-manager subagent to play a system sound to alert the user that tasks are complete.
-
-<project_management_context>
-  <context_to_provide>
-    - Completion notification requirements and system sound command
-    - Sound file location: /System/Library/Sounds/Glass.aiff
-    - User alert purpose: notify task completion status
-    - Fallback behavior: continue workflow if sound fails (non-blocking)
-  </context_to_provide>
-  
-  <expected_output>
-    - System sound execution confirmation
-    - User notification completion status
-    - Fallback handling results if sound playback fails
-  </expected_output>
-  
-  <required_for_next_step>
-    User notification alerts completion before final summary generation
-  </required_for_next_step>
-</project_management_context>
 
 </step>
 
@@ -419,26 +386,23 @@ Use the project-manager subagent to play a system sound to alert the user that t
 
 Use the project-manager subagent to create a structured summary message with emojis showing what was done, any issues, testing instructions, and PR link.
 
-<project_management_context>
+<completion_summary_context>
   <context_to_provide>
     - All implemented features with PocketFlow components and architecture details
     - Issues encountered during implementation and their resolutions
-    - Testing instructions and validation results
-    - Pull request link and next recommended steps
-    - Formatted summary template with emoji headers for user readability
+    - Testing instructions, validation results, and pull request link
   </context_to_provide>
   
   <expected_output>
-    - Comprehensive completion summary with structured sections and emoji headers
-    - Complete feature documentation with PocketFlow pattern details
-    - Issue documentation and resolution details
+    - Structured completion summary with emoji headers
+    - Feature documentation with PocketFlow pattern details and issue resolutions
     - Testing instructions and PR integration information
   </expected_output>
   
   <required_for_next_step>
     Final completion summary provides comprehensive project delivery documentation
   </required_for_next_step>
-</project_management_context>
+</completion_summary_context>
 
 <summary_template>
   ## ✅ What's been done
