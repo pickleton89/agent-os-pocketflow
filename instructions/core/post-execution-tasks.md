@@ -386,23 +386,22 @@ Use the project-manager subagent to play a system sound to alert the user that t
 
 Use the project-manager subagent to create a structured summary message with emojis showing what was done, any issues, testing instructions, and PR link.
 
-<completion_summary_context>
+<project_management_context>
   <context_to_provide>
-    - All implemented features with PocketFlow components and architecture details
-    - Issues encountered during implementation and their resolutions
-    - Testing instructions, validation results, and pull request link
+    - Implementation summary: Features with PocketFlow components and architecture
+    - Project context: Issues encountered and their resolutions
+    - Deliverables: Testing instructions, validation results, and PR link
   </context_to_provide>
   
   <expected_output>
-    - Structured completion summary with emoji headers
-    - Feature documentation with PocketFlow pattern details and issue resolutions
-    - Testing instructions and PR integration information
+    - Structured completion summary with emoji headers and feature documentation
+    - Issue resolutions and testing instructions with PR integration
   </expected_output>
   
   <required_for_next_step>
     Final completion summary provides comprehensive project delivery documentation
   </required_for_next_step>
-</completion_summary_context>
+</project_management_context>
 
 <summary_template>
   ## ✅ What's been done

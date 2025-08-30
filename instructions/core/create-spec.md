@@ -153,22 +153,16 @@ This instruction file uses modular templates from:
   </pocketflow_specifics>
 </clarification_areas>
 
-<decision_tree>
-  IF clarification_needed:
-    ASK numbered_questions
-    WAIT for_user_response
-  ELSE:
-    PROCEED to_date_determination
-</decision_tree>
-
-<question_template>
-  Based on the spec description, I need clarification on:
-
-  1. [SPECIFIC_QUESTION_ABOUT_SCOPE]
-  2. [SPECIFIC_QUESTION_ABOUT_TECHNICAL_APPROACH]
-  3. [SPECIFIC_QUESTION_ABOUT_USER_EXPERIENCE]
+<clarification_process>
+  **If clarification needed:** Ask numbered questions, wait for user response
+  **Otherwise:** Proceed to date determination
+  
+  **Question Template:**
+  1. [SCOPE_QUESTION]
+  2. [TECHNICAL_APPROACH_QUESTION]  
+  3. [USER_EXPERIENCE_QUESTION]
   [ADD_LLM_QUESTIONS_IF_APPLICABLE]
-</question_template>
+</clarification_process>
 
 <instructions>
   ACTION: Evaluate need for clarification

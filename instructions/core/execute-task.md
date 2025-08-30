@@ -138,17 +138,14 @@ Use the context-fetcher subagent to retrieve relevant sections from @~/.agent-os
 <best_practices_retrieval_context>
   <context_to_provide>
     - Target file: @~/.agent-os/standards/best-practices.md
-    - Current task technology stack from technical-spec.md analysis
-    - Feature type being implemented from tasks.md
-    - Testing requirements for current task
-    - Code organization needs based on project structure
+    - Current task technology stack and feature type
+    - Testing and code organization requirements
+    - PocketFlow patterns if applicable to project
   </context_to_provide>
   
   <expected_output>
     - Relevant best practices sections with source references
-    - Technology-specific guidelines and patterns
-    - Testing approach recommendations
-    - Code organization standards applicable to task
+    - Technology-specific guidelines and testing approaches
     - Framework-specific best practices (if PocketFlow project)
   </expected_output>
   
@@ -189,8 +186,7 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 <code_style_retrieval_context>
   <context_to_provide>
     - Target file: @~/.agent-os/standards/code-style.md
-    - Programming languages identified for current task
-    - File types being created or modified
+    - Programming languages and file types for current task
     - Component patterns from task requirements
     - Testing file conventions and standards
   </context_to_provide>
@@ -404,49 +400,12 @@ Execute the parent task and all sub-tasks systematically following TDD approach 
   
   <pocketflow_phase_execution>
     <universal_pocketflow_phases>
-      EXECUTE: Universal PocketFlow 6-phase implementation for all projects:
-        
-        **Phase 0: Schema Design & Validation**
-        - Create Pydantic schemas with comprehensive validation tests
-        - Define SharedStore schema using Pydantic models
-        - Implement data transformation schemas
-        - Test schema validation edge cases
-        
-        **Phase 1: Utility Functions Development**
-        - Implement utility functions with input/output contracts from design.md
-        - Create standalone tests with type hints
-        - Build LLM integration utilities (call_llm_*.py functions)
-        - Develop data retrieval utilities (retrieve_*.py functions)
-        - Ensure all utility functions are testable and modular
-        
-        **Phase 2: FastAPI Integration (if applicable)**
-        - Create FastAPI endpoints with proper async patterns
-        - Implement Pydantic request/response models
-        - Add middleware and error handling
-        - Build WebSocket support if needed
-        - Test API endpoints thoroughly
-        
-        **Phase 3: PocketFlow Node Implementation**  
-        - Implement nodes.py following lifecycle patterns (prep/exec/post)
-        - Ensure clear separation of node responsibilities
-        - Define action strings for flow transitions
-        - Implement error handling as action string routing (not try/catch inline)
-        - Add logging for debugging and monitoring
-        - Use Node retry mechanisms for error handling
-        
-        **Phase 4: Flow Assembly & Orchestration**
-        - Assemble flow.py connecting nodes with action-based transitions
-        - Match Mermaid diagram from design.md exactly
-        - Implement error handling and retry strategies
-        - Consider BatchNode/BatchFlow for iterative/parallel processing
-        - Validate integration points work as designed
-        
-        **Phase 5: Integration Testing & Quality Validation**
-        - Run comprehensive integration tests
-        - Apply toolchain: `ruff format`, `ruff check`, `uvx ty check`
-        - Validate against design.md specifications
-        - Test error scenarios and recovery paths
-        - Ensure logging and monitoring work correctly
+      **Phase 0: Schema Design** - Create Pydantic schemas and SharedStore validation
+      **Phase 1: Utilities** - Implement utility functions with contracts from design.md  
+      **Phase 2: FastAPI** - Create endpoints and middleware (if applicable)
+      **Phase 3: PocketFlow Nodes** - Implement prep/exec/post lifecycle patterns
+      **Phase 4: Flow Assembly** - Connect nodes matching design.md Mermaid diagram
+      **Phase 5: Integration Testing** - Validate complete system and apply toolchain
     </universal_pocketflow_phases>
   </pocketflow_phase_execution>
   
@@ -560,24 +519,25 @@ Use the template-validator subagent to validate the quality of implemented code,
 
 Use the test-runner subagent to run and verify only the tests specific to this parent task (not the full test suite) to ensure the feature is working correctly.
 
-<test_verification_context>
+<test_execution_context>
   <context_to_provide>
-    - Test files created or modified for current parent task
-    - Feature implementation from Step 5 that needs verification
-    - Feature acceptance criteria from tasks.md
+    - Test scope: Task-specific test files created or modified
+    - Test categories: All tests related to current parent task
+    - Implementation context: Feature implementation from Step 5 requiring verification
+    - Acceptance criteria: Feature acceptance criteria from tasks.md
   </context_to_provide>
   
   <expected_output>
     - Test execution results with pass/fail status
-    - Detailed failure information if tests fail
+    - Detailed failure information for any failed tests
     - Coverage and performance metrics
-    - Suggestions for fixing any failures
+    - Remediation recommendations for fixing failures
   </expected_output>
   
   <required_for_next_step>
     All task-specific tests must pass before marking task complete in Step 8
   </required_for_next_step>
-</test_verification_context>
+</test_execution_context>
 
 <focused_test_execution>
   <run_only>
