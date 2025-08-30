@@ -531,8 +531,20 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
       <error_handling>
         IF task_fails:
           CAPTURE: Detailed error context from execute-task.md
-          OFFER: Options to retry, skip, or abort workflow
-          PRESERVE: Progress of completed tasks
+          LOG: Task failure with specific error details
+          PRESERVE: Progress of completed tasks in tasks.md
+          OFFER: Options to retry with enhanced context, skip task, or abort workflow
+          DOCUMENT: Failure reason and attempted solutions
+          IF retry_selected:
+            - Re-run with additional debugging context
+            - Limit to maximum 2 retry attempts per task
+          ELSE_IF skip_selected:
+            - Mark task as blocked with specific reason
+            - Continue to next task if dependencies allow
+          ELSE_IF abort_selected:
+            - Terminate workflow with progress summary
+            - Document incomplete tasks for future continuation
+          END_IF
         END_IF
       </error_handling>
     END_FOR
@@ -671,19 +683,35 @@ After all tasks in tasks.md have been implemented, use @.agent-os/instructions/c
 
 <error_protocols>
   <blocking_issues>
-    - document in tasks.md
-    - mark with ⚠️ emoji
-    - include in summary
+    - Document in tasks.md with specific failure context
+    - Mark with ⚠️ emoji and detailed error description
+    - Include in summary with attempted solutions
+    - Track resolution status for future attempts
   </blocking_issues>
   <test_failures>
-    - fix before proceeding
-    - never commit broken tests
+    - Fix before proceeding to avoid broken state
+    - Never commit failing tests to repository
+    - Document test failure patterns for debugging
+    - Retry test execution after fixes with full context
   </test_failures>
   <technical_roadblocks>
-    - attempt 3 approaches
-    - document if unresolved
-    - seek user input
+    - Attempt maximum 3 different approaches per issue
+    - Document each approach and failure reason
+    - Seek user input with specific technical questions
+    - Preserve implementation context for manual resolution
   </technical_roadblocks>
+  <subagent_failures>
+    - Capture subagent error output and context
+    - Attempt manual execution as fallback when possible
+    - Document subagent availability issues
+    - Continue workflow with degraded capability if non-critical
+  </subagent_failures>
+  <environment_issues>
+    - Validate development environment setup
+    - Document dependency or configuration problems
+    - Attempt automatic fixes for common issues
+    - Block progression on critical environment failures
+  </environment_issues>
 </error_protocols>
 
 <final_checklist>

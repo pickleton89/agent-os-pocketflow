@@ -284,12 +284,23 @@ This instruction file uses modular templates from:
   </must_complete>
 </validation_requirements>
 
+<design_creation_failure_handling>
+  IF design_document_creation_fails:
+    - Document specific template or content generation failures
+    - Attempt manual design document creation using fallback templates
+    - Request user assistance for pattern selection if unclear
+    - BLOCK all subsequent steps until design document is complete
+  ELSE:
+    - Proceed with validated design document
+</design_creation_failure_handling>
+
 <instructions>
   ACTION: Create docs/design.md using appropriate PocketFlow pattern template
   TEMPLATE: @templates/pocketflow-templates.md (Pattern-specific Design Document Template)
   BLOCK: Do not proceed to implementation steps without completed design
   VALIDATE: Ensure all sections are filled with specific details for chosen pattern
   EMPHASIZE: This is the foundation for all subsequent PocketFlow implementation
+  BLOCK: Progression on design document creation failures
 </instructions>
 
 </step>
@@ -321,11 +332,22 @@ This instruction file uses modular templates from:
   - 2025-03-17-api-rate-limiting
 </example_names>
 
+<folder_creation_failure_handling>
+  IF spec_folder_creation_fails:
+    - Document file system errors or permission issues
+    - Attempt folder creation with alternative naming
+    - Check for existing folder conflicts and resolve
+    - BLOCK progression until folder successfully created
+  ELSE:
+    - Proceed with successfully created spec folder
+</folder_creation_failure_handling>
+
 <instructions>
   ACTION: Create spec folder using stored date
   FORMAT: Use kebab-case for spec name
   LIMIT: Maximum 5 words in name
   VERIFY: Folder created successfully
+  BLOCK: Progression on folder creation failures
 </instructions>
 
 </step>
@@ -402,11 +424,22 @@ This instruction file uses modular templates from:
   </pocketflow_architecture>
 </section_templates>
 
+<spec_file_creation_failure_handling>
+  IF spec_file_creation_fails:
+    - Document file creation or template processing errors
+    - Attempt manual spec.md creation using basic template
+    - Verify file system permissions and disk space
+    - BLOCK progression until spec.md is successfully created
+  ELSE:
+    - Proceed with successfully created spec.md
+</spec_file_creation_failure_handling>
+
 <instructions>
   ACTION: Create spec.md with all sections
   TEMPLATES: Use referenced templates for complex sections
   FILL: Use spec details from steps 1-3
   MAINTAIN: Clear, concise descriptions
+  BLOCK: Progression on spec file creation failures
 </instructions>
 
 </step>

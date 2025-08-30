@@ -48,8 +48,14 @@ Use the test-runner subagent to run ALL tests in the application's test suite to
 </test_execution>
 
 <failure_handling>
-  <action>troubleshoot and fix</action>
-  <priority>before proceeding</priority>
+  IF test_runner_fails:
+    - Capture detailed error output and failure context
+    - Attempt to fix obvious linting/formatting issues automatically
+    - Re-run failed test categories up to 2 additional times
+    - If tests still fail after 3 attempts, document specific failures
+    - BLOCK progression and request user guidance on test failures
+  ELSE:
+    - Proceed to next step with confirmed test success
 </failure_handling>
 
 </step>
@@ -96,11 +102,23 @@ Use the test-runner subagent to run ALL tests in the application's test suite to
   </validation_actions>
 </universal_execution>
 
+<validation_failure_handling>
+  IF pocketflow_validation_fails:
+    - Document specific compliance failures found
+    - Identify missing components (docs/design.md, nodes.py, flow.py)
+    - Check for pattern implementation gaps
+    - BLOCK progression until critical architecture issues resolved
+    - Provide specific remediation steps for each failure
+  ELSE:
+    - Proceed with validated PocketFlow implementation
+</validation_failure_handling>
+
 <instructions>
   UNIVERSAL: Execute for all projects using PocketFlow architecture
   VALIDATE: Complete PocketFlow pattern compliance for all projects
   VERIFY: Universal design-first methodology compliance
   DOCUMENT: Any deviations found during validation
+  BLOCK: Progression on critical architecture failures
 </instructions>
 
 </step>
@@ -132,11 +150,22 @@ Use the project-manager subagent to verify all tasks in the current spec are pro
   - No blocking issues remain unresolved
 </completion_criteria>
 
+<verification_failure_handling>
+  IF project_manager_fails_verification:
+    - Document specific incomplete tasks or verification failures
+    - Re-run verification with enhanced context if needed
+    - Request manual task completion if verification is blocked
+    - BLOCK progression until all tasks are properly completed
+  ELSE:
+    - Proceed with confirmed task completion status
+</verification_failure_handling>
+
 <instructions>
   ACTION: Use project-manager subagent for verification
   VALIDATE: Complete task completion across spec
   UPDATE: Task status files as needed
   CONFIRM: 100% completion before proceeding
+  BLOCK: Progression on incomplete task verification
 </instructions>
 
 </step>
@@ -170,11 +199,22 @@ Use the project-manager subagent to check if the completed spec fulfills any roa
   </cautious_approach>
 </update_criteria>
 
+<roadmap_update_failure_handling>
+  IF project_manager_cannot_update_roadmap:
+    - Document roadmap access or parsing issues
+    - Attempt manual roadmap review if subagent fails
+    - Skip roadmap updates with clear documentation if blocked
+    - Continue to next step (non-blocking failure)
+  ELSE:
+    - Proceed with roadmap updates completed
+</roadmap_update_failure_handling>
+
 <instructions>
   ACTION: Use project-manager subagent for roadmap updates
   EVALUATE: Whether spec completes roadmap goals
   UPDATE: Roadmap progress if applicable
   DOCUMENT: Completion status and dates
+  FALLBACK: Manual review if subagent fails (non-blocking)
 </instructions>
 
 </step>
@@ -213,11 +253,22 @@ Use the project-manager subagent to generate a comprehensive recap document for 
   </sections>
 </recap_template>
 
+<recap_failure_handling>
+  IF project_manager_fails_recap_generation:
+    - Document recap generation failures or access issues
+    - Attempt manual recap creation if subagent fails
+    - Use fallback template to create basic recap
+    - BLOCK progression until recap is successfully created
+  ELSE:
+    - Proceed with recap successfully generated
+</recap_failure_handling>
+
 <instructions>
   ACTION: Use project-manager subagent for recap creation
   GENERATE: Comprehensive completion documentation
   STORE: In .agent-os/recaps/ directory
   INCLUDE: All relevant technical and process details
+  BLOCK: Progression until recap successfully created
 </instructions>
 
 </step>
@@ -266,6 +317,17 @@ Use the git-workflow subagent to create git commit, push to GitHub, and create p
   </pull_request>
 </commit_process>
 
+<git_workflow_failure_handling>
+  IF git_workflow_subagent_fails:
+    - Document git operation failures (commit, push, or PR creation)
+    - Attempt manual git operations as fallback
+    - Check for connectivity issues, authentication problems, or merge conflicts
+    - BLOCK progression until git operations complete successfully
+    - Save error context for troubleshooting
+  ELSE:
+    - Proceed with successful git workflow completion
+</git_workflow_failure_handling>
+
 </step>
 
 <step number="7" subagent="project-manager" name="completion_notification">
@@ -284,12 +346,22 @@ Use the project-manager subagent to play a system sound to alert the user that t
   afplay /System/Library/Sounds/Glass.aiff
 </notification_command>
 
+<notification_failure_handling>
+  IF project_manager_fails_notification:
+    - Document sound playback failures
+    - Attempt direct command execution as fallback
+    - Continue to next step (non-blocking failure)
+  ELSE:
+    - Proceed with successful notification
+</notification_failure_handling>
+
 <instructions>
   ACTION: Use project-manager subagent
   REQUEST: "Play completion sound to alert user:
             - Execute: afplay /System/Library/Sounds/Glass.aiff
             - Purpose: Alert user that task is complete"
   PROCESS: Confirm sound played successfully
+  FALLBACK: Continue if sound fails (non-blocking)
 </instructions>
 
 </step>
@@ -363,6 +435,16 @@ Use the project-manager subagent to create a structured summary message with emo
     - testing instructions (if testable in browser)
   </conditional>
 </summary_sections>
+
+<summary_failure_handling>
+  IF project_manager_fails_summary_generation:
+    - Document summary generation failures
+    - Use fallback template to create manual summary
+    - Include all required sections with available information
+    - BLOCK delivery until summary is successfully created
+  ELSE:
+    - Proceed with comprehensive summary generated
+</summary_failure_handling>
 
 </step>
 
