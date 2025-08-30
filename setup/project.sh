@@ -562,7 +562,6 @@ install_claude_code_integration() {
             agent_files+=(
                 "design-document-creator.md"
                 "strategic-planner.md"
-                "workflow-coordinator.md"
                 "pattern-recognizer.md"
                 "template-validator.md"
                 "dependency-orchestrator.md"

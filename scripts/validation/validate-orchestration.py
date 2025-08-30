@@ -41,9 +41,9 @@ class OrchestrationValidator:
     def validate_orchestrator_agent(self):
         """Validate the three sub-agents exist and are properly configured."""
         agents = [
-            ("design-document-creator.md", "design-document-creator"),
-            ("strategic-planner.md", "strategic-planner"),
-            ("workflow-coordinator.md", "workflow-coordinator")
+            ("template-validator.md", "template-validator"),
+            ("pattern-recognizer.md", "pattern-recognizer"),
+            ("dependency-orchestrator.md", "dependency-orchestrator")
         ]
         
         all_agents_valid = True

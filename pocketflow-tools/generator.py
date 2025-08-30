@@ -348,8 +348,8 @@ class PocketFlowGenerator:
                 orchestrator_examples = self.extensions["pocketflow_integration"].get("orchestrator_integration", [])
                 if orchestrator_examples:
                     node["orchestrator_guidance"] = [
-                        "# Workflow Coordinator Integration Example:",
-                        "# claude-code agent invoke workflow-coordinator --task validate-node --node " + node['name'],
+                        "# Template Validator Integration Example:",
+                        "# claude-code agent invoke template-validator --task validate-node --node " + node['name'],
                         "# Use this to validate node implementation during development"
                     ]
             

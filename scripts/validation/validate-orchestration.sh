@@ -42,9 +42,9 @@ run_test() {
 # Test 1: Sub-Agents Exist (replacing single orchestrator)
 test_sub_agents_exist() {
     local agents=(
-        ".claude/agents/design-document-creator.md"
-        ".claude/agents/strategic-planner.md" 
-        ".claude/agents/workflow-coordinator.md"
+        ".claude/agents/template-validator.md"
+        ".claude/agents/pattern-recognizer.md" 
+        ".claude/agents/dependency-orchestrator.md"
     )
     
     for agent in "${agents[@]}"; do
@@ -130,14 +130,15 @@ test_extension_modules_loadable() {
                 grep -q "design-document-creator" "$ext" || return 1
                 ;;
             "llm-workflow-extension.md")
-                grep -q "workflow-coordinator" "$ext" || return 1
+                # Should reference generator or validator components rather than workflow-coordinator
+                grep -q "generator\|template-validator\|pattern-recognizer" "$ext" || return 1
                 ;;
             "pocketflow-integration.md")
                 grep -q "strategic-planner" "$ext" || return 1
                 ;;
             *)
                 # Any extension should reference at least one sub-agent  
-                grep -q "design-document-creator\|strategic-planner\|workflow-coordinator" "$ext" || return 1
+                grep -q "design-document-creator\|strategic-planner\|template-validator\|pattern-recognizer\|dependency-orchestrator" "$ext" || return 1
                 ;;
         esac
         
@@ -299,9 +300,9 @@ test_scripts_executable() {
 test_full_integration_ready() {
     # Final comprehensive check that everything is ready
     local critical_files=(
-        ".claude/agents/design-document-creator.md"
-        ".claude/agents/strategic-planner.md"
-        ".claude/agents/workflow-coordinator.md"
+        ".claude/agents/template-validator.md"
+        ".claude/agents/pattern-recognizer.md"
+        ".claude/agents/dependency-orchestrator.md"
         ".agent-os/instructions/orchestration/coordination.yaml"
         ".agent-os/instructions/orchestration/orchestrator-hooks.md"
         ".agent-os/instructions/extensions/pocketflow-integration.md"

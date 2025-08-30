@@ -103,7 +103,7 @@ This agent analyzes user requirements and identifies optimal PocketFlow patterns
 - **Triggers**: Auto-invokes during spec creation and planning phases
 - **Input**: User requirements from .agent-os/specs/ and .agent-os/product/
 - **Output**: Pattern recommendations and initial template structures
-- **Coordination**: Works closely with design-document-creator, strategic-planner, workflow-coordinator, and template-validator
+- **Coordination**: Works closely with design-document-creator, strategic-planner, file-creator (generator), and template-validator
 
 ## Workflow Process
 
@@ -143,12 +143,12 @@ This agent serves as a coordination hub for the three-agent architecture. Based 
 - TODO: Configure multi-pattern hybrid approach routing
 - TODO: Set up integration strategy coordination
 
-### Workflow Coordination
-**Target Agent**: `workflow-coordinator`
+### Workflow Generation & Validation
+**Target Agent(s)**: `file-creator` (generation), `template-validator` (validation)
 **Implementation Guidance**:
-- TODO: Implement template generation handoff logic
-- TODO: Configure workflow graph coordination
-- TODO: Set up node structure validation routing
+- TODO: Implement handoff to file-creator to apply/generate templates (uses pocketflow-tools/generator)
+- TODO: Configure validation routing via template-validator
+- TODO: Set up workflow graph coordination using pocketflow-tools
 
 ## Pattern-to-Agent Mapping Reference
 
@@ -164,7 +164,7 @@ Use this mapping guide when implementing handoff logic:
 - Multi-system integration strategies
 - Scalability and growth patterns
 
-### Workflow Patterns → workflow-coordinator
-- Template generation patterns
+### Workflow Patterns → file-creator + template-validator
+- Template generation/application via generator
 - Node coordination patterns
-- Process automation workflows
+- Template validation and structure checks

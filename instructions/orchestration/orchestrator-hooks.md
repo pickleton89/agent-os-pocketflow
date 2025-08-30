@@ -83,7 +83,7 @@ validate_workflow_implementation() {
     # TODO: Implement workflow file existence check
     if [[ ! -f "$workflow_file" ]]; then
         echo "❌ Workflow missing: $workflow_file"
-        echo "💡 Run: claude-code agent invoke workflow-coordinator --feature $feature_name"
+        echo "💡 Run: claude-code agent invoke file-creator --feature $feature_name (uses pocketflow-tools/generator)"
         return 1
     fi
     
@@ -132,5 +132,5 @@ validate_workflow_implementation() {
 ### Implementation Logic:
 1. Detect if current task requires orchestration
 2. Check if orchestrator outputs exist
-3. If missing: Invoke workflow-coordinator with context
+3. If missing: Invoke file-creator with context (uses generator)
 4. Wait for completion and validate outputs

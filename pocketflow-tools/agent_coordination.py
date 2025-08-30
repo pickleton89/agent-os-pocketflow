@@ -2,10 +2,11 @@
 """
 Agent Coordination System for Pattern Recognizer
 
-Handles coordination between pattern-recognizer and the three PocketFlow sub-agents:
+Handles coordination between pattern-recognizer and PocketFlow components:
 - design-document-creator: PocketFlow design document creation specialist
 - strategic-planner: Product strategy and PocketFlow integration planning
-- workflow-coordinator: Template generation and workflow orchestration
+- file-creator: Applies templates; uses pocketflow-tools/generator for generation
+- template-validator: Validates generated templates
 Implements handoff protocols and pattern override capabilities.
 """
 
@@ -138,10 +139,11 @@ class PatternOverrideManager:
 
 
 class AgentCoordinator:
-    """Coordinates between pattern-recognizer and the three PocketFlow sub-agents:
+    """Coordinates between pattern-recognizer and PocketFlow components:
     - design-document-creator: Handles design document creation and validation
     - strategic-planner: Manages product strategy and integration planning
-    - workflow-coordinator: Coordinates template generation and workflow orchestration
+    - file-creator: Applies templates and calls generator for workflow scaffolds
+    - template-validator: Validates templates and structure
     """
     
     def __init__(self):
@@ -154,7 +156,7 @@ class AgentCoordinator:
         Args:
             context: Coordination context with pattern recommendation
             target_agent: Optional specific target agent ('design-document-creator', 
-                         'strategic-planner', or 'workflow-coordinator'). 
+                         'strategic-planner', or 'file-creator'). 
                          If None, determines from pattern type.
         """
         
@@ -201,11 +203,11 @@ class AgentCoordinator:
         return handoff
     
     def _determine_target_agent(self, context: CoordinationContext) -> str:
-        """Determine appropriate target agent (design-document-creator, strategic-planner, or workflow-coordinator) based on pattern and context."""
+        """Determine appropriate target agent (design-document-creator, strategic-planner, or file-creator) based on pattern and context."""
         
         if not context.pattern_recommendation:
-            # Default to workflow-coordinator for basic coordination needs
-            return "workflow-coordinator"
+            # Default to file-creator for template application/generation
+            return "file-creator"
         
         pattern = context.pattern_recommendation.primary_pattern
         
@@ -220,13 +222,13 @@ class AgentCoordinator:
         if pattern in [PatternType.MULTI_AGENT, PatternType.MAPREDUCE, PatternType.HYBRID]:
             return "strategic-planner"
         
-        # Default workflow/template patterns go to workflow-coordinator
+        # Default workflow/template patterns go to file-creator (uses generator)
         # This includes: RAG, AGENT, TOOL, WORKFLOW
-        return "workflow-coordinator"
+        return "file-creator"
     
     def process_subagent_feedback(self, handoff: HandoffPackage, 
                                     subagent_response: Dict[str, Any]) -> CoordinationContext:
-        """Process feedback from PocketFlow agents (design-document-creator, strategic-planner, or workflow-coordinator)."""
+        """Process feedback from PocketFlow agents (design-document-creator, strategic-planner, or file-creator)."""
         
         target_agent = handoff.target_agent
         logger.info(f"Processing feedback from {target_agent}")
@@ -342,7 +344,7 @@ class AgentCoordinator:
 
 def coordinate_pattern_analysis(project_name: str, requirements: str, 
                               user_overrides: Optional[Dict[str, Any]] = None) -> CoordinationContext:
-    """High-level function to coordinate pattern analysis with PocketFlow agents (design-document-creator, strategic-planner, workflow-coordinator)."""
+    """High-level function to coordinate pattern analysis with PocketFlow agents (design-document-creator, strategic-planner, file-creator)."""
     
     from pattern_analyzer import PatternAnalyzer
     
@@ -379,7 +381,7 @@ def create_subagent_handoff(context: CoordinationContext, target_agent: str = No
     Args:
         context: Coordination context with pattern recommendation
         target_agent: Optional specific target agent ('design-document-creator',
-                     'strategic-planner', or 'workflow-coordinator').
+                     'strategic-planner', or 'file-creator').
                      If None, determines from pattern type.
     """
     

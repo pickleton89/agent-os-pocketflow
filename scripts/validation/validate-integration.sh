@@ -16,12 +16,12 @@ fi
 
 # Test 2: Sub-agents (three focused agents replacing single orchestrator)
 agent_files=(
-    ".claude/agents/design-document-creator.md"
-    ".claude/agents/strategic-planner.md"
-    ".claude/agents/workflow-coordinator.md"
+    ".claude/agents/template-validator.md"
+    ".claude/agents/pattern-recognizer.md"
+    ".claude/agents/dependency-orchestrator.md"
 )
 
-echo "🔍 Checking for three sub-agents..."
+echo "🔍 Checking for core PocketFlow agents..."
 for agent_file in "${agent_files[@]}"; do
     if [[ -f "$agent_file" ]]; then
         echo "✅ $(basename "$agent_file" .md) agent found"
@@ -80,8 +80,9 @@ validate_extension_quality() {
             fi
             ;;
         "llm-workflow-extension.md")
-            if ! grep -q "workflow-coordinator" "$ext_file"; then
-                echo "❌ $ext_name missing workflow-coordinator integration guidance"
+            # With workflow-coordinator split, ensure it references generator or validation tools
+            if ! grep -q "generator\|template-validator\|pattern-recognizer" "$ext_file"; then
+                echo "❌ $ext_name missing generator/validator integration guidance"
                 return 1
             fi
             ;;
@@ -93,7 +94,7 @@ validate_extension_quality() {
             ;;
         *)
             # Any extension should reference at least one sub-agent
-            if ! grep -q "design-document-creator\|strategic-planner\|workflow-coordinator" "$ext_file"; then
+            if ! grep -q "design-document-creator\|strategic-planner\|template-validator\|pattern-recognizer\|dependency-orchestrator" "$ext_file"; then
                 echo "❌ $ext_name missing sub-agent integration guidance"
                 return 1
             fi

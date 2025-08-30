@@ -220,9 +220,9 @@ test_test_structure_generation() {
 test_agent_configuration() {
     # Verify three sub-agents are properly configured
     local agents=(
-        "design-document-creator.md:design-document-creator"
-        "strategic-planner.md:strategic-planner"
-        "workflow-coordinator.md:workflow-coordinator"
+        "template-validator.md:template-validator"
+        "pattern-recognizer.md:pattern-recognizer"
+        "dependency-orchestrator.md:dependency-orchestrator"
     )
     
     for agent_spec in "${agents[@]}"; do
@@ -353,9 +353,9 @@ test_claude_md_integration() {
 test_complete_system_health() {
     # Final comprehensive health check
     local critical_components=(
-        ".claude/agents/design-document-creator.md"
-        ".claude/agents/strategic-planner.md"
-        ".claude/agents/workflow-coordinator.md"
+        ".claude/agents/template-validator.md"
+        ".claude/agents/pattern-recognizer.md"
+        ".claude/agents/dependency-orchestrator.md"
         ".agent-os/instructions/orchestration/coordination.yaml"
         ".agent-os/instructions/orchestration/orchestrator-hooks.md"
         ".agent-os/instructions/extensions/pocketflow-integration.md"

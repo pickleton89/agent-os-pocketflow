@@ -1,5 +1,46 @@
 Agent OS + PocketFlow Framework — Codex Review Summary
 
+Update — 2025-08-30 (docs ignored)
+- Scope: Re-audit focusing on code, setup scripts, standards, and pocketflow-tools; intentionally ignoring the ./docs directory.
+- Mission fit: The repo correctly behaves as a framework that generates PocketFlow templates and ships installers/validators; no usage-repo behavior detected.
+- Key confirmations and deltas:
+  1) Workflow-coordinator split acknowledged (no agent file needed)
+     - Functionality now lives in `pocketflow-tools/generator.py`, `pocketflow-tools/template_validator.py`, and `pocketflow-tools/pattern_analyzer.py`.
+     - Adjust references: remove `workflow-coordinator.md` from setup download lists and validation expectations; update agent docs and hooks to point to file-creator/generator and template-validator.
+     - Implemented: setup scripts and validation updated; pattern-recognizer agent doc and generator guidance updated.
+  2) Generator’s install-check path mismatch
+     - Generated shim points to `~/.agent-os/workflows/check-pocketflow-install.py`, but the checker ships under pocketflow-tools.
+     - Evidence: `pocketflow-tools/generator.py:835` vs. `config.yml:16` and `pocketflow-tools/check-pocketflow-install.py:9`.
+     - Impact: `check-install.py` in generated projects won’t find the real checker if only pocketflow-tools is installed.
+     - Recommendation: Change the shim to `~/.agent-os/pocketflow-tools/check-pocketflow-install.py` or resolve via config.
+  3) Python version drift (standards vs configs vs tools)
+     - Standards: Python 3.12+ (standards/tech-stack.md:18)
+     - Framework root: `requires-python >=3.11` (`pyproject.toml:6`)
+     - Tooling emits ruff/ty targets for 3.9 (`pocketflow-tools/dependency_orchestrator.py:184`, `:210`)
+     - Base installer checks for Python 3.8+ (`setup/base.sh` prerequisite check)
+     - Recommendation: Pick a single target (e.g., 3.12) or at least 3.11 across: update dependency orchestrator tool configs (ruff target-version, ty python_version), bump base installer prerequisite, and align docs/config defaults.
+  4) Validation scripts assume usage-repo context
+     - Scripts require `.agent-os/workflows` or `.claude/agents` in the current repo.
+     - Evidence: `scripts/validation/validate-pocketflow.sh:14`, `scripts/validation/validate-sub-agents.sh:48` and master runner includes them.
+     - Impact: Running `scripts/run-all-tests.sh` from framework root may fail despite framework being correct.
+     - Recommendation: Gate tests by repository type: detect framework context (presence of `pocketflow-tools/generator.py`) and skip usage-only checks, or add a `--framework` mode.
+  5) Import stability in pocketflow-tools
+     - Mixed import styles: generator uses package-relative imports with fallback handling, while `agent_coordination.py` uses absolute (`from pattern_analyzer import ...`).
+     - Evidence: `pocketflow-tools/agent_coordination.py:13`
+     - Recommendation: Use a try/except pattern for relative-then-absolute imports for robustness when running as a script vs. package.
+  6) Base installer Python prerequisite too lax vs. emitted environments
+     - Base checks 3.8+, while emitted configs and checker expect 3.11+.
+     - Recommendation: Raise base prerequisite to 3.11+ (or 3.12+) to match emitted templates and `check-pocketflow-install.py`.
+  7) Claude Code agent download vs. local copy skew
+     - Remote download list updated to remove workflow-coordinator; copy branch continues to mirror local agents.
+     - Follow-up: Optional post-copy verification for the active agent set (pattern-recognizer, template-validator, dependency-orchestrator, design-document-creator, strategic-planner).
+  8) Optionally add non-interactive install mode
+     - `setup.sh` prompts for confirmation during auto detection.
+     - Recommendation: Add `--yes` flag to bypass prompts to aid CI or scripted bootstrap.
+  9) FastAPI as a framework dependency
+     - Root `pyproject.toml` includes FastAPI; it appears used for template tests (`testcontentanalyzer`) rather than runtime.
+     - Recommendation: If desired, move to dev dependencies in framework context; not required for template generation.
+
 Overview
 - Purpose: This repository is the Agent OS + PocketFlow framework itself. It generates PocketFlow-based project templates, provides setup/validation/generation tooling, and ships Claude Code subagents. It is not an end-user app.
 - Architecture: Two-phase install (base → ~/.agent-os; project → ./.agent-os). Base provides instructions, standards, commands, PocketFlow tools/templates, and Claude Code agents. Project install copies a self-contained set into the repository.
@@ -46,7 +87,7 @@ Claude Code Agents (claude-code/agents)
   - dependency-orchestrator: generates tooling/deps (pyproject, uv configs)
   - template-validator: structural check of templates; enforces “templates, not apps”
   - git-workflow, project-manager: PR/branching and tracking/recaps
-- Notable gap: `workflow-coordinator` is referenced by plans and code but the agent file is missing here.
+    - Note: workflow-coordinator responsibilities moved into pocketflow-tools (generator/template_validator/pattern_analyzer); agent reference removed in setup/validation/docs.
 
 PocketFlow Tools (pocketflow-tools)
 - generator.py: Produces complete, self-contained PocketFlow projects with:
@@ -74,7 +115,7 @@ How It’s Supposed To Work (Happy Path)
 5. End-users then implement placeholders in their own repo; the framework repo remains template-focused.
 
 Recommended Improvements & Fixes
-- Add missing agent file: `claude-code/agents/workflow-coordinator.md` (referenced by pattern-recognizer and agent_coordination, and listed in setup installers).
+- Remove workflow-coordinator agent references across setup/validation; point to generator + template-validator + pattern-analyzer instead.
 - Fix check-install path in generator:
   - `generator.py` references `~/.agent-os/workflows/check-pocketflow-install.py`; the checker actually lives under `pocketflow-tools/check-pocketflow-install.py` (deployed to `.agent-os/pocketflow-tools/`). Update the path or make it configurable via `config.yml`.
 - Enforce design doc presence in validation:
@@ -84,7 +125,7 @@ Recommended Improvements & Fixes
 - Import robustness in pocketflow-tools:
   - Consider package-relative imports for internal modules (`from .pattern_analyzer import ...`) to reduce path sensitivity if tools are executed as a package. Current structure works inside `pocketflow-tools`, but relative imports are safer.
 - Confirm installer agent lists:
-  - `setup/base.sh` and `setup/project.sh` list PocketFlow agents including `workflow-coordinator`. Ensure the file is present to avoid download failures when offline installs are used.
+  - `setup/base.sh` and `setup/project.sh` updated to remove `workflow-coordinator`; ensure remaining PocketFlow agents are present.
 - Optional: Add a minimal smoke validation script in `scripts/validation/` to check that generated projects include `docs/design.md` with Mermaid, and that `template_validator.py` passes with 0 errors before proceeding.
 
 Key Reminders
@@ -102,4 +143,3 @@ Quick File Index
 
 Conclusion
 This repo cleanly implements a meta-framework: Agent OS for process + PocketFlow for execution architecture. It installs itself into base and projects, generates complete PocketFlow scaffolds, and validates structure while preserving the framework vs usage boundary. Addressing the few gaps above will further harden design-first enforcement and round out subagent coverage.
-
