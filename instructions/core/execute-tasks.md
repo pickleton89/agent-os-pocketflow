@@ -219,7 +219,7 @@ encoding: UTF-8
 
 Use the context-fetcher subagent to retrieve relevant sections from @~/.agent-os/standards/best-practices.md that apply to the current task's technology stack and feature type.
 
-<best_practices_retrieval_context>
+<context_retrieval_context>
   <context_to_provide>
     - Target file: @~/.agent-os/standards/best-practices.md
     - Current task technology stack from technical-spec.md analysis
@@ -240,7 +240,7 @@ Use the context-fetcher subagent to retrieve relevant sections from @~/.agent-os
   <required_for_next_step>
     Best practices inform implementation standards and quality requirements in Step 3
   </required_for_next_step>
-</best_practices_retrieval_context>
+</context_retrieval_context>
 
 <selective_reading>
   <search_best_practices>
@@ -253,15 +253,9 @@ Use the context-fetcher subagent to retrieve relevant sections from @~/.agent-os
 </selective_reading>
 
 <instructions>
-  ACTION: Use context-fetcher subagent for best practices retrieval
-  REQUEST: "Find best practices sections relevant to:
-            - Task's technology stack: [TECH_STACK_FROM_TECHNICAL_SPEC]
-            - Feature type: [FEATURE_TYPE_FROM_TASKS_MD]
-            - PocketFlow patterns: [IF_APPLICABLE]
-            - Testing approaches needed
-            - Code organization patterns"
-  PROCESS: Returned best practices
-  APPLY: Relevant patterns to implementation
+  ACTION: Use context-fetcher subagent with complete context specification
+  PROCESS: Returned best practices sections and guidelines
+  APPLY: Relevant patterns and standards to implementation approach
 </instructions>
 
 </step>
@@ -278,7 +272,7 @@ Use the context-fetcher subagent to retrieve relevant sections from @~/.agent-os
 
 Use the context-fetcher subagent to retrieve relevant code style rules from @~/.agent-os/standards/code-style.md for the languages and file types being used in this task.
 
-<code_style_retrieval_context>
+<context_retrieval_context>
   <context_to_provide>
     - Target file: @~/.agent-os/standards/code-style.md
     - Programming languages identified for current task
@@ -299,7 +293,7 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
   <required_for_next_step>
     Code style rules ensure consistent implementation in Step 3
   </required_for_next_step>
-</code_style_retrieval_context>
+</context_retrieval_context>
 
 <selective_reading>
   <search_code_style>
@@ -312,14 +306,9 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 </selective_reading>
 
 <instructions>
-  ACTION: Use context-fetcher subagent for code style retrieval
-  REQUEST: "Find code style rules for:
-            - Languages: [LANGUAGES_IN_TASK]
-            - File types: [FILE_TYPES_BEING_MODIFIED]
-            - PocketFlow patterns: [PATTERNS_BEING_IMPLEMENTED]
-            - Testing style guidelines"
-  PROCESS: Returned style rules
-  APPLY: Relevant formatting and patterns
+  ACTION: Use context-fetcher subagent with complete context specification
+  PROCESS: Returned style rules and conventions
+  APPLY: Relevant formatting patterns and guidelines to implementation
 </instructions>
 
 </step>

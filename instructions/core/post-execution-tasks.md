@@ -24,28 +24,33 @@ Follow these steps to validate implementation, mark progress updates, create a r
 
 Use the test-runner subagent to run ALL tests in the application's test suite to ensure no regressions and fix any failures until all tests pass.
 
-<instructions>
-  ACTION: Use test-runner subagent
-  REQUEST: "Run the full test suite with comprehensive validation:
-            - Execute linting: uv run ruff check --fix .
-            - Execute formatting: uv run ruff format .
-            - Execute type checking: uv run ty check
-            - Execute unit tests: uv run pytest -v
-            - Ensure 100% pass rate for all categories"
-  WAIT: For test-runner analysis
-  PROCESS: Fix any reported failures
-  REPEAT: Until all tests pass
-</instructions>
+<test_execution_context>
+  <context_to_provide>
+    - Test scope: Full application test suite with comprehensive validation
+    - Test framework configuration: pytest with uv execution environment
+    - Required test categories: linting (ruff check --fix), formatting (ruff format), type checking (ty check), unit tests (pytest -v)
+    - Coverage requirements: 100% pass rate across all test categories
+    - Implementation features: All completed spec tasks requiring verification
+  </context_to_provide>
+  
+  <expected_output>
+    - Test execution results with pass/fail status for each category
+    - Detailed failure information and debugging context for any failed tests
+    - Coverage metrics and validation confirmation
+    - Specific remediation steps for failures
+  </expected_output>
+  
+  <required_for_next_step>
+    All tests must pass before progressing to PocketFlow validation and subsequent workflow steps
+  </required_for_next_step>
+</test_execution_context>
 
-<test_execution>
-  <order>
-    1. Run linting and formatting
-    2. Run type checking
-    3. Run full test suite
-    4. Fix any failures
-  </order>
-  <requirement>100% pass rate across all categories</requirement>
-</test_execution>
+<instructions>
+  ACTION: Use test-runner subagent with complete context specification
+  PROCESS: Fix any reported failures using provided debugging context
+  REPEAT: Re-run failed test categories until 100% pass rate achieved
+  BLOCK: Progression until all test categories pass successfully
+</instructions>
 
 <failure_handling>
   IF test_runner_fails:
@@ -135,13 +140,25 @@ Use the test-runner subagent to run ALL tests in the application's test suite to
 
 Use the project-manager subagent to verify all tasks in the current spec are properly completed and update task tracking documentation.
 
-<verification_request>
-  REQUEST: "Verify completion status for all tasks in current spec:
-           - Check tasks.md completion status
-           - Validate implementation matches requirements  
-           - Update any incomplete task markings
-           - Identify any missed subtasks"
-</verification_request>
+<project_management_context>
+  <context_to_provide>
+    - Current spec folder location and task tracking requirements
+    - tasks.md file path and completion verification standards
+    - Implementation acceptance criteria and validation requirements
+    - Task completion status and any blocking issues documentation
+  </context_to_provide>
+  
+  <expected_output>
+    - Task completion verification results with specific completion status
+    - Updated task tracking documentation with accurate markings
+    - Identification of any incomplete tasks or missed subtasks
+    - Validation confirmation that implementation meets acceptance criteria
+  </expected_output>
+  
+  <required_for_next_step>
+    Complete task verification ensures systematic progress tracking before roadmap updates
+  </required_for_next_step>
+</project_management_context>
 
 <completion_criteria>
   - All parent tasks marked [x] in tasks.md
@@ -160,14 +177,6 @@ Use the project-manager subagent to verify all tasks in the current spec are pro
     - Proceed with confirmed task completion status
 </verification_failure_handling>
 
-<instructions>
-  ACTION: Use project-manager subagent for verification
-  VALIDATE: Complete task completion across spec
-  UPDATE: Task status files as needed
-  CONFIRM: 100% completion before proceeding
-  BLOCK: Progression on incomplete task verification
-</instructions>
-
 </step>
 
 <step number="4" subagent="project-manager" name="roadmap_progress_update">
@@ -182,13 +191,25 @@ Use the project-manager subagent to verify all tasks in the current spec are pro
 
 Use the project-manager subagent to check if the completed spec fulfills any roadmap milestones and update roadmap.md accordingly.
 
-<roadmap_update_request>
-  REQUEST: "Review roadmap.md and update progress:
-           - Check if current spec completes roadmap items
-           - Mark completed milestones as [x]
-           - Update progress percentages
-           - Document completion dates"
-</roadmap_update_request>
+<project_management_context>
+  <context_to_provide>
+    - Current spec implementation details and completed features
+    - roadmap.md file location and milestone tracking requirements
+    - Completion criteria: fully implemented features with passing tests
+    - Progress tracking standards and documentation requirements
+  </context_to_provide>
+  
+  <expected_output>
+    - Roadmap milestone completion analysis with specific determinations
+    - Updated roadmap.md with completed milestone markings and progress percentages
+    - Documentation of completion dates and implementation status
+    - Cautious verification that only fully-ready features are marked complete
+  </expected_output>
+  
+  <required_for_next_step>
+    Roadmap updates maintain accurate project progress tracking for recap generation
+  </required_for_next_step>
+</project_management_context>
 
 <update_criteria>
   <cautious_approach>
@@ -209,14 +230,6 @@ Use the project-manager subagent to check if the completed spec fulfills any roa
     - Proceed with roadmap updates completed
 </roadmap_update_failure_handling>
 
-<instructions>
-  ACTION: Use project-manager subagent for roadmap updates
-  EVALUATE: Whether spec completes roadmap goals
-  UPDATE: Roadmap progress if applicable
-  DOCUMENT: Completion status and dates
-  FALLBACK: Manual review if subagent fails (non-blocking)
-</instructions>
-
 </step>
 
 <step number="5" subagent="project-manager" name="recap_generation">
@@ -231,15 +244,26 @@ Use the project-manager subagent to check if the completed spec fulfills any roa
 
 Use the project-manager subagent to generate a comprehensive recap document for the completed spec in the .agent-os/recaps/ directory.
 
-<recap_generation_request>
-  REQUEST: "Generate completion recap for current spec:
-           - Create recap file in .agent-os/recaps/
-           - Include implementation summary and technical details
-           - Document PocketFlow patterns used (if applicable)
-           - Note challenges encountered and solutions
-           - Record testing approach and coverage
-           - Identify future considerations or improvements"
-</recap_generation_request>
+<project_management_context>
+  <context_to_provide>
+    - Current spec details and all completed implementation features
+    - .agent-os/recaps/ directory location for recap document storage
+    - Implementation summary with technical approach and architecture details
+    - PocketFlow patterns used and architectural decisions (universal requirement)
+    - Testing approach, coverage metrics, and validation results
+  </context_to_provide>
+  
+  <expected_output>
+    - Comprehensive completion recap document stored in .agent-os/recaps/
+    - Implementation summary with technical details and PocketFlow patterns
+    - Documentation of challenges encountered and solutions implemented
+    - Testing approach and coverage information with future considerations
+  </expected_output>
+  
+  <required_for_next_step>
+    Completion recap provides project documentation before git workflow and final delivery
+  </required_for_next_step>
+</project_management_context>
 
 <recap_template>
   <filename>SPEC_NAME_recap.md</filename>
@@ -263,14 +287,6 @@ Use the project-manager subagent to generate a comprehensive recap document for 
     - Proceed with recap successfully generated
 </recap_failure_handling>
 
-<instructions>
-  ACTION: Use project-manager subagent for recap creation
-  GENERATE: Comprehensive completion documentation
-  STORE: In .agent-os/recaps/ directory
-  INCLUDE: All relevant technical and process details
-  BLOCK: Progression until recap successfully created
-</instructions>
-
 </step>
 
 <step number="6" subagent="git-workflow" name="git_workflow">
@@ -285,16 +301,29 @@ Use the project-manager subagent to generate a comprehensive recap document for 
 
 Use the git-workflow subagent to create git commit, push to GitHub, and create pull request for the implemented features.
 
+<git_workflow_context>
+  <context_to_provide>
+    - Spec details and implementation summary for commit messaging
+    - All modified files including PocketFlow components and architecture changes
+    - Target branch: main branch for pull request integration
+    - Pull request description with functionality recap and PocketFlow pattern details
+  </context_to_provide>
+  
+  <expected_output>
+    - Git commit and push completion status with branch management
+    - Pull request creation with URL and descriptive title
+    - Commit messages with proper attribution and PocketFlow architecture details
+  </expected_output>
+  
+  <required_for_next_step>
+    Git workflow completion provides PR URL for inclusion in final completion summary
+  </required_for_next_step>
+</git_workflow_context>
+
 <instructions>
-  ACTION: Use git-workflow subagent
-  REQUEST: "Complete git workflow for [SPEC_NAME] feature:
-            - Spec: [SPEC_FOLDER_PATH]
-            - Changes: All modified files including PocketFlow components
-            - Target: main branch
-            - Description: [SUMMARY_OF_IMPLEMENTED_FEATURES]
-            - Include PocketFlow patterns and architecture details"
-  WAIT: For workflow completion
-  PROCESS: Save PR URL for summary
+  ACTION: Use git-workflow subagent with complete context specification
+  PROCESS: Save PR URL and commit details for summary generation
+  ENSURE: Proper attribution and PocketFlow pattern documentation in PR
 </instructions>
 
 <commit_process>
@@ -355,14 +384,26 @@ Use the project-manager subagent to play a system sound to alert the user that t
     - Proceed with successful notification
 </notification_failure_handling>
 
-<instructions>
-  ACTION: Use project-manager subagent
-  REQUEST: "Play completion sound to alert user:
-            - Execute: afplay /System/Library/Sounds/Glass.aiff
-            - Purpose: Alert user that task is complete"
-  PROCESS: Confirm sound played successfully
-  FALLBACK: Continue if sound fails (non-blocking)
-</instructions>
+Use the project-manager subagent to play a system sound to alert the user that tasks are complete.
+
+<project_management_context>
+  <context_to_provide>
+    - Completion notification requirements and system sound command
+    - Sound file location: /System/Library/Sounds/Glass.aiff
+    - User alert purpose: notify task completion status
+    - Fallback behavior: continue workflow if sound fails (non-blocking)
+  </context_to_provide>
+  
+  <expected_output>
+    - System sound execution confirmation
+    - User notification completion status
+    - Fallback handling results if sound playback fails
+  </expected_output>
+  
+  <required_for_next_step>
+    User notification alerts completion before final summary generation
+  </required_for_next_step>
+</project_management_context>
 
 </step>
 
@@ -378,17 +419,26 @@ Use the project-manager subagent to play a system sound to alert the user that t
 
 Use the project-manager subagent to create a structured summary message with emojis showing what was done, any issues, testing instructions, and PR link.
 
-<instructions>
-  ACTION: Use project-manager subagent
-  REQUEST: "Create comprehensive completion summary:
-            - Include all implemented features with PocketFlow components
-            - Document any issues encountered and resolutions
-            - Add testing instructions if applicable
-            - Include PR link and next steps
-            - Format with emoji headers for scannability"
-  WAIT: For summary generation
-  PROCESS: Verify all key information included
-</instructions>
+<project_management_context>
+  <context_to_provide>
+    - All implemented features with PocketFlow components and architecture details
+    - Issues encountered during implementation and their resolutions
+    - Testing instructions and validation results
+    - Pull request link and next recommended steps
+    - Formatted summary template with emoji headers for user readability
+  </context_to_provide>
+  
+  <expected_output>
+    - Comprehensive completion summary with structured sections and emoji headers
+    - Complete feature documentation with PocketFlow pattern details
+    - Issue documentation and resolution details
+    - Testing instructions and PR integration information
+  </expected_output>
+  
+  <required_for_next_step>
+    Final completion summary provides comprehensive project delivery documentation
+  </required_for_next_step>
+</project_management_context>
 
 <summary_template>
   ## ✅ What's been done
