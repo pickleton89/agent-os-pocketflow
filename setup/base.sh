@@ -174,11 +174,11 @@ check_prerequisites() {
         exit 1
     fi
     
-    # Check Python version (require 3.8+)
+    # Check Python version (require 3.12+)
     if command -v python3 &> /dev/null; then
         local python_version=$(python3 --version | grep -oE '[0-9]+\.[0-9]+')
-        if [[ "$(printf '%s\n' "3.8" "$python_version" | sort -V | head -n1)" != "3.8" ]]; then
-            log_error "Python 3.8+ required. Found: $python_version"
+        if [[ "$(printf '%s\n' "3.12" "$python_version" | sort -V | head -n1)" != "3.12" ]]; then
+            log_error "Python 3.12+ required. Found: $python_version"
             exit 1
         fi
         log_success "Python version check passed: $python_version"

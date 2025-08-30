@@ -134,7 +134,7 @@ build-backend = "hatchling.build"
 name = "test-project"
 version = "0.1.0"
 description = "Test project"
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 dependencies = ["pocketflow", "pydantic>=2.0"]
 
 [tool.ruff]

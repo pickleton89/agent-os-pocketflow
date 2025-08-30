@@ -70,7 +70,7 @@ def check_package(package_name: str) -> Tuple[bool, str]:
 def check_python_version() -> bool:
     """Check if Python version is compatible."""
     version = sys.version_info
-    if version.major == 3 and version.minor >= 11:
+    if version.major == 3 and version.minor >= 12:
         return True
     return False
 
@@ -134,7 +134,7 @@ def main():
     if check_python_version():
         print(f"✅ Python {sys.version.split()[0]} (compatible)")
     else:
-        print(f"❌ Python {sys.version.split()[0]} (requires Python 3.11+)")
+        print(f"❌ Python {sys.version.split()[0]} (requires Python 3.12+)")
         return 1
     
     # Check project structure

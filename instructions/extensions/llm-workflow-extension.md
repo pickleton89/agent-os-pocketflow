@@ -8,6 +8,11 @@
 
 **Template Requirement:** This extension ensures end-user projects receive design-first templates specifically tailored for LLM/AI features.
 
+### Framework Component Integration
+- Generation: Use `file-creator` to apply templates via `pocketflow-tools/generator.py`
+- Validation: Use `template-validator` to verify structure and placeholder quality
+- Patterning: Use `pattern-recognizer` to analyze requirements and choose patterns
+
 ## Intelligent Pattern Detection Templates
 
 ### Pattern Detection Logic Template

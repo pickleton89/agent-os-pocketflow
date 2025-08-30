@@ -3,7 +3,7 @@ name = "agent-os-pocketflow"
 version = "0.1.0"
 description = "Agent OS + PocketFlow Framework - Meta-system for generating PocketFlow workflow templates"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.104.0",
     "pytest>=8.4.1",

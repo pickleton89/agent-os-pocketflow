@@ -309,10 +309,10 @@ test_dependencies() {
     command -v git &> /dev/null || return 1
     git rev-parse --git-dir > /dev/null 2>&1 || return 1
     
-    # Test required Python version (3.9+ required for modern features)
+    # Test required Python version (3.12+ required for framework alignment)
     local python_version
     python_version=$(python3 --version | grep -oE '[0-9]+\.[0-9]+')
-    [[ "$(printf '%s\n' "3.9" "$python_version" | sort -V | head -n1)" == "3.9" ]] || return 1
+    [[ "$(printf '%s\n' "3.12" "$python_version" | sort -V | head -n1)" == "3.12" ]] || return 1
     
     return 0
 }

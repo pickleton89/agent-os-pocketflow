@@ -19,7 +19,7 @@ class DependencyConfig:
     base_dependencies: List[str] = field(default_factory=list)
     pattern_dependencies: List[str] = field(default_factory=list) 
     dev_dependencies: List[str] = field(default_factory=list)
-    python_version: str = ">=3.9"
+    python_version: str = ">=3.12"
     tool_configs: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -29,7 +29,7 @@ class PyProjectConfig:
     name: str
     version: str = "0.1.0"
     description: str = ""
-    python_version: str = ">=3.9"
+    python_version: str = ">=3.12"
     dependencies: List[str] = field(default_factory=list)
     dev_dependencies: List[str] = field(default_factory=list)
     tool_configs: Dict[str, Any] = field(default_factory=dict)
@@ -181,7 +181,7 @@ class DependencyOrchestrator:
                 section="tool.ruff",
                 config={
                     "line-length": 88,
-                    "target-version": "py39",
+                    "target-version": "py312",
                     "select": ["E", "F", "I", "N", "W", "UP"],
                     "ignore": ["E501", "N806"],
                     "exclude": [
@@ -207,7 +207,7 @@ class DependencyOrchestrator:
                 name="ty", 
                 section="tool.ty",
                 config={
-                    "python_version": "3.9",
+                    "python_version": "3.12",
                     "strict": True,
                     "warn_return_any": True,
                     "warn_unused_configs": True,
@@ -256,7 +256,7 @@ class DependencyOrchestrator:
     def _load_version_constraints(self) -> Dict[str, str]:
         """Load version constraint mappings."""
         return {
-            "python": ">=3.9,<4.0",
+            "python": ">=3.12,<4.0",
             "pocketflow": ">=0.1.0",
             "pydantic": ">=2.0,<3.0",
             "fastapi": ">=0.104.0,<1.0.0",
@@ -288,7 +288,7 @@ class DependencyOrchestrator:
         tool_configs = self._get_tool_configurations()
         
         # Get Python version requirement
-        python_version = self.version_constraints.get("python", ">=3.9")
+        python_version = self.version_constraints.get("python", ">=3.12")
         
         config = DependencyConfig(
             base_dependencies=base_deps,

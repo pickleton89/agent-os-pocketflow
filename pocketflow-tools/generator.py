@@ -59,7 +59,7 @@ class DependencyConfig:
     base_dependencies: List[str] = field(default_factory=list)
     pattern_dependencies: List[str] = field(default_factory=list)
     dev_dependencies: List[str] = field(default_factory=list)
-    python_version: str = ">=3.9"
+    python_version: str = ">=3.12"
     tool_configs: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -832,7 +832,7 @@ from pathlib import Path
 def main():
     """Run the main installation checker."""
     # Path to the main checker in Agent OS
-    agent_os_checker = Path.home() / ".agent-os" / "workflows" / "check-pocketflow-install.py"
+    agent_os_checker = Path.home() / ".agent-os" / "pocketflow-tools" / "check-pocketflow-install.py"
     
     if not agent_os_checker.exists():
         print("❌ Agent OS + PocketFlow installation checker not found.")
@@ -1210,7 +1210,7 @@ name = "{project_name}"
 version = "0.1.0"
 description = "{spec.description}"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 dependencies = [
     "pocketflow",
     "pydantic>=2.0",
@@ -1228,7 +1228,7 @@ dev = [
 
 [tool.ruff]
 line-length = 88
-target-version = "py39"
+target-version = "py312"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -2327,8 +2327,8 @@ This is a generated design document template. Please complete with actual requir
             pattern_dependencies=pattern_deps.get(pattern, []),
             dev_dependencies=["pytest", "pytest-asyncio", "ruff", "mypy"],
             tool_configs={
-                "ruff": {"line-length": 88, "target-version": "py39"},
-                "mypy": {"python_version": "3.9", "strict": True}
+                "ruff": {"line-length": 88, "target-version": "py312"},
+                "mypy": {"python_version": "3.12", "strict": True}
             }
         )
 

@@ -8,17 +8,14 @@ Update — 2025-08-30 (docs ignored)
      - Functionality now lives in `pocketflow-tools/generator.py`, `pocketflow-tools/template_validator.py`, and `pocketflow-tools/pattern_analyzer.py`.
      - Adjust references: remove `workflow-coordinator.md` from setup download lists and validation expectations; update agent docs and hooks to point to file-creator/generator and template-validator.
      - Implemented: setup scripts and validation updated; pattern-recognizer agent doc and generator guidance updated.
-  2) Generator’s install-check path mismatch
-     - Generated shim points to `~/.agent-os/workflows/check-pocketflow-install.py`, but the checker ships under pocketflow-tools.
-     - Evidence: `pocketflow-tools/generator.py:835` vs. `config.yml:16` and `pocketflow-tools/check-pocketflow-install.py:9`.
-     - Impact: `check-install.py` in generated projects won’t find the real checker if only pocketflow-tools is installed.
-     - Recommendation: Change the shim to `~/.agent-os/pocketflow-tools/check-pocketflow-install.py` or resolve via config.
-  3) Python version drift (standards vs configs vs tools)
-     - Standards: Python 3.12+ (standards/tech-stack.md:18)
-     - Framework root: `requires-python >=3.11` (`pyproject.toml:6`)
-     - Tooling emits ruff/ty targets for 3.9 (`pocketflow-tools/dependency_orchestrator.py:184`, `:210`)
-     - Base installer checks for Python 3.8+ (`setup/base.sh` prerequisite check)
-     - Recommendation: Pick a single target (e.g., 3.12) or at least 3.11 across: update dependency orchestrator tool configs (ruff target-version, ty python_version), bump base installer prerequisite, and align docs/config defaults.
+  2) Generator’s install-check path corrected
+     - Generated shim now points to `~/.agent-os/pocketflow-tools/check-pocketflow-install.py` to match deployed checker location.
+  3) Python version alignment (completed)
+     - Standards: Python 3.12+ (standards/tech-stack.md)
+     - Framework root: `requires-python >=3.12` (pyproject.toml)
+     - Tooling targets: ruff `py312`, ty/mypy `3.12`
+     - Base installer prerequisite: Python 3.12+
+     - Outcome: Consistent 3.12 target across framework and generated templates
   4) Validation scripts assume usage-repo context
      - Scripts require `.agent-os/workflows` or `.claude/agents` in the current repo.
      - Evidence: `scripts/validation/validate-pocketflow.sh:14`, `scripts/validation/validate-sub-agents.sh:48` and master runner includes them.

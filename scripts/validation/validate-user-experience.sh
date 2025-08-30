@@ -345,7 +345,7 @@ EOF
 PocketFlow-based implementation
 
 ## Core Technologies
-- Python 3.9+
+- Python 3.12+
 - PocketFlow framework
 - Pytest for testing
 
