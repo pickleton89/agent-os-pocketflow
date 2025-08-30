@@ -8,20 +8,7 @@ encoding: UTF-8
 
 # Product Planning Rules
 
-<ai_meta>
-  <parsing_rules>
-    - Process XML blocks first for structured data
-    - Execute instructions in sequential order
-    - Use templates as exact patterns
-    - Request missing data rather than assuming
-  </parsing_rules>
-  <file_conventions>
-    - encoding: UTF-8
-    - line_endings: LF
-    - indent: 2 spaces
-    - markdown_headers: no indentation
-  </file_conventions>
-</ai_meta>
+<!-- Process XML blocks first, execute sequentially, use templates exactly -->
 
 ## Overview
 
@@ -90,66 +77,19 @@ encoding: UTF-8
 
 ### Step 1.5: Comprehensive Strategic Planning and Implementation Roadmap
 
-<step_metadata>
-  <uses>strategic-planner subagent</uses>
-  <creates>comprehensive strategic plan and implementation roadmap</creates>
-  <purpose>develop strategic foundation for product planning</purpose>
-</step_metadata>
+**Uses:** strategic-planner subagent for comprehensive strategic planning
 
 Use the strategic-planner subagent to create a comprehensive strategic plan and implementation roadmap based on user input and product requirements.
 
-<strategic_planning_context>
-  <context_to_provide>
-    - User input from Step 1: main idea, key features, target users, tech stack
-    - Product vision and market positioning requirements
-    - Technical architecture decisions and constraints
-    - Development timeline and resource considerations
-    - Competitive landscape and differentiation strategy
-    - Team capabilities and development preferences
-  </context_to_provide>
-  
-  <expected_output>
-    - Strategic product roadmap with phase-by-phase implementation plan
-    - Technical architecture recommendations with rationale
-    - PocketFlow pattern integration strategy
-    - Risk assessment and mitigation strategies
-    - Resource allocation and timeline recommendations
-    - Market positioning and competitive differentiation strategy
-  </expected_output>
-  
-  <required_for_next_step>
-    Strategic plan informs all subsequent documentation generation and roadmap creation
-  </required_for_next_step>
-</strategic_planning_context>
+<subagent_context>
+  **Context:** User input, product vision, technical decisions, development timeline
+  **Output:** Strategic roadmap, architecture recommendations, PocketFlow integration strategy
+  **Next Step:** Documentation generation and roadmap creation
+</subagent_context>
 
-<comprehensive_planning_scope>
-  <strategic_dimensions>
-    - Product vision and market fit analysis
-    - Technical architecture and PocketFlow pattern selection
-    - Development methodology and team organization
-    - Timeline and milestone planning
-    - Risk management and contingency planning
-    - Competitive positioning and differentiation
-  </strategic_dimensions>
-  
-  <pocketflow_integration_strategy>
-    - Optimal pattern selection based on product requirements
-    - Implementation sequence for complex vs. simple patterns
-    - Integration with existing technology choices
-    - Scalability and performance considerations
-    - Team training and capability development
-  </pocketflow_integration_strategy>
-</comprehensive_planning_scope>
+**Planning Scope:** Product vision, technical architecture, development methodology, PocketFlow pattern selection
 
-<blocking_validation>
-  IF strategic-planner identifies unclear requirements or missing critical information:
-    - Request clarification of product vision and key features
-    - Gather additional technical constraints and preferences
-    - Re-run strategic planning with enhanced input
-    - BLOCK documentation creation until strategic foundation is solid
-  ELSE:
-    - Proceed to create documentation with validated strategic plan
-</blocking_validation>
+**Blocking:** Must have clear requirements before documentation creation
 
 <instructions>
   ACTION: Use strategic-planner subagent for comprehensive strategic planning
@@ -441,63 +381,19 @@ Use the strategic-planner subagent to create a comprehensive strategic plan and 
 
 ### Step 4.5: Technical Pattern Validation
 
-<step_metadata>
-  <uses>pattern-recognizer subagent</uses>
-  <validates>recommended technical patterns and architecture decisions</validates>
-  <purpose>ensure optimal PocketFlow pattern alignment with product requirements</purpose>
-</step_metadata>
+**Uses:** pattern-recognizer subagent for technical pattern validation
 
 Use the pattern-recognizer subagent to validate the recommended technical patterns and architecture decisions before finalizing the roadmap.
 
-<pattern_validation_context>
-  <context_to_provide>
-    - Strategic plan recommendations from Step 1.5
-    - Technical architecture decisions from tech-stack.md creation
-    - Product requirements and feature complexity from mission.md
-    - Performance, scalability, and integration requirements
-    - Team capabilities and development constraints
-    - PocketFlow pattern options: Agent, RAG, Workflow, MapReduce, Multi-Agent, Structured Output
-  </context_to_provide>
-  
-  <expected_output>
-    - Validation of recommended PocketFlow patterns with confidence scores
-    - Technical architecture compliance assessment
-    - Pattern optimization recommendations for specific features
-    - Implementation complexity analysis and warnings
-    - Alternative pattern suggestions if misalignment detected
-    - Integration and migration strategy validation
-  </expected_output>
-  
-  <required_for_next_step>
-    Pattern validation ensures roadmap features use optimal PocketFlow patterns
-  </required_for_next_step>
-</pattern_validation_context>
+<subagent_context>
+  **Context:** Strategic recommendations, technical architecture, product requirements, pattern options
+  **Output:** Pattern validation results and optimization recommendations
+  **Next Step:** Roadmap features with optimal PocketFlow patterns
+</subagent_context>
 
-<technical_validation_scope>
-  <architecture_validation>
-    - PocketFlow pattern suitability for each major feature
-    - Technical stack compatibility with chosen patterns
-    - Scalability and performance implications
-    - Integration complexity and dependencies
-  </architecture_validation>
-  
-  <implementation_validation>
-    - Team capability alignment with pattern complexity
-    - Development timeline feasibility
-    - Resource requirements for pattern implementation
-    - Risk assessment for technical choices
-  </implementation_validation>
-</technical_validation_scope>
+**Validation Focus:** PocketFlow pattern suitability, technical compatibility, team capability alignment
 
-<failure_handling>
-  IF pattern-recognizer identifies conflicting technical requirements or validation failures:
-    - Review technical architecture decisions for inconsistencies
-    - Prioritize pattern candidates based on strategic importance
-    - Use fallback Agent pattern for complex or unclear cases
-    - Document technical trade-offs and architectural risks
-  ELSE:
-    - Proceed with validated pattern recommendations to roadmap creation
-</failure_handling>
+**Fallback:** Use Agent pattern for complex or unclear cases
 
 <instructions>
   ACTION: Use pattern-recognizer subagent for technical pattern validation
@@ -578,17 +474,11 @@ Use the pattern-recognizer subagent to validate the recommended technical patter
   - XL: 3+ weeks
 </effort_scale>
 
-<universal_roadmap>
-  <pocketflow_features>
-    <always_apply>
-      - Add "Design Document Creation" as prerequisite for all features
-      - Tag all features with appropriate PocketFlow patterns (WORKFLOW, TOOL, AGENT, RAG, MAPREDUCE, etc.)
-      - Include design.md requirement in dependencies
-      - Enforce design-first methodology progression
-      - Map complexity from simple workflows to complex multi-agent systems
-    </always_apply>
-  </pocketflow_features>
-</universal_roadmap>
+**Universal Requirements:**
+- Design Document Creation prerequisite for all features
+- Tag features with PocketFlow patterns (WORKFLOW, TOOL, AGENT, RAG, MAPREDUCE)
+- Include design.md requirement in dependencies
+- Enforce design-first methodology
 
 <instructions>
   ACTION: Create 5 development phases
@@ -659,24 +549,10 @@ When asked to work on this codebase:
 - Always adhere to established patterns, code style, and best practices documented above.
 </content_template>
 
-<merge_behavior>
-  <if_file_exists>
-    <check_for_section>"## Agent OS Documentation"</check_for_section>
-    <if_section_exists>
-      <action>replace_section</action>
-      <start_marker>"## Agent OS Documentation"</start_marker>
-      <end_marker>next_h2_heading_or_end_of_file</end_marker>
-    </if_section_exists>
-    <if_section_not_exists>
-      <action>append_to_file</action>
-      <separator>"\n\n"</separator>
-    </if_section_not_exists>
-  </if_file_exists>
-  <if_file_not_exists>
-    <action>create_new_file</action>
-    <content>content_template</content>
-  </if_file_not_exists>
-</merge_behavior>
+**Merge Strategy:**
+- If CLAUDE.md exists and has "## Agent OS Documentation" section: Replace section
+- If CLAUDE.md exists but no Agent OS section: Append to end
+- If CLAUDE.md doesn't exist: Create new file
 
 <instructions>
   ACTION: Check if CLAUDE.md exists in project root

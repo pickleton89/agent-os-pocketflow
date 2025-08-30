@@ -135,24 +135,11 @@ Search and extract relevant sections from technical-spec.md to understand the te
 
 Use the context-fetcher subagent to retrieve relevant sections from @~/.agent-os/standards/best-practices.md that apply to the current task's technology stack and feature type.
 
-<best_practices_retrieval_context>
-  <context_to_provide>
-    - Target file: @~/.agent-os/standards/best-practices.md
-    - Current task technology stack and feature type
-    - Testing and code organization requirements
-    - PocketFlow patterns if applicable to project
-  </context_to_provide>
-  
-  <expected_output>
-    - Relevant best practices sections with source references
-    - Technology-specific guidelines and testing approaches
-    - Framework-specific best practices (if PocketFlow project)
-  </expected_output>
-  
-  <required_for_next_step>
-    Best practices inform implementation standards and quality requirements in Step 5
-  </required_for_next_step>
-</best_practices_retrieval_context>
+<subagent_context>
+  **Context:** Current task tech stack, feature type, testing requirements
+  **Output:** Relevant best practices sections with source references
+  **Next Step:** Implementation standards for Step 5
+</subagent_context>
 
 <selective_reading>
   <search_best_practices>
@@ -183,26 +170,11 @@ Use the context-fetcher subagent to retrieve relevant sections from @~/.agent-os
 
 Use the context-fetcher subagent to retrieve relevant code style rules from @~/.agent-os/standards/code-style.md for the languages and file types being used in this task.
 
-<code_style_retrieval_context>
-  <context_to_provide>
-    - Target file: @~/.agent-os/standards/code-style.md
-    - Programming languages and file types for current task
-    - Component patterns from task requirements
-    - Testing file conventions and standards
-  </context_to_provide>
-  
-  <expected_output>
-    - Language-specific style rules and conventions
-    - File naming and organization standards
-    - Component structure patterns and templates
-    - Testing style guidelines and conventions
-    - Framework-specific styles (FastAPI, PocketFlow patterns)
-  </expected_output>
-  
-  <required_for_next_step>
-    Code style rules ensure consistent implementation in Step 5
-  </required_for_next_step>
-</code_style_retrieval_context>
+<subagent_context>
+  **Context:** Task languages, file types, component patterns, testing conventions
+  **Output:** Language-specific style rules and framework guidelines
+  **Next Step:** Consistent implementation standards for Step 5
+</subagent_context>
 
 <selective_reading>
   <search_code_style>
@@ -231,43 +203,17 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 ### Step 4.5: PocketFlow Pattern Validation
 
-<step_metadata>
-  <uses>pattern-recognizer subagent</uses>
-  <validates>PocketFlow pattern compliance during implementation</validates>
-  <purpose>ensure optimal architecture pattern selection</purpose>
-</step_metadata>
+**Uses:** pattern-recognizer subagent for PocketFlow pattern validation
 
 Use the pattern-recognizer subagent to validate that the current task aligns with appropriate PocketFlow patterns and identify any architecture optimization opportunities.
 
-<pattern_validation_context>
-  <context_to_provide>
-    - Current task description and requirements from tasks.md
-    - Existing project context from technical-spec.md analysis
-    - PocketFlow pattern options: Agent, RAG, Workflow, MapReduce, Multi-Agent, Structured Output
-    - Performance requirements: latency, throughput, scalability needs
-    - Current architecture decisions and constraints
-  </context_to_provide>
-  
-  <expected_output>
-    - Recommended PocketFlow pattern with confidence score and rationale
-    - Validation of current approach or suggested optimizations
-    - Specific node and flow recommendations for implementation
-    - Integration considerations with existing patterns
-  </expected_output>
-  
-  <required_for_next_step>
-    Pattern validation informs implementation approach and architecture decisions
-  </required_for_next_step>
-</pattern_validation_context>
+<subagent_context>
+  **Context:** Task requirements, project architecture, performance needs, pattern options
+  **Output:** Recommended PocketFlow pattern with rationale and implementation guidance
+  **Next Step:** Architecture decisions for implementation strategy
+</subagent_context>
 
-<failure_handling>
-  IF pattern-recognizer reports unclear requirements or analysis failures:
-    - Clarify task requirements and technical constraints
-    - Re-run pattern validation with enhanced context
-    - Use fallback Agent pattern if analysis inconclusive
-  ELSE:
-    - Proceed with validated pattern recommendations
-</failure_handling>
+**Fallback:** Use Agent pattern if analysis inconclusive
 
 <instructions>
   ACTION: Use pattern-recognizer subagent for task-specific pattern validation
@@ -287,47 +233,17 @@ Use the pattern-recognizer subagent to validate that the current task aligns wit
 
 ### Step 4.7: Development Environment Validation
 
-<step_metadata>
-  <uses>dependency-orchestrator subagent</uses>
-  <validates>proper tooling setup and environment readiness</validates>
-  <purpose>ensure implementation environment is properly configured</purpose>
-</step_metadata>
+**Uses:** dependency-orchestrator subagent for environment validation
 
 Use the dependency-orchestrator subagent to verify the development environment is properly configured for the current task implementation.
 
-<environment_validation_context>
-  <context_to_provide>
-    - Current task requirements and technology stack needs
-    - Project pyproject.toml and dependency requirements
-    - Required toolchain: uv, Ruff, ty, pytest configuration
-    - PocketFlow installation and version requirements
-    - Pattern-specific dependencies from Step 4.5: [PATTERN_VALIDATION_FROM_STEP_4_5]
-    - Any task-specific dependencies or tools needed
-  </context_to_provide>
-  
-  <expected_output>
-    - Environment setup validation results
-    - Missing dependencies or configuration issues
-    - Toolchain validation status (uv/Ruff/ty/pytest)
-    - Environment setup commands if needed
-    - PocketFlow readiness confirmation
-  </expected_output>
-  
-  <required_for_next_step>
-    Environment readiness enables reliable task implementation
-  </required_for_next_step>
-</environment_validation_context>
+<subagent_context>
+  **Context:** Task tech needs, toolchain requirements, PocketFlow installation
+  **Output:** Environment validation results and setup commands if needed
+  **Next Step:** Reliable task implementation
+</subagent_context>
 
-<blocking_validation>
-  IF dependency-orchestrator identifies critical environment issues:
-    - Execute recommended setup commands immediately
-    - Install missing dependencies via uv add
-    - Configure toolchain settings as specified
-    - Re-validate environment until all requirements met
-    - BLOCK progression until environment fully ready
-  ELSE:
-    - Proceed to implementation with validated environment
-</blocking_validation>
+**Blocking:** Must resolve all environment issues before proceeding
 
 <instructions>
   ACTION: Use dependency-orchestrator subagent for environment validation
@@ -460,43 +376,17 @@ Execute the parent task and all sub-tasks systematically following TDD approach 
 
 ### Step 5.5: Implementation Quality Validation
 
-<step_metadata>
-  <uses>template-validator subagent</uses>
-  <validates>generated code quality before completion</validates>
-  <purpose>ensure implementation meets framework standards</purpose>
-</step_metadata>
+**Uses:** template-validator subagent for code quality validation
 
 Use the template-validator subagent to validate the quality of implemented code, templates, and architecture compliance before proceeding to testing.
 
-<quality_validation_context>
-  <context_to_provide>
-    - Recently implemented code files and changes
-    - PocketFlow pattern compliance requirements from Step 4.5: [PATTERN_VALIDATION_FROM_STEP_4_5]
-    - Framework standards from best-practices.md and code-style.md
-    - Task requirements and acceptance criteria
-    - Generated templates or code structures
-  </context_to_provide>
-  
-  <expected_output>
-    - Code quality validation results with specific issues identified
-    - PocketFlow pattern compliance assessment
-    - Template structure and educational placeholder quality
-    - Recommendations for improvements before testing
-    - Approval status for progression to testing phase
-  </expected_output>
-  
-  <required_for_next_step>
-    Quality validation ensures reliable test execution and prevents flawed implementations
-  </required_for_next_step>
-</quality_validation_context>
+<subagent_context>
+  **Context:** Implemented code, pattern compliance, framework standards, acceptance criteria
+  **Output:** Quality validation results and improvement recommendations
+  **Next Step:** Reliable test execution
+</subagent_context>
 
-<blocking_validation>
-  IF template-validator identifies critical issues:
-    - Fix identified issues before proceeding
-    - Re-run validation until quality standards met
-  ELSE:
-    - Proceed to test verification with quality approval
-</blocking_validation>
+**Blocking:** Must fix all quality issues before testing
 
 <instructions>
   ACTION: Use template-validator subagent for implementation quality validation
@@ -519,25 +409,11 @@ Use the template-validator subagent to validate the quality of implemented code,
 
 Use the test-runner subagent to run and verify only the tests specific to this parent task (not the full test suite) to ensure the feature is working correctly.
 
-<test_execution_context>
-  <context_to_provide>
-    - Test scope: Task-specific test files created or modified
-    - Test categories: All tests related to current parent task
-    - Implementation context: Feature implementation from Step 5 requiring verification
-    - Acceptance criteria: Feature acceptance criteria from tasks.md
-  </context_to_provide>
-  
-  <expected_output>
-    - Test execution results with pass/fail status
-    - Detailed failure information for any failed tests
-    - Coverage and performance metrics
-    - Remediation recommendations for fixing failures
-  </expected_output>
-  
-  <required_for_next_step>
-    All task-specific tests must pass before marking task complete in Step 8
-  </required_for_next_step>
-</test_execution_context>
+<subagent_context>
+  **Context:** Task-specific test files and acceptance criteria
+  **Output:** Test results, failure details, and remediation recommendations
+  **Next Step:** Task completion in Step 8
+</subagent_context>
 
 <focused_test_execution>
   <run_only>
