@@ -80,15 +80,14 @@ Acceptance:
 ---
 
 ### 5) Test Suite Rationalization
-- [ ] Keep `test_dependency_orchestrator.py` as the comprehensive suite; mark `test_dependency_orchestrator_simple.py` as “smoke” or remove if redundant.
-- [ ] De-duplicate generator tests: maintain a fast smoke test (`test-generator.py`) and a comprehensive end-to-end (`test_full_generation_with_dependencies.py`). Remove or merge `test-full-generation.py` if redundant.
-- [ ] Ensure CI only runs one “comprehensive” suite per area, plus a smoke pass.
+- [x] Keep `test_dependency_orchestrator.py` as the comprehensive suite; mark `test_dependency_orchestrator_simple.py` as “smoke” or remove if redundant.
+- [x] De-duplicate generator tests: maintain a fast smoke test (`test-generator.py`) and a comprehensive end-to-end (`test_full_generation_with_dependencies.py`). Remove or merge `test-full-generation.py` if redundant.
+- [x] Ensure CI only runs one “comprehensive” suite per area, plus a smoke pass.
 
 Files to touch:
 - `pocketflow-tools/test_dependency_orchestrator.py`
 - `pocketflow-tools/test_dependency_orchestrator_simple.py`
 - `pocketflow-tools/test-generator.py`
-- `pocketflow-tools/test-full-generation.py`
 - `pocketflow-tools/test_full_generation_with_dependencies.py`
 - CI/test runner scripts if present
 
@@ -131,7 +130,7 @@ Acceptance:
 - [x] 2. Pattern definitions centralized and imported by generator + graph generator
 - [x] 3. Validators aligned (scripts call module; unified section rules)
 - [x] 4. StatusReporter return fixed and smoke-tested
-- [ ] 5. Tests rationalized (smoke vs comprehensive), CI updated
+- [x] 5. Tests rationalized (smoke vs comprehensive), CI updated
 - [ ] 6. Single pattern analysis entrypoint adopted
 - [ ] 7. Docstring and documentation updates
 

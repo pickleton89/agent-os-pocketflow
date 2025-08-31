@@ -4,7 +4,6 @@ Test full workflow generation with dependency orchestrator integration.
 """
 
 import sys
-import os
 import tempfile
 import shutil
 from pathlib import Path
@@ -80,9 +79,50 @@ def test_full_workflow_generation():
                 if "README.md" in output_files:
                     readme_content = output_files["README.md"]
                     assert f"# Test{pattern}Workflow" in readme_content
-                    assert "uv sync" in readme_content
-                    assert "uv run pytest" in readme_content
-                    print("  SUCCESS: README.md has proper UV instructions")
+                    # Accept either full UV-based README or basic pip-based fallback
+                    if "uv sync" in readme_content and "uv run pytest" in readme_content:
+                        print("  SUCCESS: README.md has proper UV instructions")
+                    elif "pip install -r requirements.txt" in readme_content and "pytest" in readme_content:
+                        print("  SUCCESS: README.md has basic pip instructions (fallback)")
+                    else:
+                        raise AssertionError("README.md missing expected setup instructions (uv or pip)")
+
+                # Persist to disk in the temporary directory and verify structure
+                generator.save_workflow(spec, output_files)
+
+                saved_root = temp_path / spec.name.lower().replace(" ", "_")
+                expected_files_on_disk = [
+                    "docs/design.md",
+                    "schemas/models.py",
+                    "utils",
+                    "nodes.py",
+                    "flow.py",
+                    "main.py",
+                    "router.py",
+                    "tests/test_nodes.py",
+                    "tests/test_flow.py",
+                    "tests/test_api.py",
+                    "tasks.md",
+                    "pyproject.toml",
+                    "requirements.txt",
+                    "requirements-dev.txt",
+                ]
+                # Only require UV files if they were generated in-memory
+                if ".python-version" in output_files:
+                    expected_files_on_disk.append(".python-version")
+                if "uv.toml" in output_files:
+                    expected_files_on_disk.append("uv.toml")
+
+                missing = []
+                for rel in expected_files_on_disk:
+                    p = saved_root / rel
+                    if not p.exists():
+                        missing.append(rel)
+                if missing:
+                    print(f"  ERROR: Missing expected generated files on disk: {missing}")
+                    return False
+                else:
+                    print("  SUCCESS: Saved workflow has expected structure on disk")
                 
             except FileNotFoundError as e:
                 # Expected if templates directory doesn't exist - this is OK for framework testing

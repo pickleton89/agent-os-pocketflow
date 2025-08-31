@@ -6,7 +6,7 @@ This directory contains a **generated PocketFlow template with TODO placeholders
 
 1. **Framework Validation**: Demonstrates that the Agent OS + PocketFlow framework generator produces proper template structure with TODO placeholders
 2. **Template Example**: Shows end-users what the framework generates as starting points for implementation
-3. **Testing Infrastructure**: Used by `test-full-generation.py` to validate template generation quality
+3. **Testing Infrastructure**: Used by `test_full_generation_with_dependencies.py` to validate template generation quality
 4. **Documentation Example**: Provides concrete example referenced in framework documentation
 
 ## Framework Context
@@ -28,7 +28,7 @@ This directory contains a **generated PocketFlow template with TODO placeholders
 
 ### Referenced By:
 - `README.md:229` - "Complete generated PocketFlow app" 
-- `test-full-generation.py` - Validates generated file structure and content
+- `test_full_generation_with_dependencies.py` - Validates generated file structure and content
 - `docs/architecture/code-pointers.md` - Documentation examples
 
 ### Validation Role:

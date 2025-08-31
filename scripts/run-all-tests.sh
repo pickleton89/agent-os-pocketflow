@@ -86,11 +86,14 @@ declare -a QUICK_SUITES=(
 declare -a FRAMEWORK_SUITES=(
     "Configuration:scripts/validation/validate-configuration.sh:Framework configuration validation"
     "Integration:scripts/validation/validate-integration.sh:Framework sanity checks + skip project-only"
+    "Python Smoke:scripts/validation/validate-python-tests-smoke.sh:Framework Python smoke tests"
+    "Python Comprehensive:scripts/validation/validate-python-tests-comprehensive.sh:Framework Python comprehensive tests"
 )
 
 declare -a FRAMEWORK_QUICK_SUITES=(
     "Configuration:scripts/validation/validate-configuration.sh:Framework configuration validation"
     "Integration:scripts/validation/validate-integration.sh:Framework sanity checks + skip project-only"
+    "Python Smoke:scripts/validation/validate-python-tests-smoke.sh:Framework Python smoke tests"
 )
 
 # Test results tracking
@@ -232,6 +235,8 @@ ensure_scripts_executable() {
         "scripts/validation/validate-sub-agents.sh"
         "scripts/validation/validate-orchestration.sh"
         "scripts/validation/validate-end-to-end.sh"
+        "scripts/validation/validate-python-tests-smoke.sh"
+        "scripts/validation/validate-python-tests-comprehensive.sh"
         "scripts/validate-integration.sh"
     )
     

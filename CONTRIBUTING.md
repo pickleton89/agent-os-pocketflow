@@ -75,9 +75,9 @@ This meta-framework includes a Python-based generator that creates educational P
 ```bash
 # Test the generator in framework repository
 cd pocketflow-tools
-python generator.py example-workflow-spec.yaml
-python test-generator.py
-python test-full-generation.py
+python3 generator.py example-workflow-spec.yaml
+python3 test-generator.py  # smoke
+python3 test_full_generation_with_dependencies.py  # comprehensive
 
 # View generated template examples (with intentional placeholders)
 ls -la testcontentanalyzer/  # Framework validation example
@@ -261,8 +261,8 @@ agent-os-pocketflow/
 ### Generator Testing
 ```bash
 cd pocketflow-tools
-python test-generator.py
-python test-full-generation.py
+python3 test-generator.py
+python3 test_full_generation_with_dependencies.py
 ```
 
 ## Development Workflow

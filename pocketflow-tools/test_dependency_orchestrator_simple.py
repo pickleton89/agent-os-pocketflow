@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
-Simple test script for Dependency Orchestrator functionality.
-Validates Phase 4 implementation of the dependency orchestrator agent.
+SMOKE TEST: Quick checks for Dependency Orchestrator.
+
+This is a lightweight smoke test for the dependency orchestrator to verify
+essential behavior fast. The comprehensive suite is
+`pocketflow-tools/test_dependency_orchestrator.py`.
 """
 
 import sys

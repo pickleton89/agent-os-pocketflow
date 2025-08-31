@@ -46,8 +46,8 @@ This repository contains the Agent OS + PocketFlow system itself - NOT a project
 
 # Test the generator system  
 cd pocketflow-tools
-python test-generator.py
-python test-full-generation.py
+python3 test-generator.py
+python3 test_full_generation_with_dependencies.py
 
 # Test specific framework validation suites
 ./scripts/validation/validate-integration.sh
