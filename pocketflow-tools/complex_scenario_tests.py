@@ -7,8 +7,13 @@ Tests complex requirements and edge cases to ensure robust pattern recognition.
 
 import logging
 from typing import List, Dict, Any
-from pattern_analyzer import PatternAnalyzer
-from agent_coordination import coordinate_pattern_analysis, AgentCoordinator
+# Support running as a package (relative) and as a standalone script (absolute)
+try:
+    from .pattern_analyzer import PatternAnalyzer  # type: ignore
+    from .agent_coordination import coordinate_pattern_analysis, AgentCoordinator  # type: ignore
+except ImportError:  # pragma: no cover - fallback for standalone execution
+    from pattern_analyzer import PatternAnalyzer
+    from agent_coordination import coordinate_pattern_analysis, AgentCoordinator
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

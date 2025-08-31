@@ -9,7 +9,11 @@ Part of the Pattern Analyzer Agent implementation.
 import logging
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
-from pattern_analyzer import PatternType, PatternRecommendation
+# Support running as a package (relative) and as a standalone script (absolute)
+try:
+    from .pattern_analyzer import PatternType, PatternRecommendation  # type: ignore
+except ImportError:  # pragma: no cover - fallback for standalone execution
+    from pattern_analyzer import PatternType, PatternRecommendation
 
 logger = logging.getLogger(__name__)
 

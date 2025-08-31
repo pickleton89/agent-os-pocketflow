@@ -611,8 +611,15 @@ class PocketFlowGenerator:
             
             # Generate workflow graph
             try:
-                from .workflow_graph_generator import WorkflowGraphGenerator, PatternType
-                from .pattern_analyzer import PatternType as AnalyzerPatternType
+                # Import graph generator and analyzer types with relative-then-absolute fallback
+                try:
+                    from .workflow_graph_generator import WorkflowGraphGenerator, PatternType  # type: ignore
+                except ImportError:
+                    from workflow_graph_generator import WorkflowGraphGenerator, PatternType
+                try:
+                    from .pattern_analyzer import PatternType as AnalyzerPatternType  # type: ignore
+                except ImportError:
+                    from pattern_analyzer import PatternType as AnalyzerPatternType
                 
                 # Convert string pattern back to enum for graph generation
                 pattern_enum = AnalyzerPatternType(recommendation.primary_pattern)
@@ -2263,7 +2270,11 @@ This is a generated design document template. Please complete with actual requir
     def request_pattern_analysis(self, requirements: str) -> PatternRecommendation:
         """Request pattern analysis from pattern-analyzer agent."""
         try:
-            from .pattern_analyzer import PatternAnalyzer
+            # Try relative import first (package usage), then absolute (standalone script)
+            try:
+                from .pattern_analyzer import PatternAnalyzer  # type: ignore
+            except ImportError:
+                from pattern_analyzer import PatternAnalyzer
             
             analyzer = PatternAnalyzer()
             recommendation = analyzer.analyze_and_recommend(requirements)

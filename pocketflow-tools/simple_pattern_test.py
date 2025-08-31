@@ -3,7 +3,11 @@
 Simple test for Pattern Analyzer
 """
 
-from pattern_analyzer import PatternAnalyzer
+# Support running as a package (relative) and as a standalone script (absolute)
+try:
+    from .pattern_analyzer import PatternAnalyzer  # type: ignore
+except ImportError:  # pragma: no cover - fallback for standalone execution
+    from pattern_analyzer import PatternAnalyzer
 
 def test_pattern_analysis():
     """Test pattern analysis functionality."""

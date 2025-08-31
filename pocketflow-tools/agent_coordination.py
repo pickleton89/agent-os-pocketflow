@@ -14,7 +14,11 @@ import logging
 from typing import Dict, Any, Optional, List
 from dataclasses import dataclass
 from enum import Enum
-from pattern_analyzer import PatternRecommendation, PatternType
+# Support running as a package (relative) and as a standalone script (absolute)
+try:
+    from .pattern_analyzer import PatternRecommendation, PatternType  # type: ignore
+except ImportError:  # pragma: no cover - fallback for standalone execution
+    from pattern_analyzer import PatternRecommendation, PatternType
 
 logger = logging.getLogger(__name__)
 
@@ -212,7 +216,10 @@ class AgentCoordinator:
         pattern = context.pattern_recommendation.primary_pattern
         
         # Pattern recognition → workflow coordination mapping
-        from pattern_analyzer import PatternType
+        try:
+            from .pattern_analyzer import PatternType  # type: ignore
+        except ImportError:  # Fallback when running standalone
+            from pattern_analyzer import PatternType
         
         # Design-focused patterns go to design-document-creator
         if pattern in [PatternType.STRUCTURED_OUTPUT]:
@@ -346,7 +353,11 @@ def coordinate_pattern_analysis(project_name: str, requirements: str,
                               user_overrides: Optional[Dict[str, Any]] = None) -> CoordinationContext:
     """High-level function to coordinate pattern analysis with PocketFlow agents (design-document-creator, strategic-planner, file-creator)."""
     
-    from pattern_analyzer import PatternAnalyzer
+    # Import PatternAnalyzer with relative-then-absolute fallback
+    try:
+        from .pattern_analyzer import PatternAnalyzer  # type: ignore
+    except ImportError:
+        from pattern_analyzer import PatternAnalyzer
     
     logger.info(f"Starting pattern analysis coordination for project: {project_name}")
     
