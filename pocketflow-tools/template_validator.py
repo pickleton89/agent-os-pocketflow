@@ -669,17 +669,24 @@ class PocketFlowValidator:
                 ))
             
             # Check for required sections
-            required_sections = [
+            base_required_sections = [
                 "## Requirements",
                 "## Flow Design",
-                "## Node Specifications"
             ]
-            
+
             missing_sections = []
-            for section in required_sections:
+            for section in base_required_sections:
                 if section not in content:
                     missing_sections.append(section)
-            
+
+            # Accept either "## Node Design" OR "## Node Specifications"
+            node_section_variants = [
+                "## Node Design",
+                "## Node Specifications",
+            ]
+            if not any(variant in content for variant in node_section_variants):
+                missing_sections.append("## Node Design or ## Node Specifications")
+
             if missing_sections:
                 self.issues.append(ValidationIssue(
                     level=ValidationLevel.ERROR,
@@ -687,7 +694,7 @@ class PocketFlowValidator:
                     file_path=str(design_doc_path),
                     line_number=None,
                     message=f"Design document missing required sections: {', '.join(missing_sections)}",
-                    suggestion="Add all required sections to provide complete design documentation"
+                    suggestion="Add all required sections, including a node section (Node Design or Node Specifications)"
                 ))
         except Exception as e:
             self.issues.append(ValidationIssue(
