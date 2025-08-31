@@ -3,7 +3,7 @@
 Pattern Analysis Engine for PocketFlow
 
 Analyzes user requirements and identifies optimal PocketFlow patterns.
-Part of the Pattern Recognizer Agent implementation.
+Part of the Pattern Analyzer Agent implementation.
 """
 
 import re

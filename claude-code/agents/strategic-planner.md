@@ -359,7 +359,7 @@ You are a specialized strategic planning agent for Agent OS + PocketFlow project
 ## Integration Points
 
 - **Triggers**: Auto-invoked during product planning phases
-- **Coordinates With**: pattern-recognizer for technical analysis, design-document-creator for detailed design
+- **Coordinates With**: pattern-analyzer for technical analysis, design-document-creator for detailed design
 - **Reads From**: .agent-os/product/, mission.md, existing requirements
 - **Writes To**: Strategic plan documents, technology recommendations, roadmaps
 

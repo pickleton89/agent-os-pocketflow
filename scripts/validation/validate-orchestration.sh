@@ -43,7 +43,7 @@ run_test() {
 test_sub_agents_exist() {
     local agents=(
         ".claude/agents/template-validator.md"
-        ".claude/agents/pattern-recognizer.md" 
+        ".claude/agents/pattern-analyzer.md" 
         ".claude/agents/dependency-orchestrator.md"
     )
     
@@ -130,15 +130,15 @@ test_extension_modules_loadable() {
                 grep -q "design-document-creator" "$ext" || return 1
                 ;;
             "llm-workflow-extension.md")
-                # Should reference generator or validator components rather than workflow-coordinator
-                grep -q "generator\|template-validator\|pattern-recognizer" "$ext" || return 1
+                # Should reference generator, template-validator, or pattern-analyzer agents
+                grep -q "generator\|template-validator\|pattern-analyzer" "$ext" || return 1
                 ;;
             "pocketflow-integration.md")
                 grep -q "strategic-planner" "$ext" || return 1
                 ;;
             *)
                 # Any extension should reference at least one sub-agent  
-                grep -q "design-document-creator\|strategic-planner\|template-validator\|pattern-recognizer\|dependency-orchestrator" "$ext" || return 1
+                grep -q "design-document-creator\|strategic-planner\|template-validator\|pattern-analyzer\|dependency-orchestrator" "$ext" || return 1
                 ;;
         esac
         
@@ -301,7 +301,7 @@ test_full_integration_ready() {
     # Final comprehensive check that everything is ready
     local critical_files=(
         ".claude/agents/template-validator.md"
-        ".claude/agents/pattern-recognizer.md"
+        ".claude/agents/pattern-analyzer.md"
         ".claude/agents/dependency-orchestrator.md"
         ".agent-os/instructions/orchestration/coordination.yaml"
         ".agent-os/instructions/orchestration/orchestrator-hooks.md"

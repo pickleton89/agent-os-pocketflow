@@ -97,7 +97,7 @@ ls -la testcontentanalyzer/  # Framework validation example
 - Run with [`./scripts/run-all-tests.sh`](./scripts/run-all-tests.sh)
 
 ### 🤖 Sub-Agents System ([`docs/template-generation/sub-agents/`](docs/template-generation/sub-agents/))
-- **Pattern Recognizer Agent**: Analyzes requirements and identifies optimal PocketFlow patterns
+- **Pattern Analyzer Agent**: Analyzes requirements and identifies optimal PocketFlow patterns
 - **Template Validator Agent**: Validates generated templates for structural correctness and educational value
 - **Dependency Orchestrator Agent**: Manages Python tooling and dependency configuration
 - Intelligent coordination with performance caching (100x+ speedups on repeated requests)

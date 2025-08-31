@@ -221,7 +221,7 @@ test_agent_configuration() {
     # Verify three sub-agents are properly configured
     local agents=(
         "template-validator.md:template-validator"
-        "pattern-recognizer.md:pattern-recognizer"
+        "pattern-analyzer.md:pattern-analyzer"
         "dependency-orchestrator.md:dependency-orchestrator"
     )
     
@@ -354,7 +354,7 @@ test_complete_system_health() {
     # Final comprehensive health check
     local critical_components=(
         ".claude/agents/template-validator.md"
-        ".claude/agents/pattern-recognizer.md"
+        ".claude/agents/pattern-analyzer.md"
         ".claude/agents/dependency-orchestrator.md"
         ".agent-os/instructions/orchestration/coordination.yaml"
         ".agent-os/instructions/orchestration/orchestrator-hooks.md"

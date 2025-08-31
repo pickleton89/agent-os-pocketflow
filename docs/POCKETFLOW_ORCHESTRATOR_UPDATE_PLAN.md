@@ -58,7 +58,7 @@ Based on the refactoring commit, the three new sub-agents are:
 - Update grep patterns to match new agent names
 
 ### 4. Agent Definition Files (All Updates Required)
-**Target**: `claude-code/agents/pattern-recognizer.md`
+**Target**: `claude-code/agents/pattern-analyzer.md`
 
 **Updates Needed**:
 - Review any references to `pocketflow-orchestrator` in handoff instructions

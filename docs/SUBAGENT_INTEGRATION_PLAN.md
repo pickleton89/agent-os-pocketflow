@@ -46,7 +46,7 @@ This split addresses single responsibility violations and provides better focuse
    - **Capabilities**: pytest/uv integration, PocketFlow testing patterns, failure analysis
    - **Best For**: Running task-specific tests, test suite validation
 
-6. **pattern-recognizer** - PocketFlow pattern identification specialist
+6. **pattern-analyzer** - PocketFlow pattern identification specialist
    - **Purpose**: Analyze requirements and identify optimal PocketFlow patterns
    - **Capabilities**: RAG/Agent/Tool/Hybrid pattern detection, template selection
    - **Best For**: Determining PocketFlow architecture patterns during planning
@@ -90,7 +90,7 @@ This split addresses single responsibility violations and provides better focuse
 #### execute-task.md ✅ PARTIAL
 - **Has**: context-fetcher (2x), test-runner (1x)
 - **Pattern**: Hybrid (XML + natural language)
-- **Issues**: Missing date-checker, file-creator, pattern-recognizer
+- **Issues**: Missing date-checker, file-creator, pattern-analyzer
 - **Quality**: Good natural language implementation
 
 #### execute-tasks.md ✅ PARTIAL  
@@ -108,7 +108,7 @@ This split addresses single responsibility violations and provides better focuse
 ### Files WITHOUT Subagent Implementation (3/6)
 
 #### analyze-product.md ❌ MISSING
-- **Should Have**: context-fetcher (mission.md, roadmap.md), pattern-recognizer (detect patterns)
+- **Should Have**: context-fetcher (mission.md, roadmap.md), pattern-analyzer (detect patterns)
 - **Base Agent OS Pattern**: Has context-fetcher for reading mission-lite.md, tech-stack.md
 - **Our Needs**: Universal PocketFlow analysis, pattern detection
 
@@ -118,7 +118,7 @@ This split addresses single responsibility violations and provides better focuse
 - **Our Needs**: Universal PocketFlow spec generation, design.md creation
 
 #### plan-product.md ❌ MISSING
-- **Should Have**: context-fetcher (existing docs), pattern-recognizer (tech analysis), file-creator (roadmap)
+- **Should Have**: context-fetcher (existing docs), pattern-analyzer (tech analysis), file-creator (roadmap)
 - **Base Agent OS Pattern**: Not available for comparison
 - **Our Needs**: Strategic planning with PocketFlow integration
 
@@ -128,14 +128,14 @@ This split addresses single responsibility violations and provides better focuse
 **Current State**: No subagents
 **Target Agents**: 
 - `context-fetcher` → Read existing mission/roadmap files
-- `pattern-recognizer` → Analyze project for PocketFlow patterns
+- `pattern-analyzer` → Analyze project for PocketFlow patterns
 - `strategic-planner` → Create strategic analysis and recommendations
 - `file-creator` → Create .agent-os/product/ structure
 
 **Implementation**:
 ```
 Step 1: Use the context-fetcher subagent to read existing mission.md and roadmap.md files...
-Step 3: Use the pattern-recognizer subagent to analyze project requirements for optimal PocketFlow patterns...
+Step 3: Use the pattern-analyzer subagent to analyze project requirements for optimal PocketFlow patterns...
 Step 4: Use the strategic-planner subagent to create strategic analysis and PocketFlow integration recommendations...
 Step 7: Use the file-creator subagent to create .agent-os/product/ directory structure...
 ```
@@ -145,14 +145,14 @@ Step 7: Use the file-creator subagent to create .agent-os/product/ directory str
 **Target Agents**:
 - `context-fetcher` → Read mission and analyze existing plans
 - `strategic-planner` → Create comprehensive strategic plan and roadmap
-- `pattern-recognizer` → Validate recommended patterns
+- `pattern-analyzer` → Validate recommended patterns
 - `file-creator` → Create roadmap.md and tech-stack.md files
 
 **Implementation**:
 ```
 Step 1: Use the context-fetcher subagent to gather existing product context...
 Step 3: Use the strategic-planner subagent to create comprehensive strategic plan and implementation roadmap...
-Step 5: Use the pattern-recognizer subagent to validate recommended technical patterns...
+Step 5: Use the pattern-analyzer subagent to validate recommended technical patterns...
 Step 6: Use the file-creator subagent to create roadmap.md and tech-stack.md with strategic recommendations...
 ```
 
@@ -162,7 +162,7 @@ Step 6: Use the file-creator subagent to create roadmap.md and tech-stack.md wit
 - `context-fetcher` → Read mission-lite.md, tech-stack.md
 - `date-checker` → Determine current date for folder naming
 - `design-document-creator` → Create comprehensive docs/design.md for PocketFlow features
-- `pattern-recognizer` → Identify optimal PocketFlow pattern for spec
+- `pattern-analyzer` → Identify optimal PocketFlow pattern for spec
 - `file-creator` → Create spec folder structure and basic files
 
 **Implementation** (Following Base Agent OS Pattern):
@@ -172,20 +172,20 @@ Step 2: Use the context-fetcher subagent to read mission-lite.md and tech-stack.
 Step 4: Use the date-checker subagent to determine current date for folder naming...
 Step 5: Use the file-creator subagent to create spec folder structure...
 Step 6: Use the file-creator subagent to create spec folder structure and basic spec.md...
-Step 7: Use the pattern-recognizer subagent to identify optimal PocketFlow pattern for spec...
+Step 7: Use the pattern-analyzer subagent to identify optimal PocketFlow pattern for spec...
 Step 8: Use the design-document-creator subagent to create comprehensive docs/design.md for PocketFlow features...
 ```
 
 ### 4. execute-task.md (Enhance existing)
 **Current State**: context-fetcher, test-runner
 **Add**: 
-- `pattern-recognizer` → Validate pattern implementation
+- `pattern-analyzer` → Validate pattern implementation
 - `dependency-orchestrator` → Ensure proper tooling setup
 - `template-validator` → Validate generated code
 
 **Implementation**:
 ```
-Step 2: Use the pattern-recognizer subagent to validate PocketFlow pattern compliance...
+Step 2: Use the pattern-analyzer subagent to validate PocketFlow pattern compliance...
 Step 5: Use the dependency-orchestrator subagent to verify development environment...
 Step 7: Use the template-validator subagent to validate implementation quality...
 ```
@@ -298,7 +298,7 @@ Before implementing any subagent call, validate:
 - Output: Created file paths, success status, error details
 - Integration: File creation confirmation enables next workflow steps
 
-**pattern-recognizer**:
+**pattern-analyzer**:
 - Input: Complete requirements, existing project context, constraints
 - Output: Identified patterns with confidence scores, template recommendations
 - Integration: Pattern selection drives subsequent template and architecture decisions

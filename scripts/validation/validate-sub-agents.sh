@@ -45,7 +45,7 @@ report_result() {
 
 # Check 1: Sub-agent files exist
 echo -e "\n📋 Checking for sub-agent files..."
-REQUIRED_AGENTS=("template-validator.md" "pattern-recognizer.md" "dependency-orchestrator.md")
+REQUIRED_AGENTS=("template-validator.md" "pattern-analyzer.md" "dependency-orchestrator.md")
 MISSING_AGENTS=()
 
 for agent in "${REQUIRED_AGENTS[@]}"; do
@@ -91,7 +91,7 @@ COORD_FILE=".agent-os/instructions/orchestration/coordination.yaml"
 if [ -f "$COORD_FILE" ]; then
     # Check for new agents in coordination map
     if grep -q "template-validator:" "$COORD_FILE" && \
-       grep -q "pattern-recognizer:" "$COORD_FILE" && \
+       grep -q "pattern-analyzer:" "$COORD_FILE" && \
        grep -q "dependency-orchestrator:" "$COORD_FILE"; then
         report_result "Coordination Config" "PASS" "All sub-agents found in coordination.yaml"
     else
@@ -106,7 +106,7 @@ echo -e "\n📋 Checking setup script integration..."
 SETUP_FILE="setup-claude-code.sh"
 if [ -f "$SETUP_FILE" ]; then
     if grep -q "template-validator" "$SETUP_FILE" && \
-       grep -q "pattern-recognizer" "$SETUP_FILE" && \
+       grep -q "pattern-analyzer" "$SETUP_FILE" && \
        grep -q "dependency-orchestrator" "$SETUP_FILE"; then
         report_result "Setup Script" "PASS" "All sub-agents included in setup script"
     else
@@ -155,11 +155,11 @@ if [ -f ".claude/agents/template-validator.md" ]; then
     fi
 fi
 
-if [ -f ".claude/agents/pattern-recognizer.md" ]; then
-    if grep -q "pattern_specialist: true" ".claude/agents/pattern-recognizer.md"; then
-        echo -e "  ✓ pattern-recognizer has pattern_specialist flag"
+if [ -f ".claude/agents/pattern-analyzer.md" ]; then
+    if grep -q "pattern_specialist: true" ".claude/agents/pattern-analyzer.md"; then
+        echo -e "  ✓ pattern-analyzer has pattern_specialist flag"
     else
-        SPECIALIZATION_FLAGS+=("pattern-recognizer missing pattern_specialist")
+        SPECIALIZATION_FLAGS+=("pattern-analyzer missing pattern_specialist")
     fi
 fi
 

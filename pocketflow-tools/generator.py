@@ -2261,7 +2261,7 @@ This is a generated design document template. Please complete with actual requir
             )
 
     def request_pattern_analysis(self, requirements: str) -> PatternRecommendation:
-        """Request pattern analysis from pattern-recognizer agent."""
+        """Request pattern analysis from pattern-analyzer agent."""
         try:
             from .pattern_analyzer import PatternAnalyzer
             

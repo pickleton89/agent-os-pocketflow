@@ -11,7 +11,7 @@
 ### Framework Component Integration
 - Generation: Use `file-creator` to apply templates via `pocketflow-tools/generator.py`
 - Validation: Use `template-validator` to verify structure and placeholder quality
-- Patterning: Use `pattern-recognizer` to analyze requirements and choose patterns
+- Patterning: Use `pattern-analyzer` to analyze requirements and choose patterns
 
 ## Intelligent Pattern Detection Templates
 

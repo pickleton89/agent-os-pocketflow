@@ -285,7 +285,7 @@ Use the agent-name subagent to [specific task] with comprehensive context provis
 - Integration: Parsed content available for use in subsequent steps
 - Context Pattern: `<[purpose]_retrieval_context>` (e.g., `<best_practices_retrieval_context>`, `<code_style_retrieval_context>`)
 
-**pattern-recognizer**:
+**pattern-analyzer**:
 - Input: Complete requirements, existing project context, constraints
 - Output: Identified patterns with confidence scores, template recommendations
 - Integration: Pattern selection drives subsequent template and architecture decisions

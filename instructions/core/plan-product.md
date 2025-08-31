@@ -377,13 +377,13 @@ Use the strategic-planner subagent to create a comprehensive strategic plan and 
 
 </step>
 
-<step number="4.5" subagent="pattern-recognizer" name="technical_pattern_validation">
+<step number="4.5" subagent="pattern-analyzer" name="technical_pattern_validation">
 
 ### Step 4.5: Technical Pattern Validation
 
-**Uses:** pattern-recognizer subagent for technical pattern validation
+**Uses:** pattern-analyzer subagent for technical pattern validation
 
-Use the pattern-recognizer subagent to validate the recommended technical patterns and architecture decisions before finalizing the roadmap.
+Use the pattern-analyzer subagent to validate the recommended technical patterns and architecture decisions before finalizing the roadmap.
 
 <subagent_context>
   **Context:** Strategic recommendations, technical architecture, product requirements, pattern options
@@ -396,7 +396,7 @@ Use the pattern-recognizer subagent to validate the recommended technical patter
 **Fallback:** Use Agent pattern for complex or unclear cases
 
 <instructions>
-  ACTION: Use pattern-recognizer subagent for technical pattern validation
+  ACTION: Use pattern-analyzer subagent for technical pattern validation
   REQUEST: "Validate recommended technical patterns and architecture decisions:
             - Strategic recommendations: [STRATEGIC_PLAN_FROM_STEP_1_5]
             - Technical architecture: [TECH_STACK_DECISIONS_AND_FRAMEWORK_CHOICES]

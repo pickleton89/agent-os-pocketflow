@@ -23,7 +23,7 @@ This plan transforms Agent OS + PocketFlow from **parallel coexistence** to **tr
 ### ✅ System Strengths
 - **Agent OS Instructions**: Well-defined framework (`plan-product.md`, `create-spec.md`, `execute-tasks.md`)
 - **PocketFlow Agents**: Sophisticated specialized agents with clear responsibilities
-  - `pattern-recognizer`: Analyzes requirements and identifies optimal patterns
+  - `pattern-analyzer`: Analyzes requirements and identifies optimal patterns
   - `dependency-orchestrator`: Manages Python tooling and dependencies
   - `template-validator`: Validates generated templates for quality
   - `pocketflow-orchestrator`: Coordinates complex workflows
@@ -89,7 +89,7 @@ Search/Query Operations → RAG pattern
 Simple Workflows → STRUCTURED-OUTPUT pattern
 ```
 
-**Updates to `.claude/agents/pattern-recognizer.md`**:
+**Updates to `.claude/agents/pattern-analyzer.md`**:
 - Expand pattern indicators beyond LLM/AI use cases
 - Add recognition logic for traditional web/API applications
 - Create confidence scoring for non-LLM patterns
@@ -105,7 +105,7 @@ Simple Workflows → STRUCTURED-OUTPUT pattern
 **New Workflow for ALL Projects**:
 ```yaml
 Every Agent OS workflow triggers:
-  1. pattern-recognizer → Determine optimal PocketFlow pattern
+  1. pattern-analyzer → Determine optimal PocketFlow pattern
   2. dependency-orchestrator → Setup Python environment and dependencies
   3. [Generator Execution] → Create PocketFlow templates  
   4. template-validator → Validate output quality and structure
@@ -218,7 +218,7 @@ Complexity Levels:
 - [x] Update pattern templates for simple workflows
 
 #### Subtask 2.2: Update Pattern-Recognizer Agent ✅ COMPLETED
-**File**: `.claude/agents/pattern-recognizer.md`
+**File**: `.claude/agents/pattern-analyzer.md`
 - [x] Expand beyond LLM/AI pattern recognition
 - [x] Add CRUD, API, ETL pattern indicators
 - [x] Create confidence scoring for all pattern types

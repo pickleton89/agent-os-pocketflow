@@ -633,6 +633,70 @@ class PocketFlowValidator:
                 message=f"Missing required files: {', '.join(missing_files)}",
                 suggestion="Ensure generator creates all required template files"
             ))
+        
+        # Validate design documentation
+        self._validate_design_doc(template_dir)
+    
+    def _validate_design_doc(self, template_dir: Path) -> None:
+        """Validate design documentation presence and structure."""
+        design_doc_path = template_dir / "docs" / "design.md"
+        
+        # Check if design doc exists
+        if not design_doc_path.exists():
+            self.issues.append(ValidationIssue(
+                level=ValidationLevel.ERROR,
+                category="documentation",
+                file_path=str(template_dir),
+                line_number=None,
+                message="Missing required design documentation (docs/design.md)",
+                suggestion="Run generator with design-first approach to create docs/design.md"
+            ))
+            return
+        
+        # Read and validate design doc content
+        try:
+            content = design_doc_path.read_text()
+            
+            # Check for Mermaid diagram
+            if "```mermaid" not in content:
+                self.issues.append(ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="documentation",
+                    file_path=str(design_doc_path),
+                    line_number=None,
+                    message="Design document missing Mermaid flow diagram",
+                    suggestion="Add at least one Mermaid diagram showing the workflow flow"
+                ))
+            
+            # Check for required sections
+            required_sections = [
+                "## Requirements",
+                "## Flow Design",
+                "## Node Specifications"
+            ]
+            
+            missing_sections = []
+            for section in required_sections:
+                if section not in content:
+                    missing_sections.append(section)
+            
+            if missing_sections:
+                self.issues.append(ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="documentation",
+                    file_path=str(design_doc_path),
+                    line_number=None,
+                    message=f"Design document missing required sections: {', '.join(missing_sections)}",
+                    suggestion="Add all required sections to provide complete design documentation"
+                ))
+        except Exception as e:
+            self.issues.append(ValidationIssue(
+                level=ValidationLevel.ERROR,
+                category="documentation",
+                file_path=str(design_doc_path),
+                line_number=None,
+                message=f"Failed to read design document: {str(e)}"
+            ))
 
 
 def generate_validation_report(results: List[ValidationResult]) -> str:

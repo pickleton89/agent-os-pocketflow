@@ -60,7 +60,7 @@ This agent manages Python tooling configuration and dependency specifications fo
 - **Triggers**: Auto-invokes when new patterns are generated
 - **Input**: Pattern specifications and tech-stack.md standards
 - **Output**: pyproject.toml templates and tool configurations
-- **Coordination**: Works with pattern-recognizer and template-validator
+- **Coordination**: Works with pattern-analyzer and template-validator
 
 ## Configuration Templates
 - Base pyproject.toml for all patterns
@@ -113,7 +113,7 @@ This agent manages Python tooling configuration and dependency specifications fo
 ### Input Context
 - **Required Information**: Pattern type (RAG/Agent/Tool/Hybrid), tech-stack preferences, Python version
 - **Format**: Pattern analysis results, user preferences from .agent-os/product/ files
-- **Sources**: pattern-recognizer output, tech-stack.md specifications, user requirements
+- **Sources**: pattern-analyzer output, tech-stack.md specifications, user requirements
 
 ### Output Context
 - **Provided Information**: Complete dependency configuration, tool setup status, environment specs

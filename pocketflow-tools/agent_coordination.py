@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Agent Coordination System for Pattern Recognizer
+Agent Coordination System for Pattern Analyzer
 
-Handles coordination between pattern-recognizer and PocketFlow components:
+Handles coordination between pattern-analyzer and PocketFlow components:
 - design-document-creator: PocketFlow design document creation specialist
 - strategic-planner: Product strategy and PocketFlow integration planning
 - file-creator: Applies templates; uses pocketflow-tools/generator for generation
@@ -139,7 +139,7 @@ class PatternOverrideManager:
 
 
 class AgentCoordinator:
-    """Coordinates between pattern-recognizer and PocketFlow components:
+    """Coordinates between pattern-analyzer and PocketFlow components:
     - design-document-creator: Handles design document creation and validation
     - strategic-planner: Manages product strategy and integration planning
     - file-creator: Applies templates and calls generator for workflow scaffolds
@@ -151,7 +151,7 @@ class AgentCoordinator:
         self.coordination_log = []
     
     def create_handoff_to_subagent(self, context: CoordinationContext, target_agent: str = None) -> HandoffPackage:
-        """Create handoff package from pattern-recognizer to specific PocketFlow agent.
+        """Create handoff package from pattern-analyzer to specific PocketFlow agent.
         
         Args:
             context: Coordination context with pattern recommendation
@@ -191,7 +191,7 @@ class AgentCoordinator:
         }
         
         handoff = HandoffPackage(
-            source_agent="pattern-recognizer",
+            source_agent="pattern-analyzer",
             target_agent=target_agent,
             payload=payload,
             coordination_context=context,

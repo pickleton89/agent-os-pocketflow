@@ -861,7 +861,7 @@ install_claude_code_integration() {
         local pocketflow_agents=(
             "design-document-creator.md"
             "strategic-planner.md"
-            "pattern-recognizer.md"
+            "pattern-analyzer.md"
             "template-validator.md"
             "dependency-orchestrator.md"
         )

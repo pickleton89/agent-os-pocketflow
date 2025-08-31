@@ -32,25 +32,25 @@ Validate information preservation through subagent handoffs across the three enh
 #### Subagent Integration Points
 1. **Step 3**: context-fetcher (best practices retrieval)
 2. **Step 4**: context-fetcher (code style retrieval) 
-3. **Step 4.5**: pattern-recognizer (PocketFlow pattern validation)
+3. **Step 4.5**: pattern-analyzer (PocketFlow pattern validation)
 4. **Step 4.7**: dependency-orchestrator (environment validation)
 5. **Step 5.5**: template-validator (implementation quality validation)
 6. **Step 6.5**: test-runner (task-specific test verification)
 
 #### Test Scenarios
-- **Context Flow Test**: Verify task context flows from Step 1 → pattern-recognizer → dependency-orchestrator → template-validator
-- **Pattern Validation Test**: Ensure pattern-recognizer output informs implementation in Step 5
+- **Context Flow Test**: Verify task context flows from Step 1 → pattern-analyzer → dependency-orchestrator → template-validator
+- **Pattern Validation Test**: Ensure pattern-analyzer output informs implementation in Step 5
 - **Quality Gate Test**: Verify template-validator blocks progression until quality standards met
 - **Environment Dependency Test**: Check dependency-orchestrator ensures environment readiness before implementation
 
 ### analyze-product.md Integration Tests
 
 #### Subagent Integration Points
-1. **Step 1.5**: pattern-recognizer (PocketFlow pattern analysis)
+1. **Step 1.5**: pattern-analyzer (PocketFlow pattern analysis)
 2. **Step 2.5**: strategic-planner (strategic analysis and recommendations)
 
 #### Test Scenarios
-- **Codebase → Pattern Analysis Flow**: Step 1 analysis → pattern-recognizer analysis → strategic-planner input
+- **Codebase → Pattern Analysis Flow**: Step 1 analysis → pattern-analyzer analysis → strategic-planner input
 - **Strategic Integration Test**: Verify pattern analysis informs strategic planning recommendations
 - **Context Preservation Test**: Ensure codebase analysis details preserved through both subagent calls
 
@@ -58,10 +58,10 @@ Validate information preservation through subagent handoffs across the three enh
 
 #### Subagent Integration Points  
 1. **Step 1.5**: strategic-planner (comprehensive strategic planning)
-2. **Step 4.5**: pattern-recognizer (technical pattern validation)
+2. **Step 4.5**: pattern-analyzer (technical pattern validation)
 
 #### Test Scenarios
-- **Strategic → Technical Validation Flow**: User input → strategic-planner → tech-stack creation → pattern-recognizer validation
+- **Strategic → Technical Validation Flow**: User input → strategic-planner → tech-stack creation → pattern-analyzer validation
 - **Roadmap Integration Test**: Verify strategic plan informs roadmap creation with validated patterns
 - **Context Consistency Test**: Ensure strategic decisions align with technical pattern validation
 

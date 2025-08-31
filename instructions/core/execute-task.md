@@ -199,13 +199,13 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 </step>
 
-<step number="4.5" subagent="pattern-recognizer" name="pocketflow_pattern_validation">
+<step number="4.5" subagent="pattern-analyzer" name="pocketflow_pattern_validation">
 
 ### Step 4.5: PocketFlow Pattern Validation
 
-**Uses:** pattern-recognizer subagent for PocketFlow pattern validation
+**Uses:** pattern-analyzer subagent for PocketFlow pattern validation
 
-Use the pattern-recognizer subagent to validate that the current task aligns with appropriate PocketFlow patterns and identify any architecture optimization opportunities.
+Use the pattern-analyzer subagent to validate that the current task aligns with appropriate PocketFlow patterns and identify any architecture optimization opportunities.
 
 <subagent_context>
   **Context:** Task requirements, project architecture, performance needs, pattern options
@@ -216,7 +216,7 @@ Use the pattern-recognizer subagent to validate that the current task aligns wit
 **Fallback:** Use Agent pattern if analysis inconclusive
 
 <instructions>
-  ACTION: Use pattern-recognizer subagent for task-specific pattern validation
+  ACTION: Use pattern-analyzer subagent for task-specific pattern validation
   REQUEST: "Analyze current task for optimal PocketFlow pattern compliance:
             - Task requirements: [CURRENT_TASK_AND_SUBTASKS]
             - Project context: [TECHNICAL_SPEC_ANALYSIS]
@@ -276,7 +276,7 @@ Execute the parent task and all sub-tasks systematically following TDD approach 
 
 <pattern_integration>
   <validated_pattern_application>
-    APPLY: Pattern validation results from Step 4.5 pattern-recognizer analysis:
+    APPLY: Pattern validation results from Step 4.5 pattern-analyzer analysis:
     - Use recommended PocketFlow pattern with confidence score and rationale
     - Apply validation results and optimization suggestions  
     - Follow specific node and flow recommendations for implementation

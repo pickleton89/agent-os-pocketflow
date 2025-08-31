@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple test for Pattern Recognizer
+Simple test for Pattern Analyzer
 """
 
 from pattern_analyzer import PatternAnalyzer

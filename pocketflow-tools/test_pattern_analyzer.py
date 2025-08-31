@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Test script for Pattern Recognizer Agent integration
+Test script for Pattern Analyzer Agent integration
 """
 
 import logging
@@ -43,7 +43,7 @@ def test_pattern_recognizer():
         output_path=".agent-os/workflows"
     )
     
-    print("Testing Pattern Recognizer Agent Integration")
+    print("Testing Pattern Analyzer Agent Integration")
     print("=" * 60)
     
     for test_case in test_cases:
@@ -88,7 +88,7 @@ def test_pattern_recognizer():
             traceback.print_exc()
     
     print("\n" + "=" * 60)
-    print("Pattern Recognizer Testing Complete!")
+    print("Pattern Analyzer Testing Complete!")
 
 def test_full_generation():
     """Test full workflow generation from requirements."""

@@ -52,7 +52,7 @@ curl -sSL https://example.com/install | bash
    → Creates Agent OS spec files (spec.md, tasks.md)
    → ALWAYS creates PocketFlow design document (docs/design.md)
    → Enforces 8-step Agentic Coding methodology
-   → Uses pattern-recognizer to identify optimal PocketFlow patterns
+   → Uses pattern-analyzer to identify optimal PocketFlow patterns
 
 3. /execute-tasks
    → Generates PocketFlow-structured code (nodes.py, flow.py, utils/)
@@ -84,7 +84,7 @@ plan-product.md:
 create-spec.md:
   - ALWAYS creates docs/design.md (mandatory)
   - Enforces Requirements → Flow → Utilities → Data → Node design
-  - Uses pattern-recognizer for optimal patterns
+  - Uses pattern-analyzer for optimal patterns
   
 execute-tasks.md:
   - ALWAYS generates PocketFlow structure
@@ -103,7 +103,7 @@ Subagents (from Agent OS):
   - project-manager: Manages PocketFlow project lifecycle
 
 PocketFlow Agents:
-  - pattern-recognizer: Identifies optimal patterns (RAG, Agent, Workflow)
+  - pattern-analyzer: Identifies optimal patterns (RAG, Agent, Workflow)
   - dependency-orchestrator: Sets up PocketFlow-compatible dependencies
   - template-validator: Ensures PocketFlow standards compliance
   - pocketflow-orchestrator: Oversees complete integration
@@ -177,7 +177,7 @@ LLM applications    → Complete Agentic Coding methodology
 
 ### Phase 2: Agent Integration
 - [ ] Systematically invoke PocketFlow agents in core workflow
-- [ ] Ensure pattern-recognizer runs during spec creation
+- [ ] Ensure pattern-analyzer runs during spec creation
 - [ ] Integrate dependency-orchestrator into project setup
 - [ ] Use template-validator for all generated code
 

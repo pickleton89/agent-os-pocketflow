@@ -3,7 +3,7 @@
 Workflow Graph Generation for PocketFlow
 
 Generates Mermaid diagrams and workflow structures based on pattern analysis.
-Part of the Pattern Recognizer Agent implementation.
+Part of the Pattern Analyzer Agent implementation.
 """
 
 import logging

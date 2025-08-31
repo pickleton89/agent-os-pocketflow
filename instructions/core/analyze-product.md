@@ -135,13 +135,13 @@ encoding: UTF-8
 
 </step>
 
-<step number="1.5" subagent="pattern-recognizer" name="pocketflow_pattern_analysis">
+<step number="1.5" subagent="pattern-analyzer" name="pocketflow_pattern_analysis">
 
 ### Step 1.5: PocketFlow Pattern Analysis
 
-**Uses:** pattern-recognizer subagent for PocketFlow pattern analysis
+**Uses:** pattern-analyzer subagent for PocketFlow pattern analysis
 
-Use the pattern-recognizer subagent to analyze the existing project for optimal PocketFlow patterns and architectural recommendations.
+Use the pattern-analyzer subagent to analyze the existing project for optimal PocketFlow patterns and architectural recommendations.
 
 <subagent_context>
   **Context:** Codebase analysis, tech stack, project complexity, performance needs
@@ -152,7 +152,7 @@ Use the pattern-recognizer subagent to analyze the existing project for optimal 
 **Fallback:** Use Agent pattern if analysis inconclusive
 
 <instructions>
-  ACTION: Use pattern-recognizer subagent for comprehensive pattern analysis
+  ACTION: Use pattern-analyzer subagent for comprehensive pattern analysis
   REQUEST: "Analyze existing project for optimal PocketFlow pattern recommendations:
             - Codebase analysis: [DETECTED_PROJECT_STRUCTURE_AND_FEATURES]
             - Technology stack: [CURRENT_TECH_STACK_AND_DEPENDENCIES]

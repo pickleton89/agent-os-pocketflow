@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Complex Scenario Tests for Pattern Recognizer Agent
+Complex Scenario Tests for Pattern Analyzer Agent
 
 Tests complex requirements and edge cases to ensure robust pattern recognition.
 """
@@ -26,7 +26,7 @@ class ComplexScenarioTester:
         """Run all complex scenario tests."""
         
         print("=" * 80)
-        print("COMPLEX SCENARIO TESTS FOR PATTERN RECOGNIZER AGENT")
+        print("COMPLEX SCENARIO TESTS FOR PATTERN ANALYZER AGENT")
         print("=" * 80)
         
         test_methods = [

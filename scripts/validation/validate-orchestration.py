@@ -42,7 +42,7 @@ class OrchestrationValidator:
         """Validate the three sub-agents exist and are properly configured."""
         agents = [
             ("template-validator.md", "template-validator"),
-            ("pattern-recognizer.md", "pattern-recognizer"),
+            ("pattern-analyzer.md", "pattern-analyzer"),
             ("dependency-orchestrator.md", "dependency-orchestrator")
         ]
         

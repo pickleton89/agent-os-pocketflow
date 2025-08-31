@@ -17,7 +17,7 @@ fi
 # Test 2: Sub-agents (three focused agents replacing single orchestrator)
 agent_files=(
     ".claude/agents/template-validator.md"
-    ".claude/agents/pattern-recognizer.md"
+    ".claude/agents/pattern-analyzer.md"
     ".claude/agents/dependency-orchestrator.md"
 )
 
@@ -80,8 +80,8 @@ validate_extension_quality() {
             fi
             ;;
         "llm-workflow-extension.md")
-            # With workflow-coordinator split, ensure it references generator or validation tools
-            if ! grep -q "generator\|template-validator\|pattern-recognizer" "$ext_file"; then
+            # Should reference generator, template-validator, or pattern-analyzer agents
+            if ! grep -q "generator\|template-validator\|pattern-analyzer" "$ext_file"; then
                 echo "❌ $ext_name missing generator/validator integration guidance"
                 return 1
             fi
@@ -94,7 +94,7 @@ validate_extension_quality() {
             ;;
         *)
             # Any extension should reference at least one sub-agent
-            if ! grep -q "design-document-creator\|strategic-planner\|template-validator\|pattern-recognizer\|dependency-orchestrator" "$ext_file"; then
+            if ! grep -q "design-document-creator\|strategic-planner\|template-validator\|pattern-analyzer\|dependency-orchestrator" "$ext_file"; then
                 echo "❌ $ext_name missing sub-agent integration guidance"
                 return 1
             fi

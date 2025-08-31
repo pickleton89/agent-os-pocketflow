@@ -7,7 +7,7 @@ Update — 2025-08-30 (docs ignored)
   1) Workflow-coordinator split acknowledged (no agent file needed)
      - Functionality now lives in `pocketflow-tools/generator.py`, `pocketflow-tools/template_validator.py`, and `pocketflow-tools/pattern_analyzer.py`.
      - Adjust references: remove `workflow-coordinator.md` from setup download lists and validation expectations; update agent docs and hooks to point to file-creator/generator and template-validator.
-     - Implemented: setup scripts and validation updated; pattern-recognizer agent doc and generator guidance updated.
+     - Implemented: setup scripts and validation updated; pattern-analyzer agent doc and generator guidance updated.
   2) Generator’s install-check path corrected
      - Generated shim now points to `~/.agent-os/pocketflow-tools/check-pocketflow-install.py` to match deployed checker location.
   3) Python version alignment (completed)
@@ -30,7 +30,7 @@ Update — 2025-08-30 (docs ignored)
      - Recommendation: Raise base prerequisite to 3.11+ (or 3.12+) to match emitted templates and `check-pocketflow-install.py`.
   7) Claude Code agent download vs. local copy skew
      - Remote download list updated to remove workflow-coordinator; copy branch continues to mirror local agents.
-     - Follow-up: Optional post-copy verification for the active agent set (pattern-recognizer, template-validator, dependency-orchestrator, design-document-creator, strategic-planner).
+     - Follow-up: Optional post-copy verification for the active agent set (pattern-analyzer, template-validator, dependency-orchestrator, design-document-creator, strategic-planner).
   8) Optionally add non-interactive install mode
      - `setup.sh` prompts for confirmation during auto detection.
      - Recommendation: Add `--yes` flag to bypass prompts to aid CI or scripted bootstrap.
@@ -73,12 +73,12 @@ Instructions and Orchestration
 - Orchestration: `instructions/orchestration/*` with coordination hooks, validation notes, and standards.
 
 Claude Code Agents (claude-code/agents)
-- Present: `context-fetcher`, `date-checker`, `file-creator`, `project-manager`, `test-runner`, `pattern-recognizer`, `dependency-orchestrator`, `template-validator`, `design-document-creator`, `strategic-planner`, `git-workflow`.
+- Present: `context-fetcher`, `date-checker`, `file-creator`, `project-manager`, `test-runner`, `pattern-analyzer`, `dependency-orchestrator`, `template-validator`, `design-document-creator`, `strategic-planner`, `git-workflow`.
 - Role highlights:
   - context-fetcher: selective doc/code retrieval; PocketFlow-aware
   - file-creator: applies PocketFlow templates (design.md, main.py, nodes.py, flow.py, schemas, utils, tests, pyproject)
   - test-runner: pytest/uv detection and focused analysis
-  - pattern-recognizer: maps requirements to RAG/AGENT/TOOL/WORKFLOW/etc.; handoff stubs
+  - pattern-analyzer: maps requirements to RAG/AGENT/TOOL/WORKFLOW/etc.; handoff stubs
   - design-document-creator: enforces design-first; emits complete `docs/design.md`
   - strategic-planner: product strategy aligned to PocketFlow patterns
   - dependency-orchestrator: generates tooling/deps (pyproject, uv configs)
@@ -111,24 +111,7 @@ How It’s Supposed To Work (Happy Path)
 4. The generator creates a complete PocketFlow scaffold with intentional TODOs; the template validator checks structure and philosophy; tests run via test-runner.
 5. End-users then implement placeholders in their own repo; the framework repo remains template-focused.
 
-Recommended Improvements & Fixes
-- Remove workflow-coordinator agent references across setup/validation; point to generator + template-validator + pattern-analyzer instead.
-- Fix check-install path in generator:
-  - `generator.py` references `~/.agent-os/workflows/check-pocketflow-install.py`; the checker actually lives under `pocketflow-tools/check-pocketflow-install.py` (deployed to `.agent-os/pocketflow-tools/`). Update the path or make it configurable via `config.yml`.
-- Enforce design doc presence in validation:
-  - Extend `template_validator.py` to assert `docs/design.md` exists in generated outputs and contains at least one Mermaid block and required sections (Requirements, Flow Design, Node Specifications). This complements design-first behavior beyond Python-only checks.
-- Align Python tool versions:
-  - Standards specify Python 3.12+; some tool configs (dependency_orchestrator ruff target-version py39) could be aligned to py312 for consistency across emitted templates.
-- Import robustness in pocketflow-tools:
-  - Consider package-relative imports for internal modules (`from .pattern_analyzer import ...`) to reduce path sensitivity if tools are executed as a package. Current structure works inside `pocketflow-tools`, but relative imports are safer.
-- Confirm installer agent lists:
-  - `setup/base.sh` and `setup/project.sh` updated to remove `workflow-coordinator`; ensure remaining PocketFlow agents are present.
-- Optional: Add a minimal smoke validation script in `scripts/validation/` to check that generated projects include `docs/design.md` with Mermaid, and that `template_validator.py` passes with 0 errors before proceeding.
 
-Key Reminders
-- Do not “fix” TODO placeholders in templates in this framework repo — they are features for end-users to fill in.
-- Do not install runtime app dependencies here; only framework/tooling dependencies belong.
-- Do not run the orchestrator against this repo; orchestrators are for end-user projects.
 
 Quick File Index
 - Setup: `setup.sh`, `setup/base.sh`, `setup/project.sh`, `setup/update-project.sh`

@@ -239,7 +239,7 @@ class SharedStore(BaseModel):
 ## Integration Points
 
 - **Triggers**: Auto-invoked when specs require LLM/AI features
-- **Coordinates With**: pattern-recognizer for pattern validation, file-creator for document creation
+- **Coordinates With**: pattern-analyzer for pattern validation, file-creator for document creation
 - **Reads From**: .agent-os/specs/, existing project documentation
 - **Writes To**: docs/design.md, updates project documentation
 
