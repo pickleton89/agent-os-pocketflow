@@ -13,12 +13,12 @@ Scope: Framework repo only. Generated template placeholders remain intentional (
 ## Workstreams
 
 ### 1) Consolidate Data Models (Canonicalize types)
-- [ ] Replace `generator.PatternRecommendation` with `pattern_analyzer.PatternRecommendation` (enum-based)
+- [x] Replace `generator.PatternRecommendation` with `pattern_analyzer.PatternRecommendation` (enum-based)
   - Update `PocketFlowGenerator.request_pattern_analysis` to return analyzer types directly.
   - If a shape change is needed for generator output, add a small adapter function (do not re-declare a same-named class).
-- [ ] Replace `generator.DependencyConfig` with `dependency_orchestrator.DependencyConfig`
+- [x] Replace `generator.DependencyConfig` with `dependency_orchestrator.DependencyConfig`
   - Update generator fallback `_generate_basic_dependency_config` to either import the canonical type or use a clearly named `BasicDependencyConfig` (no name collision).
-- [ ] Remove `generator.ValidationResult` in favor of `template_validator.ValidationResult`
+- [x] Remove `generator.ValidationResult` in favor of `template_validator.ValidationResult`
   - Update `coordinate_template_validation` to return the validator object (or a minimal dict), not a same-named class.
 
 Files to touch:
@@ -34,9 +34,9 @@ Acceptance:
 ---
 
 ### 2) Centralize Pattern Definitions
-- [ ] Create `pocketflow-tools/pattern_definitions.py` as the single source of truth for pattern node templates (names, descriptions, node types).
-- [ ] Make `generator._generate_nodes_from_pattern` import from the shared module.
-- [ ] Make `workflow_graph_generator._load_pattern_flows` import from the same source (convert to graph structures without re-encoding nodes).
+- [x] Create `pocketflow-tools/pattern_definitions.py` as the single source of truth for pattern node templates (names, descriptions, node types).
+- [x] Make `generator._generate_nodes_from_pattern` import from the shared module.
+- [x] Make `workflow_graph_generator._load_pattern_flows` import from the same source (convert to graph structures without re-encoding nodes).
 
 Files to touch:
 - `pocketflow-tools/pattern_definitions.py` (new)
@@ -126,8 +126,8 @@ Acceptance:
 
 ## Tracking Checklist
 
-- [ ] 1. Data models consolidated (no duplicate class names across modules)
-- [ ] 2. Pattern definitions centralized and imported by generator + graph generator
+- [x] 1. Data models consolidated (no duplicate class names across modules)
+- [x] 2. Pattern definitions centralized and imported by generator + graph generator
 - [ ] 3. Validators aligned (scripts call module; unified section rules)
 - [ ] 4. StatusReporter return fixed and smoke-tested
 - [ ] 5. Tests rationalized (smoke vs comprehensive), CI updated
@@ -143,4 +143,3 @@ Acceptance:
 - Type/enum vs string mismatches after consolidation → add small adapters at module boundaries; do not re-declare types.
 - Pattern template centralization causing small diagram/layout changes → update tests to assert by structure, not string equality where possible.
 - Script invocations in different environments → prefer module calls with clear error messages; keep minimal shell fallbacks.
-

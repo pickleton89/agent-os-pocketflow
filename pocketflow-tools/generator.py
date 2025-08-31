@@ -8,7 +8,7 @@ and templates, following the 8-step Agentic Coding methodology.
 
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, List, Any, TYPE_CHECKING
 from dataclasses import dataclass, field
 import logging
 
@@ -34,33 +34,20 @@ class WorkflowSpec:
     fast_api_integration: bool = True
 
 
-@dataclass
-class ValidationResult:
-    """Result of template validation."""
-    is_valid: bool
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    corrections_applied: List[str] = field(default_factory=list)
-
-
-@dataclass  
-class PatternRecommendation:
-    """Result of pattern analysis."""
-    primary_pattern: str
-    confidence_score: float
-    secondary_patterns: List[str] = field(default_factory=list)
-    rationale: str = ""
-    template_customizations: Dict[str, Any] = field(default_factory=dict)
-
-
-@dataclass
-class DependencyConfig:
-    """Dependency configuration for a pattern."""
-    base_dependencies: List[str] = field(default_factory=list)
-    pattern_dependencies: List[str] = field(default_factory=list)
-    dev_dependencies: List[str] = field(default_factory=list)
-    python_version: str = ">=3.12"
-    tool_configs: Dict[str, Any] = field(default_factory=dict)
+if TYPE_CHECKING:
+    # Import canonical types for type hints only (avoid runtime import coupling)
+    try:
+        from .pattern_analyzer import PatternRecommendation as AnalyzerPatternRecommendation, PatternType as AnalyzerPatternType  # type: ignore
+    except Exception:  # pragma: no cover - typing only
+        from pattern_analyzer import PatternRecommendation as AnalyzerPatternRecommendation, PatternType as AnalyzerPatternType  # type: ignore
+    try:
+        from .dependency_orchestrator import DependencyConfig as OrchestratorDependencyConfig  # type: ignore
+    except Exception:  # pragma: no cover - typing only
+        from dependency_orchestrator import DependencyConfig as OrchestratorDependencyConfig  # type: ignore
+    try:
+        from .template_validator import ValidationResult as ValidatorValidationResult  # type: ignore
+    except Exception:  # pragma: no cover - typing only
+        from template_validator import ValidationResult as ValidatorValidationResult  # type: ignore
 
 
 logger = logging.getLogger(__name__)
@@ -161,28 +148,32 @@ class PocketFlowGenerator:
         
         return templates
     
-    def generate_spec_from_analysis(self, name: str, description: str, recommendation: PatternRecommendation) -> WorkflowSpec:
+    def generate_spec_from_analysis(self, name: str, description: str, recommendation: "AnalyzerPatternRecommendation") -> WorkflowSpec:
         """Generate a WorkflowSpec from pattern analysis recommendation."""
         
+        # Adapter: support enum-based PatternType or raw strings
+        def _pattern_str(p: Any) -> str:
+            return getattr(p, "value", p)
+
         # Extract suggested nodes from workflow suggestions
         suggested_utilities = recommendation.template_customizations.get("suggested_utilities", [])
         workflow_suggestions = getattr(recommendation, 'workflow_suggestions', {})
         
         # Generate nodes based on pattern and suggestions
         nodes = self._generate_nodes_from_pattern(
-            recommendation.primary_pattern, 
+            _pattern_str(recommendation.primary_pattern), 
             workflow_suggestions
         )
         
         # Generate utilities based on pattern and analysis
         utilities = self._generate_utilities_from_pattern(
-            recommendation.primary_pattern,
+            _pattern_str(recommendation.primary_pattern),
             suggested_utilities
         )
         
         # Generate shared store schema based on pattern
         shared_store_schema = self._generate_shared_store_from_pattern(
-            recommendation.primary_pattern
+            _pattern_str(recommendation.primary_pattern)
         )
         
         # Always enable FastAPI integration as part of universal PocketFlow architecture
@@ -207,7 +198,7 @@ class PocketFlowGenerator:
         
         return WorkflowSpec(
             name=name,
-            pattern=recommendation.primary_pattern,
+            pattern=_pattern_str(recommendation.primary_pattern),
             description=description,
             nodes=nodes,
             utilities=utilities,
@@ -217,78 +208,18 @@ class PocketFlowGenerator:
         )
         
     def _generate_nodes_from_pattern(self, pattern: str, workflow_suggestions: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Generate node specifications based on pattern type with enhanced extension guidance."""
-        
-        pattern_node_templates = {
-            # Simple Pattern Templates (Task 1.2 Implementation)
-            "SIMPLE_WORKFLOW": [
-                {"name": "InputProcessor", "description": "Process and validate input data", "type": "Node"},
-                {"name": "BusinessLogic", "description": "Execute core business operations", "type": "Node"},
-                {"name": "OutputFormatter", "description": "Format and prepare output data", "type": "Node"}
-            ],
-            "BASIC_API": [
-                {"name": "RequestValidator", "description": "Validate API request data", "type": "Node"},
-                {"name": "DataProcessor", "description": "Process business logic", "type": "Node"},
-                {"name": "ResponseBuilder", "description": "Build API response", "type": "Node"}
-            ],
-            "SIMPLE_ETL": [
-                {"name": "DataExtractor", "description": "Extract data from source", "type": "Node"},
-                {"name": "DataTransformer", "description": "Transform data according to business rules", "type": "Node"},
-                {"name": "DataLoader", "description": "Load data to destination", "type": "Node"}
-            ],
-            
-            # Enhanced Pattern Templates
-            "RAG": [
-                {"name": "DocumentLoader", "description": "Load and preprocess documents for retrieval", "type": "Node"},
-                {"name": "EmbeddingGenerator", "description": "Generate embeddings for document chunks", "type": "AsyncNode"},
-                {"name": "QueryProcessor", "description": "Process and enhance user queries", "type": "Node"},
-                {"name": "Retriever", "description": "Retrieve relevant documents based on query", "type": "AsyncNode"},
-                {"name": "ContextFormatter", "description": "Format retrieved documents for generation", "type": "Node"},
-                {"name": "LLMGenerator", "description": "Generate response using LLM with context", "type": "AsyncNode"}
-            ],
-            "AGENT": [
-                {"name": "TaskAnalyzer", "description": "Analyze and understand the given task", "type": "Node"},
-                {"name": "PlanningEngine", "description": "Create execution plan for the task", "type": "AsyncNode"},
-                {"name": "ReasoningNode", "description": "Apply reasoning to make decisions", "type": "AsyncNode"},
-                {"name": "ActionExecutor", "description": "Execute planned actions", "type": "AsyncNode"},
-                {"name": "ResultEvaluator", "description": "Evaluate and validate results", "type": "Node"}
-            ],
-            "TOOL": [
-                {"name": "InputValidator", "description": "Validate and sanitize input data", "type": "Node"},
-                {"name": "AuthHandler", "description": "Handle authentication for external services", "type": "AsyncNode"},
-                {"name": "APIClient", "description": "Make requests to external APIs", "type": "AsyncNode"},
-                {"name": "DataTransformer", "description": "Transform data between formats", "type": "Node"},
-                {"name": "ResponseProcessor", "description": "Process and format API responses", "type": "Node"}
-            ],
-            "WORKFLOW": [
-                {"name": "InputProcessor", "description": "Process and validate workflow input", "type": "Node"},
-                {"name": "BusinessLogic", "description": "Execute core business logic", "type": "Node"},
-                {"name": "DataProcessor", "description": "Process and transform data", "type": "Node"},
-                {"name": "OutputFormatter", "description": "Format and prepare output", "type": "Node"}
-            ],
-            "MAPREDUCE": [
-                {"name": "TaskDistributor", "description": "Distribute tasks across workers", "type": "BatchNode"},
-                {"name": "MapProcessor", "description": "Process individual data chunks", "type": "AsyncBatchNode"},
-                {"name": "IntermediateAggregator", "description": "Aggregate intermediate results", "type": "BatchNode"},
-                {"name": "ReduceProcessor", "description": "Reduce results to final output", "type": "AsyncBatchNode"},
-                {"name": "ResultCollector", "description": "Collect and format final results", "type": "Node"}
-            ],
-            "MULTI-AGENT": [
-                {"name": "TaskCoordinator", "description": "Coordinate tasks among multiple agents", "type": "Node"},
-                {"name": "SpecialistAgent", "description": "Execute specialized tasks", "type": "AsyncNode"},
-                {"name": "ConsensusManager", "description": "Manage consensus between agents", "type": "Node"},
-                {"name": "ResultIntegrator", "description": "Integrate results from multiple agents", "type": "Node"}
-            ],
-            "STRUCTURED-OUTPUT": [
-                {"name": "SchemaValidator", "description": "Validate input against schema", "type": "Node"},
-                {"name": "DataProcessor", "description": "Process data according to schema", "type": "Node"},
-                {"name": "OutputStructurer", "description": "Structure output according to schema", "type": "Node"},
-                {"name": "FormatValidator", "description": "Validate final output format", "type": "Node"}
-            ]
-        }
-        
-        # Get nodes for the specific pattern
-        default_nodes = pattern_node_templates.get(pattern, pattern_node_templates["WORKFLOW"])
+        """Generate node specifications based on pattern type with enhanced extension guidance.
+
+        Centralized: imports canonical node templates from `pattern_definitions`.
+        """
+        # Import centrally defined pattern nodes (relative then absolute fallback)
+        try:  # type: ignore
+            from .pattern_definitions import get_node_templates  # type: ignore
+        except Exception:  # pragma: no cover - fallback for standalone usage
+            from pattern_definitions import get_node_templates  # type: ignore
+
+        # Get nodes for the specific pattern from central definitions
+        default_nodes = get_node_templates(pattern)
         
         # Customize based on workflow suggestions if available
         if workflow_suggestions:
@@ -576,12 +507,15 @@ class PocketFlowGenerator:
         recommendation = self.request_pattern_analysis(requirements)
         
         print(f"Pattern Analysis Results:")
-        print(f"   Primary Pattern: {recommendation.primary_pattern}")
+        # Adapter: enum-safe pattern display
+        primary_pattern_str = getattr(recommendation.primary_pattern, "value", recommendation.primary_pattern)
+        print(f"   Primary Pattern: {primary_pattern_str}")
         print(f"   Confidence: {recommendation.confidence_score:.2f}")
         print(f"   Rationale: {recommendation.rationale}")
         
         if recommendation.secondary_patterns:
-            print(f"   Alternative Patterns: {', '.join(recommendation.secondary_patterns)}")
+            alt_patterns = [getattr(p, "value", p) for p in recommendation.secondary_patterns]
+            print(f"   Alternative Patterns: {', '.join(alt_patterns)}")
         
         # Step 2: Generate WorkflowSpec from analysis
         print(f"Generating workflow specification...")
@@ -602,7 +536,7 @@ class PocketFlowGenerator:
         return workflow_files
     
     def _enhance_design_with_pattern_analysis(self, workflow_files: Dict[str, str], 
-                                           recommendation: PatternRecommendation, 
+                                           recommendation: "AnalyzerPatternRecommendation", 
                                            spec: WorkflowSpec) -> None:
         """Enhance the design document with pattern analysis details."""
         
@@ -661,7 +595,7 @@ class PocketFlowGenerator:
 - **Nodes Generated:** {len(spec.nodes)} specialized processing nodes
 - **Utilities Generated:** {len(spec.utilities)} pattern-specific utility functions
 - **API Integration:** Enabled (Universal PocketFlow)
-- **Shared Store Schema:** Optimized for {recommendation.primary_pattern} pattern workflows
+- **Shared Store Schema:** Optimized for {getattr(recommendation.primary_pattern, 'value', recommendation.primary_pattern)} pattern workflows
 
 ### Workflow Graph
 
@@ -1821,36 +1755,34 @@ graph TD
             endpoint_name = endpoint["name"]
             default_desc = f"Execute {endpoint_name} workflow"
 
-            router_code.extend(
-                [
-                    f'@router.{method}("{path}", response_model={endpoint_name}Response)',
-                    f"async def {endpoint_name.lower()}_endpoint(request: {endpoint_name}Request):",
-                    '    """',
-                    f"    {endpoint.get('description', default_desc)}",
-                    '    """',
-                    "        # Initialize SharedStore",
-                    "        shared = {",
-                    '            "request_data": request.dict(),',
-                    '            "timestamp": datetime.utcnow().isoformat()',
-                    "        }",
-                    "        ",
-                    "        # Execute workflow - let PocketFlow handle retries and errors",
-                    f"        flow = {spec.name}Flow()",
-                    "        await flow.run_async(shared)",
-                    "        ",
-                    "        # Check for flow-level errors",
-                    '        if "error" in shared:',
-                    "            raise HTTPException(",
-                    "                status_code=422,",
-                    '                detail=shared.get("error_message", "Workflow execution failed")',
-                    "            )",
-                    "        ",
-                    "        # Return response",
-                    f'        return {endpoint["name"]}Response(**shared.get("result", {{}}))',
-                    "",
-                    "",
-                ]
-            )
+            router_code.extend([
+                f'@router.{method}("{path}", response_model={endpoint_name}Response)',
+                f"async def {endpoint_name.lower()}_endpoint(request: {endpoint_name}Request):",
+                '    """',
+                f"    {endpoint.get('description', default_desc)}",
+                '    """',
+                "    # Initialize SharedStore",
+                "    shared = {",
+                '        "request_data": request.dict(),',
+                '        "timestamp": datetime.utcnow().isoformat()',
+                "    }",
+                "",
+                "    # Execute workflow - let PocketFlow handle retries and errors",
+                f"    flow = {spec.name}Flow()",
+                "    await flow.run_async(shared)",
+                "",
+                "    # Check for flow-level errors",
+                '    if "error" in shared:',
+                "        raise HTTPException(",
+                "            status_code=422,",
+                '            detail=shared.get("error_message", "Workflow execution failed")',
+                "        )",
+                "",
+                "    # Return response",
+                f'    return {endpoint["name"]}Response(**shared.get("result", {{}}))',
+                "",
+                "",
+            ])
 
         return "\n".join(router_code)
 
@@ -2220,22 +2152,30 @@ This is a generated design document template. Please complete with actual requir
         # Automatically validate generated templates
         print("\n🔍 Running template validation...")
         validation_result = self.coordinate_template_validation(str(workflow_dir))
-        
-        if validation_result.is_valid:
+
+        # Helper to normalize issue messages across object/dict fallbacks
+        def _issue_msg(issue: Any) -> str:
+            return getattr(issue, "message", str(issue))
+
+        # Accessors for errors/warnings that may be properties or dict entries
+        errors = getattr(validation_result, "errors", [])
+        warnings = getattr(validation_result, "warnings", [])
+
+        if getattr(validation_result, "is_valid", True):
             print("✅ Template validation passed!")
         else:
             print("❌ Template validation issues found:")
-            for error in validation_result.errors:
-                print(f"  • Error: {error}")
-            for warning in validation_result.warnings:
-                print(f"  • Warning: {warning}")
+            for error in errors:
+                print(f"  • Error: {_issue_msg(error)}")
+            for warning in warnings:
+                print(f"  • Warning: {_issue_msg(warning)}")
         
-        if validation_result.warnings:
+        if warnings:
             print("⚠️  Validation warnings (non-blocking):")
-            for warning in validation_result.warnings:
-                print(f"  • {warning}")
+            for warning in warnings:
+                print(f"  • {_issue_msg(warning)}")
 
-    def coordinate_template_validation(self, template_path: str) -> ValidationResult:
+    def coordinate_template_validation(self, template_path: str) -> Any:
         """Coordinate with template-validator agent for post-generation validation."""
         try:
             import sys
@@ -2247,27 +2187,37 @@ This is a generated design document template. Please complete with actual requir
             template_dir = Path(template_path)
             
             result = validator.validate_directory(template_dir)
-            
-            # Convert validation result format
-            return ValidationResult(
-                is_valid=result.is_valid,
-                errors=[issue.message for issue in result.errors],
-                warnings=[issue.message for issue in result.warnings],
-                corrections_applied=[]  # Corrections would be applied in a separate step
-            )
+            # Return canonical validator result directly
+            return result
             
         except ImportError:
-            return ValidationResult(
-                is_valid=True,
-                warnings=["Template validation module not available - skipping validation"]
-            )
+            # Minimal fallback object to preserve expected attributes
+            class _FallbackValidation:
+                def __init__(self):
+                    self.is_valid = True
+                    self.errors = []
+                    # Create simple issue-like objects with a message attribute
+                    class _Issue:
+                        def __init__(self, msg: str):
+                            self.message = msg
+                        def __str__(self) -> str:
+                            return self.message
+                    self.warnings = [_Issue("Template validation module not available - skipping validation")]
+            return _FallbackValidation()
         except Exception as e:
-            return ValidationResult(
-                is_valid=False,
-                errors=[f"Validation failed: {str(e)}"]
-            )
+            class _FallbackValidationError:
+                def __init__(self, msg: str):
+                    self.is_valid = False
+                    class _Issue:
+                        def __init__(self, m: str):
+                            self.message = m
+                        def __str__(self) -> str:
+                            return self.message
+                    self.errors = [_Issue(f"Validation failed: {msg}")]
+                    self.warnings = []
+            return _FallbackValidationError(str(e))
 
-    def request_pattern_analysis(self, requirements: str) -> PatternRecommendation:
+    def request_pattern_analysis(self, requirements: str) -> Any:
         """Request pattern analysis from pattern-analyzer agent."""
         try:
             # Try relative import first (package usage), then absolute (standalone script)
@@ -2278,32 +2228,35 @@ This is a generated design document template. Please complete with actual requir
             
             analyzer = PatternAnalyzer()
             recommendation = analyzer.analyze_and_recommend(requirements)
-            
-            # Convert PatternType enum to string for compatibility
-            return PatternRecommendation(
-                primary_pattern=recommendation.primary_pattern.value,
-                confidence_score=recommendation.confidence_score,
-                secondary_patterns=[p.value for p in recommendation.secondary_patterns],
-                rationale=recommendation.rationale,
-                template_customizations=recommendation.template_customizations
-            )
+            # Return canonical analyzer type directly
+            return recommendation
             
         except ImportError:
             # Fallback if pattern analyzer is not available
-            return PatternRecommendation(
-                primary_pattern="WORKFLOW",
-                confidence_score=0.6,
-                rationale="Pattern analyzer not available - using default WORKFLOW pattern"
-            )
+            class _FallbackPatternRecommendation:
+                def __init__(self):
+                    self.primary_pattern = "WORKFLOW"
+                    self.confidence_score = 0.6
+                    self.secondary_patterns = []
+                    self.rationale = "Pattern analyzer not available - using default WORKFLOW pattern"
+                    self.detailed_justification = ""
+                    self.template_customizations = {}
+                    self.workflow_suggestions = {}
+            return _FallbackPatternRecommendation()
         except Exception as e:
             # Fallback for any other errors
-            return PatternRecommendation(
-                primary_pattern="WORKFLOW", 
-                confidence_score=0.5,
-                rationale=f"Pattern analysis failed ({str(e)}) - using default WORKFLOW pattern"
-            )
+            class _FallbackPatternRecommendationError:
+                def __init__(self, msg: str):
+                    self.primary_pattern = "WORKFLOW"
+                    self.confidence_score = 0.5
+                    self.secondary_patterns = []
+                    self.rationale = f"Pattern analysis failed ({msg}) - using default WORKFLOW pattern"
+                    self.detailed_justification = ""
+                    self.template_customizations = {}
+                    self.workflow_suggestions = {}
+            return _FallbackPatternRecommendationError(str(e))
 
-    def generate_dependency_config(self, pattern: str) -> DependencyConfig:
+    def generate_dependency_config(self, pattern: str) -> Any:
         """Generate dependency configuration via dependency-orchestrator agent."""
         try:
             from .dependency_orchestrator import DependencyOrchestrator
@@ -2319,8 +2272,16 @@ This is a generated design document template. Please complete with actual requir
             logger.warning(f"Dependency orchestrator failed: {e}, using fallback")
             return self._generate_basic_dependency_config(pattern)
 
-    def _generate_basic_dependency_config(self, pattern: str) -> DependencyConfig:
+    def _generate_basic_dependency_config(self, pattern: str) -> Any:
         """Generate basic dependency configuration as fallback."""
+        # Import canonical type if available
+        try:
+            try:
+                from .dependency_orchestrator import DependencyConfig as OrchestratorDependencyConfig  # type: ignore
+            except ImportError:
+                from dependency_orchestrator import DependencyConfig as OrchestratorDependencyConfig  # type: ignore
+        except Exception:
+            OrchestratorDependencyConfig = None  # type: ignore
         base_deps = ["pocketflow", "pydantic", "fastapi"]
         
         pattern_deps = {
@@ -2333,15 +2294,27 @@ This is a generated design document template. Please complete with actual requir
             "STRUCTURED-OUTPUT": ["jsonschema"]
         }
         
-        return DependencyConfig(
-            base_dependencies=base_deps,
-            pattern_dependencies=pattern_deps.get(pattern, []),
-            dev_dependencies=["pytest", "pytest-asyncio", "ruff", "mypy"],
-            tool_configs={
-                "ruff": {"line-length": 88, "target-version": "py312"},
-                "mypy": {"python_version": "3.12", "strict": True}
+        if OrchestratorDependencyConfig is not None:
+            return OrchestratorDependencyConfig(
+                base_dependencies=base_deps,
+                pattern_dependencies=pattern_deps.get(pattern, []),
+                dev_dependencies=["pytest", "pytest-asyncio", "ruff", "mypy"],
+                tool_configs={
+                    "ruff": {"line-length": 88, "target-version": "py312"},
+                    "mypy": {"python_version": "3.12", "strict": True}
+                }
+            )
+        else:
+            # Minimal dict fallback to avoid type dependency
+            return {
+                "base_dependencies": base_deps,
+                "pattern_dependencies": pattern_deps.get(pattern, []),
+                "dev_dependencies": ["pytest", "pytest-asyncio", "ruff", "mypy"],
+                "tool_configs": {
+                    "ruff": {"line-length": 88, "target-version": "py312"},
+                    "mypy": {"python_version": "3.12", "strict": True}
+                },
             }
-        )
 
 
 def main():

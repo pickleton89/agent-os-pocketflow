@@ -15,6 +15,12 @@ try:
 except ImportError:  # pragma: no cover - fallback for standalone execution
     from pattern_analyzer import PatternType, PatternRecommendation
 
+# Import centralized pattern node templates
+try:  # pragma: no cover - import convenience
+    from .pattern_definitions import get_node_templates  # type: ignore
+except Exception:  # pragma: no cover - standalone fallback
+    from pattern_definitions import get_node_templates  # type: ignore
+
 logger = logging.getLogger(__name__)
 
 
@@ -65,14 +71,7 @@ class WorkflowGraphGenerator:
         return {
             PatternType.RAG: {
                 "flow_type": "sequential_with_branches",
-                "core_nodes": [
-                    {"name": "DocumentLoader", "description": "Load and preprocess documents", "type": "Node"},
-                    {"name": "EmbeddingGenerator", "description": "Generate embeddings for chunks", "type": "AsyncNode"},
-                    {"name": "QueryProcessor", "description": "Process user queries", "type": "Node"},
-                    {"name": "Retriever", "description": "Retrieve relevant documents", "type": "AsyncNode"},
-                    {"name": "ContextFormatter", "description": "Format context for generation", "type": "Node"},
-                    {"name": "LLMGenerator", "description": "Generate response using LLM", "type": "AsyncNode"}
-                ],
+                "core_nodes": get_node_templates(PatternType.RAG),
                 "flow_patterns": [
                     ("DocumentLoader", "EmbeddingGenerator", "success"),
                     ("EmbeddingGenerator", "QueryProcessor", "success"),
@@ -90,13 +89,7 @@ class WorkflowGraphGenerator:
             
             PatternType.AGENT: {
                 "flow_type": "decision_tree",
-                "core_nodes": [
-                    {"name": "TaskAnalyzer", "description": "Analyze incoming task", "type": "Node"},
-                    {"name": "PlanningEngine", "description": "Create execution plan", "type": "AsyncNode"},
-                    {"name": "ReasoningNode", "description": "Apply reasoning logic", "type": "AsyncNode"},
-                    {"name": "ActionExecutor", "description": "Execute planned actions", "type": "AsyncNode"},
-                    {"name": "ResultEvaluator", "description": "Evaluate results", "type": "Node"}
-                ],
+                "core_nodes": get_node_templates(PatternType.AGENT),
                 "flow_patterns": [
                     ("TaskAnalyzer", "PlanningEngine", "success"),
                     ("PlanningEngine", "ReasoningNode", "success"),
@@ -115,13 +108,7 @@ class WorkflowGraphGenerator:
             
             PatternType.TOOL: {
                 "flow_type": "linear_with_validation",
-                "core_nodes": [
-                    {"name": "InputValidator", "description": "Validate input data", "type": "Node"},
-                    {"name": "AuthHandler", "description": "Handle authentication", "type": "AsyncNode"},
-                    {"name": "APIClient", "description": "Make API requests", "type": "AsyncNode"},
-                    {"name": "DataTransformer", "description": "Transform response data", "type": "Node"},
-                    {"name": "ResponseProcessor", "description": "Process final response", "type": "Node"}
-                ],
+                "core_nodes": get_node_templates(PatternType.TOOL),
                 "flow_patterns": [
                     ("InputValidator", "AuthHandler", "valid"),
                     ("AuthHandler", "APIClient", "authenticated"),
@@ -138,12 +125,7 @@ class WorkflowGraphGenerator:
             
             PatternType.WORKFLOW: {
                 "flow_type": "sequential",
-                "core_nodes": [
-                    {"name": "InputProcessor", "description": "Process workflow input", "type": "Node"},
-                    {"name": "BusinessLogic", "description": "Execute business logic", "type": "Node"},
-                    {"name": "DataProcessor", "description": "Process data", "type": "Node"},
-                    {"name": "OutputFormatter", "description": "Format output", "type": "Node"}
-                ],
+                "core_nodes": get_node_templates(PatternType.WORKFLOW),
                 "flow_patterns": [
                     ("InputProcessor", "BusinessLogic", "success"),
                     ("BusinessLogic", "DataProcessor", "success"),
@@ -158,13 +140,7 @@ class WorkflowGraphGenerator:
             
             PatternType.MAPREDUCE: {
                 "flow_type": "parallel_with_aggregation",
-                "core_nodes": [
-                    {"name": "TaskDistributor", "description": "Distribute tasks", "type": "BatchNode"},
-                    {"name": "MapProcessor", "description": "Process data chunks", "type": "AsyncBatchNode"},
-                    {"name": "IntermediateAggregator", "description": "Aggregate intermediate results", "type": "BatchNode"},
-                    {"name": "ReduceProcessor", "description": "Reduce to final output", "type": "AsyncBatchNode"},
-                    {"name": "ResultCollector", "description": "Collect final results", "type": "Node"}
-                ],
+                "core_nodes": get_node_templates(PatternType.MAPREDUCE),
                 "flow_patterns": [
                     ("TaskDistributor", "MapProcessor", "distributed"),
                     ("MapProcessor", "IntermediateAggregator", "mapped"),
@@ -180,12 +156,7 @@ class WorkflowGraphGenerator:
             
             PatternType.MULTI_AGENT: {
                 "flow_type": "collaborative",
-                "core_nodes": [
-                    {"name": "TaskCoordinator", "description": "Coordinate agent tasks", "type": "Node"},
-                    {"name": "SpecialistAgent", "description": "Execute specialized tasks", "type": "AsyncNode"},
-                    {"name": "ConsensusManager", "description": "Manage consensus", "type": "Node"},
-                    {"name": "ResultIntegrator", "description": "Integrate results", "type": "Node"}
-                ],
+                "core_nodes": get_node_templates(PatternType.MULTI_AGENT),
                 "flow_patterns": [
                     ("TaskCoordinator", "SpecialistAgent", "task_assigned"),
                     ("SpecialistAgent", "ConsensusManager", "completed"),
@@ -201,12 +172,7 @@ class WorkflowGraphGenerator:
             
             PatternType.STRUCTURED_OUTPUT: {
                 "flow_type": "validation_pipeline",
-                "core_nodes": [
-                    {"name": "SchemaValidator", "description": "Validate input schema", "type": "Node"},
-                    {"name": "DataProcessor", "description": "Process according to schema", "type": "Node"},
-                    {"name": "OutputStructurer", "description": "Structure output", "type": "Node"},
-                    {"name": "FormatValidator", "description": "Validate output format", "type": "Node"}
-                ],
+                "core_nodes": get_node_templates(PatternType.STRUCTURED_OUTPUT),
                 "flow_patterns": [
                     ("SchemaValidator", "DataProcessor", "valid"),
                     ("DataProcessor", "OutputStructurer", "processed"),
