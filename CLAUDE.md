@@ -151,3 +151,20 @@ Usage Repository (end-user projects):
 Key Principle: Missing implementations in generated templates are features, not bugs. This framework creates starting points for
 developers, not finished applications.
 - don't lie to the user
+
+
+---
+## Search Strategy Preferences
+
+### Semantic Search First
+- Always try claude_context_search before falling back to grep
+- Use semantic search for conceptual queries
+- Use grep only for exact string matches
+
+### Search Commands Priority
+1. `claude_context_search` - for finding related functionality
+2. Traditional grep - for exact matches only
+
+### Example Queries
+- "Use claude_context_search to find statistical analysis code"
+- "Search semantically for file parsing utilities"

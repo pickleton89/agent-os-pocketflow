@@ -60,7 +60,7 @@
       "Bash(./setup/base.sh:*)",
       "Read(//Users/jeffkiefer/Documents/projects/TestingProject/.agent-os/**)",
       "Bash(git commit:*)",
-      "Read(//Users/jeffkiefer/.claude/**)",      
+      "Read(//Users/jeffkiefer/.claude/**)",
       "Read(//Users/jeffkiefer/**)",
       "Read(//Users/jeffkiefer/test-project/**)",
       "Read(//Users/jeffkiefer/test-project/**)",
@@ -80,15 +80,17 @@
       "Bash(git rm:*)",
       "Bash(git log:*)",
       "WebFetch(domain:medium.com)",
-      "Bash(./scripts/validation/validate-sub-agents.sh:*)"
+      "Bash(./scripts/validation/validate-sub-agents.sh:*)",
+      "mcp__claude-context__index_codebase",
+      "mcp__claude-context__get_indexing_status"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
     "additionalDirectories": [
-  "/private/tmp/test-output/testworkflow",
-  "/private/tmp/test-fixes",
-  "/private/tmp/test-project/.agent-os",
-  "/Users/jeffkiefer/.agent-os/agents"
+      "/private/tmp/test-output/testworkflow",
+      "/private/tmp/test-fixes",
+      "/private/tmp/test-project/.agent-os",
+      "/Users/jeffkiefer/.agent-os/agents"
     ]
   }
 }
