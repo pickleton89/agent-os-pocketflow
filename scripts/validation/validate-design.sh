@@ -1,5 +1,17 @@
 #!/bin/bash
 # Design Document Validation Script
+
+# Repo type detection and gating
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "${SCRIPT_DIR}/../lib/repo-detect.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${SCRIPT_DIR}/../lib/repo-detect.sh"
+  if is_framework; then
+    echo "⏭️  SKIP (framework mode): Design document validation applies to end-user projects"
+    exit 0
+  fi
+fi
+
 echo "📋 Validating design document..."
 
 if [[ ! -f "docs/design.md" ]]; then

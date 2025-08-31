@@ -3,6 +3,13 @@
 # This script orchestrates the complete validation of Agent OS + PocketFlow integration
 set -e
 
+# Repo type detection
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "${SCRIPT_DIR}/lib/repo-detect.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${SCRIPT_DIR}/lib/repo-detect.sh"
+fi
+
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -73,6 +80,17 @@ declare -a QUICK_SUITES=(
     "PocketFlow:scripts/validation/validate-pocketflow.sh:PocketFlow setup validation"
     "Sub-Agents:scripts/validation/validate-sub-agents.sh:Sub-agent implementation validation"
     "Orchestration:scripts/validation/validate-orchestration.sh:Orchestration system validation"
+)
+
+# Framework-focused suites (skip project-only checks entirely)
+declare -a FRAMEWORK_SUITES=(
+    "Configuration:scripts/validation/validate-configuration.sh:Framework configuration validation"
+    "Integration:scripts/validation/validate-integration.sh:Framework sanity checks + skip project-only"
+)
+
+declare -a FRAMEWORK_QUICK_SUITES=(
+    "Configuration:scripts/validation/validate-configuration.sh:Framework configuration validation"
+    "Integration:scripts/validation/validate-integration.sh:Framework sanity checks + skip project-only"
 )
 
 # Test results tracking
@@ -230,6 +248,9 @@ main() {
     log_info "Agent OS + PocketFlow Integration - Master Test Runner"
     log_info "====================================================="
     log_info "Mode: $([ "$QUICK_MODE" == true ] && echo "Quick" || echo "Full")"
+    if type print_repo_type >/dev/null 2>&1; then
+        print_repo_type
+    fi
     log_info "Verbose: $VERBOSE"
     log_info "Stop on Error: $STOP_ON_ERROR"
     echo
@@ -237,14 +258,28 @@ main() {
     # Ensure all scripts are executable
     ensure_scripts_executable
     
-    # Select test suites based on mode
+    # Select test suites based on mode and repo type
     local test_suites
+    local rt=""
+    if type detect_repo_type >/dev/null 2>&1; then
+        rt="$(detect_repo_type)"
+    fi
     if [[ "$QUICK_MODE" == true ]]; then
-        test_suites=("${QUICK_SUITES[@]}")
-        log_info "Running quick test suite (essential tests only)"
+        if [[ "$rt" == "framework" ]]; then
+            test_suites=("${FRAMEWORK_QUICK_SUITES[@]}")
+            log_info "Running quick framework test suite"
+        else
+            test_suites=("${QUICK_SUITES[@]}")
+            log_info "Running quick project test suite (essential tests only)"
+        fi
     else
-        test_suites=("${TEST_SUITES[@]}")
-        log_info "Running full test suite (all tests)"
+        if [[ "$rt" == "framework" ]]; then
+            test_suites=("${FRAMEWORK_SUITES[@]}")
+            log_info "Running full framework test suite"
+        else
+            test_suites=("${TEST_SUITES[@]}")
+            log_info "Running full project test suite (all tests)"
+        fi
     fi
     
     echo

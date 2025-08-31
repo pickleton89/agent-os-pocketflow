@@ -463,6 +463,64 @@ curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main
 
 ---
 
+## ✅ Repo-Type Aware Validation
+
+The validation harness auto-detects whether it is running in the Framework repository (this repo) or in an end‑user Project repository, and adapts checks to avoid false failures.
+
+### Detection
+
+- Override with env var: `REPO_TYPE=framework` or `REPO_TYPE=project`
+- Heuristics when not set:
+  - Framework if `pocketflow-tools/generator.py` exists or `CLAUDE.md` contains “This IS the Framework”
+  - Project if `.agent-os/workflows/` has subdirectories, or `docs/design.md` or `tests/` exists
+  - Defaults to framework
+
+Helper script: `scripts/lib/repo-detect.sh`
+
+```
+detect_repo_type        # echoes "framework" or "project"
+is_framework && ...     # run only in framework
+is_project && ...       # run only in project
+skip_if_framework "reason"  # print SKIP and return success
+skip_if_project  "reason"  # print SKIP and return success
+```
+
+### Affected Scripts
+
+- `scripts/run-all-tests.sh` — prints repo type and selects suites accordingly
+- `scripts/validation/validate-integration.sh` — in framework mode runs light sanity checks and skips project‑only checks
+- `scripts/validation/validate-orchestration.sh` — skipped in framework mode
+- `scripts/validation/validate-end-to-end.sh` — skipped in framework mode
+- `scripts/validation/validate-design.sh` — skipped in framework mode
+- `scripts/validation/validate-pocketflow.sh` — skipped in framework mode
+
+Project‑only checks still run unchanged in project mode.
+
+### Usage Examples
+
+Run full suite (auto‑detect):
+
+```bash
+bash scripts/run-all-tests.sh
+```
+
+Run quick suite:
+
+```bash
+bash scripts/run-all-tests.sh -q
+```
+
+Force project mode (e.g., when testing against a sample project):
+
+```bash
+REPO_TYPE=project bash scripts/run-all-tests.sh -v
+```
+
+### CI Recommendation
+
+Use a single job that runs `scripts/run-all-tests.sh`. It adapts to framework or project contexts automatically. Pin `REPO_TYPE` for deterministic behavior if needed.  
+In framework CI, SKIP messages will appear for project‑only checks, keeping signal clean.
+
 ## 🤝 Support
 
 - **Issues:** [GitHub Issues](https://github.com/pickleton89/agent-os-pocketflow/issues)

@@ -1,6 +1,41 @@
 #!/bin/bash
 # Integration Validation Script
+
+# Repo type detection and gating
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "${SCRIPT_DIR}/../lib/repo-detect.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${SCRIPT_DIR}/../lib/repo-detect.sh"
+fi
+
 echo "🧪 Testing Agent OS + PocketFlow Integration..."
+
+# Framework mode: perform lightweight framework sanity checks and skip project-only checks
+if type is_framework >/dev/null 2>&1 && is_framework; then
+  echo "ℹ️  Framework mode detected; skipping project-only integration checks"
+  # Minimal framework sanity checks
+  if [[ -f "pocketflow-tools/generator.py" ]]; then
+    echo "✅ Generator present"
+  else
+    echo "❌ Generator missing: pocketflow-tools/generator.py"
+    exit 1
+  fi
+  if [[ -d "templates" ]]; then
+    echo "✅ Templates directory found"
+  else
+    echo "❌ Templates directory missing: templates"
+    exit 1
+  fi
+  if [[ -f "CLAUDE.md" ]] && grep -q "This IS the Framework" "CLAUDE.md"; then
+    echo "✅ Framework README marker found"
+  else
+    echo "❌ Framework README marker missing in CLAUDE.md"
+    exit 1
+  fi
+  echo "⏭️  SKIP (framework mode): Project orchestration and agent file checks"
+  echo "🎉 Integration checks passed (framework mode)"
+  exit 0
+fi
 
 # Test 1: Directory structure (check project .agent-os first, then fall back to base)
 if [[ -d ".agent-os/instructions/orchestration" ]]; then

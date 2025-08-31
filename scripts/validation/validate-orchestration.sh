@@ -3,6 +3,17 @@
 # Tests the complete orchestration workflow
 set -e
 
+# Repo type detection and gating
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "${SCRIPT_DIR}/../lib/repo-detect.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${SCRIPT_DIR}/../lib/repo-detect.sh"
+  if is_framework; then
+    echo "⏭️  SKIP (framework mode): Orchestration validation is project-only"
+    exit 0
+  fi
+fi
+
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'

@@ -58,6 +58,14 @@ python test-full-generation.py
 # End-user installation testing happens in their projects, not here
 ```
 
+### Repo-Type Aware Validation
+
+The test harness auto-detects whether it’s running in the Framework repo (this repo) or in an end‑user Project repo, and will SKIP project‑only checks when in framework mode. See the “Repo‑Type Aware Validation” section in the README for details, overrides, and examples.
+
+Quick links:
+- README: Repo-Type Aware Validation — README.md:466
+- Helper script — `scripts/lib/repo-detect.sh`
+
 ### CRITICAL FRAMEWORK vs USAGE DISTINCTION
 
 **⚠️ ALWAYS REMEMBER: This repository IS the Agent OS + PocketFlow framework itself, NOT a project using it.**
