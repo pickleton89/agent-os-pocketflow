@@ -10,6 +10,15 @@
 
 This is Agent OS v1.4.0 enhanced with PocketFlow capabilities. When you use Agent OS commands to develop applications, the framework automatically generates complete PocketFlow templates when needed.
 
+## 🎯 Framework vs Usage
+
+This repository is the framework itself — not an app using it. It ships generators, validators, and installers that create PocketFlow‑structured starting points in other projects.
+
+- Framework (this repo): generators, setup scripts, validation tools, template placeholders by design, deps for generation.
+- Usage (your projects): PocketFlow as a dependency, generated templates become working apps, orchestrator/agents run here, placeholders get implemented.
+
+See the full statement in `docs/FRAMEWORK_VS_USAGE.md`.
+
 ## What This Framework Provides
 
 ### ✅ Full Agent OS v1.4.0 Workflow

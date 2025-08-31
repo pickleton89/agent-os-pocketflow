@@ -459,8 +459,8 @@ Issues = "https://github.com/your-org/your-repo/issues"
         
         files = {}
         
-        # .python-version file for uv
-        files[".python-version"] = "3.9\n"
+        # .python-version file for uv (align with pyproject/tooling: Python 3.12)
+        files[".python-version"] = "3.12\n"
         
         # uv.toml configuration
         files["uv.toml"] = '''[tool.uv]
