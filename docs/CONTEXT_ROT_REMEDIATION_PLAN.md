@@ -51,10 +51,10 @@ Acceptance:
 ---
 
 ### 3) Canonical Validator Adoption
-- [ ] Treat `pocketflow-tools/template_validator.py` as source of truth.
-- [ ] Update `scripts/validation/validate-generation.py` to delegate design/nodes/flow checks to the Python validator for consistency (keep script as a CLI wrapper and for type/ruff calls).
-- [ ] Simplify `scripts/validation/validate-template-structure.sh` by shelling out to the Python validator instead of embedding AST logic; retain basic structural checks only.
-- [ ] Align required design sections with the module’s rules (prefer module flexibility: “## Requirements”, “## Flow Design”, and either “## Node Design” or “## Node Specifications”).
+- [x] Treat `pocketflow-tools/template_validator.py` as source of truth.
+- [x] Update `scripts/validation/validate-generation.py` to delegate design/nodes/flow checks to the Python validator for consistency (keep script as a CLI wrapper and for type/ruff calls).
+- [x] Simplify `scripts/validation/validate-template-structure.sh` by shelling out to the Python validator instead of embedding AST logic; retain basic structural checks only.
+- [x] Align required design sections with the module’s rules (prefer module flexibility: “## Requirements”, “## Flow Design”, and either “## Node Design” or “## Node Specifications”).
 
 Files to touch:
 - `scripts/validation/validate-generation.py`
@@ -128,7 +128,7 @@ Acceptance:
 
 - [x] 1. Data models consolidated (no duplicate class names across modules)
 - [x] 2. Pattern definitions centralized and imported by generator + graph generator
-- [ ] 3. Validators aligned (scripts call module; unified section rules)
+- [x] 3. Validators aligned (scripts call module; unified section rules)
 - [ ] 4. StatusReporter return fixed and smoke-tested
 - [ ] 5. Tests rationalized (smoke vs comprehensive), CI updated
 - [ ] 6. Single pattern analysis entrypoint adopted

@@ -180,9 +180,10 @@ def process_data(data):
 3. **Reporting**: Comprehensive feedback with specific line numbers and suggestions
 
 ### Manual Validation
-1. **Script**: Use `scripts/validation/validate-template-structure.sh <template_dir>`
-2. **Python Module**: Use `.agent-os/workflows/template_validator.py <template_dir>`
-3. **Agent Integration**: Template-validator agent automatically invoked
+1. **Script**: `scripts/validation/validate-template-structure.sh <template_dir>` (keeps basic structure checks and calls canonical validator)
+2. **CLI Wrapper**: `python3 scripts/validation/validate-generation.py --workflow <name>` or `--all` (delegates to canonical validator, adds ruff/type advisory checks)
+3. **Python Module**: `python3 pocketflow-tools/template_validator.py <template_dir>` (source of truth; run from repo root)
+4. **Agent Integration**: Template‑validator agent automatically invoked
 
 ### Validation Reports
 - **Summary**: Error, warning, and info counts

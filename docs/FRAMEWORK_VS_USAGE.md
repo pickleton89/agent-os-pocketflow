@@ -16,3 +16,7 @@ Usage Repository (end-user projects):
 
 Key Principle: Missing implementations in generated templates are features, not bugs. This framework creates starting points for developers, not finished applications.
 
+## Canonical Validator & Ownership
+- Source of truth for template validation lives in `pocketflow-tools/template_validator.py` (framework repo).
+- Wrapper entry points: `scripts/validation/validate-generation.py` and `scripts/validation/validate-template-structure.sh` both delegate to the canonical validator.
+- Usage repositories consume generated templates; they do not duplicate validator logic. Validation rules change in one place (this framework) and propagate via the wrappers.
