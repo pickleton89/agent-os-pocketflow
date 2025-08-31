@@ -29,8 +29,9 @@ class StatusReporter:
         self.current_step = 0
         self.total_steps = 0
         
-        # Initialize status tracking
-        self._init_status()
+        # Initialize status tracking only if no existing status file
+        if not os.path.exists(self.status_file):
+            self._init_status()
     
     def _init_status(self):
         """Initialize status tracking."""
@@ -185,7 +186,8 @@ class StatusReporter:
             "status": status,
             "end_time": datetime.utcnow().isoformat(),
             "duration_seconds": duration,
-            "completion_percentage": 100 if success else self.current_step * 100 // self.total_steps,
+            # Avoid division by zero if total_steps is 0
+            "completion_percentage": 100 if success else (int(self.current_step * 100 / self.total_steps) if self.total_steps > 0 else 0),
             "final_message": final_message or f"Operation {status}"
         }
         
@@ -210,27 +212,47 @@ class StatusReporter:
         if final_message:
             print(f"   💭 Final Status: {final_message}")
         
-        return status_data
+        # Return a defined value so callers can consume the result
+        return self._load_status()
     
     def get_status_summary(self) -> Dict[str, Any]:
-        """Get a comprehensive status summary."""
+        """Get a comprehensive status summary based on persisted data."""
         status_data = self._load_status()
-        
-        # Add computed fields
-        current_time = time.time()
-        elapsed = current_time - self.start_time
-        
+
+        # Prefer persisted lists to reflect cross-process state
+        persisted_errors = status_data.get("errors", []) or []
+        persisted_warnings = status_data.get("warnings", []) or []
+        persisted_info = status_data.get("info", []) or []
+
+        # Compute elapsed using persisted timestamps when available
+        start_iso = status_data.get("start_time")
+        end_iso = status_data.get("end_time")
+        elapsed = 0.0
+        try:
+            if start_iso and end_iso:
+                start_dt = datetime.fromisoformat(start_iso)
+                end_dt = datetime.fromisoformat(end_iso)
+                elapsed = max(0.0, (end_dt - start_dt).total_seconds())
+            elif start_iso:
+                start_dt = datetime.fromisoformat(start_iso)
+                # Using UTC now for a rough elapsed during run
+                now_dt = datetime.utcnow()
+                elapsed = max(0.0, (now_dt - start_dt).total_seconds())
+        except Exception:
+            # Fallback to object lifetime if parsing fails
+            elapsed = max(0.0, time.time() - self.start_time)
+
         summary = {
             **status_data,
             "elapsed_seconds": elapsed,
             "is_running": status_data.get("status", "").startswith("step_"),
-            "has_errors": len(self.errors) > 0,
-            "has_warnings": len(self.warnings) > 0,
-            "error_count": len(self.errors),
-            "warning_count": len(self.warnings),
-            "info_count": len(self.info_messages)
+            "has_errors": len(persisted_errors) > 0,
+            "has_warnings": len(persisted_warnings) > 0,
+            "error_count": len(persisted_errors),
+            "warning_count": len(persisted_warnings),
+            "info_count": len(persisted_info),
         }
-        
+
         return summary
     
     def print_status_report(self):
@@ -250,19 +272,24 @@ class StatusReporter:
         
         print("")
         
-        # Error summary
-        if summary['has_errors']:
-            print(f"❌ Errors ({summary['error_count']}):")
-            for error in self.errors[-3:]:  # Show last 3 errors
-                print(f"   • {error['message']}")
-                if error.get('details'):
-                    print(f"     {error['details'][:100]}...")
-        
-        # Warning summary
-        if summary['has_warnings']:
-            print(f"⚠️  Warnings ({summary['warning_count']}):")
-            for warning in self.warnings[-3:]:  # Show last 3 warnings
-                print(f"   • {warning['message']}")
+        # Error summary (use persisted data)
+        errors_list = summary.get('errors') or []
+        if summary.get('has_errors'):
+            print(f"❌ Errors ({summary.get('error_count', 0)}):")
+            for error in errors_list[-3:]:  # Show last 3 errors
+                msg = error.get('message', str(error))
+                print(f"   • {msg}")
+                details = error.get('details') if isinstance(error, dict) else None
+                if details:
+                    print(f"     {str(details)[:100]}...")
+
+        # Warning summary (use persisted data)
+        warnings_list = summary.get('warnings') or []
+        if summary.get('has_warnings'):
+            print(f"⚠️  Warnings ({summary.get('warning_count', 0)}):")
+            for warning in warnings_list[-3:]:  # Show last 3 warnings
+                msg = warning.get('message', str(warning)) if isinstance(warning, dict) else str(warning)
+                print(f"   • {msg}")
         
         # Files created
         if summary.get('files_created'):
@@ -381,6 +408,7 @@ def main():
         action = sys.argv[3]
         
         if action == "init":
+            reporter._init_status()
             print(f"Status tracking initialized for {workflow_name}")
         
         elif action == "step" and len(sys.argv) >= 6:
@@ -393,8 +421,19 @@ def main():
             reporter.log_error(message)
         
         elif action == "complete":
-            success = len(sys.argv) <= 4 or sys.argv[4] != "failed"
-            final_message = " ".join(sys.argv[5:]) if len(sys.argv) > 5 else None
+            # Interpret arguments:
+            # - no extra args: success=True, no message
+            # - first extra arg 'failed': success=False, rest is message
+            # - otherwise: success=True, message is all remaining args
+            success = True
+            final_message = None
+            if len(sys.argv) > 4:
+                if sys.argv[4].lower() == "failed":
+                    success = False
+                    final_message = " ".join(sys.argv[5:]) or None
+                else:
+                    success = True
+                    final_message = " ".join(sys.argv[4:]) or None
             reporter.complete_operation(success, final_message)
         
         elif action == "status":

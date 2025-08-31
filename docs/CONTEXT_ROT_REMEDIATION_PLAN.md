@@ -68,7 +68,8 @@ Acceptance:
 ---
 
 ### 4) Fix StatusReporter defect
-- [ ] `complete_operation()` should return a defined value (e.g., `self.get_status_summary()` or `completion_data`).
+- [x] `complete_operation()` returns a defined value (loads persisted status).
+  - Also improved: avoid reinit on read; compute summary from persisted state; correct elapsed calculation; improved CLI `complete` parsing.
 
 Files to touch:
 - `pocketflow-tools/status_reporter.py`
@@ -129,7 +130,7 @@ Acceptance:
 - [x] 1. Data models consolidated (no duplicate class names across modules)
 - [x] 2. Pattern definitions centralized and imported by generator + graph generator
 - [x] 3. Validators aligned (scripts call module; unified section rules)
-- [ ] 4. StatusReporter return fixed and smoke-tested
+- [x] 4. StatusReporter return fixed and smoke-tested
 - [ ] 5. Tests rationalized (smoke vs comprehensive), CI updated
 - [ ] 6. Single pattern analysis entrypoint adopted
 - [ ] 7. Docstring and documentation updates
