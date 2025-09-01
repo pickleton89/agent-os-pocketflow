@@ -219,6 +219,23 @@ curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main
 
 ## 📋 How to Use
 
+### Pattern Analyzer — Phase 4 Summary
+- Configurable thresholds: `PatternAnalyzer` exposes combination detection thresholds at the class level via `DEFAULT_COMBINATION_RULES` and at the instance level via `combination_rules`. Tune per combo using normalized `min_norm` values (relative to the max score in a run).
+- Rationale prefix: When a valid combination is detected (e.g., RAG + AGENT), the analyzer prepends a brief line like: "Detected composite scenario: RAG + AGENT. Top patterns: TOOL (1.00), RAG (0.85)."
+- Confidence bump: For robust combos where all member patterns have normalized scores ≥ 0.8, the analyzer adds a small confidence bump (+0.05, capped at 1.0).
+- HYBRID remains metadata-first: The analyzer only sets `template_customizations.hybrid_candidate` and `combination_info`; primary pattern stays an enum. The generator can optionally promote hybrid behavior when configured.
+
+To customize thresholds:
+```python
+from pocketflow-tools.pattern_analyzer import PatternAnalyzer, PatternType
+
+custom = {
+    "intelligent_rag": {"patterns": [PatternType.RAG, PatternType.AGENT], "min_norm": 0.6},
+}
+analyzer = PatternAnalyzer(combination_rules=custom)
+```
+
+
 Use standard Agent OS workflow. PocketFlow generation happens automatically when needed.
 
 ### 1. Start Your Product

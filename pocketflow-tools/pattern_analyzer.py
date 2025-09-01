@@ -71,11 +71,40 @@ class PatternRecommendation:
 
 
 class PatternAnalyzer:
-    """Core pattern analysis engine."""
+    """Core pattern analysis engine.
 
-    def __init__(self):
+    Phase 4 additions:
+    - Combination detection thresholds (min_norm) are configurable at the class level via
+      `DEFAULT_COMBINATION_RULES` and copied to `self.combination_rules` on init.
+    - Rationale optionally prepends a brief composite scenario line with top-2 normalized scores.
+    - Confidence gets a small bump for robust combinations (all members have norm >= 0.8).
+    """
+
+    # Class-level defaults for combination detection thresholds.
+    # Normalized thresholds are evaluated against max score in the current analysis run.
+    DEFAULT_COMBINATION_RULES = {
+        "intelligent_rag": {
+            "patterns": [PatternType.RAG, PatternType.AGENT],
+            # Lower threshold to recognize mixed RAG/AGENT even if TOOL dominates
+            "min_norm": 0.33,
+        },
+        "integration_workflow": {
+            "patterns": [PatternType.TOOL, PatternType.WORKFLOW],
+            "min_norm": 0.65,
+        },
+        "smart_processing": {
+            "patterns": [PatternType.MAPREDUCE, PatternType.AGENT],
+            "min_norm": 0.70,
+        },
+    }
+
+    def __init__(self, combination_rules: Optional[Dict[str, Dict[str, Any]]] = None):
         self.pattern_indicators = self._load_pattern_indicators()
         self.context_rules = self._load_context_rules()
+        # Expose combination thresholds at the instance level for easy tuning
+        self.combination_rules: Dict[str, Dict[str, Any]] = (
+            (combination_rules or {}).copy() if combination_rules else self.DEFAULT_COMBINATION_RULES.copy()
+        )
         # Simple caching for performance optimization
         self._analysis_cache = {}
         self._cache_size_limit = 100
@@ -83,9 +112,11 @@ class PatternAnalyzer:
     def detect_combinations(self, pattern_scores: List["PatternScore"], top_n: int = 4) -> Dict[str, Any]:
         """Detect meaningful pattern combinations using normalized scores.
 
-        - Normalizes by the maximum total score among all patterns (guarding for zero).
+        - Normalizes by the maximum total score among all patterns (guard against zero).
         - Checks predefined combos within the top-N ranked patterns only.
         - Triggers when all combo members are in the top-N and each meets its min normalized threshold.
+
+        Thresholds are read from `self.combination_rules` which can be adjusted per instance.
 
         Returns a mapping like:
         {
@@ -113,22 +144,8 @@ class PatternAnalyzer:
             s.pattern: (s.total_score / max_score) for s in top_scores
         }
 
-        # Predefined combination rules (normalized thresholds)
-        combos = {
-            "intelligent_rag": {
-                "patterns": [PatternType.RAG, PatternType.AGENT],
-                # Calibrated to detect mixed RAG/AGENT scenarios where TOOL may dominate
-                "min_norm": 0.33,
-            },
-            "integration_workflow": {
-                "patterns": [PatternType.TOOL, PatternType.WORKFLOW],
-                "min_norm": 0.65,
-            },
-            "smart_processing": {
-                "patterns": [PatternType.MAPREDUCE, PatternType.AGENT],
-                "min_norm": 0.70,
-            },
-        }
+        # Use instance-level combination rules (normalized thresholds)
+        combos = self.combination_rules or {}
 
         detected: Dict[str, Any] = {}
         for key, cfg in combos.items():
@@ -826,7 +843,7 @@ class PatternAnalyzer:
             score.pattern for score in pattern_scores[1:6]  # Top 5 alternatives
             if score.total_score >= threshold and score.total_score > 0
         ]
-        
+
         # Generate detailed rationale
         detailed_rationale = self.generate_detailed_justification(pattern_scores, analysis)
         
@@ -845,11 +862,12 @@ class PatternAnalyzer:
             rationale_parts.append(f"Alternative patterns considered: {', '.join([p.value for p in secondary_patterns[:2]])}")
         
         rationale = ". ".join(rationale_parts) + "."
-        
+
         # Generate template customizations based on pattern and analysis
         template_customizations = self._generate_template_customizations(primary_pattern, analysis)
 
-        # Phase 1: Detect normalized combinations (HYBRID as metadata only)
+        # Phase 1/4: Detect normalized combinations (HYBRID as metadata only) and
+        # augment rationale + confidence for robust combos.
         try:
             combinations = self.detect_combinations(pattern_scores)
         except Exception as e:  # Defensive: never break recommendation on combo detection
@@ -858,6 +876,57 @@ class PatternAnalyzer:
         if combinations:
             template_customizations["combination_info"] = combinations
             template_customizations["hybrid_candidate"] = True
+
+            # Compute normalized scores by pattern for the current run
+            max_score = max((s.total_score for s in pattern_scores), default=0.0) or 1.0
+            norm_map: Dict[PatternType, float] = {s.pattern: (s.total_score / max_score) for s in pattern_scores}
+
+            # Choose the strongest detected combination to summarize
+            best_key = max(combinations, key=lambda k: float(combinations[k].get("combined_score", 0)), default=None)
+            combo_summary = None
+            if best_key:
+                try:
+                    pats = combinations[best_key].get("patterns", [])
+                    # Compose display like "RAG + AGENT"
+                    combo_summary = " + ".join(str(p) for p in pats)
+                except Exception:
+                    combo_summary = None
+
+            # Prepare top-2 normalized pattern summary
+            top_two = pattern_scores[:2]
+            top_two_str = ", ".join(
+                f"{ps.pattern.value} ({(ps.total_score / max_score):.2f})" for ps in top_two if max_score > 0
+            )
+
+            combo_prefix = None
+            if combo_summary:
+                combo_prefix = f"Detected composite scenario: {combo_summary}. Top patterns: {top_two_str}."
+            else:
+                # Fallback to only top-2 if unable to build combo summary
+                combo_prefix = f"Top patterns: {top_two_str}."
+
+            # Prepend to existing brief rationale
+            if combo_prefix:
+                rationale = f"{combo_prefix} {rationale}"
+
+            # Confidence bump for robust combinations: all members have norm >= 0.8
+            try:
+                robust = False
+                for info in combinations.values():
+                    member_norms = []
+                    for p_str in (info.get("patterns") or []):
+                        try:
+                            p_enum = PatternType(p_str)
+                        except Exception:
+                            continue
+                        member_norms.append(norm_map.get(p_enum, 0.0))
+                    if member_norms and min(member_norms) >= 0.8:
+                        robust = True
+                        break
+                if robust:
+                    confidence_score = min(confidence_score + 0.05, 1.0)
+            except Exception:
+                pass
         
         # Generate workflow suggestions
         workflow_suggestions = self._generate_workflow_suggestions(primary_pattern, analysis)
