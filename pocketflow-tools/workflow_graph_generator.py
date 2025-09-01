@@ -186,7 +186,7 @@ class WorkflowGraphGenerator:
                 ]
             }
         }
-    
+
     def generate_workflow_graph(self, pattern: PatternType, 
                               requirements: str = "",
                               complexity_level: str = "medium") -> WorkflowGraph:
@@ -241,6 +241,66 @@ class WorkflowGraphGenerator:
             edges=edges,
             pattern=pattern,
             complexity_level=complexity_level
+        )
+
+    def generate_hybrid_graph(self, base_patterns: List[PatternType],
+                              complexity_level: str = "medium") -> WorkflowGraph:
+        """Compose a HYBRID workflow graph from multiple base patterns.
+
+        Strategy:
+        - Generate subgraphs for each base pattern.
+        - Union nodes by name preserving first appearance.
+        - Merge edges that reference kept nodes.
+        - Connect tail of each subgraph to head of the next with a success edge.
+        """
+        if not base_patterns:
+            # Fallback to a simple WORKFLOW graph when nothing provided
+            return self.generate_workflow_graph(PatternType.WORKFLOW, complexity_level=complexity_level)
+
+        subgraphs: List[WorkflowGraph] = [
+            self.generate_workflow_graph(p, complexity_level=complexity_level) for p in base_patterns
+        ]
+
+        # Union nodes by name
+        seen = set()
+        hybrid_nodes: List[WorkflowNode] = []
+        name_to_node: Dict[str, WorkflowNode] = {}
+        for sg in subgraphs:
+            for n in sg.nodes:
+                if n.name in seen:
+                    continue
+                new_node = WorkflowNode(name=n.name, description=n.description, node_type=n.node_type, position=len(hybrid_nodes))
+                hybrid_nodes.append(new_node)
+                name_to_node[n.name] = new_node
+                seen.add(n.name)
+
+        # Merge edges referencing kept nodes
+        hybrid_edges: List[WorkflowEdge] = []
+        for sg in subgraphs:
+            for e in sg.edges:
+                if e.source in name_to_node and e.target in name_to_node:
+                    hybrid_edges.append(WorkflowEdge(source=e.source, target=e.target, condition=e.condition, label=e.label))
+
+        # Connect subgraphs sequentially
+        def _first_node_name(g: WorkflowGraph) -> str:
+            return g.nodes[0].name if g.nodes else ""
+
+        def _last_node_name(g: WorkflowGraph) -> str:
+            return g.nodes[-1].name if g.nodes else ""
+
+        for i in range(len(subgraphs) - 1):
+            a = subgraphs[i]
+            b = subgraphs[i + 1]
+            tail = _last_node_name(a)
+            head = _first_node_name(b)
+            if tail and head and tail in name_to_node and head in name_to_node:
+                hybrid_edges.append(WorkflowEdge(source=tail, target=head, condition="success", label=None))
+
+        return WorkflowGraph(
+            nodes=hybrid_nodes,
+            edges=hybrid_edges,
+            pattern=PatternType.HYBRID,
+            complexity_level=complexity_level,
         )
     
     def _add_complex_features(self, nodes: List[WorkflowNode], 
@@ -338,7 +398,11 @@ class WorkflowGraphGenerator:
             PatternType.WORKFLOW: [
                 "    classDef workflow fill:#fff3e0,stroke:#ef6c00,stroke-width:2px",
                 "    class InputProcessor,BusinessLogic,DataProcessor,OutputFormatter workflow"
-            ]
+            ],
+            PatternType.HYBRID: [
+                "    classDef hybrid fill:#eef2ff,stroke:#4f46e5,stroke-width:2px",
+                "    class DocumentLoader,EmbeddingGenerator,QueryProcessor,Retriever,ContextFormatter,LLMGenerator,TaskAnalyzer,PlanningEngine,ReasoningNode,ActionExecutor,ResultEvaluator,InputValidator,AuthHandler,APIClient,DataTransformer,ResponseProcessor hybrid"
+            ],
         }
         
         return styling_map.get(pattern, [

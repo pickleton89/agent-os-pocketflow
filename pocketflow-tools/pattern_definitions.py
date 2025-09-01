@@ -138,5 +138,34 @@ __all__ = [
     "CORE_PATTERN_NODE_TEMPLATES",
     "SIMPLE_PATTERN_NODE_TEMPLATES",
     "get_node_templates",
+    "compose_hybrid_node_templates",
 ]
 
+
+def compose_hybrid_node_templates(base_patterns: List[Union[str, PatternType]]) -> List[Dict[str, Any]]:
+    """Compose hybrid node templates from multiple base patterns.
+
+    - Accepts a list of `PatternType` or string values convertible to `PatternType`.
+    - Fetches canonical node templates for each base pattern.
+    - Unions nodes by `name`, preserving first occurrence order across patterns.
+    - Returns a deep copy to avoid mutating canonical definitions.
+    """
+    seen = set()
+    result: List[Dict[str, Any]] = []
+
+    for p in base_patterns:
+        try:
+            nodes = get_node_templates(p)
+        except Exception:
+            # Skip invalid patterns rather than failing composition
+            nodes = []
+        for node in nodes:
+            name = node.get("name")
+            if not name:
+                continue
+            if name in seen:
+                continue
+            result.append(copy.deepcopy(node))
+            seen.add(name)
+
+    return result

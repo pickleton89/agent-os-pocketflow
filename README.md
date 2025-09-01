@@ -282,6 +282,32 @@ The framework automatically selects the appropriate pattern based on your specif
 - **MapReduce Pattern** - Parallel processing workflows
 - **Structured Output** - Type-safe data extraction
 
+### Optional: HYBRID Composition (Opt-in)
+
+- Enable hybrid node/graph composition when the analyzer detects meaningful combinations (e.g., RAG + AGENT).
+- Default is off to avoid churn. Turn it on per-generator instance:
+
+```python
+# If running inside a project repo, adjust sys.path to the tools directory
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path('pocketflow-tools')))  # or '.agent-os/pocketflow-tools' in projects
+import generator as gen
+
+# Opt-in to compose nodes and graph when combinations are detected
+g = gen.PocketFlowGenerator(enable_hybrid_promotion=True)
+
+# Given requirements text `req`, this will:
+# - Keep the strongest primary pattern for classification
+# - Compose nodes from both base patterns (e.g., RAG + AGENT)
+# - Render a composed Mermaid graph in docs/design.md
+files = g.generate_workflow_from_requirements("HybridExample", req)
+```
+
+Notes:
+- If the analyzer recommends a simple structure (SIMPLE_WORKFLOW, BASIC_API, SIMPLE_ETL), that takes precedence over hybrid composition.
+- Hybrid remains metadata-driven; the analyzer does not set HYBRID as primary.
+
 ---
 
 ## 🤔 Understanding This Framework

@@ -60,10 +60,13 @@ class PocketFlowGenerator:
         self,
         templates_path: str = "templates",
         output_path: str = ".agent-os/workflows",
+        enable_hybrid_promotion: bool = False,
     ):
         self.templates_path = Path(templates_path)
         self.output_path = Path(output_path)
         self.output_path.mkdir(exist_ok=True)
+        # Phase 3: optional hybrid composition (default off)
+        self.enable_hybrid_promotion = enable_hybrid_promotion
 
         # Validate templates directory exists
         if not self.templates_path.exists():
@@ -155,9 +158,67 @@ class PocketFlowGenerator:
         def _pattern_str(p: Any) -> str:
             return getattr(p, "value", p)
 
-        # Extract suggested nodes from workflow suggestions
+        # Extract suggested nodes and structure recommendations
         suggested_utilities = recommendation.template_customizations.get("suggested_utilities", [])
-        workflow_suggestions = getattr(recommendation, 'workflow_suggestions', {})
+        # Start with analyzer-provided workflow suggestions (copy to avoid mutation)
+        workflow_suggestions = dict(getattr(recommendation, 'workflow_suggestions', {}) or {})
+        # Phase 2: honor simple structure recommendations from analyzer customizations
+        try:
+            tc = getattr(recommendation, 'template_customizations', {}) or {}
+            if isinstance(tc, dict):
+                # Prefer explicit graduated_structure if present
+                if tc.get("graduated_structure"):
+                    workflow_suggestions.setdefault("recommended_structure", tc["graduated_structure"])
+                # Also pass through full complexity mapping for downstream use if available
+                if isinstance(tc.get("complexity_mapping"), dict):
+                    workflow_suggestions.setdefault("complexity_mapping", tc["complexity_mapping"])
+        except Exception:
+            # Defensive: never block generation if metadata missing/malformed
+            pass
+
+        # Phase 3: If hybrid promotion is enabled and combinations detected, prepare override nodes
+        try:
+            if self.enable_hybrid_promotion:
+                combo_info = (getattr(recommendation, 'template_customizations', {}) or {}).get('combination_info', {})
+                if isinstance(combo_info, dict) and combo_info:
+                    # Skip hybrid override if a simple structure is explicitly recommended
+                    simple_set = {"SIMPLE_WORKFLOW", "BASIC_API", "SIMPLE_ETL"}
+                    recommended_simple = workflow_suggestions.get("recommended_structure") or (
+                        (workflow_suggestions.get("complexity_mapping") or {}).get("recommended_structure")
+                        if isinstance(workflow_suggestions.get("complexity_mapping"), dict)
+                        else None
+                    )
+                    if recommended_simple not in simple_set:
+                        # Choose combination with highest combined_score
+                        best = None
+                        for k, v in combo_info.items():
+                            if not best or float(v.get('combined_score', 0)) > float(best.get('combined_score', 0)):
+                                best = v
+                        if best and isinstance(best.get('patterns'), list):
+                            try:
+                                try:
+                                    from .pattern_analyzer import PatternType as AnalyzerPatternType  # type: ignore
+                                except Exception:
+                                    from pattern_analyzer import PatternType as AnalyzerPatternType  # type: ignore
+                                try:
+                                    try:
+                                        from .pattern_definitions import compose_hybrid_node_templates  # type: ignore
+                                    except Exception:
+                                        from pattern_definitions import compose_hybrid_node_templates  # type: ignore
+                                    base_patterns = []
+                                    for p in best['patterns']:
+                                        try:
+                                            base_patterns.append(AnalyzerPatternType(p))
+                                        except Exception:
+                                            pass
+                                    if base_patterns:
+                                        workflow_suggestions['override_node_templates'] = compose_hybrid_node_templates(base_patterns)
+                                except Exception:
+                                    pass
+                            except Exception:
+                                pass
+        except Exception:
+            pass
         
         # Generate nodes based on pattern and suggestions
         nodes = self._generate_nodes_from_pattern(
@@ -165,9 +226,24 @@ class PocketFlowGenerator:
             workflow_suggestions
         )
         
-        # Generate utilities based on pattern and analysis
+        # Generate utilities; align with simple structures when recommended (Phase 2)
+        try:
+            simple_set = {"SIMPLE_WORKFLOW", "BASIC_API", "SIMPLE_ETL"}
+            recommended_simple = None
+            if isinstance(workflow_suggestions, dict):
+                recommended_simple = workflow_suggestions.get("recommended_structure")
+                if not recommended_simple:
+                    cm = workflow_suggestions.get("complexity_mapping", {}) or {}
+                    if isinstance(cm, dict):
+                        recommended_simple = cm.get("recommended_structure")
+            effective_pattern_for_utils = (
+                recommended_simple if recommended_simple in simple_set else _pattern_str(recommendation.primary_pattern)
+            )
+        except Exception:
+            effective_pattern_for_utils = _pattern_str(recommendation.primary_pattern)
+
         utilities = self._generate_utilities_from_pattern(
-            _pattern_str(recommendation.primary_pattern),
+            effective_pattern_for_utils,
             suggested_utilities
         )
         
@@ -218,8 +294,32 @@ class PocketFlowGenerator:
         except Exception:  # pragma: no cover - fallback for standalone usage
             from pattern_definitions import get_node_templates  # type: ignore
 
-        # Get nodes for the specific pattern from central definitions
-        default_nodes = get_node_templates(pattern)
+        # Allow override hybrid nodes first (Phase 3)
+        default_nodes = None
+        if isinstance(workflow_suggestions, dict):
+            override = workflow_suggestions.get("override_node_templates")
+            if isinstance(override, list) and override:
+                default_nodes = override
+        if default_nodes is None:
+            # Determine if a simple structure was recommended (Phase 2)
+            recommended = None
+            try:
+                if isinstance(workflow_suggestions, dict):
+                    recommended = workflow_suggestions.get("recommended_structure")
+                    if not recommended:
+                        # Optional: support nested complexity mapping source
+                        cm = workflow_suggestions.get("complexity_mapping", {}) or {}
+                        if isinstance(cm, dict):
+                            recommended = cm.get("recommended_structure")
+            except Exception:
+                recommended = None
+
+            # Get nodes honoring simple structures when recommended
+            if recommended in {"SIMPLE_WORKFLOW", "BASIC_API", "SIMPLE_ETL"}:
+                default_nodes = get_node_templates(recommended)
+            else:
+                # Fall back to canonical nodes for the primary pattern
+                default_nodes = get_node_templates(pattern)
         
         # Customize based on workflow suggestions if available
         if workflow_suggestions:
@@ -555,20 +655,60 @@ class PocketFlowGenerator:
                 except ImportError:
                     from pattern_analyzer import PatternType as AnalyzerPatternType
                 
-                # Convert pattern to enum for graph generation (handle enum or string)
-                pattern_value = getattr(
-                    recommendation.primary_pattern, "value", recommendation.primary_pattern
+                # If a simple structure was recommended, reflect actual nodes using basic Mermaid
+                simple_set = {"SIMPLE_WORKFLOW", "BASIC_API", "SIMPLE_ETL"}
+                recommended_simple = (
+                    recommendation.template_customizations.get("graduated_structure")
+                    or recommendation.template_customizations.get("complexity_mapping", {}).get("recommended_structure")
                 )
-                pattern_enum = AnalyzerPatternType(pattern_value)
-                
-                graph_generator = WorkflowGraphGenerator()
-                workflow_graph = graph_generator.generate_workflow_graph(pattern_enum, complexity_level="medium")
-                
-                # Generate Mermaid diagram
-                mermaid_diagram = graph_generator.generate_mermaid_diagram(workflow_graph)
-                
-                # Generate workflow description
-                workflow_description = graph_generator.generate_workflow_description(workflow_graph)
+
+                if recommended_simple in simple_set:
+                    mermaid_diagram = self._generate_basic_mermaid(spec)
+                    workflow_description = f"Simple structure ({recommended_simple}) selected; diagram reflects generated nodes."
+                else:
+                    # Hybrid composition path (Phase 3) if enabled and available
+                    combo = (recommendation.template_customizations or {}).get('combination_info', {})
+                    if self.enable_hybrid_promotion and isinstance(combo, dict) and combo:
+                        # Select best combo by combined_score
+                        best = None
+                        for k, v in combo.items():
+                            if not best or float(v.get('combined_score', 0)) > float(best.get('combined_score', 0)):
+                                best = v
+                        if best and isinstance(best.get('patterns'), list):
+                            try:
+                                base = []
+                                for p in best['patterns']:
+                                    try:
+                                        base.append(AnalyzerPatternType(p))
+                                    except Exception:
+                                        pass
+                                if base:
+                                    graph_generator = WorkflowGraphGenerator()
+                                    workflow_graph = graph_generator.generate_hybrid_graph(base, complexity_level="medium")
+                                    mermaid_diagram = graph_generator.generate_mermaid_diagram(workflow_graph)
+                                    workflow_description = graph_generator.generate_workflow_description(workflow_graph)
+                                else:
+                                    raise ValueError("No valid base patterns for hybrid graph")
+                            except Exception:
+                                # Fallback to standard single-pattern graph
+                                pattern_value = getattr(
+                                    recommendation.primary_pattern, "value", recommendation.primary_pattern
+                                )
+                                pattern_enum = AnalyzerPatternType(pattern_value)
+                                graph_generator = WorkflowGraphGenerator()
+                                workflow_graph = graph_generator.generate_workflow_graph(pattern_enum, complexity_level="medium")
+                                mermaid_diagram = graph_generator.generate_mermaid_diagram(workflow_graph)
+                                workflow_description = graph_generator.generate_workflow_description(workflow_graph)
+                    else:
+                        # Standard single-pattern graph
+                        pattern_value = getattr(
+                            recommendation.primary_pattern, "value", recommendation.primary_pattern
+                        )
+                        pattern_enum = AnalyzerPatternType(pattern_value)
+                        graph_generator = WorkflowGraphGenerator()
+                        workflow_graph = graph_generator.generate_workflow_graph(pattern_enum, complexity_level="medium")
+                        mermaid_diagram = graph_generator.generate_mermaid_diagram(workflow_graph)
+                        workflow_description = graph_generator.generate_workflow_description(workflow_graph)
                 
             except ImportError:
                 mermaid_diagram = self._generate_basic_mermaid(spec)
