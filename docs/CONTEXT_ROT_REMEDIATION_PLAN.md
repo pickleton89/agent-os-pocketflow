@@ -97,8 +97,8 @@ Acceptance:
 ---
 
 ### 6) Unify Pattern Analysis Entrypoint
-- [ ] Prefer `agent_coordination.coordinate_pattern_analysis` as the high-level pathway from UX flows.
-- [ ] Deprecate `PocketFlowGenerator.request_pattern_analysis` or make it a thin wrapper that returns the canonical analyzer type; avoid defining duplicate dataclasses.
+- [x] Prefer `agent_coordination.coordinate_pattern_analysis` as the high-level pathway from UX flows.
+- [x] Deprecate `PocketFlowGenerator.request_pattern_analysis` or make it a thin wrapper that returns the canonical analyzer type; avoid defining duplicate dataclasses.
 
 Files to touch:
 - `pocketflow-tools/generator.py`
@@ -131,7 +131,7 @@ Acceptance:
 - [x] 3. Validators aligned (scripts call module; unified section rules)
 - [x] 4. StatusReporter return fixed and smoke-tested
 - [x] 5. Tests rationalized (smoke vs comprehensive), CI updated
-- [ ] 6. Single pattern analysis entrypoint adopted
+- [x] 6. Single pattern analysis entrypoint adopted
 - [ ] 7. Docstring and documentation updates
 
 ## Verification

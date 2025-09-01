@@ -504,7 +504,7 @@ class PocketFlowGenerator:
         
         # Step 1: Analyze requirements to determine optimal pattern
         print(f"Analyzing requirements for pattern recognition...")
-        recommendation = self.request_pattern_analysis(requirements)
+        recommendation = self.request_pattern_analysis(requirements, project_name=name)
         
         print(f"Pattern Analysis Results:")
         # Adapter: enum-safe pattern display
@@ -547,16 +547,19 @@ class PocketFlowGenerator:
             try:
                 # Import graph generator and analyzer types with relative-then-absolute fallback
                 try:
-                    from .workflow_graph_generator import WorkflowGraphGenerator, PatternType  # type: ignore
+                    from .workflow_graph_generator import WorkflowGraphGenerator  # type: ignore
                 except ImportError:
-                    from workflow_graph_generator import WorkflowGraphGenerator, PatternType
+                    from workflow_graph_generator import WorkflowGraphGenerator
                 try:
                     from .pattern_analyzer import PatternType as AnalyzerPatternType  # type: ignore
                 except ImportError:
                     from pattern_analyzer import PatternType as AnalyzerPatternType
                 
-                # Convert string pattern back to enum for graph generation
-                pattern_enum = AnalyzerPatternType(recommendation.primary_pattern)
+                # Convert pattern to enum for graph generation (handle enum or string)
+                pattern_value = getattr(
+                    recommendation.primary_pattern, "value", recommendation.primary_pattern
+                )
+                pattern_enum = AnalyzerPatternType(pattern_value)
                 
                 graph_generator = WorkflowGraphGenerator()
                 workflow_graph = graph_generator.generate_workflow_graph(pattern_enum, complexity_level="medium")
@@ -2217,43 +2220,77 @@ This is a generated design document template. Please complete with actual requir
                     self.warnings = []
             return _FallbackValidationError(str(e))
 
-    def request_pattern_analysis(self, requirements: str) -> Any:
-        """Request pattern analysis from pattern-analyzer agent."""
+    def request_pattern_analysis(self, requirements: str, project_name: str | None = None) -> Any:
+        """Request pattern analysis using the unified coordination entrypoint.
+
+        Note: Prefer `agent_coordination.coordinate_pattern_analysis` as the high-level pathway.
+        This method remains as a thin wrapper for backward compatibility and returns the
+        canonical `pattern_analyzer.PatternRecommendation` type.
+        """
+        # Soft deprecation notice
         try:
-            # Try relative import first (package usage), then absolute (standalone script)
+            import warnings
+            warnings.warn(
+                "PocketFlowGenerator.request_pattern_analysis is a thin wrapper; "
+                "prefer agent_coordination.coordinate_pattern_analysis",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        except Exception:
+            pass
+        # Try the coordination entrypoint first (preferred path)
+        try:
+            try:
+                from .agent_coordination import coordinate_pattern_analysis  # type: ignore
+            except ImportError:
+                from agent_coordination import coordinate_pattern_analysis  # type: ignore
+
+            # Use provided project name when available; otherwise use a sensible default
+            project = project_name or "PocketFlowWorkflow"
+            context = coordinate_pattern_analysis(project, requirements)
+            if getattr(context, "pattern_recommendation", None) is not None:
+                return context.pattern_recommendation
+            # If coordination returned no recommendation, fall through to analyzer fallback
+        except Exception as coord_err:
+            logger.debug(f"Coordination entrypoint unavailable or failed: {coord_err}")
+
+        # Fallback: call analyzer directly to preserve behavior in minimal environments
+        try:
             try:
                 from .pattern_analyzer import PatternAnalyzer  # type: ignore
             except ImportError:
-                from pattern_analyzer import PatternAnalyzer
-            
+                from pattern_analyzer import PatternAnalyzer  # type: ignore
+
             analyzer = PatternAnalyzer()
-            recommendation = analyzer.analyze_and_recommend(requirements)
-            # Return canonical analyzer type directly
-            return recommendation
-            
+            return analyzer.analyze_and_recommend(requirements)
         except ImportError:
-            # Fallback if pattern analyzer is not available
+            # Minimal fallback object to preserve expected attributes
             class _FallbackPatternRecommendation:
                 def __init__(self):
                     self.primary_pattern = "WORKFLOW"
                     self.confidence_score = 0.6
                     self.secondary_patterns = []
-                    self.rationale = "Pattern analyzer not available - using default WORKFLOW pattern"
+                    self.rationale = (
+                        "Pattern analyzer not available - using default WORKFLOW pattern"
+                    )
                     self.detailed_justification = ""
                     self.template_customizations = {}
                     self.workflow_suggestions = {}
+
             return _FallbackPatternRecommendation()
         except Exception as e:
-            # Fallback for any other errors
             class _FallbackPatternRecommendationError:
                 def __init__(self, msg: str):
                     self.primary_pattern = "WORKFLOW"
                     self.confidence_score = 0.5
                     self.secondary_patterns = []
-                    self.rationale = f"Pattern analysis failed ({msg}) - using default WORKFLOW pattern"
+                    self.rationale = (
+                        f"Pattern analysis failed ({msg}) - using default WORKFLOW pattern"
+                    )
                     self.detailed_justification = ""
                     self.template_customizations = {}
                     self.workflow_suggestions = {}
+
             return _FallbackPatternRecommendationError(str(e))
 
     def generate_dependency_config(self, pattern: str) -> Any:
