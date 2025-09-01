@@ -2,8 +2,14 @@
 """
 Context Manager for Planning-to-Implementation Handoff
 
-Provides intelligent context extraction from design documents for PocketFlow generation.
-Implements Phase 2 requirements from INTEGRATION_GAP.md.
+Role: Extracts project context from repository docs (requirements, design,
+architecture) to inform PocketFlow generation inputs. This is a design-time
+content extractor, not a runtime coordinator.
+
+Do not confuse this with `agent_coordination.CoordinationContext`, which
+represents runtime coordination state during agent handoffs and orchestration.
+
+Implements Phase 2 requirements per docs/POCKETFLOW_ORCHESTRATOR_UPDATE_PLAN.md.
 """
 
 import os
@@ -155,6 +161,20 @@ class ContextManager:
         self._assess_complexity(context)
         
         return context
+
+    def _canonicalize_tech(self, name: str) -> str:
+        """Return a canonical display name for common tech terms."""
+        mapping = {
+            "fastapi": "FastAPI",
+            "rest api": "REST API",
+            "aws s3": "AWS S3",
+            "openai": "OpenAI",
+            "postgresql": "PostgreSQL",
+            "mongodb": "MongoDB",
+            "chromadb": "ChromaDB",
+        }
+        key = name.strip().lower()
+        return mapping.get(key, name.title())
 
     def _create_minimal_context(self, workflow_name: str) -> ProjectContext:
         """Create minimal context when no design documents exist."""
@@ -317,8 +337,8 @@ class ContextManager:
         
         for tech in common_techs:
             if tech in content_lower and tech not in existing_techs_lower:
-                tech_titled = tech.title()
-                context.technical_stack.append(tech_titled)
+                tech_canonical = self._canonicalize_tech(tech)
+                context.technical_stack.append(tech_canonical)
                 existing_techs_lower.add(tech.lower())  # Update set with lowercase for consistency
 
     def _extract_architecture_info(self, content: str, context: ProjectContext):

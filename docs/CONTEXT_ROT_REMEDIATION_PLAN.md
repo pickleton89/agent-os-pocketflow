@@ -110,9 +110,9 @@ Acceptance:
 ---
 
 ### 7) Naming/Docs to Reduce Confusion
-- [ ] Add short module docstrings clarifying roles:
+- [x] Add short module docstrings clarifying roles:
   - `ContextManager` (extracts project context from docs) vs `CoordinationContext` (runtime coordination state).
-- [ ] Add a brief note in `docs/FRAMEWORK_VS_USAGE.md` referencing the canonical validator and model ownership.
+- [x] Add a brief note in `docs/FRAMEWORK_VS_USAGE.md` referencing the canonical validator and model ownership.
 
 Files to touch:
 - `pocketflow-tools/context_manager.py` (doc comment only)
@@ -132,7 +132,7 @@ Acceptance:
 - [x] 4. StatusReporter return fixed and smoke-tested
 - [x] 5. Tests rationalized (smoke vs comprehensive), CI updated
 - [x] 6. Single pattern analysis entrypoint adopted
-- [ ] 7. Docstring and documentation updates
+- [x] 7. Docstring and documentation updates
 
 ## Verification
 - Run: `scripts/run-all-tests.sh`

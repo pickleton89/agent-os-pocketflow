@@ -83,6 +83,10 @@ python3 test_full_generation_with_dependencies.py  # comprehensive
 ls -la testcontentanalyzer/  # Framework validation example
 ```
 
+Note: Use `python3` for local commands. Some environments map `python` to an
+older interpreter, which can produce misleading syntax errors (e.g., with
+dataclasses or type annotations).
+
 ## Core Framework Components
 
 ### 🔧 Generator System ([`.agent-os/workflows/generator.py`](./.agent-os/workflows/generator.py))

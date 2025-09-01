@@ -20,3 +20,9 @@ Key Principle: Missing implementations in generated templates are features, not 
 - Source of truth for template validation lives in `pocketflow-tools/template_validator.py` (framework repo).
 - Wrapper entry points: `scripts/validation/validate-generation.py` and `scripts/validation/validate-template-structure.sh` both delegate to the canonical validator.
 - Usage repositories consume generated templates; they do not duplicate validator logic. Validation rules change in one place (this framework) and propagate via the wrappers.
+
+## Canonical Models (Owned Here)
+- Pattern analysis and recommendation types: `pocketflow-tools/pattern_analyzer.py` (`PatternType`, `PatternRecommendation`).
+- Dependency configuration: `pocketflow-tools/dependency_orchestrator.py` (`DependencyConfig`).
+- Template validation results: `pocketflow-tools/template_validator.py` (`ValidationResult`).
+- Usage repositories should not re-declare these data models; they consume outputs from this framework. Adapters at module boundaries are acceptable; duplicate class definitions are not.

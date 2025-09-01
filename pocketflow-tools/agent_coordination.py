@@ -2,6 +2,14 @@
 """
 Agent Coordination System for Pattern Analyzer
 
+Role: Manages runtime coordination state and handoffs across PocketFlow
+sub-agents. The `CoordinationContext` in this module captures orchestration
+state (phase, overrides, feedback) while work is coordinated.
+
+Do not confuse this with `context_manager.ContextManager`, which extracts
+project context from design docs at design-time. That produces inputs; this
+module coordinates actions.
+
 Handles coordination between pattern-analyzer and PocketFlow components:
 - design-document-creator: PocketFlow design document creation specialist
 - strategic-planner: Product strategy and PocketFlow integration planning
