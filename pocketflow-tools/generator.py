@@ -8,7 +8,7 @@ and templates, following the 8-step Agentic Coding methodology.
 
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, TYPE_CHECKING
+from typing import Dict, List, Any, TYPE_CHECKING, Optional
 from dataclasses import dataclass, field
 import logging
 
@@ -2360,7 +2360,7 @@ This is a generated design document template. Please complete with actual requir
                     self.warnings = []
             return _FallbackValidationError(str(e))
 
-    def request_pattern_analysis(self, requirements: str, project_name: str | None = None) -> Any:
+    def request_pattern_analysis(self, requirements: str, project_name: Optional[str] = None) -> Any:
         """Request pattern analysis using the unified coordination entrypoint.
 
         Note: Prefer `agent_coordination.coordinate_pattern_analysis` as the high-level pathway.
