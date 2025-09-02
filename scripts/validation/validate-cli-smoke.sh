@@ -11,16 +11,17 @@ cd "$ROOT_DIR"
 echo "[cli-smoke] Using Python: $(python3 -V 2>/dev/null || echo 'python3 not found')"
 
 # Check PyYAML availability; do not install here to keep framework clean
-python3 - << 'PY' 2>/dev/null || {
-  echo "[cli-smoke] SKIP: PyYAML not available. Install with: uv pip install pyyaml" >&2
-  exit 0
-}
+python3 - << 'PY' 2>/dev/null
 try:
     import yaml  # noqa: F401
     print("ok")
 except Exception:
     raise SystemExit(1)
 PY
+if [ $? -ne 0 ]; then
+  echo "[cli-smoke] SKIP: PyYAML not available. Install with: uv pip install pyyaml" >&2
+  exit 0
+fi
 
 echo "[cli-smoke] PyYAML detected. Running tests..."
 
@@ -77,4 +78,3 @@ for f in "${expected[@]}"; do
 done
 
 echo "[cli-smoke] PASS: CLI smoke tests completed"
-
