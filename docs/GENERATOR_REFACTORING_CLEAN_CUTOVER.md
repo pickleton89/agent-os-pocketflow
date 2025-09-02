@@ -77,7 +77,7 @@ Notes
   - Once all generators are migrated, update composer to construct the full `output_files` dict without the adapter (adapter remains available until Phase 4 removal).
 
 - Parity checkpoints (Phase 1 local smoke checks):
-  - Use `python -m pocketflow_tools.cli --spec <spec> --output <dir>` to smoke‑generate a workflow and verify:
+  - Use `python -m pocketflow_tools.cli --spec <spec> --output <dir>` (or `scripts/validation/validate-cli-smoke.sh`) to smoke‑generate a workflow and verify:
     - File set includes: `docs/design.md`, `schemas/models.py`, `nodes.py`, `flow.py`, `main.py`, `router.py`, `utils/*.py`, tests, `pyproject.toml`, requirements, `.gitignore`, `README.md`.
     - Messages and exit codes match legacy CLI for invalid/missing YAML and success.
   - Do not run full baseline diffs yet (that’s Phase 3), but spot‑check a couple outputs for obvious drift (imports, headings, TODOs).
