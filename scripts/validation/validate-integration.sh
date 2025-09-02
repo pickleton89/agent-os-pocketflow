@@ -14,10 +14,10 @@ echo "🧪 Testing Agent OS + PocketFlow Integration..."
 if type is_framework >/dev/null 2>&1 && is_framework; then
   echo "ℹ️  Framework mode detected; skipping project-only integration checks"
   # Minimal framework sanity checks
-  if [[ -f "pocketflow-tools/generator.py" ]]; then
-    echo "✅ Generator present"
+  if [[ -d "pocketflow_tools" ]]; then
+    echo "✅ Generator package present"
   else
-    echo "❌ Generator missing: pocketflow-tools/generator.py"
+    echo "❌ Generator package missing: pocketflow_tools/"
     exit 1
   fi
   if [[ -d "templates" ]]; then

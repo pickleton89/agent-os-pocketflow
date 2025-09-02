@@ -12,7 +12,7 @@ detect_repo_type() {
   fi
 
   # Framework heuristics
-  if [[ -f "pocketflow-tools/generator.py" ]]; then
+  if [[ -d "pocketflow_tools" ]]; then
     echo "framework"; return 0
   fi
   if [[ -f "CLAUDE.md" ]] && grep -qE 'This IS the Framework' "CLAUDE.md" 2>/dev/null; then

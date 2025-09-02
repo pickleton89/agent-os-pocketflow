@@ -245,8 +245,8 @@ test_dependency_validation_system() {
 test_source_structure_ready() {
     # For framework repository: Check that generator can create PocketFlow structure
     # Look for evidence of PocketFlow template generation capability
-    if [[ -f "pocketflow-tools/generator.py" ]]; then
-        # Framework has generator - this is expected for framework repository
+    if [[ -d "pocketflow_tools" ]]; then
+        # Framework has generator package - this is expected for framework repository
         return 0
     elif [[ -d ".agent-os/workflows" ]]; then
         # Project has workflows - check for proper PocketFlow structure
@@ -254,7 +254,7 @@ test_source_structure_ready() {
         [[ $workflow_count -gt 0 ]] || return 1
         return 0
     else
-        # Neither framework generator nor project workflows found
+        # Neither framework generator package nor project workflows found
         return 1
     fi
 }
@@ -262,7 +262,7 @@ test_source_structure_ready() {
 # Test 12: Test Structure Ready
 test_test_structure_ready() {
     # For framework repository: Check for framework testing capability
-    if [[ -f "pocketflow-tools/generator.py" ]]; then
+    if [[ -d "pocketflow_tools" ]]; then
         # Framework repository should have its own test structure or validation scripts
         [[ -d "scripts/validation" ]] || return 1
         return 0

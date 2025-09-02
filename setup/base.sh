@@ -539,7 +539,7 @@ tools:
 
 # PocketFlow-specific configuration
 pocketflow:
-  generator_path: "$INSTALL_PATH/pocketflow-tools/generator.py"
+  generator_cli: "python -m pocketflow_tools.cli"
   templates_path: "$INSTALL_PATH/templates/"
   orchestrator_enabled: $ENABLE_POCKETFLOW
   pattern_analyzer_enabled: $ENABLE_POCKETFLOW

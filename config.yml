@@ -13,7 +13,7 @@ tools:
 
 # PocketFlow-specific configuration
 pocketflow:
-  generator_path: "~/.agent-os/pocketflow-tools/generator.py"
+  generator_cli: "python -m pocketflow_tools.cli"
   templates_path: "~/.agent-os/templates/"
   orchestrator_enabled: true
   pattern_analyzer_enabled: true

@@ -472,9 +472,9 @@ EOF
     esac
     
     # Use the PocketFlow generator to create the actual structure
-    if [[ -f "$PROJECT_ROOT/pocketflow-tools/generator.py" ]]; then
+    if [[ -d "$PROJECT_ROOT/pocketflow_tools" ]]; then
         cd "$PROJECT_ROOT"
-        if python pocketflow-tools/generator.py --spec "$spec_file" --output "$test_project/.agent-os/workflows" >> "$LOG_FILE" 2>&1; then
+        if python -m pocketflow_tools.cli --spec "$spec_file" --output "$test_project/.agent-os/workflows" >> "$LOG_FILE" 2>&1; then
             log_success "Generator completed successfully"
         else
             log_warning "Generator failed, creating fallback structure"
@@ -483,7 +483,7 @@ EOF
         fi
         cd "$test_project"
     else
-        log_warning "Generator not found, creating minimal structure"
+        log_warning "PocketFlow generator package not found, creating minimal structure"
         mkdir -p .agent-os/workflows
         touch .agent-os/workflows/main.py
     fi
