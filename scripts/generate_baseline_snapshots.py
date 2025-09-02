@@ -13,10 +13,11 @@ from typing import Dict
 
 import sys
 
-# Local imports from tools folder
-sys.path.insert(0, str(Path("pocketflow-tools")))
+# Ensure repository root is importable so the package is found
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from generator import PocketFlowGenerator, WorkflowSpec  # type: ignore
+from pocketflow_tools.generators.workflow_composer import PocketFlowGenerator  # type: ignore
+from pocketflow_tools.spec import WorkflowSpec  # type: ignore
 
 
 def ensure_dir(path: Path) -> None:
@@ -71,4 +72,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

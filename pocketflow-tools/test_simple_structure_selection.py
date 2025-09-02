@@ -24,7 +24,7 @@ import sys, json
 from pathlib import Path
 sys.path.insert(0, str(Path('pocketflow-tools')))
 import pattern_analyzer as pa
-import generator as gen
+import pocketflow_tools.generators.workflow_composer as gen
 
 req = "Simple CRUD form to submit and review entries with basic API"
 analyzer = pa.PatternAnalyzer()
@@ -49,7 +49,7 @@ import sys, json
 from pathlib import Path
 sys.path.insert(0, str(Path('pocketflow-tools')))
 import pattern_analyzer as pa
-import generator as gen
+import pocketflow_tools.generators.workflow_composer as gen
 
 req = "Integrate with external REST API, handle authentication, process responses, and return JSON. Simple basic features."
 analyzer = pa.PatternAnalyzer()

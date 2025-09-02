@@ -55,7 +55,8 @@ class EndToEndTestRunner:
         self.results = []
         self.framework_root = Path(__file__).parent.parent
         
-        # Ensure we have access to the framework tools
+        # Ensure we have access to the framework tools and package
+        sys.path.insert(0, str(self.framework_root))
         sys.path.insert(0, str(self.framework_root / "pocketflow-tools"))
         
         # Change to framework root so generator can find templates
@@ -367,7 +368,7 @@ class EndToEndTestRunner:
         """Test template generation for the scenario."""
         try:
             # Import and use the generator
-            from generator import PocketFlowGenerator
+            from pocketflow_tools.generators.workflow_composer import PocketFlowGenerator
             
             generator = PocketFlowGenerator()
             

@@ -7,19 +7,16 @@ Test script for the workflow generator without external dependencies.
 import sys
 from pathlib import Path
 
-# Add the current directory to the path for relative imports
-sys.path.insert(0, str(Path(__file__).parent))
-
-# If running from project root, adjust path to find pocketflow-tools
-if not Path("generator.py").exists() and Path("pocketflow-tools/generator.py").exists():
-    sys.path.insert(0, str(Path("pocketflow-tools")))
+# Ensure repository root is on sys.path so the package is importable
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 try:
-    from generator import WorkflowSpec, PocketFlowGenerator
+    from pocketflow_tools.spec import WorkflowSpec
+    from pocketflow_tools.generators.workflow_composer import PocketFlowGenerator
 
     print("+ Generator module imported successfully")
 except ImportError as e:
-    print(f"- Failed to import generator: {e}")
+    print(f"- Failed to import pocketflow_tools: {e}")
     sys.exit(1)
 
 

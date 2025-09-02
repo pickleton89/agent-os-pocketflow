@@ -8,10 +8,11 @@ import tempfile
 import shutil
 from pathlib import Path
 
-# Add current directory to path
-sys.path.insert(0, str(Path(__file__).parent))
+# Add framework root to sys.path for package imports
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from generator import PocketFlowGenerator, WorkflowSpec
+from pocketflow_tools.generators.workflow_composer import PocketFlowGenerator
+from pocketflow_tools.spec import WorkflowSpec
 
 
 def test_full_workflow_generation():

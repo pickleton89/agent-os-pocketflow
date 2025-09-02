@@ -6,7 +6,7 @@ Test script for Pattern Analyzer Agent integration
 
 import logging
 from pathlib import Path
-from generator import PocketFlowGenerator
+from pocketflow_tools.generators.workflow_composer import PocketFlowGenerator
 
 # Configure logging
 logging.basicConfig(

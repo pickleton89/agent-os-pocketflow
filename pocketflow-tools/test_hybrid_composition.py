@@ -27,7 +27,7 @@ def test_hybrid_nodes_and_graph_for_rag_agent_combo():
         "from pathlib import Path\n"
         "sys.path.insert(0, str(Path('pocketflow-tools')))\n"
         "import pattern_analyzer as pa\n"
-        "import generator as gen\n\n"
+        "import pocketflow_tools.generators.workflow_composer as gen\n\n"
         "req = (\n"
         "    'RAG with search retrieval and vector embeddings plus an intelligent agent '"
         "    'that performs decision making, planning, reasoning and autonomous action execution'\n"
