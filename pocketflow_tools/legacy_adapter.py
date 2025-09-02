@@ -134,3 +134,32 @@ class LegacyGeneratorAdapter:
     def set_generation_context(self, context) -> None:  # type: ignore[no-untyped-def]
         # Attach context to the legacy instance for visibility; no behavior change
         setattr(self._impl, "_generation_context", context)
+
+    # Phase 1: override test generators
+    def override_test_generators(self, node_tests_fn, flow_tests_fn, api_tests_fn):
+        def _gen_node_tests(self_obj, spec):
+            return node_tests_fn(spec)
+
+        def _gen_flow_tests(self_obj, spec):
+            return flow_tests_fn(spec)
+
+        def _gen_api_tests(self_obj, spec):
+            return api_tests_fn(spec)
+
+        self._impl._generate_node_tests = _gen_node_tests.__get__(self._impl, self._impl.__class__)
+        self._impl._generate_flow_tests = _gen_flow_tests.__get__(self._impl, self._impl.__class__)
+        self._impl._generate_api_tests = _gen_api_tests.__get__(self._impl, self._impl.__class__)
+
+    # Phase 1: override init file generator
+    def override_init_generator(self, init_fn):
+        def _gen_init(self_obj, spec, is_root=False, is_test=False, is_schema=False, is_utils=False):
+            return init_fn(spec, is_root=is_root, is_test=is_test, is_schema=is_schema, is_utils=is_utils)
+
+        self._impl._generate_init_file = _gen_init.__get__(self._impl, self._impl.__class__)
+
+    # Phase 1: override misc generators (install checker)
+    def override_install_checker(self, install_checker_fn):
+        def _gen_install_checker(self_obj):
+            return install_checker_fn()
+
+        self._impl._generate_install_checker_reference = _gen_install_checker.__get__(self._impl, self._impl.__class__)

@@ -8,12 +8,19 @@ from pocketflow_tools.generators.code_generators import (
     generate_pydantic_models,
     generate_nodes,
     generate_flow,
+    generate_init_file,
+    generate_install_checker_reference,
     generate_fastapi_main,
     generate_fastapi_router,
 )
 from pocketflow_tools.generators.doc_generators import (
     generate_design_doc,
     generate_tasks,
+)
+from pocketflow_tools.generators.test_generators import (
+    generate_node_tests,
+    generate_flow_tests,
+    generate_api_tests,
 )
 from pocketflow_tools.generators.config_generators import (
     generate_dependency_files,
@@ -89,6 +96,14 @@ class PocketFlowGenerator:
                 generate_design_doc,
                 generate_tasks,
             )
+            # Tests and misc overrides
+            self._adapter.override_test_generators(
+                generate_node_tests,
+                generate_flow_tests,
+                generate_api_tests,
+            )
+            self._adapter.override_init_generator(generate_init_file)
+            self._adapter.override_install_checker(generate_install_checker_reference)
         except Exception:
             # Non-fatal: legacy adapter already loaded these internally
             pass

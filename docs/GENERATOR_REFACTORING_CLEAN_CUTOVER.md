@@ -63,18 +63,19 @@ Notes
 #### TODOs — Phase 1 Cutover
 
 - Code extraction (remaining):
-  - Implement `code_generators.generate_pydantic_models` and override legacy `_generate_pydantic_models`.
-  - Implement `code_generators.generate_nodes` and override legacy `_generate_nodes` (preserve enhanced TODO/orchestrator guidance behavior and extension fallbacks).
-  - Implement `code_generators.generate_flow` and override legacy `_generate_flow`.
+  - Implement `code_generators.generate_pydantic_models` and override legacy `_generate_pydantic_models`. (Implemented)
+  - Implement `code_generators.generate_nodes` and override legacy `_generate_nodes` (preserve enhanced TODO/orchestrator guidance behavior and extension fallbacks). (Implemented)
+  - Implement `code_generators.generate_flow` and override legacy `_generate_flow`. (Implemented)
   - Add `doc_generators.py` with:
-    - `generate_design_doc` (port `_generate_design_doc`, `_generate_basic_mermaid`, `_format_customizations_for_doc`).
-    - `generate_tasks` (port `_generate_tasks`).
-  - Confirm current overrides are active: utilities, FastAPI (`main.py`, `router.py`), and config/deps (`pyproject`, requirements, `.gitignore`, README). (Completed)
+    - `generate_design_doc` (port `_generate_design_doc`, `_generate_basic_mermaid`, `_format_customizations_for_doc`). (Implemented)
+    - `generate_tasks` (port `_generate_tasks`). (Implemented)
+  - Confirm current overrides are active: utilities, FastAPI (`main.py`, `router.py`), and config/deps (`pyproject`, requirements, `.gitignore`, README). (Implemented)
+  - Additional generators for parity: tests (`tests/test_*.py`), `__init__.py` variants, `check-install.py`. (Implemented)
 
 - Composer wiring:
   - Introduce `GenerationContext` to pass shared data (templates, extensions, flags) between modules. (Implemented)
-  - In `workflow_composer`, route generation through new modules first; use legacy adapter only for not‑yet‑migrated parts.
-  - Once all generators are migrated, update composer to construct the full `output_files` dict without the adapter (adapter remains available until Phase 4 removal).
+  - In `workflow_composer`, route generation through new modules first; use legacy adapter only for not‑yet‑migrated parts. (Implemented via adapter overrides)
+  - Once all generators are migrated, update composer to construct the full `output_files` dict without the adapter (adapter remains available until Phase 4 removal). (Pending)
 
 - Parity checkpoints (Phase 1 local smoke checks):
   - Use `python -m pocketflow_tools.cli --spec <spec> --output <dir>` (or `scripts/validation/validate-cli-smoke.sh`) to smoke‑generate a workflow and verify:
@@ -87,7 +88,7 @@ Notes
   - Ensure extension path fallback behavior is documented in `template_engine.py` notes. (Documented in module docstring)
 
 - Exit criteria for Phase 1:
-  - New modules provide all generation functions; composer can generate a complete workflow using only new modules.
+  - New modules provide all generation functions; composer can generate a complete workflow using only new modules. (Met via overrides; direct composition without adapter is deferred to Phase 2/3)
   - CLI parity preserved (`python -m pocketflow_tools.cli ...`).
   - Legacy adapter still present but only as a safety net (to be removed in later phases).
 
