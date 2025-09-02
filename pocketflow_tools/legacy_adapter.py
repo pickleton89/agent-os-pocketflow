@@ -103,3 +103,29 @@ class LegacyGeneratorAdapter:
         self._impl._generate_basic_dependency_config = _gen_basic_dep_cfg.__get__(self._impl, self._impl.__class__)
         self._impl._generate_basic_pyproject = _gen_basic_py.__get__(self._impl, self._impl.__class__)
         self._impl._generate_readme = _gen_readme.__get__(self._impl, self._impl.__class__)
+
+    # Phase 1: override core code generation functions
+    def override_core_code_generators(self, models_fn, nodes_fn, flow_fn):
+        def _gen_models(self_obj, spec):
+            return models_fn(spec)
+
+        def _gen_nodes(self_obj, spec):
+            return nodes_fn(spec)
+
+        def _gen_flow(self_obj, spec):
+            return flow_fn(spec)
+
+        self._impl._generate_pydantic_models = _gen_models.__get__(self._impl, self._impl.__class__)
+        self._impl._generate_nodes = _gen_nodes.__get__(self._impl, self._impl.__class__)
+        self._impl._generate_flow = _gen_flow.__get__(self._impl, self._impl.__class__)
+
+    # Phase 1: override documentation generators
+    def override_doc_generators(self, design_fn, tasks_fn):
+        def _gen_design(self_obj, spec):
+            return design_fn(spec)
+
+        def _gen_tasks(self_obj, spec):
+            return tasks_fn(spec)
+
+        self._impl._generate_design_doc = _gen_design.__get__(self._impl, self._impl.__class__)
+        self._impl._generate_tasks = _gen_tasks.__get__(self._impl, self._impl.__class__)

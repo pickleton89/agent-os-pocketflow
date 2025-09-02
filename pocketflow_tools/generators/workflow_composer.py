@@ -5,8 +5,15 @@ from pocketflow_tools.spec import WorkflowSpec
 from pocketflow_tools.generators.template_engine import TemplateEngine
 from pocketflow_tools.generators.code_generators import (
     generate_utility,
+    generate_pydantic_models,
+    generate_nodes,
+    generate_flow,
     generate_fastapi_main,
     generate_fastapi_router,
+)
+from pocketflow_tools.generators.doc_generators import (
+    generate_design_doc,
+    generate_tasks,
 )
 from pocketflow_tools.generators.config_generators import (
     generate_dependency_files,
@@ -61,6 +68,17 @@ class PocketFlowGenerator:
                 generate_basic_dependency_config,
                 generate_basic_pyproject,
                 generate_readme,
+            )
+            # Core code generation overrides
+            self._adapter.override_core_code_generators(
+                generate_pydantic_models,
+                generate_nodes,
+                generate_flow,
+            )
+            # Documentation generation overrides
+            self._adapter.override_doc_generators(
+                generate_design_doc,
+                generate_tasks,
             )
         except Exception:
             # Non-fatal: legacy adapter already loaded these internally
