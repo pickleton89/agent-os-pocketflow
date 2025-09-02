@@ -3,6 +3,11 @@ from typing import Dict
 
 from pocketflow_tools.spec import WorkflowSpec
 from pocketflow_tools.generators.template_engine import TemplateEngine
+from pocketflow_tools.generators.code_generators import (
+    generate_utility,
+    generate_fastapi_main,
+    generate_fastapi_router,
+)
 
 
 class PocketFlowGenerator:
@@ -40,6 +45,11 @@ class PocketFlowGenerator:
             templates = engine.load_templates()
             extensions = engine.load_enhanced_extensions()
             self._adapter.set_templates_extensions(templates, extensions)
+            # Start splitting by overriding utility + FastAPI generators (parity)
+            self._adapter.override_generate_utility(generate_utility)
+            self._adapter.override_fastapi_generators(
+                generate_fastapi_main, generate_fastapi_router
+            )
         except Exception:
             # Non-fatal: legacy adapter already loaded these internally
             pass

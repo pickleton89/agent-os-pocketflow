@@ -65,3 +65,23 @@ class LegacyGeneratorAdapter:
             self._impl.templates = templates
         if hasattr(self._impl, "extensions"):
             self._impl.extensions = extensions
+
+    # Phase 1: override specific generation steps with new module functions
+    def override_generate_utility(self, fn):
+        # Bind a new method to the legacy instance that delegates to fn(utility)
+        def _gen_utility(self_obj, utility):
+            return fn(utility)
+
+        self._impl._generate_utility = _gen_utility.__get__(self._impl, self._impl.__class__)
+
+    def override_fastapi_generators(self, main_fn, router_fn):
+        # Override _generate_fastapi_main
+        def _gen_main(self_obj, spec):
+            return main_fn(spec)
+
+        # Override _generate_fastapi_router
+        def _gen_router(self_obj, spec):
+            return router_fn(spec)
+
+        self._impl._generate_fastapi_main = _gen_main.__get__(self._impl, self._impl.__class__)
+        self._impl._generate_fastapi_router = _gen_router.__get__(self._impl, self._impl.__class__)
