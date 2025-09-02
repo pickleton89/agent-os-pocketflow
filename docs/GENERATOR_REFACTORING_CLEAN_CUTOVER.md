@@ -28,8 +28,8 @@
     - `__init__.py`
     - `template_engine.py` — template + extension loading/parsing
     - `code_generators.py` — nodes/flow/models/utilities/FastAPI code
-    - `doc_generators.py` — design docs, README, tasks
-    - `config_generators.py` — pyproject, gitignore, dependency files
+    - `doc_generators.py` — design docs, tasks
+    - `config_generators.py` — pyproject, gitignore, dependency files, README
     - `workflow_composer.py` — `PocketFlowGenerator` orchestration
 
 Notes
@@ -69,10 +69,10 @@ Notes
   - Add `doc_generators.py` with:
     - `generate_design_doc` (port `_generate_design_doc`, `_generate_basic_mermaid`, `_format_customizations_for_doc`).
     - `generate_tasks` (port `_generate_tasks`).
-  - Confirm current overrides are active: utilities, FastAPI (`main.py`, `router.py`), and config/deps (`pyproject`, requirements, `.gitignore`, README).
+  - Confirm current overrides are active: utilities, FastAPI (`main.py`, `router.py`), and config/deps (`pyproject`, requirements, `.gitignore`, README). (Completed)
 
 - Composer wiring:
-  - Introduce `GenerationContext` to pass shared data (templates, extensions, flags) between modules.
+  - Introduce `GenerationContext` to pass shared data (templates, extensions, flags) between modules. (Implemented)
   - In `workflow_composer`, route generation through new modules first; use legacy adapter only for not‑yet‑migrated parts.
   - Once all generators are migrated, update composer to construct the full `output_files` dict without the adapter (adapter remains available until Phase 4 removal).
 
@@ -83,10 +83,8 @@ Notes
   - Do not run full baseline diffs yet (that’s Phase 3), but spot‑check a couple outputs for obvious drift (imports, headings, TODOs).
 
 - Documentation alignment:
-  - Decide final home for README generation (currently extracted under `config_generators.py`); either
-    - keep it there and update this plan in Package Layout to reflect it, or
-    - move README generation into `doc_generators.py` for consistency.
-  - Ensure extension path fallback behavior is documented in `template_engine.py` notes.
+  - Decision: keep README generation in `config_generators.py` for Phase 1 (parity with dependency config); Package Layout updated to reflect this.
+  - Ensure extension path fallback behavior is documented in `template_engine.py` notes. (Documented in module docstring)
 
 - Exit criteria for Phase 1:
   - New modules provide all generation functions; composer can generate a complete workflow using only new modules.

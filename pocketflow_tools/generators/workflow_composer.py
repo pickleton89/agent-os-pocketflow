@@ -21,6 +21,7 @@ from pocketflow_tools.generators.config_generators import (
     generate_basic_pyproject,
     generate_readme,
 )
+from pocketflow_tools.generators.context import GenerationContext
 
 
 class PocketFlowGenerator:
@@ -58,6 +59,14 @@ class PocketFlowGenerator:
             templates = engine.load_templates()
             extensions = engine.load_enhanced_extensions()
             self._adapter.set_templates_extensions(templates, extensions)
+            # Build internal context for sharing across generation steps
+            self.context = GenerationContext(
+                templates=templates,
+                extensions=extensions,
+                enable_hybrid_promotion=self.enable_hybrid_promotion,
+            )
+            # Make context visible to the legacy implementation (no behavior change)
+            self._adapter.set_generation_context(self.context)
             # Start splitting by overriding utility + FastAPI generators (parity)
             self._adapter.override_generate_utility(generate_utility)
             self._adapter.override_fastapi_generators(

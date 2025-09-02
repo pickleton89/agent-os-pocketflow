@@ -129,3 +129,8 @@ class LegacyGeneratorAdapter:
 
         self._impl._generate_design_doc = _gen_design.__get__(self._impl, self._impl.__class__)
         self._impl._generate_tasks = _gen_tasks.__get__(self._impl, self._impl.__class__)
+
+    # Phase 1: share context for future use (optional)
+    def set_generation_context(self, context) -> None:  # type: ignore[no-untyped-def]
+        # Attach context to the legacy instance for visibility; no behavior change
+        setattr(self._impl, "_generation_context", context)
