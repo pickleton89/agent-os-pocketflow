@@ -82,7 +82,8 @@
       "WebFetch(domain:medium.com)",
       "Bash(./scripts/validation/validate-sub-agents.sh:*)",
       "mcp__claude-context__index_codebase",
-      "mcp__claude-context__get_indexing_status"
+      "mcp__claude-context__get_indexing_status",
+      "mcp__claude-context__search_code"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
