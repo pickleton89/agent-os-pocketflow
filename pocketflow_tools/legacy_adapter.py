@@ -85,3 +85,21 @@ class LegacyGeneratorAdapter:
 
         self._impl._generate_fastapi_main = _gen_main.__get__(self._impl, self._impl.__class__)
         self._impl._generate_fastapi_router = _gen_router.__get__(self._impl, self._impl.__class__)
+
+    def override_config_generators(self, dep_files_fn, basic_dep_cfg_fn, basic_py_fn, readme_fn):
+        def _gen_dep_files(self_obj, spec):
+            return dep_files_fn(spec)
+
+        def _gen_basic_dep_cfg(self_obj, pattern: str):
+            return basic_dep_cfg_fn(pattern)
+
+        def _gen_basic_py(self_obj, spec):
+            return basic_py_fn(spec)
+
+        def _gen_readme(self_obj, spec, config):
+            return readme_fn(spec, config)
+
+        self._impl._generate_dependency_files = _gen_dep_files.__get__(self._impl, self._impl.__class__)
+        self._impl._generate_basic_dependency_config = _gen_basic_dep_cfg.__get__(self._impl, self._impl.__class__)
+        self._impl._generate_basic_pyproject = _gen_basic_py.__get__(self._impl, self._impl.__class__)
+        self._impl._generate_readme = _gen_readme.__get__(self._impl, self._impl.__class__)

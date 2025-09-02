@@ -8,6 +8,12 @@ from pocketflow_tools.generators.code_generators import (
     generate_fastapi_main,
     generate_fastapi_router,
 )
+from pocketflow_tools.generators.config_generators import (
+    generate_dependency_files,
+    generate_basic_dependency_config,
+    generate_basic_pyproject,
+    generate_readme,
+)
 
 
 class PocketFlowGenerator:
@@ -49,6 +55,12 @@ class PocketFlowGenerator:
             self._adapter.override_generate_utility(generate_utility)
             self._adapter.override_fastapi_generators(
                 generate_fastapi_main, generate_fastapi_router
+            )
+            self._adapter.override_config_generators(
+                generate_dependency_files,
+                generate_basic_dependency_config,
+                generate_basic_pyproject,
+                generate_readme,
             )
         except Exception:
             # Non-fatal: legacy adapter already loaded these internally
