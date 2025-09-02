@@ -80,3 +80,6 @@ venv.bak/
 
 # ruff
 .ruff_cache/
+
+# Agent OS workspace
+.agent-os/
