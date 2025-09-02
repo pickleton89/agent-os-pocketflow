@@ -58,3 +58,10 @@ class LegacyGeneratorAdapter:
 
     def save_workflow(self, spec: WorkflowSpec, output_files: Dict[str, str]) -> None:
         self._impl.save_workflow(spec, output_files)
+
+    # Phase 1: allow preloading templates/extensions computed by new modules
+    def set_templates_extensions(self, templates: Dict[str, str], extensions: Dict[str, Dict]):
+        if hasattr(self._impl, "templates"):
+            self._impl.templates = templates
+        if hasattr(self._impl, "extensions"):
+            self._impl.extensions = extensions

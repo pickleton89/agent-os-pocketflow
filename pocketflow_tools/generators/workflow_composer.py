@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Dict
 
 from pocketflow_tools.spec import WorkflowSpec
+from pocketflow_tools.generators.template_engine import TemplateEngine
 
 
 class PocketFlowGenerator:
@@ -32,6 +33,16 @@ class PocketFlowGenerator:
             output_path=str(self.output_path),
             enable_hybrid_promotion=self.enable_hybrid_promotion,
         )
+
+        # Phase 1: preload templates and extensions via new TemplateEngine (parity)
+        try:
+            engine = TemplateEngine(self.templates_path)
+            templates = engine.load_templates()
+            extensions = engine.load_enhanced_extensions()
+            self._adapter.set_templates_extensions(templates, extensions)
+        except Exception:
+            # Non-fatal: legacy adapter already loaded these internally
+            pass
 
     def generate_workflow(self, spec: WorkflowSpec) -> Dict[str, str]:
         return self._adapter.generate_workflow(spec)
