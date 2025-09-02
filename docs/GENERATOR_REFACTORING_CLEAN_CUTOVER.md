@@ -60,6 +60,39 @@ Notes
   - `workflow_composer.py`: orchestration that delegates to the above modules.
 - Keep method names/signatures intact; if shared state is needed, pass a small `GenerationContext` object internally (no external API change).
 
+#### TODOs — Phase 1 Cutover
+
+- Code extraction (remaining):
+  - Implement `code_generators.generate_pydantic_models` and override legacy `_generate_pydantic_models`.
+  - Implement `code_generators.generate_nodes` and override legacy `_generate_nodes` (preserve enhanced TODO/orchestrator guidance behavior and extension fallbacks).
+  - Implement `code_generators.generate_flow` and override legacy `_generate_flow`.
+  - Add `doc_generators.py` with:
+    - `generate_design_doc` (port `_generate_design_doc`, `_generate_basic_mermaid`, `_format_customizations_for_doc`).
+    - `generate_tasks` (port `_generate_tasks`).
+  - Confirm current overrides are active: utilities, FastAPI (`main.py`, `router.py`), and config/deps (`pyproject`, requirements, `.gitignore`, README).
+
+- Composer wiring:
+  - Introduce `GenerationContext` to pass shared data (templates, extensions, flags) between modules.
+  - In `workflow_composer`, route generation through new modules first; use legacy adapter only for not‑yet‑migrated parts.
+  - Once all generators are migrated, update composer to construct the full `output_files` dict without the adapter (adapter remains available until Phase 4 removal).
+
+- Parity checkpoints (Phase 1 local smoke checks):
+  - Use `python -m pocketflow_tools.cli --spec <spec> --output <dir>` to smoke‑generate a workflow and verify:
+    - File set includes: `docs/design.md`, `schemas/models.py`, `nodes.py`, `flow.py`, `main.py`, `router.py`, `utils/*.py`, tests, `pyproject.toml`, requirements, `.gitignore`, `README.md`.
+    - Messages and exit codes match legacy CLI for invalid/missing YAML and success.
+  - Do not run full baseline diffs yet (that’s Phase 3), but spot‑check a couple outputs for obvious drift (imports, headings, TODOs).
+
+- Documentation alignment:
+  - Decide final home for README generation (currently extracted under `config_generators.py`); either
+    - keep it there and update this plan in Package Layout to reflect it, or
+    - move README generation into `doc_generators.py` for consistency.
+  - Ensure extension path fallback behavior is documented in `template_engine.py` notes.
+
+- Exit criteria for Phase 1:
+  - New modules provide all generation functions; composer can generate a complete workflow using only new modules.
+  - CLI parity preserved (`python -m pocketflow_tools.cli ...`).
+  - Legacy adapter still present but only as a safety net (to be removed in later phases).
+
 ### Phase 2 — Repo‑Wide Updates
 
 - Update imports (internal only):
@@ -126,4 +159,3 @@ Notes
 ## Notes
 
 - This clean cutover is internal to the framework repo (not public release dependent). We optimize for clarity and maintainability while honoring the framework’s “starter templates with TODOs” philosophy.
-
