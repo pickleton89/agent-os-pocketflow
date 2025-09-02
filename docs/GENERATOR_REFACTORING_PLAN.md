@@ -1,3 +1,11 @@
+# DEPRECATION NOTICE
+
+This plan is superseded by:
+
+- docs/GENERATOR_REFACTORING_CLEAN_CUTOVER.md (created 2025‑09‑02)
+
+The new document reflects a clean cutover to a modular `pocketflow_tools` package and removal of the monolithic `pocketflow-tools/generator.py`. This file remains for historical reference.
+
 # Generator.py Refactoring Implementation Plan
 
 ## Executive Summary
