@@ -19,19 +19,7 @@ try:
 except ImportError:
     YAML_AVAILABLE = False
 
-
-@dataclass
-class WorkflowSpec:
-    """Specification for generating a PocketFlow workflow."""
-
-    name: str
-    pattern: str  # AGENT/WORKFLOW/RAG/MAPREDUCE/MULTI-AGENT/STRUCTURED-OUTPUT
-    description: str
-    nodes: List[Dict[str, Any]] = field(default_factory=list)
-    utilities: List[Dict[str, Any]] = field(default_factory=list)
-    shared_store_schema: Dict[str, Any] = field(default_factory=dict)
-    api_endpoints: List[Dict[str, Any]] = field(default_factory=list)
-    fast_api_integration: bool = True
+from pocketflow_tools.spec import WorkflowSpec
 
 
 if TYPE_CHECKING:
