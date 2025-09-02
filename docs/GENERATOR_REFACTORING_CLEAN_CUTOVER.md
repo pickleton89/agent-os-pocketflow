@@ -106,6 +106,85 @@ Notes
 - Update docs and configs referencing the old path:
   - `README.md`, `CONTRIBUTING.md`, `docs/IMPLEMENTATION_PLAN.md`, extension docs, `config.yml`.
 
+### Phase 2 — Implementation Status & Next Steps
+
+#### ✅ Completed
+- **Phase 1**: Full modular package structure implemented (`pocketflow_tools/`)
+- **Internal imports updated**: Test files and scripts now use `from pocketflow_tools.generators.workflow_composer import PocketFlowGenerator` and `from pocketflow_tools.spec import WorkflowSpec` (commit: 788c5de)
+- **CLI functional**: `python -m pocketflow_tools.cli` working with identical behavior to legacy version
+
+#### 🔄 Phase 2 Remaining Tasks
+
+**Task 1: Update CLI Invocations in Scripts**
+- **Status**: 12+ files found with `python pocketflow-tools/generator.py` references
+- **Target files**:
+  - `scripts/validation/validate-end-to-end.sh`
+  - `scripts/validation/validate-orchestration.sh`
+  - `scripts/validation/validate-integration.sh`
+  - `scripts/validation/validate-user-experience.sh`
+  - `setup/base.sh`
+  - Other validation and setup scripts
+- **Change**: Replace `python pocketflow-tools/generator.py --spec ... --output ...` with `python -m pocketflow_tools.cli --spec ... --output ...`
+- **Verification**: Each script must pass its validation checks
+
+**Task 2: Update Documentation References**
+- **Target files**:
+  - `README.md` - CLI usage examples and installation instructions
+  - `AGENTS.md` - agent configuration examples  
+  - Other documentation with generator references
+- **Change**: Update command examples and references to use new CLI
+- **Verification**: Documentation examples must be accurate and testable
+
+**Task 3: Update Repository Detection Logic**
+- **Target files**:
+  - `scripts/lib/repo-detect.sh`
+  - Any scripts that check for `pocketflow-tools/generator.py` existence
+- **Change**: Detect `pocketflow_tools/` package or `python -m pocketflow_tools.cli` availability instead
+- **Verification**: Repo-type detection must work correctly for framework vs usage distinction
+
+**Task 4: Update Configuration Files**
+- **Target files**:
+  - `config.yml`
+  - Any other configs referencing the old generator path
+- **Change**: Update path references to use new CLI or package structure
+- **Verification**: All configs must load and function correctly
+
+#### Phase 2 Systematic Approach
+
+1. **CLI Script Updates**:
+   ```bash
+   # Find all references
+   grep -r "python pocketflow-tools/generator.py" . --include="*.sh" --include="*.yml" --include="*.md"
+   
+   # Update each file systematically
+   # Test each script after update
+   ```
+
+2. **Documentation Updates**:
+   ```bash
+   # Update README examples
+   # Update AGENTS.md examples
+   # Verify all examples work
+   ```
+
+3. **Verification Protocol**:
+   ```bash
+   # After each category of changes:
+   ./scripts/run-all-tests.sh
+   python -m pocketflow_tools.cli --help
+   # Test representative validation scripts
+   ```
+
+#### Phase 2 Exit Criteria
+- ✅ All scripts use `python -m pocketflow_tools.cli` instead of old generator path
+- ✅ All documentation examples updated and verified functional
+- ✅ Repository detection logic works correctly  
+- ✅ No remaining references to `pocketflow-tools/generator.py` except in rollback plans
+- ✅ All validation scripts pass with new invocations
+- ✅ CLI behavior identical to legacy version (flags, messages, exit codes)
+
+**Ready for Phase 3**: When all Phase 2 tasks completed and exit criteria met.
+
 ### Phase 3 — Validation
 
 - Unit and integration tests:
