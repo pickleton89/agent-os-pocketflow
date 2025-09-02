@@ -1,5 +1,11 @@
 # Contributing to Agent OS + PocketFlow Framework
 
+### 🎯 Framework vs Usage (Quick Reminder)
+This repository IS the Agent OS + PocketFlow framework — NOT a project using it.
+- Framework: generates PocketFlow templates; includes setup, validation, and generators; placeholders/TODOs are intentional; dependencies support generation, not runtime.
+- Usage: end-user projects install PocketFlow, turn generated templates into working apps, run the orchestrator, and implement TODOs.
+Key Principle: Missing implementations in generated templates are features, not bugs.
+
 ## ⚠️ IMPORTANT: This IS the Framework Repository
 
 **You are viewing the Agent OS + PocketFlow framework itself - NOT a project using it.**
@@ -27,6 +33,8 @@
 - Where placeholder code gets implemented
 
 > **New Contributors:** You're working on the meta-system that generates educational templates, not implementing those templates.
+
+For day-to-day conventions (repo structure, commands, style, and tests), see [AGENTS.md](AGENTS.md).
 
 ## Framework Development Setup
 
