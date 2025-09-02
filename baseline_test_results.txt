@@ -1,0 +1,49 @@
+[0;34mℹ️  Agent OS + PocketFlow Integration - Master Test Runner[0m
+[0;34mℹ️  =====================================================[0m
+[0;34mℹ️  Mode: Full[0m
+Repo Type: framework
+[0;34mℹ️  Verbose: false[0m
+[0;34mℹ️  Stop on Error: true[0m
+
+[0;34mℹ️  Running full framework test suite[0m
+
+[0;34mℹ️  Running Configuration Test Suite[0m
+[0;34mℹ️  Description: Framework configuration validation[0m
+[0;34mℹ️  Script: scripts/validation/validate-configuration.sh[0m
+----------------------------------------
+[0;32m✅ Configuration Test Suite PASSED (0s)[0m
+
+[0;34mℹ️  Running Integration Test Suite[0m
+[0;34mℹ️  Description: Framework sanity checks + skip project-only[0m
+[0;34mℹ️  Script: scripts/validation/validate-integration.sh[0m
+----------------------------------------
+[0;32m✅ Integration Test Suite PASSED (0s)[0m
+
+[0;34mℹ️  Running Python Smoke Test Suite[0m
+[0;34mℹ️  Description: Framework Python smoke tests[0m
+[0;34mℹ️  Script: scripts/validation/validate-python-tests-smoke.sh[0m
+----------------------------------------
+[0;32m✅ Python Smoke Test Suite PASSED (0s)[0m
+
+[0;34mℹ️  Running Python Comprehensive Test Suite[0m
+[0;34mℹ️  Description: Framework Python comprehensive tests[0m
+[0;34mℹ️  Script: scripts/validation/validate-python-tests-comprehensive.sh[0m
+----------------------------------------
+[0;32m✅ Python Comprehensive Test Suite PASSED (1s)[0m
+
+
+[0;34mℹ️  Test Suite Execution Summary[0m
+[0;34mℹ️  ============================[0m
+Total Suites Run: 4
+Suites Passed: 4
+Suites Failed: 0
+
+[0;32m✅ 🎉 ALL TEST SUITES PASSED![0m
+[0;32m✅ Agent OS + PocketFlow integration is fully validated and ready for use.[0m
+
+[0;34mℹ️  Next Steps:[0m
+1. Test the orchestrator: 'Think about building a simple feature'
+2. Create your first orchestrated spec with the /create-spec command
+3. Execute tasks with the /execute-tasks command
+
+[0;34mℹ️  The system is now ready for production use![0m
