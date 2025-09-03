@@ -90,7 +90,6 @@ check_prerequisites() {
         "$POCKETFLOW_TOOLS_DIR/end_to_end_test_scenarios.py"
         "$POCKETFLOW_TOOLS_DIR/run_end_to_end_tests.py"
         "$POCKETFLOW_TOOLS_DIR/pattern_analyzer.py"
-        "$POCKETFLOW_TOOLS_DIR/generator.py"
     )
     
     for file in "${required_files[@]}"; do
@@ -99,6 +98,16 @@ check_prerequisites() {
             return 1
         fi
     done
+    
+    # Check that PocketFlow tools CLI is available
+    if [[ -d "$PROJECT_ROOT/pocketflow_tools" ]] && python3 -m pocketflow_tools.cli --help >/dev/null 2>&1; then
+        log_info "Using pocketflow_tools package CLI"
+    elif [[ -f "$POCKETFLOW_TOOLS_DIR/generator.py" ]]; then
+        log_info "Using legacy generator.py (consider migration to pocketflow_tools package)"
+    else
+        log_error "Neither functional pocketflow_tools CLI nor legacy generator.py found"
+        return 1
+    fi
     
     log_success "Prerequisites check passed"
     return 0
