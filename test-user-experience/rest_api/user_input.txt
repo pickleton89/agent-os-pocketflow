@@ -1,9 +1,0 @@
-Product Name: User Authentication Service
-Description: REST API service for user management and authentication
-Features:
-- User registration and login
-- JWT token management
-- Password reset functionality
-- User profile management
-Technology Preferences: Python, FastAPI, PostgreSQL
-Target Pattern: TOOL
