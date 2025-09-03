@@ -532,6 +532,20 @@ install_pocketflow_tools() {
         echo "# PocketFlow Templates" > "$INSTALL_PATH/templates/README.md"
         log_info "Created basic template structure"
     fi
+    
+    # Copy pocketflow-tools files for project use
+    local tools_source_dir="$(dirname "$(dirname "$(realpath "$0")")")/pocketflow-tools"
+    if [[ -d "$tools_source_dir" ]]; then
+        # Copy specific tool files that projects need
+        cp "$tools_source_dir"/*.py "$INSTALL_PATH/pocketflow-tools/" 2>/dev/null || true
+        cp "$tools_source_dir"/*.sh "$INSTALL_PATH/pocketflow-tools/" 2>/dev/null || true
+        if [[ -d "$tools_source_dir/examples" ]]; then
+            cp -r "$tools_source_dir/examples" "$INSTALL_PATH/pocketflow-tools/"
+        fi
+        log_success "Copied PocketFlow tools to $INSTALL_PATH/pocketflow-tools/"
+    else
+        log_info "No pocketflow-tools source directory found"
+    fi
 }
 
 # Create configuration file
