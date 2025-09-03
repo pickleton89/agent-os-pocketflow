@@ -450,46 +450,76 @@ install_pocketflow_tools() {
     fi
     
     if [[ "$UPDATE_POCKETFLOW_TOOLS" == "true" ]]; then
-        log_info "Updating PocketFlow tools..."
+        log_info "Updating PocketFlow framework tools..."
     else
-        log_info "Installing PocketFlow tools..."
+        log_info "Installing PocketFlow framework tools..."
     fi
     
-    local source_dir="$(dirname "$(dirname "$(realpath "$0")")")/pocketflow-tools"
+    local framework_root="$(dirname "$(dirname "$(realpath "$0")")")"
     
-    if [[ -d "$source_dir" ]]; then
-        # Install from local source
-        cp -r "$source_dir"/* "$INSTALL_PATH/pocketflow-tools/"
-        chmod +x "$INSTALL_PATH/pocketflow-tools"/*.py
-        chmod +x "$INSTALL_PATH/pocketflow-tools"/*.sh
-        log_success "Copied PocketFlow tools to $INSTALL_PATH/pocketflow-tools/"
-    else
-        # Download from repository
-        log_info "Downloading PocketFlow tools from repository..."
-        local tool_files=(
-            "generator.py"
-            "pattern_analyzer.py"
-            "template_validator.py"
-            "dependency_orchestrator.py"
-            "agent_coordination.py"
-            "workflow_graph_generator.py"
-            "generate-example.sh"
-        )
+    # Check UV availability first
+    if ! command -v uv >/dev/null 2>&1; then
+        log_error "UV package manager not found. Please install UV first: https://docs.astral.sh/uv/"
+        exit 1
+    fi
+    
+    local original_dir="$(pwd)"
+    
+    if [[ -d "$framework_root/pocketflow_tools" ]]; then
+        # Framework development mode: install from local source
+        log_info "Installing framework tools from local source (development mode)..."
         
-        for file in "${tool_files[@]}"; do
-            curl -s -o "$INSTALL_PATH/pocketflow-tools/$file" "$REPO_URL/pocketflow-tools/$file"
-            if [[ $? -eq 0 ]]; then
-                chmod +x "$INSTALL_PATH/pocketflow-tools/$file"
-                log_success "Downloaded: $file"
+        cd "$framework_root" || {
+            log_error "Failed to change to framework directory: $framework_root"
+            exit 1
+        }
+        
+        # Install the framework package using uv
+        if uv pip install -e . >/dev/null 2>&1; then
+            log_success "Framework tools installed in development mode"
+        else
+            log_error "Failed to install framework tools from local source"
+            cd "$original_dir"
+            exit 1
+        fi
+        
+        cd "$original_dir"
+    else
+        # Distribution mode: install framework from repository
+        log_info "Installing framework tools from repository..."
+        
+        local temp_dir="/tmp/agent-os-framework-$$"
+        
+        if git clone --depth 1 --branch main "$REPO_URL" "$temp_dir" >/dev/null 2>&1; then
+            cd "$temp_dir" || {
+                log_error "Failed to change to temporary directory"
+                rm -rf "$temp_dir"
+                exit 1
+            }
+            
+            if uv pip install -e . >/dev/null 2>&1; then
+                cd "$original_dir"
+                rm -rf "$temp_dir"
+                log_success "Framework tools installed from repository"
             else
-                log_error "Failed to download: $file"
+                cd "$original_dir"
+                rm -rf "$temp_dir"
+                log_error "Failed to install framework tools from repository"
                 exit 1
             fi
-        done
+        else
+            log_error "Failed to clone framework repository"
+            exit 1
+        fi
     fi
     
-    # Create Python __init__.py
-    echo "# PocketFlow Tools Package" > "$INSTALL_PATH/pocketflow-tools/__init__.py"
+    # Verify framework CLI installation
+    if uv run python -m pocketflow_tools.cli --help >/dev/null 2>&1; then
+        log_success "pocketflow_tools framework CLI is working"
+    else
+        log_error "Framework CLI verification failed"
+        exit 1
+    fi
     
     # Install templates if available
     local templates_source_dir="$(dirname "$(dirname "$(realpath "$0")")")/templates"

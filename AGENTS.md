@@ -23,8 +23,8 @@ Key principle: Missing implementations in generated templates are features, not 
 ## Build, Test, and Development Commands
 - Create venv and install deps: `uv venv && source .venv/bin/activate && uv pip install -e .`
 - Run full validations: `bash scripts/run-all-tests.sh` (add `-q` for quick, `-v` for verbose).
-- Run pytest suite: `uv run pytest -q pocketflow-tools`
-- Generate a workflow: `uv run python pocketflow-tools/generator.py --spec pocketflow-tools/examples/agent-workflow-spec.yaml`
+- Run framework tests: `uv run pytest -q pocketflow_tools/`
+- Generate a workflow: `uv run python -m pocketflow_tools.cli --spec pocketflow-tools/examples/agent-workflow-spec.yaml --output /path/to/end-user-project`
 - Bootstrap Agent OS locally: `bash ./setup.sh --help` (see modes `base`, `project`, `auto`).
 
 ## Coding Style & Naming Conventions

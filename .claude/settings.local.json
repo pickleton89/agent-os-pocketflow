@@ -91,7 +91,15 @@
       "Read(/private/tmp/test-agents-md/customeragent/**)",
       "Bash(./scripts/validation/validate-cli-smoke.sh:*)",
       "Bash(./scripts/validation/validate-determinism.sh:*)",
-      "Bash(./scripts/validation/validate-phase3-integrity.sh:*)"
+      "Bash(./scripts/validation/validate-phase3-integrity.sh:*)",
+      "Read(/private/tmp/test-framework-output/**)",
+      "Read(/private/tmp/test-framework-output/customeragent/**)",
+      "Read(/private/tmp/test-framework-output/customeragent/**)",
+      "Read(/tmp/test-framework-output/customeragent/**)",
+      "Read(/tmp/test-framework-output/customeragent/**)",
+      "Read(/tmp/test-framework-output/customeragent/**)",
+      "Read(/private/tmp/test-framework-output/customeragent/**)",
+      "Read(/private/tmp/test-framework-output/customeragent/**)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",

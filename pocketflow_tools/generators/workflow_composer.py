@@ -34,8 +34,7 @@ from pocketflow_tools.generators.context import GenerationContext
 class PocketFlowGenerator:
     """Compose and generate PocketFlow workflows.
 
-    Phase 1 implementation temporarily delegates to the legacy generator to
-    preserve behavior and outputs while we complete the modular split.
+    Complete modular implementation using all new generator functions.
     """
 
     def __init__(
@@ -48,93 +47,85 @@ class PocketFlowGenerator:
         self.output_path = Path(output_path)
         self.enable_hybrid_promotion = enable_hybrid_promotion
 
-        # Ensure output directory exists (match legacy behavior)
+        # Ensure output directory exists 
         self.output_path.mkdir(exist_ok=True, parents=True)
 
-        # Defer heavy lifting to legacy class for now
-        from pocketflow_tools.legacy_adapter import LegacyGeneratorAdapter
-
-        self._adapter = LegacyGeneratorAdapter(
-            templates_path=str(self.templates_path),
-            output_path=str(self.output_path),
-            enable_hybrid_promotion=self.enable_hybrid_promotion,
-        )
-
-        # Phase 1: preload templates and extensions via new TemplateEngine (parity)
+        # Load templates and extensions via new TemplateEngine
+        # Create fallback empty context if templates directory doesn't exist
         try:
             engine = TemplateEngine(self.templates_path)
             templates = engine.load_templates()
             extensions = engine.load_enhanced_extensions()
-            self._adapter.set_templates_extensions(templates, extensions)
-            # Build internal context for sharing across generation steps
-            self.context = GenerationContext(
-                templates=templates,
-                extensions=extensions,
-                enable_hybrid_promotion=self.enable_hybrid_promotion,
-            )
-            # Make context visible to the legacy implementation (no behavior change)
-            self._adapter.set_generation_context(self.context)
-            # Start splitting by overriding utility + FastAPI generators (parity)
-            self._adapter.override_generate_utility(generate_utility)
-            self._adapter.override_fastapi_generators(
-                generate_fastapi_main, generate_fastapi_router
-            )
-            self._adapter.override_config_generators(
-                generate_dependency_files,
-                generate_basic_dependency_config,
-                generate_basic_pyproject,
-                generate_readme,
-            )
-            # Core code generation overrides
-            self._adapter.override_core_code_generators(
-                generate_pydantic_models,
-                generate_nodes,
-                generate_flow,
-            )
-            # Documentation generation overrides
-            self._adapter.override_doc_generators(
-                generate_design_doc,
-                generate_tasks,
-            )
-            # Tests and misc overrides
-            self._adapter.override_test_generators(
-                generate_node_tests,
-                generate_flow_tests,
-                generate_api_tests,
-            )
-            self._adapter.override_init_generator(generate_init_file)
-            self._adapter.override_install_checker(generate_install_checker_reference)
-        except Exception:
-            # Non-fatal: legacy adapter already loaded these internally
-            pass
-
-    def generate_workflow(self, spec: WorkflowSpec) -> Dict[str, str]:
-        return self._adapter.generate_workflow(spec)
-
-    def save_workflow(self, spec: WorkflowSpec, output_files: Dict[str, str]) -> None:
-        self._adapter.save_workflow(spec, output_files)
-
-
-# Internal temporary adapter to the legacy implementation.
-# This exists only during Phase 1 of the refactor to maintain parity.
-class LegacyGeneratorAdapter:
-    def __init__(
-        self,
-        templates_path: str,
-        output_path: str,
-        enable_hybrid_promotion: bool,
-    ) -> None:
-        # Import inside to avoid hard coupling at import time
-        from pocketflow_tools.legacy_adapter import LegacyGeneratorAdapter as Impl
-
-        self._impl = Impl(
-            templates_path=templates_path,
-            output_path=output_path,
-            enable_hybrid_promotion=enable_hybrid_promotion,
+        except (FileNotFoundError, OSError):
+            # Fallback to empty templates/extensions if directory missing
+            templates = {}
+            extensions = {}
+        
+        # Build generation context for sharing across generation steps
+        self.context = GenerationContext(
+            templates=templates,
+            extensions=extensions,
+            enable_hybrid_promotion=self.enable_hybrid_promotion,
         )
 
     def generate_workflow(self, spec: WorkflowSpec) -> Dict[str, str]:
-        return self._impl.generate_workflow(spec)
+        """Generate all workflow files using the new modular generators."""
+        output_files = {}
+        
+        # Generate core code files - these return strings, need to map to filenames
+        output_files["schemas/models.py"] = generate_pydantic_models(spec)
+        output_files["nodes.py"] = generate_nodes(spec) 
+        output_files["flow.py"] = generate_flow(spec)
+        output_files["__init__.py"] = generate_init_file(spec, is_root=True)
+        output_files["schemas/__init__.py"] = generate_init_file(spec, is_schema=True)
+        output_files["tests/__init__.py"] = generate_init_file(spec, is_test=True)
+        output_files["utils/__init__.py"] = generate_init_file(spec, is_utils=True)
+        
+        # Generate utilities - need to pass individual utilities from spec
+        for utility in spec.utilities:
+            utility_content = generate_utility(utility)
+            utility_name = utility.get('name', 'utility').lower()
+            output_files[f"utils/{utility_name}.py"] = utility_content
+        
+        # Generate FastAPI components  
+        output_files["main.py"] = generate_fastapi_main(spec)
+        output_files["router.py"] = generate_fastapi_router(spec)
+        
+        # Generate configuration files - this returns a Dict[str, str] including README.md
+        output_files.update(generate_dependency_files(spec))
+        
+        output_files["pyproject.toml"] = generate_basic_pyproject(spec)
+        
+        # Generate documentation
+        output_files["docs/design.md"] = generate_design_doc(spec)
+        output_files["docs/tasks.md"] = generate_tasks(spec)
+        
+        # Generate tests
+        output_files["tests/test_nodes.py"] = generate_node_tests(spec)
+        output_files["tests/test_flow.py"] = generate_flow_tests(spec)
+        output_files["tests/test_api.py"] = generate_api_tests(spec)
+        
+        # Generate install checker reference - no parameters
+        output_files["check_install.py"] = generate_install_checker_reference()
+        
+        return output_files
 
     def save_workflow(self, spec: WorkflowSpec, output_files: Dict[str, str]) -> None:
-        self._impl.save_workflow(spec, output_files)
+        """Save generated workflow files to disk."""
+        # Safely sanitize workflow directory name
+        import re
+        safe_name = re.sub(r'[^a-zA-Z0-9]', '', spec.name.lower())
+        if not safe_name:  # Fallback if name becomes empty after sanitization
+            safe_name = "workflow"
+            
+        workflow_dir = self.output_path / safe_name
+        workflow_dir.mkdir(parents=True, exist_ok=True)
+        
+        for relative_path, content in output_files.items():
+            file_path = workflow_dir / relative_path
+            # Ensure we don't create files outside the workflow directory
+            if not str(file_path).startswith(str(workflow_dir)):
+                continue  # Skip potentially dangerous paths
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+            file_path.write_text(content, encoding='utf-8')
+

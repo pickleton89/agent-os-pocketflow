@@ -112,7 +112,7 @@ def generate_design_doc(spec) -> str:
     design_doc += f"- Pattern: {spec.pattern}\n"
     design_doc += f"- Nodes: {len(spec.nodes)}\n"
     design_doc += f"- Utilities: {len(spec.utilities)}\n"
-    design_doc += f"- FastAPI Integration: Enabled (Universal)\n"
+    design_doc += "- FastAPI Integration: Enabled (Universal)\n"
     design_doc += "\nThis design document was generated automatically. Please review and complete with specific implementation details."
 
     return design_doc

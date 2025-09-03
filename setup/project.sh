@@ -455,44 +455,27 @@ install_pocketflow_tools() {
         return 0
     fi
     
-    log_info "Installing PocketFlow tools..."
+    log_info "Checking PocketFlow framework tools availability..."
     
-    if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/pocketflow-tools" ]]; then
-        # Copy PocketFlow tools from base installation (v1.4.0 self-contained design)
-        cp -r "$BASE_INSTALL_PATH/pocketflow-tools"/* ".agent-os/pocketflow-tools/"
-        if [[ $? -eq 0 ]]; then
-            log_success "Copied PocketFlow tools from base installation"
-        else
-            log_error "Failed to copy PocketFlow tools from base installation"
-            exit 1
-        fi
-    else
-        # Download from repository (standalone mode)
-        log_info "Downloading PocketFlow tools from repository..."
-        
-        local tool_files=(
-            "generator.py"
-            "pattern_analyzer.py"
-            "template_validator.py"
-            "dependency_orchestrator.py"
-            "agent_coordination.py"
-            "workflow_graph_generator.py"
-            "generate-example.sh"
-        )
-        
-        for file in "${tool_files[@]}"; do
-            if safe_download "$REPO_URL/pocketflow-tools/$file" ".agent-os/pocketflow-tools/$file" "$file"; then
-                chmod +x ".agent-os/pocketflow-tools/$file"
-                log_success "Downloaded: $file"
-            else
-                log_error "Failed to download: $file"
-                exit 1
-            fi
-        done
+    # Note: For project installations, we rely on the framework tools being available
+    # in the system environment (installed via base setup or development environment)
+    # The project itself gets generated workflow templates, not the generator tools
+    
+    # Check UV availability first
+    if ! command -v uv >/dev/null 2>&1; then
+        log_error "UV package manager not found. Please install UV first: https://docs.astral.sh/uv/"
+        exit 1
     fi
     
-    # Create Python __init__.py
-    echo "# PocketFlow Tools Package" > ".agent-os/pocketflow-tools/__init__.py"
+    if uv run python -m pocketflow_tools.cli --help >/dev/null 2>&1; then
+        log_success "Framework CLI is available for workflow generation"
+    else
+        log_error "pocketflow_tools CLI not found or not working."
+        log_info "Please ensure framework tools are installed:"
+        log_info "  - Run base installation: ./setup/base.sh"  
+        log_info "  - Or install in development mode: uv pip install -e . from framework root"
+        exit 1
+    fi
     
     # Install templates
     if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/templates" ]]; then

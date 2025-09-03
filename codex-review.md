@@ -5,7 +5,7 @@ Update — 2025-08-30 (docs ignored)
 - Mission fit: The repo correctly behaves as a framework that generates PocketFlow templates and ships installers/validators; no usage-repo behavior detected.
 - Key confirmations and deltas:
   1) Workflow-coordinator split acknowledged (no agent file needed)
-     - Functionality now lives in `pocketflow-tools/generator.py`, `pocketflow-tools/template_validator.py`, and `pocketflow-tools/pattern_analyzer.py`.
+     - Functionality now lives in the `pocketflow_tools` package with CLI access via `python -m pocketflow_tools.cli`.
      - Adjust references: remove `workflow-coordinator.md` from setup download lists and validation expectations; update agent docs and hooks to point to file-creator/generator and template-validator.
      - Implemented: setup scripts and validation updated; pattern-analyzer agent doc and generator guidance updated.
   2) Generator’s install-check path corrected
@@ -20,7 +20,7 @@ Update — 2025-08-30 (docs ignored)
      - Scripts require `.agent-os/workflows` or `.claude/agents` in the current repo.
      - Evidence: `scripts/validation/validate-pocketflow.sh:14`, `scripts/validation/validate-sub-agents.sh:48` and master runner includes them.
      - Impact: Running `scripts/run-all-tests.sh` from framework root may fail despite framework being correct.
-     - Recommendation: Gate tests by repository type: detect framework context (presence of `pocketflow-tools/generator.py`) and skip usage-only checks, or add a `--framework` mode.
+     - Recommendation: Gate tests by repository type: detect framework context (presence of `pocketflow_tools` package) and skip usage-only checks, or add a `--framework` mode.
   5) Import stability in pocketflow-tools
      - Mixed import styles: generator uses package-relative imports with fallback handling, while `agent_coordination.py` uses absolute (`from pattern_analyzer import ...`).
      - Evidence: `pocketflow-tools/agent_coordination.py:13`

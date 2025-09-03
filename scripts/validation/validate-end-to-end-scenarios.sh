@@ -102,10 +102,8 @@ check_prerequisites() {
     # Check that PocketFlow tools CLI is available
     if [[ -d "$PROJECT_ROOT/pocketflow_tools" ]] && python3 -m pocketflow_tools.cli --help >/dev/null 2>&1; then
         log_info "Using pocketflow_tools package CLI"
-    elif [[ -f "$POCKETFLOW_TOOLS_DIR/generator.py" ]]; then
-        log_info "Using legacy generator.py (consider migration to pocketflow_tools package)"
     else
-        log_error "Neither functional pocketflow_tools CLI nor legacy generator.py found"
+        log_error "pocketflow_tools CLI not found"
         return 1
     fi
     
