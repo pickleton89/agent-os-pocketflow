@@ -25,6 +25,15 @@ fi
 
 echo "[cli-smoke] PyYAML detected. Running tests..."
 
+# 0) Help command
+set +e
+out=$(python3 -m pocketflow_tools.cli --help 2>&1)
+code=$?
+set -e
+echo "$out" | rg -n "Generate PocketFlow workflows from specifications" >/dev/null || {
+  echo "[cli-smoke] FAIL: Help message mismatch"; echo "$out"; exit 1; }
+test "$code" -eq 0 || { echo "[cli-smoke] FAIL: Help should return zero"; exit 1; }
+
 # 1) Missing file
 set +e
 out=$(python3 -m pocketflow_tools.cli --spec does-not-exist.yaml 2>&1)
@@ -68,8 +77,13 @@ expected=(
   ".gitignore"
 )
 
-proj_dir="$outdir/$(basename "$(ls -1 "$outdir" | head -n1)")"
-test -d "$proj_dir" || { echo "[cli-smoke] FAIL: output project dir missing"; exit 1; }
+# Find the generated project directory (should be exactly one)
+proj_dirs=($(find "$outdir" -maxdepth 1 -type d ! -name "$(basename "$outdir")"))
+if [ ${#proj_dirs[@]} -ne 1 ]; then
+    echo "[cli-smoke] FAIL: Expected exactly 1 project directory, found ${#proj_dirs[@]}"; exit 1
+fi
+proj_dir="${proj_dirs[0]}"
+test -d "$proj_dir" || { echo "[cli-smoke] FAIL: output project dir missing: $proj_dir"; exit 1; }
 
 for f in "${expected[@]}"; do
   if [ ! -e "$proj_dir/$f" ]; then
