@@ -5,7 +5,13 @@
       "mcp__graphiti__add_memory",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(uv pip install:*)",
+      "Bash(./setup/base.sh:*)",
+      "Read(/Users/jeffkiefer/.agent-os/pocketflow-tools/**)",
+      "Read(/Users/jeffkiefer/.agent-os/setup/**)",
+      "Read(/Users/jeffkiefer/.agent-os/setup/**)",
+      "Read(/Users/jeffkiefer/.agent-os/pocketflow-tools/**)"
     ],
     "deny": [],
     "ask": [],
