@@ -88,7 +88,10 @@
       "Bash(print_repo_type)",
       "Bash(uv python pin:*)",
       "Read(/private/tmp/test-output/customeragent/**)",
-      "Read(/private/tmp/test-agents-md/customeragent/**)"
+      "Read(/private/tmp/test-agents-md/customeragent/**)",
+      "Bash(./scripts/validation/validate-cli-smoke.sh:*)",
+      "Bash(./scripts/validation/validate-determinism.sh:*)",
+      "Bash(./scripts/validation/validate-phase3-integrity.sh:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
