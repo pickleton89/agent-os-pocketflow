@@ -78,6 +78,9 @@ venv.bak/
 # pytest
 .pytest_cache/
 
+# User experience validation test artifacts
+test-user-experience/
+
 # ruff
 .ruff_cache/
 
