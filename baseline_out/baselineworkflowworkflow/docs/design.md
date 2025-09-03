@@ -1,7 +1,7 @@
 # Design Document
 
 > Spec: BaselineWORKFLOWWorkflow
-> Created: 2025-09-02
+> Created: 2025-09-03
 > Status: Design Phase
 > Framework: PocketFlow
 
@@ -33,10 +33,16 @@ Baseline generation snapshot for WORKFLOW pattern
 ```mermaid
 graph TD
     A[Start] --> B[Input Validation]
-    B --> C[Processing]
+    B --> C[InputValidator]
+    C --> D[BusinessLogicProcessor]
+    D --> E[OutputFormatter]
+    E --> Z[End]
 ```
 
 ### Node Sequence
+1. **InputValidator** - Validate and sanitize input data
+2. **BusinessLogicProcessor** - Execute core business logic
+3. **OutputFormatter** - Format output data for consumers
 
 ## Utilities
 
@@ -52,6 +58,10 @@ Following PocketFlow's shared store pattern, all data flows through a common dic
 
 ```python
 SharedStore = {
+    "input_data": Dict[str, Any],
+    "validation_result": Dict[str, Any],
+    "processed_data": Dict[str, Any],
+    "output_data": Dict[str, Any],
 }
 ```
 
@@ -59,11 +69,29 @@ SharedStore = {
 
 Following PocketFlow's node-based architecture, each processing step is implemented as a discrete node.
 
+### 1. InputValidator
+**Purpose:** Validate and sanitize input data
+
+**Inputs:** SharedStore
+**Outputs:** Updates SharedStore
+
+### 2. BusinessLogicProcessor
+**Purpose:** Execute core business logic
+
+**Inputs:** SharedStore
+**Outputs:** Updates SharedStore
+
+### 3. OutputFormatter
+**Purpose:** Format output data for consumers
+
+**Inputs:** SharedStore
+**Outputs:** Updates SharedStore
+
 
 ## Implementation Notes
 
 - Pattern: WORKFLOW
-- Nodes: 0
+- Nodes: 3
 - Utilities: 0
 - FastAPI Integration: Enabled (Universal)
 

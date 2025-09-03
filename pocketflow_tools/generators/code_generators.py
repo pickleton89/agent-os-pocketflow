@@ -138,6 +138,10 @@ def generate_fastapi_router(spec) -> str:
             '    """',
             f"    {endpoint.get('description', default_desc)}",
             '    """',
+            "    # TODO: Add authentication and authorization logic here",
+            "    ",
+            "    # TODO: Add input validation and sanitization",
+            "    ",
             "    # Initialize SharedStore",
             "    shared = {",
             '        "request_data": request.dict(),',
@@ -148,6 +152,7 @@ def generate_fastapi_router(spec) -> str:
             f"    flow = {spec.name}Flow()",
             "    await flow.run_async(shared)",
             "",
+            "    # TODO: Customize error handling and response codes",
             "    # Check for flow-level errors",
             '    if "error" in shared:',
             "        raise HTTPException(",
@@ -449,6 +454,7 @@ def generate_flow(spec) -> str:
         '    """',
         "",
         "    def __init__(self):",
+        "        # TODO: Customize node instances and their configurations",
         "        nodes = {",
     ])
 
@@ -458,6 +464,7 @@ def generate_flow(spec) -> str:
     flow_code.extend([
         "        }",
         "",
+        "        # TODO: Customize workflow connections and error handling",
         "        edges = {",
     ])
 

@@ -1,26 +1,21 @@
-# Spec Tasks
+# Implementation Tasks for BaselineTOOLWorkflow
 
-These are the tasks to be completed for the spec detailed in @.agent-os/specs/2025-09-02-baselineagentworkflow/spec.md
+This document outlines the tasks required to complete the implementation of the BaselineTOOLWorkflow workflow.
 
-> Created: 2025-09-02
-> Status: Ready for Implementation
+## Overview
 
-## Tasks
+### Project Summary
+- **Workflow Name:** BaselineTOOLWorkflow
+- **Pattern:** TOOL
+- **Description:** Baseline generation snapshot for TOOL pattern
+- **FastAPI Integration:** Enabled (Universal)
+- **Generated On:** 2025-09-03
 
-Following PocketFlow's 8-step Agentic Coding methodology:
+## Task Breakdown
 
-### Phase 0: Design Document (LLM/AI Components Only)
-- [x] 0.1 Create `docs/design.md` with complete PocketFlow design ✓ (Generated)
-- [ ] 0.2 Review and complete Requirements section with problem statement and success criteria
-- [ ] 0.3 Validate Flow Design with Mermaid diagram and node sequence
-- [ ] 0.4 Review all Utility functions with input/output contracts
-- [ ] 0.5 Validate SharedStore schema with complete data structure
-- [ ] 0.6 Complete Node Design with prep/exec/post specifications
-- [ ] 0.7 Validate design completeness before proceeding
-
-### Phase 1: Pydantic Schemas & Data Models
-- [ ] 1.1 Write tests for Pydantic model validation
-- [x] 1.2 Create request/response models in `schemas/models.py` ✓ (Generated)
+### Phase 1: Data Modeling (Pydantic)
+- [ ] 1.1 Define Pydantic models for request/response
+- [ ] 1.2 Create SharedStore Pydantic model
 - [ ] 1.3 Implement core entity models with validation rules
 - [ ] 1.4 Create SharedStore transformation models
 - [ ] 1.5 Add custom validators and field constraints
@@ -30,6 +25,9 @@ Following PocketFlow's 8-step Agentic Coding methodology:
 ### Phase 2: Utility Functions Implementation
 - [ ] 2.1 Write tests for utility functions (with mocked external dependencies)
 - [x] 2.2 Implement utility functions in `utils/` directory ✓ (Generated templates)
+
+- [ ] 2.2.http_client: Complete implementation of `utils/http_client.py`
+- [ ] 2.2.data_mapper: Complete implementation of `utils/data_mapper.py`
 - [ ] 2.3 Add proper type hints and docstrings for all utilities
 - [ ] 2.4 Implement LLM integration utilities (if applicable)
 - [ ] 2.5 Add error handling without try/catch (fail fast approach)
@@ -48,6 +46,12 @@ Following PocketFlow's 8-step Agentic Coding methodology:
 ### Phase 4: PocketFlow Nodes (LLM/AI Components)
 - [ ] 4.1 Write tests for individual node lifecycle methods
 - [x] 4.2 Implement nodes in `nodes.py` following design.md specifications ✓ (Generated templates)
+
+- [ ] 4.2.RequestValidator: Complete implementation of RequestValidator
+- [ ] 4.2.AuthHandler: Complete implementation of AuthHandler
+- [ ] 4.2.ExternalConnector: Complete implementation of ExternalConnector
+- [ ] 4.2.DataTransformer: Complete implementation of DataTransformer
+- [ ] 4.2.ResponseProcessor: Complete implementation of ResponseProcessor
 - [ ] 4.3 Create prep() methods for data access and validation
 - [ ] 4.4 Implement exec() methods with utility function calls
 - [ ] 4.5 Add post() methods for result storage and action determination
@@ -83,7 +87,7 @@ Following PocketFlow's 8-step Agentic Coding methodology:
 
 **Development Toolchain Validation (Every Phase):**
 - Run `uv run ruff check --fix .` for linting
-- Run `uv run ruff format .` for code formatting  
+- Run `uv run ruff format .` for code formatting
 - Run `uv run ty check` for type checking
 - Run `pytest` for all tests
 - Verify all checks pass before proceeding to next phase
@@ -99,6 +103,9 @@ The following files have been generated and need completion:
 - `flow.py` - Flow assembly (review connections)
 
 ### Utility Files ✓
+
+- `utils/http_client.py` - Make HTTP requests to external APIs
+- `utils/data_mapper.py` - Map data between different schemas
 
 ### FastAPI Files ✓
 - `main.py` - FastAPI application
@@ -116,6 +123,6 @@ The following files have been generated and need completion:
 4. Test the complete workflow end-to-end
 5. Deploy and validate in staging environment
 
-Generated on: 2025-09-02
-Workflow Pattern: AGENT
+Generated on: {current_date}
+Workflow Pattern: {spec.pattern}
 FastAPI Integration: Enabled (Universal)

@@ -77,7 +77,7 @@ validate_pattern() {
     cat > "$spec_file" << EOF
 name: "Baseline${pattern}Workflow"
 pattern: "$pattern"
-description: "Baseline workflow for $pattern pattern determinism testing"
+description: "Baseline generation snapshot for $pattern pattern"
 EOF
     
     # Generate workflow using CLI

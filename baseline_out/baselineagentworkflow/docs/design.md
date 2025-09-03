@@ -1,7 +1,7 @@
 # Design Document
 
 > Spec: BaselineAGENTWorkflow
-> Created: 2025-09-02
+> Created: 2025-09-03
 > Status: Design Phase
 > Framework: PocketFlow
 
@@ -33,16 +33,38 @@ Baseline generation snapshot for AGENT pattern
 ```mermaid
 graph TD
     A[Start] --> B[Input Validation]
-    B --> C[Processing]
+    B --> C[TaskAnalyzer]
+    C --> D[ReasoningEngine]
+    D --> E[ActionPlanner]
+    E --> F[ActionExecutor]
+    F --> G[ResultEvaluator]
+    G --> H[MemoryUpdater]
+    H --> Z[End]
 ```
 
 ### Node Sequence
+1. **TaskAnalyzer** - Analyze incoming tasks and requirements
+2. **ReasoningEngine** - Apply reasoning and decision-making logic
+3. **ActionPlanner** - Plan sequence of actions to accomplish task
+4. **ActionExecutor** - Execute planned actions and tools
+5. **ResultEvaluator** - Evaluate results and determine next steps
+6. **MemoryUpdater** - Update agent memory with new information
 
 ## Utilities
 
 Following PocketFlow's "implement your own" philosophy, specify all utility functions needed.
 
 ### Required Utility Functions
+
+#### llm_reasoning
+- **Purpose:** Apply LLM-based reasoning to analyze problems
+- **Input:** context: str, task: str
+- **Output:** str
+
+#### action_planning
+- **Purpose:** Generate step-by-step action plan
+- **Input:** goal: str
+- **Output:** List[Dict[str, str]]
 
 
 ## Data Design
@@ -52,6 +74,13 @@ Following PocketFlow's shared store pattern, all data flows through a common dic
 
 ```python
 SharedStore = {
+    "task": str,
+    "context": Optional[str],
+    "reasoning_steps": List[str],
+    "action_plan": List[Dict[str, str]],
+    "actions_taken": List[str],
+    "result": str,
+    "memory": Dict[str, Any],
 }
 ```
 
@@ -59,12 +88,48 @@ SharedStore = {
 
 Following PocketFlow's node-based architecture, each processing step is implemented as a discrete node.
 
+### 1. TaskAnalyzer
+**Purpose:** Analyze incoming tasks and requirements
+
+**Inputs:** SharedStore
+**Outputs:** Updates SharedStore
+
+### 2. ReasoningEngine
+**Purpose:** Apply reasoning and decision-making logic
+
+**Inputs:** SharedStore
+**Outputs:** Updates SharedStore
+
+### 3. ActionPlanner
+**Purpose:** Plan sequence of actions to accomplish task
+
+**Inputs:** SharedStore
+**Outputs:** Updates SharedStore
+
+### 4. ActionExecutor
+**Purpose:** Execute planned actions and tools
+
+**Inputs:** SharedStore
+**Outputs:** Updates SharedStore
+
+### 5. ResultEvaluator
+**Purpose:** Evaluate results and determine next steps
+
+**Inputs:** SharedStore
+**Outputs:** Updates SharedStore
+
+### 6. MemoryUpdater
+**Purpose:** Update agent memory with new information
+
+**Inputs:** SharedStore
+**Outputs:** Updates SharedStore
+
 
 ## Implementation Notes
 
 - Pattern: AGENT
-- Nodes: 0
-- Utilities: 0
+- Nodes: 6
+- Utilities: 2
 - FastAPI Integration: Enabled (Universal)
 
 This design document was generated automatically. Please review and complete with specific implementation details.
