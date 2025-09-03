@@ -115,17 +115,16 @@ Notes
 
 #### 🔄 Phase 2 Remaining Tasks
 
-**Task 1: Update CLI Invocations in Scripts**
-- **Status**: 12+ files found with `python pocketflow-tools/generator.py` references
-- **Target files**:
+**Task 1: Update CLI Invocations in Scripts** ✅ **COMPLETED** (commit: eb9105f)
+- **Status**: All script references to `python pocketflow-tools/generator.py` updated to `python -m pocketflow_tools.cli`
+- **Completed files**:
   - `scripts/validation/validate-end-to-end.sh`
   - `scripts/validation/validate-orchestration.sh`
   - `scripts/validation/validate-integration.sh`
   - `scripts/validation/validate-user-experience.sh`
   - `setup/base.sh`
   - Other validation and setup scripts
-- **Change**: Replace `python pocketflow-tools/generator.py --spec ... --output ...` with `python -m pocketflow_tools.cli --spec ... --output ...`
-- **Verification**: Each script must pass its validation checks
+- **Verification**: All validation scripts pass with new CLI invocations
 
 **Task 2: Update Documentation References**
 - **Target files**:

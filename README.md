@@ -461,7 +461,7 @@ cat .agent-os/config.yml
 ~/.agent-os/setup/update-project.sh --help
 
 # Check PocketFlow tools
-ls -la ~/.agent-os/pocketflow-tools/generator.py
+python -m pocketflow_tools.cli --help
 ```
 
 ### Getting Clean State
@@ -526,7 +526,7 @@ The validation harness auto-detects whether it is running in the Framework repos
 
 - Override with env var: `REPO_TYPE=framework` or `REPO_TYPE=project`
 - Heuristics when not set:
-  - Framework if `pocketflow-tools/generator.py` exists or `CLAUDE.md` contains “This IS the Framework”
+  - Framework if `pocketflow_tools/` package exists or `CLAUDE.md` contains "This IS the Framework"
   - Project if `.agent-os/workflows/` has subdirectories, or `docs/design.md` or `tests/` exists
   - Defaults to framework
 
