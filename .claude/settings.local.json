@@ -102,7 +102,8 @@
       "Read(/private/tmp/test-framework-output/customeragent/**)",
       "Read(/private/tmp/test-rag-isolated/testrag/**)",
       "Read(/private/tmp/test-todos/testtodos/**)",
-      "Read(/private/tmp/test-todos/testtodos/**)"
+      "Read(/private/tmp/test-todos/testtodos/**)",
+      "Bash(implementations in generated templates are features, not bugs.\"\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
