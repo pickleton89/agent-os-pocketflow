@@ -83,7 +83,9 @@
       "Bash(./scripts/validation/validate-sub-agents.sh:*)",
       "mcp__claude-context__index_codebase",
       "mcp__claude-context__get_indexing_status",
-      "mcp__claude-context__search_code"
+      "mcp__claude-context__search_code",
+      "Bash(source:*)",
+      "Bash(print_repo_type)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
