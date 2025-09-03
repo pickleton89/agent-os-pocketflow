@@ -85,7 +85,10 @@
       "mcp__claude-context__get_indexing_status",
       "mcp__claude-context__search_code",
       "Bash(source:*)",
-      "Bash(print_repo_type)"
+      "Bash(print_repo_type)",
+      "Bash(uv python pin:*)",
+      "Read(/private/tmp/test-output/customeragent/**)",
+      "Read(/private/tmp/test-agents-md/customeragent/**)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
