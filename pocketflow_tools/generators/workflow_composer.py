@@ -66,6 +66,134 @@ class PocketFlowGenerator:
             enable_hybrid_promotion=self.enable_hybrid_promotion,
         )
 
+    def _detect_batch_patterns(self, spec: WorkflowSpec) -> WorkflowSpec:
+        """Analyze nodes and suggest BatchNode usage when appropriate patterns are detected."""
+        import copy
+        import re
+        
+        # Input validation
+        if not spec or not hasattr(spec, 'nodes') or not spec.nodes:
+            return spec
+            
+        # Collection-related keywords that suggest batch processing
+        collection_keywords = {
+            'files', 'documents', 'document', 'items', 'records', 'entries', 'elements',
+            'data', 'chunks', 'pieces', 'segments', 'batches', 'groups',
+            'collections', 'collection', 'lists', 'arrays', 'datasets', 'sources',
+            'inputs', 'outputs', 'results', 'responses', 'queries'
+        }
+        
+        # Iteration-related keywords in descriptions
+        iteration_keywords = {
+            'process', 'handle', 'transform', 'analyze', 'parse', 'convert',
+            'generate', 'create', 'load', 'fetch', 'retrieve', 'extract',
+            'validate', 'filter', 'sort', 'group', 'aggregate', 'summarize'
+        }
+        
+        # All batch node types to exclude from suggestions
+        batch_node_types = {
+            'BatchNode', 'AsyncBatchNode', 'AsyncParallelBatchNode'
+        }
+        
+        # Improved plural detection with proper word boundary matching
+        def is_likely_plural(name: str) -> bool:
+            if not name or not isinstance(name, str):
+                return False
+                
+            name_lower = name.lower()
+            
+            # Common plural patterns
+            if name_lower.endswith(('s', 'es', 'ies', 'ves')):
+                # False positives - words that end in these patterns but aren't plural
+                false_positives = {
+                    'process', 'address', 'analysis', 'class', 'pass',
+                    'access', 'success', 'express', 'suppress', 'progress',
+                    'business', 'status', 'focus', 'basis', 'crisis', 'stress',
+                    'eness', 'ness'  # Common suffixes that aren't plural
+                }
+                
+                # Check if the entire name ends with a false positive word
+                if any(name_lower.endswith(fp) for fp in false_positives):
+                    return False
+                    
+                # Additional check: avoid very short names that might be acronyms
+                if len(name_lower) <= 3:
+                    return False
+                    
+                return True
+            return False
+
+        updated_nodes = []
+        for node in spec.nodes:
+            if not isinstance(node, dict):
+                updated_nodes.append(node)
+                continue
+                
+            node_name = node.get('name', '')
+            node_desc = node.get('description', '')
+            node_type = node.get('type', 'Node')
+            
+            # Skip if essential data is missing
+            if not node_name and not node_desc:
+                updated_nodes.append(node)
+                continue
+                
+            # Ensure description is a string and convert to lowercase for analysis
+            node_desc_lower = node_desc.lower() if isinstance(node_desc, str) else ''
+            
+            # Check for batch processing indicators
+            batch_indicators = []
+            
+            # 1. Check for plural nouns in node names
+            if is_likely_plural(node_name):
+                batch_indicators.append("plural noun in name")
+            
+            # 2. Check for collection-related keywords in description
+            if node_desc_lower:
+                desc_words = set(re.findall(r'\b\w+\b', node_desc_lower))
+                if desc_words & collection_keywords:
+                    batch_indicators.append("collection-related keywords")
+                
+                # 3. Check for iteration patterns combined with collections
+                # Only add if we have both iteration AND collection words
+                has_iteration = bool(desc_words & iteration_keywords)
+                has_collection = bool(desc_words & collection_keywords)
+                if has_iteration and has_collection:
+                    # Only add if we haven't already added collection keywords
+                    if "collection-related keywords" not in batch_indicators:
+                        batch_indicators.append("iteration pattern with collections")
+                
+                # 4. Check for explicit plural/multiple mentions
+                plural_phrases = ['multiple', 'many', 'all', 'each', 'every', 'several', 'various']
+                if any(phrase in node_desc_lower for phrase in plural_phrases):
+                    batch_indicators.append("explicit multiple item mentions")
+            
+            # Generate batch node suggestion comments if indicators found
+            if batch_indicators and node_type not in batch_node_types:
+                guidance_comments = [
+                    "# SMART PATTERN DETECTION: This node may benefit from batch processing",
+                    f"# Detected indicators: {', '.join(batch_indicators)}",
+                    "# CONSIDER: Using BatchNode instead of Node for better performance",
+                    "# BatchNode automatically handles:",
+                    "#   - Parallel processing of multiple items",
+                    "#   - Automatic chunking and batching",
+                    "#   - Built-in error handling per item",
+                    "#   - Progress tracking and logging"
+                ]
+                
+                # Use deep copy to avoid modifying original spec
+                node_copy = copy.deepcopy(node)
+                node_copy.setdefault('framework_reminders', []).extend(guidance_comments)
+                updated_nodes.append(node_copy)
+            else:
+                # Still use deep copy for consistency
+                updated_nodes.append(copy.deepcopy(node))
+        
+        # Create new spec with enhanced nodes (don't modify original)
+        spec_copy = copy.deepcopy(spec)
+        spec_copy.nodes = updated_nodes
+        return spec_copy
+
     def _enrich_spec_with_pattern_nodes(self, spec: WorkflowSpec) -> WorkflowSpec:
         """Enrich spec with pattern-specific nodes, utilities, and API endpoints."""
         # Define pattern-specific node configurations
@@ -213,8 +341,11 @@ class PocketFlowGenerator:
 
     def generate_workflow(self, spec: WorkflowSpec) -> Dict[str, str]:
         """Generate all workflow files using the new modular generators."""
+        # Apply smart pattern detection for batch processing suggestions
+        spec_with_patterns = self._detect_batch_patterns(spec)
+        
         # Enrich spec with pattern-specific nodes, utilities, and endpoints
-        enriched_spec = self._enrich_spec_with_pattern_nodes(spec)
+        enriched_spec = self._enrich_spec_with_pattern_nodes(spec_with_patterns)
         
         output_files = {}
         

@@ -49,6 +49,139 @@ def test_workflow_spec():
     return spec
 
 
+def test_smart_pattern_detection():
+    """Test smart pattern detection for batch processing suggestions."""
+    print("\nTesting Smart Pattern Detection...")
+
+    # Create test specs with different batch processing indicators
+    test_cases = [
+        {
+            "name": "ProcessFiles", 
+            "description": "Process multiple files from input directory",
+            "expected_indicators": ["plural noun in name", "collection-related keywords", "explicit multiple item mentions"]
+        },
+        {
+            "name": "DataAnalyzer",
+            "description": "Analyze datasets and generate reports", 
+            "expected_indicators": ["collection-related keywords"]
+        },
+        {
+            "name": "DocumentLoader",
+            "description": "Load and parse each document in the collection",
+            "expected_indicators": ["collection-related keywords", "explicit multiple item mentions"]
+        },
+        {
+            "name": "SimpleProcessor", 
+            "description": "Process single input",
+            "expected_indicators": []  # Should not trigger batch suggestions
+        },
+        # Additional edge cases
+        {
+            "name": "ProcessSuccess",  # Should NOT be detected as plural (false positive test)
+            "description": "Handle successful completion",
+            "expected_indicators": []
+        },
+        {
+            "name": "DataSources",  # Should be detected as plural
+            "description": "Connect to various data sources",
+            "expected_indicators": ["plural noun in name", "collection-related keywords", "explicit multiple item mentions"]
+        }
+    ]
+
+    generator = PocketFlowGenerator(output_path="/tmp/test_pattern_detection")
+    all_tests_passed = True
+    
+    for i, test_case in enumerate(test_cases):
+        print(f"\n  Test case {i+1}: {test_case['name']}")
+        print(f"    Description: '{test_case['description']}'")
+        
+        spec = WorkflowSpec(
+            name=f"TestWorkflow{i+1}",
+            pattern="WORKFLOW", 
+            description="Test workflow for pattern detection",
+            nodes=[{
+                "name": test_case["name"],
+                "type": "Node", 
+                "description": test_case["description"]
+            }],
+            utilities=[],
+            shared_store_schema={},
+            fast_api_integration=False,
+        )
+        
+        # Apply pattern detection
+        detected_spec = generator._detect_batch_patterns(spec)
+        
+        # Check if framework_reminders were added correctly
+        node = detected_spec.nodes[0]
+        framework_reminders = node.get('framework_reminders', [])
+        has_batch_guidance = any("SMART PATTERN DETECTION" in reminder for reminder in framework_reminders)
+        
+        expected_batch_guidance = len(test_case['expected_indicators']) > 0
+        
+        # Verify overall detection
+        if has_batch_guidance == expected_batch_guidance:
+            print(f"    ✓ Pattern detection {'detected' if has_batch_guidance else 'correctly ignored'} batch indicators")
+        else:
+            print(f"    ✗ Expected batch guidance: {expected_batch_guidance}, Got: {has_batch_guidance}")
+            all_tests_passed = False
+            continue
+            
+        # If we expected indicators, verify the specific ones
+        if has_batch_guidance and test_case['expected_indicators']:
+            indicators_comment = next(
+                (r for r in framework_reminders if 'Detected indicators:' in r), 
+                None
+            )
+            
+            if indicators_comment:
+                detected_indicators = indicators_comment.split('Detected indicators: ')[1]
+                print(f"    ✓ {indicators_comment}")
+                
+                # Verify each expected indicator is present
+                missing_indicators = []
+                for expected_indicator in test_case['expected_indicators']:
+                    if expected_indicator not in detected_indicators:
+                        missing_indicators.append(expected_indicator)
+                
+                if missing_indicators:
+                    print(f"    ✗ Missing expected indicators: {', '.join(missing_indicators)}")
+                    all_tests_passed = False
+                else:
+                    print("    ✓ All expected indicators found")
+            else:
+                print("    ✗ Expected indicators comment not found in framework_reminders")
+                all_tests_passed = False
+
+    # Test edge cases for robustness
+    print("\n  Testing edge cases...")
+    
+    # Test with empty spec
+    empty_spec = WorkflowSpec(name="Empty", pattern="WORKFLOW", description="", nodes=[], utilities=[], shared_store_schema={}, fast_api_integration=False)
+    result = generator._detect_batch_patterns(empty_spec)
+    if result == empty_spec:
+        print("    ✓ Handles empty spec correctly")
+    else:
+        print("    ✗ Failed to handle empty spec")
+        all_tests_passed = False
+    
+    # Test with malformed node
+    malformed_spec = WorkflowSpec(
+        name="Malformed", pattern="WORKFLOW", description="", 
+        nodes=[{"name": "", "description": None}],  # Missing/invalid data
+        utilities=[], shared_store_schema={}, fast_api_integration=False
+    )
+    try:
+        result = generator._detect_batch_patterns(malformed_spec)
+        print("    ✓ Handles malformed nodes gracefully")
+    except Exception as e:
+        print(f"    ✗ Failed on malformed nodes: {e}")
+        all_tests_passed = False
+
+    print(f"\n+ Smart pattern detection test {'completed successfully' if all_tests_passed else 'completed with failures'}")
+    return all_tests_passed
+
+
 def test_generator():
     """Test PocketFlowGenerator."""
     print("\nTesting PocketFlowGenerator...")
@@ -152,7 +285,7 @@ def main():
     print("Testing PocketFlow Workflow Generator")
     print("=" * 40)
 
-    tests = [test_workflow_spec, test_generator, test_generation, test_full_workflow]
+    tests = [test_workflow_spec, test_generator, test_smart_pattern_detection, test_generation, test_full_workflow]
 
     passed = 0
     total = len(tests)
