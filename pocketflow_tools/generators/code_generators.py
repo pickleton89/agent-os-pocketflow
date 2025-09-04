@@ -270,16 +270,16 @@ def _get_smart_node_defaults(node: Dict[str, Any], is_async: bool = False) -> Di
     exec_examples = exec_examples_async if is_async else exec_examples_sync
 
     post_examples = {
-        "retriever": 'shared["retrieved_docs"] = exec_result',
-        "loader": 'shared["loaded_content"] = exec_result',
-        "analyzer": 'shared["analysis_result"] = exec_result',
-        "formatter": 'shared["formatted_output"] = exec_result',
-        "validator": 'shared["validation_result"] = exec_result',
-        "transformer": 'shared["transformed_data"] = exec_result',
-        "llm": 'shared["llm_response"] = exec_result',
-        "embedding": 'shared["embeddings"] = exec_result',
-        "search": 'shared["search_results"] = exec_result',
-        "filter": 'shared["filtered_data"] = exec_result',
+        "retriever": 'shared["retrieved_docs"] = exec_result\n        return "success"',
+        "loader": 'shared["loaded_content"] = exec_result\n        return "success"',
+        "analyzer": 'shared["analysis_result"] = exec_result\n        return "success"',
+        "formatter": 'shared["formatted_output"] = exec_result\n        return "success"',
+        "validator": 'shared["validation_result"] = exec_result\n        return "success" if exec_result.get("valid", True) else "validation_failed"',
+        "transformer": 'shared["transformed_data"] = exec_result\n        return "success"',
+        "llm": 'shared["llm_response"] = exec_result\n        return "success"',
+        "embedding": 'shared["embeddings"] = exec_result\n        return "success"',
+        "search": 'shared["search_results"] = exec_result\n        return "success"',
+        "filter": 'shared["filtered_data"] = exec_result\n        return "success"',
     }
 
     for pattern in prep_examples.keys():
@@ -294,7 +294,7 @@ def _get_smart_node_defaults(node: Dict[str, Any], is_async: bool = False) -> Di
     return {
         "prep": 'return shared.get("input_data")',
         "exec": '# Implement your core logic here\n        return "success"',
-        "post": 'shared["output_data"] = exec_result',
+        "post": 'shared["output_data"] = exec_result\n        return "success"',
     }
 
 
@@ -314,7 +314,7 @@ def generate_nodes(spec) -> str:
     """Generate PocketFlow nodes from specification (legacy parity)."""
     nodes_code: List[str] = [
         "from pocketflow import Node, AsyncNode, BatchNode",
-        "from typing import Dict, Any",
+        "from typing import Dict, Any, Optional",
         "import logging",
         "",
         "logger = logging.getLogger(__name__)",
@@ -377,15 +377,25 @@ def generate_nodes(spec) -> str:
 
         nodes_code.extend([
             "    def prep(self, shared: Dict[str, Any]) -> Any:",
-            '        """Data preparation and validation."""',
+            '        """',
+            '        Data preparation and validation.',
+            '        ',
+            '        BEST PRACTICE: Only read from shared store here.',
+            '        DO NOT: Perform computation or external calls.',
+            '        DO NOT: Access databases, APIs, or call LLMs.',
+            '        ',
+            '        This method should be fast, synchronous, and focused on',
+            '        extracting the exact data needed for exec().',
+            '        """',
             f'        logger.info(f"Preparing data for {node["name"]}")',
             "",
-            "        # Enhanced TODO guidance from framework extensions:",
+            "        # Framework guidance: Read only what exec() needs from shared store",
         ])
 
         # Enhanced TODOs for prep
         prep_todos = enhanced_todos[:2] if enhanced_todos else [
-            "# TODO: Customize this prep logic based on your needs",
+            "# TODO: Extract the exact data exec() needs from shared store",
+            "# TODO: Consider input validation if needed (but keep it lightweight)",
         ]
         for todo in prep_todos:
             nodes_code.append(f"        {todo}")
@@ -394,16 +404,28 @@ def generate_nodes(spec) -> str:
             f"        {smart_defaults['prep']}",
             "",
             exec_signature,
-            '        """Core processing logic."""',
+            '        """',
+            '        Core processing logic.',
+            '        ',
+            '        BEST PRACTICE: Use only prep_result as input.',
+            '        DO NOT: Access shared store directly.',
+            '        DO NOT: Use try/except for flow control.',
+            '        ',
+            '        Let exceptions bubble up for PocketFlow retry handling.',
+            '        Use return values and post() for business logic branching.',
+            '        """',
             f'        logger.info(f"Executing {node["name"]}")',
             "",
-            "        # Enhanced TODO guidance from framework extensions:",
+            "        # Framework guidance: Process prep_result, avoid shared store access",
         ])
 
         exec_todos = (
             enhanced_todos[2:4]
             if len(enhanced_todos) > 2
-            else ["# TODO: Customize this exec logic based on your needs"]
+            else [
+                "# TODO: Implement the core processing logic using only prep_result",
+                "# TODO: Return the processed result (avoid side effects here)",
+            ]
         )
         for todo in exec_todos:
             nodes_code.append(f"        {todo}")
@@ -411,17 +433,29 @@ def generate_nodes(spec) -> str:
         nodes_code.extend([
             f"        {smart_defaults['exec']}",
             "",
-            "    def post(self, shared: Dict[str, Any], prep_result: Any, exec_result: Any) -> None:",
-            '        """Post-processing and result storage."""',
+            "    def post(self, shared: Dict[str, Any], prep_result: Any, exec_result: Any) -> Optional[str]:",
+            '        """',
+            '        Post-processing and result storage.',
+            '        ',
+            '        BEST PRACTICE: Store results in shared store and return flow signals.',
+            '        DO NOT: Perform heavy computation here.',
+            '        DO NOT: Call external APIs or services.',
+            '        ',
+            '        Use return values to signal flow branching (e.g., "success", "retry", "error").',
+            '        Keep this method fast and focused on data storage and routing.',
+            '        """',
             f'        logger.info(f"Post-processing for {node["name"]}")',
             "",
-            "        # Enhanced TODO guidance from framework extensions:",
+            "        # Framework guidance: Store exec_result in shared store, return flow signal",
         ])
 
         post_todos = (
             enhanced_todos[4:]
             if len(enhanced_todos) > 4
-            else ["# TODO: Customize this post logic based on your needs"]
+            else [
+                "# TODO: Store exec_result in shared store with appropriate key",
+                "# TODO: Return flow signal for branching ('success', 'error', specific state)",
+            ]
         )
         for todo in post_todos:
             nodes_code.append(f"        {todo}")
