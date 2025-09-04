@@ -12,7 +12,8 @@
       "Read(/Users/jeffkiefer/.agent-os/setup/**)",
       "Read(/Users/jeffkiefer/.agent-os/setup/**)",
       "Read(/Users/jeffkiefer/.agent-os/pocketflow-tools/**)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(python3:*)"
     ],
     "deny": [],
     "ask": [],
