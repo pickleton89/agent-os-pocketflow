@@ -180,57 +180,16 @@ This instruction file uses modular templates from:
 <step_metadata>
   <purpose>Ensure accurate date for folder naming</purpose>
   <priority>high</priority>
-  <creates>temporary file for timestamp</creates>
+  <uses>date-checker subagent</uses>
 </step_metadata>
 
 <date_determination_process>
-  <primary_method>
-    <name>File System Timestamp</name>
-    <process>
-      1. CREATE directory if not exists: .agent-os/specs/
-      2. CREATE temporary file: .agent-os/specs/.date-check
-      3. READ file creation timestamp from filesystem
-      4. EXTRACT date in YYYY-MM-DD format
-      5. DELETE temporary file
-      6. STORE date in variable for folder naming
-    </process>
-  </primary_method>
-
-  <fallback_method>
-    <trigger>if file system method fails</trigger>
-    <name>User Confirmation</name>
-    <process>
-      1. STATE: "I need to confirm today's date for the spec folder"
-      2. ASK: "What is today's date? (YYYY-MM-DD format)"
-      3. WAIT for user response
-      4. VALIDATE format matches YYYY-MM-DD
-      5. STORE date for folder naming
-    </process>
-  </fallback_method>
+  <instructions>
+    ACTION: Use the date-checker subagent to determine today's date
+    STORE: Date in YYYY-MM-DD format for folder naming
+    NOTE: The subagent will handle all validation and fallback methods
+  </instructions>
 </date_determination_process>
-
-<validation>
-  <format_check>^\d{4}-\d{2}-\d{2}$</format_check>
-  <reasonableness_check>
-    - year: 2024-2030
-    - month: 01-12
-    - day: 01-31
-  </reasonableness_check>
-</validation>
-
-<error_handling>
-  IF date_invalid:
-    USE fallback_method
-  IF both_methods_fail:
-    ERROR "Unable to determine current date"
-</error_handling>
-
-<instructions>
-  ACTION: Determine accurate date using file system
-  FALLBACK: Ask user if file system method fails
-  VALIDATE: Ensure YYYY-MM-DD format
-  STORE: Date for immediate use in next step
-</instructions>
 
 </step>
 
