@@ -3,6 +3,132 @@ from __future__ import annotations
 from typing import Any, Dict, List
 
 
+def _get_utility_guidance_comments(utility: Dict[str, Any]) -> List[str]:
+    """Generate specific guidance comments based on utility type."""
+    name = utility.get("name", "").lower()
+    description = utility.get("description", "").lower()
+    
+    # Detect utility patterns and provide specific guidance
+    if any(keyword in name or keyword in description for keyword in ["llm", "ai", "chat", "completion"]):
+        return [
+            "GUIDANCE: For LLM utilities, keep prompts simple and transparent.",
+            "- Pass prompts as clear parameters, don't construct them internally",
+            "- Avoid complex reasoning chains or decision logic",
+            "- Let nodes handle prompt construction and result processing",
+        ]
+    
+    if any(keyword in name or keyword in description for keyword in ["file", "read", "write", "load", "save"]):
+        return [
+            "GUIDANCE: For file utilities, focus on simple I/O operations.",
+            "- Handle basic file reading/writing/parsing",
+            "- Keep error handling simple (let exceptions bubble up)",
+            "- Avoid complex file processing logic",
+        ]
+    
+    if any(keyword in name or keyword in description for keyword in ["api", "http", "request", "fetch", "client"]):
+        return [
+            "GUIDANCE: For API utilities, provide clean service interfaces.",
+            "- Focus on request/response handling",
+            "- Keep authentication and retry logic simple",
+            "- Avoid business logic or complex response processing",
+        ]
+    
+    if any(keyword in name or keyword in description for keyword in ["parse", "format", "convert", "transform"]):
+        return [
+            "GUIDANCE: For data utilities, focus on simple transformations.",
+            "- Handle straightforward data format conversions",
+            "- Avoid complex data validation or business rules",
+            "- Keep transformations stateless and predictable",
+        ]
+    
+    # Generic guidance
+    return [
+        "GUIDANCE: Keep this utility simple and focused.",
+        "- Perform one clear operation",
+        "- Avoid hidden complexity or side effects",
+        "- Let nodes coordinate multiple utility calls",
+    ]
+
+
+def _get_utility_implementation_guidance(utility: Dict[str, Any], is_async: bool) -> List[str]:
+    """Generate implementation guidance comments based on utility characteristics."""
+    name = utility.get("name", "").lower()
+    description = utility.get("description", "").lower()
+    guidance = []
+    
+    # LLM-specific guidance
+    if any(keyword in name or keyword in description for keyword in ["llm", "ai", "chat", "completion"]):
+        if is_async:
+            guidance.extend([
+                "    # EXAMPLE: Simple async LLM call pattern",
+                "    # from openai import AsyncOpenAI",
+                "    # client = AsyncOpenAI()",
+                "    # response = await client.chat.completions.create(",
+                "    #     model='gpt-4',",
+                "    #     messages=[{'role': 'user', 'content': prompt}]",
+                "    # )",
+                "    # return response.choices[0].message.content",
+            ])
+        else:
+            guidance.extend([
+                "    # EXAMPLE: Simple sync LLM call pattern", 
+                "    # from openai import OpenAI",
+                "    # client = OpenAI()",
+                "    # response = client.chat.completions.create(",
+                "    #     model='gpt-4',",
+                "    #     messages=[{'role': 'user', 'content': prompt}]",
+                "    # )",
+                "    # return response.choices[0].message.content",
+            ])
+    
+    # File I/O guidance
+    elif any(keyword in name or keyword in description for keyword in ["file", "read", "write", "load", "save"]):
+        if is_async:
+            guidance.extend([
+                "    # EXAMPLE: Simple async file operations",
+                "    # import aiofiles",
+                "    # async with aiofiles.open(file_path, 'r') as f:",
+                "    #     content = await f.read()",
+                "    # return content",
+            ])
+        else:
+            guidance.extend([
+                "    # EXAMPLE: Simple sync file operations",
+                "    # with open(file_path, 'r') as f:",
+                "    #     content = f.read()",
+                "    # return content",
+            ])
+    
+    # API guidance
+    elif any(keyword in name or keyword in description for keyword in ["api", "http", "request", "fetch"]):
+        if is_async:
+            guidance.extend([
+                "    # EXAMPLE: Simple async HTTP request",
+                "    # import httpx",
+                "    # async with httpx.AsyncClient() as client:",
+                "    #     response = await client.get(url)",
+                "    #     return response.json()",
+            ])
+        else:
+            guidance.extend([
+                "    # EXAMPLE: Simple sync HTTP request",
+                "    # import requests",
+                "    # response = requests.get(url)",
+                "    # return response.json()",
+            ])
+    
+    # Generic implementation guidance
+    else:
+        guidance.extend([
+            "    # IMPLEMENTATION GUIDANCE:",
+            "    # - Keep the logic simple and focused on one task",
+            "    # - Use clear variable names and minimal complexity",
+            "    # - Let exceptions bubble up for retry handling",
+        ])
+    
+    return guidance
+
+
 def generate_utility(utility: Dict[str, Any]) -> str:
     """Generate utility function from specification.
 
@@ -11,9 +137,24 @@ def generate_utility(utility: Dict[str, Any]) -> str:
     utility_code: List[str] = [
         '"""',
         f"{utility['description']}",
+        "",
+        "BEST PRACTICE: Keep utility functions simple and transparent.",
+        "DO NOT: Hide complex reasoning or decision logic here.",
+        "Complex prompt construction belongs in nodes, not utilities.",
+        "",
+        "UTILITY RESPONSIBILITIES:",
+        "- Simple I/O operations (file read/write, API calls)",
+        "- Data formatting and parsing",
+        "- External service interfaces",
+        "",
+        "AVOID IN UTILITIES:",
+        "- Business logic or multi-step workflows",
+        "- Complex LLM reasoning or prompt construction",
+        "- State management (use SharedStore in nodes)",
+        "- Flow control or branching logic",
         '"""',
         "",
-        "from typing import Any, Optional",
+        "from typing import Any, Dict, List, Optional, Tuple, Union",
         "",
         "",
     ]
@@ -52,6 +193,9 @@ def generate_utility(utility: Dict[str, Any]) -> str:
         else f"    # {utility['name']}()"
     )
 
+    # Generate specific guidance based on utility type
+    guidance_comments = _get_utility_guidance_comments(utility)
+
     utility_code.extend(
         [
             func_def,
@@ -59,7 +203,20 @@ def generate_utility(utility: Dict[str, Any]) -> str:
             f") -> {utility.get('return_type', 'Any')}:",
             '    """',
             f"    {utility['description']}",
+            "",
+        ] + guidance_comments + [
             '    """',
+            "",
+            "    # Framework guidance: Keep this function focused and transparent",
+        ]
+    )
+
+    # Add specific implementation guidance
+    impl_guidance = _get_utility_implementation_guidance(utility, is_async_utility)
+    utility_code.extend(impl_guidance)
+
+    utility_code.extend(
+        [
             f"    # TODO: Implement {utility['name']}",
             f'    raise NotImplementedError("Utility function {utility["name"]} not implemented")',
             "",
