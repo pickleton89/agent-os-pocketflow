@@ -173,6 +173,118 @@ This instruction file uses modular templates from:
 
 </step>
 
+<step number="3.5" name="best_practices_precheck">
+
+### Step 3.5: Best Practices Pre-Check
+
+<step_metadata>
+  <purpose>Early design validation to prevent downstream issues</purpose>
+  <priority>critical - validates design feasibility</priority>
+  <educational>provides early feedback for learning</educational>
+</step_metadata>
+
+<validation_philosophy>
+  <early_detection>
+    Following PocketFlow's principle: "Humans design, agents code"
+    Catch design issues before implementation begins
+    Provide educational feedback for better decision-making
+  </early_detection>
+</validation_philosophy>
+
+<precheck_areas>
+  <requirements_analysis>
+    **Validate Requirements Fitness:**
+    - [ ] Problem is suitable for AI automation (not better solved with traditional programming)
+    - [ ] Clear input/output definitions exist
+    - [ ] Task complexity appropriate (can be broken into discrete, testable steps)
+    - [ ] Human oversight points identified vs. automatable tasks
+    
+    **Assessment Questions:**
+    - Can a human manually solve this with clear, repeatable steps?
+    - Are success criteria measurable and specific?
+    - Is this genuinely benefited by LLM capabilities vs. deterministic logic?
+  </requirements_analysis>
+  
+  <architecture_readiness>
+    **Design Foundation Check:**
+    - [ ] PocketFlow pattern selection has clear rationale
+    - [ ] Flow complexity matches problem scope (not over/under-engineered)
+    - [ ] Error handling and failure modes considered
+    - [ ] External dependencies identified and justified
+    
+    **Pattern Selection Guidance:**
+    - Simple data processing → WORKFLOW pattern
+    - Complex decision-making → AGENT pattern  
+    - Information retrieval → RAG pattern
+    - Collection processing → MAPREDUCE pattern
+  </architecture_readiness>
+  
+  <data_flow_validation>
+    **Shared Store Planning:**
+    - [ ] Data structure supports planned operations
+    - [ ] Node responsibilities clearly separable
+    - [ ] No state stored in nodes (only in shared store)
+    - [ ] Data dependencies form valid flow graph
+    
+    **Red Flags to Catch:**
+    - Circular data dependencies
+    - Monolithic data structures
+    - Unclear node boundaries
+    - Missing error data paths
+  </data_flow_validation>
+</precheck_areas>
+
+<validation_process>
+  <execution_steps>
+    1. **Requirements Fitness Review**: Evaluate each requirement against validation criteria
+    2. **Pattern Appropriateness Check**: Confirm chosen pattern matches problem characteristics
+    3. **Design Readiness Assessment**: Verify sufficient planning for next steps
+    4. **Issue Documentation**: Record any concerns or recommendations
+  </execution_steps>
+  
+  <decision_matrix>
+    IF all_validations_pass:
+      PROCEED to date determination
+    ELIF minor_issues_identified:
+      DOCUMENT recommendations and proceed with caution
+      NOTE areas for extra attention during design phase
+    ELSE major_issues_found:
+      HALT progression and request requirement clarification
+      PROVIDE specific guidance for addressing issues
+  </decision_matrix>
+</validation_process>
+
+<educational_outcomes>
+  <learning_objectives>
+    - Understand PocketFlow pattern selection rationale
+    - Recognize early warning signs of design problems
+    - Appreciate importance of clear requirements before coding
+    - Build intuition for appropriate complexity levels
+  </learning_objectives>
+  
+  <feedback_format>
+    **Validation Summary:**
+    ✅ Requirements Analysis: [PASS/CONCERN/FAIL]
+    ✅ Architecture Readiness: [PASS/CONCERN/FAIL] 
+    ✅ Data Flow Planning: [PASS/CONCERN/FAIL]
+    
+    **Recommendations:**
+    - [Specific guidance for improvement areas]
+    - [Educational notes about design decisions]
+    - [References to relevant best practices sections]
+  </feedback_format>
+</educational_outcomes>
+
+<instructions>
+  ACTION: Perform systematic pre-check validation
+  EDUCATE: Explain rationale for validation decisions
+  DOCUMENT: Record concerns and recommendations
+  DECIDE: Proceed, proceed with caution, or halt for clarification
+  REFERENCE: Link to relevant sections in @docs/POCKETFLOW_BEST_PRACTICES.md
+</instructions>
+
+</step>
+
 <step number="4" name="date_determination">
 
 ### Step 4: Date Determination
@@ -258,9 +370,169 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="5" name="spec_folder_creation">
+<step number="5" name="pattern_selection_validation">
 
-### Step 5: Spec Folder Creation
+### Step 5: Pattern Selection Validation
+
+<step_metadata>
+  <purpose>Validate chosen PocketFlow pattern and design document quality</purpose>
+  <depends_on>completed design document from step 4.5</depends_on>
+  <priority>critical - prevents antipattern implementation</priority>
+  <blocks_progression>implementation cannot proceed with invalid patterns</blocks_progression>
+</step_metadata>
+
+<validation_philosophy>
+  <design_quality_gate>
+    The design document represents the human-designed architecture.
+    This validation ensures the design follows PocketFlow best practices
+    before any code generation or implementation begins.
+  </design_quality_gate>
+</validation_philosophy>
+
+<pattern_validation_areas>
+  <pattern_appropriateness>
+    **PocketFlow Pattern Validation:**
+    - [ ] **WORKFLOW**: Simple linear/conditional flows with clear data transformations
+    - [ ] **TOOL**: Single-purpose utilities with defined input/output contracts
+    - [ ] **AGENT**: Complex decision-making with multiple interaction patterns
+    - [ ] **RAG**: Information retrieval and context-augmented generation
+    - [ ] **MAPREDUCE**: Collection processing with batch operations
+    - [ ] **STRUCTURED-OUTPUT**: Data extraction and formatting tasks
+    
+    **Pattern Selection Criteria:**
+    - Does the pattern match the problem complexity?
+    - Are the node types appropriate for the chosen pattern?
+    - Is the pattern over/under-engineered for the use case?
+  </pattern_appropriateness>
+  
+  <design_document_quality>
+    **Required Sections Validation:**
+    - [ ] Requirements section: Complete with specific PocketFlow pattern classification
+    - [ ] Flow Design: Mermaid diagram showing node connections and data flow
+    - [ ] Utilities: Input/output contracts for external integrations
+    - [ ] Data Design: Complete SharedStore schema definition
+    - [ ] Node Design: prep/exec/post specifications for chosen pattern
+    - [ ] Error Handling: Failure modes and recovery paths specified
+    
+    **Quality Indicators:**
+    - Clear separation of concerns between nodes
+    - Proper node lifecycle utilization (prep/exec/post)
+    - Realistic complexity assessment
+    - Testable component boundaries
+  </design_document_quality>
+  
+  <antipattern_detection>
+    **Early Antipattern Warning Signs:**
+    - [ ] **Monolithic Node Syndrome**: Nodes with multiple responsibilities
+    - [ ] **Lifecycle Confusion**: prep/exec/post methods with wrong responsibilities
+    - [ ] **SharedStore Violations**: Direct store access planned in exec() methods
+    - [ ] **Business Logic in Utils**: Complex decision-making in utility functions
+    - [ ] **Wrong Node Types**: Batch operations using regular Node instead of BatchNode
+    
+    **Red Flag Patterns:**
+    - Node names with multiple verbs (ProcessAndValidateNode)
+    - exec() methods planned to exceed 20 lines
+    - Utilities that contain LLM calls or business logic
+    - Direct external service calls in node methods
+  </antipattern_detection>
+</pattern_validation_areas>
+
+<validation_execution>
+  <systematic_review>
+    1. **Pattern Appropriateness Analysis**: Review chosen pattern against problem requirements
+    2. **Design Document Completeness Check**: Verify all required sections are detailed
+    3. **Node Architecture Validation**: Confirm proper single responsibility and lifecycle usage
+    4. **Data Flow Analysis**: Validate SharedStore schema and node interactions
+    5. **Antipattern Detection**: Scan for common design mistakes
+  </systematic_review>
+  
+  <validation_decision_matrix>
+    IF pattern_validated AND design_complete AND no_antipatterns:
+      APPROVE design and proceed to spec folder creation
+      LOG successful validation for reference
+    ELIF minor_issues_identified:
+      DOCUMENT specific improvement recommendations
+      REQUEST targeted design document updates
+      RETRY validation after corrections
+    ELSE major_issues_found:
+      HALT progression and require design revision
+      PROVIDE specific guidance for pattern/design fixes
+      REFERENCE relevant sections of best practices documentation
+  </validation_decision_matrix>
+</validation_execution>
+
+<validation_feedback>
+  <comprehensive_report>
+    **Pattern Selection Validation Results:**
+    
+    ✅ **Pattern Appropriateness**: [APPROVED/NEEDS_REVISION/REJECTED]
+    - Chosen Pattern: [PATTERN_NAME]
+    - Complexity Match: [APPROPRIATE/OVER_ENGINEERED/UNDER_ENGINEERED]
+    - Node Types: [CORRECT/NEEDS_ADJUSTMENT]
+    
+    ✅ **Design Document Quality**: [COMPLETE/NEEDS_WORK/INSUFFICIENT]
+    - Required Sections: [X/7] complete
+    - Mermaid Diagram: [VALID/NEEDS_REVISION/MISSING]
+    - SharedStore Schema: [COMPLETE/INCOMPLETE/UNCLEAR]
+    
+    ✅ **Antipattern Check**: [CLEAN/MINOR_CONCERNS/MAJOR_ISSUES]
+    - Single Responsibility: [PASS/FAIL]
+    - Lifecycle Usage: [CORRECT/CONFUSED/UNCLEAR]
+    - Node Type Selection: [APPROPRIATE/INCORRECT]
+    
+    **Specific Recommendations:**
+    [Detailed guidance for any identified issues]
+    
+    **Next Steps:**
+    [PROCEED/REVISE_AND_RETRY/MAJOR_REDESIGN_NEEDED]
+  </comprehensive_report>
+  
+  <educational_value>
+    **Learning Outcomes:**
+    - Understanding of chosen pattern strengths and limitations
+    - Recognition of proper node architecture principles
+    - Appreciation for design-first methodology benefits
+    - Familiarity with common antipatterns to avoid
+  </educational_value>
+</validation_feedback>
+
+<design_revision_support>
+  <common_fixes>
+    **Pattern Selection Issues:**
+    - WORKFLOW → AGENT: When decision complexity is underestimated
+    - AGENT → WORKFLOW: When complexity is overestimated
+    - Regular Node → BatchNode: When collection processing is identified
+    - Monolithic → Decomposed: When single nodes have multiple responsibilities
+    
+    **Design Document Improvements:**
+    - Add missing Mermaid diagram with proper flow notation
+    - Expand SharedStore schema with complete key definitions
+    - Separate monolithic nodes into single-responsibility components
+    - Add error handling branches to flow diagram
+  </common_fixes>
+  
+  <retry_process>
+    AFTER design_document_updates:
+      RE_RUN pattern selection validation
+      COMPARE improvements against previous validation
+      DOCUMENT lessons learned for future reference
+  </retry_process>
+</design_revision_support>
+
+<instructions>
+  ACTION: Perform comprehensive pattern and design validation
+  ANALYZE: @docs/design.md against best practices criteria
+  DETECT: Early warning signs of implementation antipatterns
+  EDUCATE: Provide specific improvement guidance when needed
+  BLOCK: Progression on major validation failures until resolved
+  REFERENCE: @docs/POCKETFLOW_BEST_PRACTICES.md for detailed guidance
+</instructions>
+
+</step>
+
+<step number="6" name="spec_folder_creation">
+
+### Step 6: Spec Folder Creation
 
 <step_metadata>
   <creates>
@@ -305,9 +577,9 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="6" name="create_spec_md">
+<step number="7" name="create_spec_md">
 
-### Step 6: Create spec.md
+### Step 7: Create spec.md
 
 <step_metadata>
   <creates>
@@ -390,16 +662,16 @@ This instruction file uses modular templates from:
 <instructions>
   ACTION: Create spec.md with all sections
   TEMPLATES: Use referenced templates for complex sections
-  FILL: Use spec details from steps 1-3
+  FILL: Use spec details from steps 1-3.5
   MAINTAIN: Clear, concise descriptions
   BLOCK: Progression on spec file creation failures
 </instructions>
 
 </step>
 
-<step number="7" name="create_technical_spec">
+<step number="8" name="create_technical_spec">
 
-### Step 7: Create Technical Specification
+### Step 8: Create Technical Specification
 
 <step_metadata>
   <creates>
@@ -456,9 +728,9 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="8" name="create_database_schema">
+<step number="9" name="create_database_schema">
 
-### Step 8: Create Database Schema (Conditional)
+### Step 9: Create Database Schema (Conditional)
 
 <step_metadata>
   <creates>
@@ -502,9 +774,9 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="9" name="create_api_spec">
+<step number="10" name="create_api_spec">
 
-### Step 9: Create API Specification (Conditional)
+### Step 10: Create API Specification (Conditional)
 
 <step_metadata>
   <creates>
@@ -533,9 +805,9 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="10" name="create_tests_spec">
+<step number="11" name="create_tests_spec">
 
-### Step 10: Create Tests Specification
+### Step 11: Create Tests Specification
 
 <step_metadata>
   <creates>
@@ -584,9 +856,9 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="11" name="user_review">
+<step number="12" name="user_review">
 
-### Step 11: User Review
+### Step 12: User Review
 
 <step_metadata>
   <action>request user review</action>
@@ -614,15 +886,15 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="12" name="create_tasks">
+<step number="13" name="create_tasks">
 
-### Step 12: Create tasks.md
+### Step 13: Create tasks.md
 
 <step_metadata>
   <creates>
     - file: tasks.md
   </creates>
-  <depends_on>user approval from step 11</depends_on>
+  <depends_on>user approval from step 12</depends_on>
 </step_metadata>
 
 <template_selection>
@@ -645,9 +917,9 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="13" name="update_cross_references">
+<step number="14" name="update_cross_references">
 
-### Step 13: Documentation Cross-References
+### Step 14: Documentation Cross-References
 
 <step_metadata>
   <updates>
@@ -680,9 +952,9 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="14" name="decision_documentation">
+<step number="15" name="decision_documentation">
 
-### Step 14: Decision Documentation
+### Step 15: Decision Documentation
 
 <step_metadata>
   <evaluates>strategic impact</evaluates>
@@ -722,9 +994,9 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="15" name="execution_readiness">
+<step number="16" name="execution_readiness">
 
-### Step 15: Execution Readiness Check
+### Step 16: Execution Readiness Check
 
 <step_metadata>
   <evaluates>readiness to begin implementation</evaluates>
