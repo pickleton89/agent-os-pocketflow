@@ -329,21 +329,99 @@ templates/examples/
 
 ### Phase 5: Integration
 
-#### Task 5.1: Update Orchestrator Agent
+#### Task 5.1: Create Lightweight PocketFlow Orchestrator Agent
 
-**What it is**: Enhance `.claude/agents/pocketflow-orchestrator.md` with best practices awareness.
+**What it is**: Create `.claude/agents/pocketflow-orchestrator.md` as a lightweight coordinator that orchestrates specialized agents while enforcing best practices and preventing antipatterns.
+
+**Context**: The original monolithic 2000-line orchestrator was refactored into specialized sub-agents. This task creates a lightweight coordinator that leverages the existing modular architecture.
 
 **How to accomplish**:
-- Add best practices checklist to agent instructions
-- Include antipattern detection prompts
-- Reference validation tools in workflow
-- Add review gates for generated code
+
+**1. Create pocketflow-orchestrator.md**
+- Location: `.claude/agents/pocketflow-orchestrator.md`
+- Structure: Follow pattern-analyzer and context-fetcher design patterns
+- Size: ~400 lines (lightweight coordinator vs original 2000)
+
+```markdown
+---
+name: pocketflow-orchestrator
+description: SHOULD BE USED PROACTIVELY for coordinating PocketFlow development workflows with automated best practices enforcement and quality gates. Orchestrates specialized agents throughout the project lifecycle.
+tools: none
+color: gold
+coordinator: true
+---
+
+You are a lightweight coordination agent that orchestrates PocketFlow development workflows while enforcing best practices and preventing common antipatterns. You act as a conductor, delegating to specialized agents while adding quality checkpoints.
+
+## Purpose
+Project-wide coordination layer that orchestrates specialized agents while enforcing PocketFlow best practices and preventing common antipatterns.
+
+## Responsibilities
+1. **Workflow Coordination**: Route tasks to appropriate specialized agents
+2. **Quality Gate Enforcement**: Apply best practices checks between phases  
+3. **Antipattern Prevention**: Detect and warn about common mistakes
+4. **Progress Reporting**: Provide semi-detailed quality reports with actionable insights
+
+## Workflow Process
+### Phase 1: Requirements Analysis
+### Phase 2: Design Validation
+### Phase 3: Implementation Coordination
+### Phase 4: Quality Assurance
+
+## Quality Gates
+### Critical (BLOCK): Python syntax errors, missing design document
+### High (WARN_STRONG): Monolithic patterns, SharedStore in exec()
+### Medium (WARN): Complex utilities, poor TODO quality
+
+## Agent Delegation Map
+- Pattern Detection → pattern-analyzer
+- Design Creation → design-document-creator
+- Strategic Planning → strategic-planner
+- Template Generation → file-creator
+- Structure Validation → template-validator
+- Configuration → dependency-orchestrator
+
+## Best Practices References
+- docs/POCKETFLOW_BEST_PRACTICES.md
+- docs/COMMON_ANTIPATTERNS.md
+- scripts/validation/validate-best-practices.py
+- pocketflow-tools/antipattern_detector.py
+
+## Invocation Interface
+Standard: claude-code agent invoke pocketflow-orchestrator --task [task]
+Override: --ignore-warnings, --force, --skip-validation
+```
+
+**2. Design Decisions**
+- **No Functional Duplication**: Coordinates existing agents, doesn't reimplement
+- **Project-Wide Scope**: Handles all PocketFlow development phases
+- **Suggested but Optional**: Recommended with clear value proposition
+- **Semi-Detailed Reporting**: Actionable insights without overwhelming detail
+- **Flexible Enforcement**: Warnings with override capability
+- **Follows Current Patterns**: Consistent with existing agent design guide
+
+**3. Update Extension File References**
+Update invocation examples in:
+- `instructions/extensions/llm-workflow-extension.md` (Line 273-294)
+- `instructions/extensions/pocketflow-integration.md` (Line 199-206)  
+- `instructions/extensions/design-first-enforcement.md` (Line 139-161)
+
+Change from hypothetical to actual agent invocation:
+```bash
+claude-code agent invoke pocketflow-orchestrator \
+    --task "create-design" \
+    --feature "document_search"
+```
 
 **What it provides**:
-- AI-assisted quality enforcement
-- Consistent application of standards
-- Reduced human review burden
-- Continuous learning loop
+- **AI-assisted quality enforcement** through coordinated agent workflow
+- **Consistent application of standards** via quality gates between phases
+- **Reduced human review burden** with automated antipattern detection
+- **Continuous learning loop** through educational reporting
+- **Maintains modular architecture** from the 2000-line refactoring
+- **Lightweight coordination** (~400 lines vs original 2000)
+- **No duplication** of existing specialized agent functionality
+- **Flexible enforcement** with override options for experienced users
 
 #### Task 5.2: Enhance Spec Creation
 
