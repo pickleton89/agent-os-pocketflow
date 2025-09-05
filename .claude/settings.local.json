@@ -14,7 +14,8 @@
       "Read(/Users/jeffkiefer/.agent-os/pocketflow-tools/**)",
       "Bash(grep:*)",
       "Bash(python3:*)",
-      "mcp__claude-context__search_code"
+      "mcp__claude-context__search_code",
+      "Bash(chmod:*)"
     ],
     "deny": [],
     "ask": [],
