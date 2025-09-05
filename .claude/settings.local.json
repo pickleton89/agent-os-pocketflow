@@ -18,7 +18,9 @@
       "Bash(chmod:*)",
       "Bash(python test:*)",
       "Bash(python:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(uv run:*)",
+      "Bash(./test-ci-workflow.sh:*)"
     ],
     "deny": [],
     "ask": [],
