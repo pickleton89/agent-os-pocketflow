@@ -236,10 +236,9 @@ class PocketFlowOrchestrator:
         try:
             cmd = [
                 "claude-code", "agent", "invoke", "pocketflow-orchestrator",
-                "--task", "create-comprehensive-design",
-                "--feature-description", feature_description,
-                "--context", json.dumps(self.context),
-                "--output-path", str(self.project_root / "docs" / "design.md")
+                "--task", "full-lifecycle",
+                "--feature", self.context["project_name"],
+                "--phase", "design"
             ]
             
             result = subprocess.run(cmd, capture_output=True, text=True, cwd=self.project_root)
@@ -260,10 +259,10 @@ class PocketFlowOrchestrator:
         try:
             cmd = [
                 "claude-code", "agent", "invoke", "pocketflow-orchestrator",
-                "--task", "detect-optimal-pattern",
-                "--feature-description", feature_description,
-                "--context", json.dumps(self.context),
-                "--return-pattern"
+                "--task", "full-lifecycle",
+                "--feature", feature_description[:50],  # Use first 50 chars as feature name
+                "--pattern", "auto-detect",
+                "--phase", "analysis"
             ]
             
             result = subprocess.run(cmd, capture_output=True, text=True, cwd=self.project_root)
@@ -286,11 +285,10 @@ class PocketFlowOrchestrator:
         try:
             cmd = [
                 "claude-code", "agent", "invoke", "pocketflow-orchestrator",
-                "--task", "generate-pocketflow-workflow",
-                "--feature-name", feature_name,
+                "--task", "full-lifecycle",
+                "--feature", feature_name,
                 "--pattern", pattern,
-                "--context", json.dumps(self.context),
-                "--project-structure", json.dumps(self._get_project_structure())
+                "--phase", "implementation"
             ]
             
             result = subprocess.run(cmd, capture_output=True, text=True, cwd=self.project_root)
@@ -328,10 +326,9 @@ class PocketFlowOrchestrator:
             
             cmd = [
                 "claude-code", "agent", "invoke", "pocketflow-orchestrator", 
-                "--task", "validate-pocketflow-implementation",
-                "--feature-name", feature_name,
-                "--workflow-file", str(workflow_file),
-                "--context", json.dumps(self.context)
+                "--task", "quality-check",
+                "--phase", "validation",
+                "--scope", f"workflow-{feature_name}"
             ]
             
             result = subprocess.run(cmd, capture_output=True, text=True, cwd=self.project_root)
@@ -392,26 +389,26 @@ develop_feature() {
     
     # Step 2: Create/update design document
     log_info "Step 2: Creating design document..."
-    if ! python "$POCKETFLOW_ORCHESTRATOR" --task create-design --description "$feature_description"; then
+    if ! claude-code agent invoke pocketflow-orchestrator --task full-lifecycle --feature "$feature_name" --phase design; then
         log_warning "Design creation failed, proceeding with manual design"
     fi
     
     # Step 3: Detect optimal pattern
     log_info "Step 3: Detecting optimal PocketFlow pattern..."
     local pattern
-    pattern=$(python "$POCKETFLOW_ORCHESTRATOR" --task detect-pattern --description "$feature_description" 2>/dev/null || echo "WORKFLOW")
+    pattern=$(claude-code agent invoke pocketflow-orchestrator --task full-lifecycle --feature "$feature_name" --pattern auto-detect --phase analysis 2>/dev/null || echo "rag")
     log_info "Selected pattern: $pattern"
     
     # Step 4: Generate workflow implementation
     log_info "Step 4: Generating PocketFlow workflow..."
-    if ! python "$POCKETFLOW_ORCHESTRATOR" --task generate-workflow --name "$feature_name" --pattern "$pattern"; then
+    if ! claude-code agent invoke pocketflow-orchestrator --task full-lifecycle --feature "$feature_name" --pattern "$pattern" --phase implementation; then
         log_error "Workflow generation failed"
         return 1
     fi
     
     # Step 5: Validate implementation
     log_info "Step 5: Validating implementation..."
-    if ! python "$POCKETFLOW_ORCHESTRATOR" --task validate --name "$feature_name"; then
+    if ! claude-code agent invoke pocketflow-orchestrator --task quality-check --phase validation --scope "workflow-$feature_name"; then
         log_warning "Implementation validation failed, manual review required"
     fi
     
@@ -495,7 +492,7 @@ case "$1" in
             log_error "Usage: $0 validate <feature_name>"
             exit 1
         fi
-        python "$POCKETFLOW_ORCHESTRATOR" --task validate --name "$2"
+        claude-code agent invoke pocketflow-orchestrator --task quality-check --phase validation --scope "workflow-$2"
         ;;
     "help"|"--help"|"-h"|"")
         show_help

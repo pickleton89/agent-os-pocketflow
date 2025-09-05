@@ -65,7 +65,7 @@ validate_design_document() {
     # Check design document exists
     if [[ ! -f "$design_file" ]]; then
         echo "❌ Design document missing: $design_file"
-        echo "💡 Create design document: claude-code agent invoke pocketflow-orchestrator --task create-design"
+        echo "💡 Create design document: claude-code agent invoke pocketflow-orchestrator --task full-lifecycle --phase design --feature $(basename $(pwd))"
         return 1
     fi
     
@@ -148,21 +148,20 @@ invoke_design_orchestrator() {
     case "$task" in
         "create-design")
             claude-code agent invoke pocketflow-orchestrator \
-                --task "Create comprehensive design document" \
-                --context "$(pwd)" \
-                --requirements "$(cat requirements.txt 2>/dev/null || echo 'No requirements.txt found')"
+                --task "full-lifecycle" \
+                --feature "$(basename $(pwd))" \
+                --phase "design"
             ;;
         "complete-design") 
             claude-code agent invoke pocketflow-orchestrator \
-                --task "Complete missing design sections" \
-                --context "$(pwd)" \
-                --design-file "docs/design.md"
+                --task "quality-check" \
+                --phase "design" \
+                --scope "design-completeness"
             ;;
         "validate-design")
             claude-code agent invoke pocketflow-orchestrator \
-                --task "Validate design completeness" \
-                --context "$(pwd)" \
-                --design-file "docs/design.md"
+                --task "quality-check" \
+                --phase "design"
             ;;
     esac
 }

@@ -276,24 +276,23 @@ invoke_llm_orchestrator() {
     case "$task" in
         "detect-pattern")
             claude-code agent invoke pocketflow-orchestrator \
-                --task "Analyze feature requirements and recommend PocketFlow pattern" \
-                --context "$(pwd)" \
-                --feature-description "$(cat docs/requirements.md 2>/dev/null)" \
-                --llm-focus "true"
+                --task "full-lifecycle" \
+                --feature "$feature_name" \
+                --pattern "auto-detect" \
+                --phase "analysis"
             ;;
         "generate-workflow")
             claude-code agent invoke pocketflow-orchestrator \
-                --task "Generate LLM/AI workflow implementation" \
-                --context "$(pwd)" \
+                --task "full-lifecycle" \
+                --feature "$feature_name" \
                 --pattern "$pattern" \
-                --feature-name "$feature_name" \
-                --llm-integration "true"
+                --phase "implementation"
             ;;
         "validate-llm-workflow")
             claude-code agent invoke pocketflow-orchestrator \
-                --task "Validate LLM workflow implementation" \
-                --context "$(pwd)" \
-                --workflow-file ".agent-os/workflows/${feature_name}.py"
+                --task "quality-check" \
+                --phase "validation" \
+                --scope "workflow-${feature_name}"
             ;;
     esac
 }
