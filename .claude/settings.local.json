@@ -20,7 +20,8 @@
       "Bash(python:*)",
       "Bash(git restore:*)",
       "Bash(uv run:*)",
-      "Bash(./test-ci-workflow.sh:*)"
+      "Bash(./test-ci-workflow.sh:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": [],
