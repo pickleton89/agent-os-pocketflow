@@ -15,7 +15,10 @@
       "Bash(grep:*)",
       "Bash(python3:*)",
       "mcp__claude-context__search_code",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(python test:*)",
+      "Bash(python:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "ask": [],
