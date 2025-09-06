@@ -1,5 +1,7 @@
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
+import logging
+import re
 
 from pocketflow_tools.spec import WorkflowSpec
 from pocketflow_tools.generators.template_engine import TemplateEngine
@@ -27,6 +29,174 @@ from pocketflow_tools.generators.config_generators import (
     generate_basic_pyproject,
 )
 from pocketflow_tools.generators.context import GenerationContext
+
+
+def _is_likely_plural(name: str) -> bool:
+    """Check if a name is likely plural. Reused from _detect_batch_patterns logic."""
+    if not name or not isinstance(name, str):
+        return False
+        
+    name_lower = name.lower()
+    
+    # Common plural patterns
+    if name_lower.endswith(('s', 'es', 'ies', 'ves')):
+        # False positives - words that end in these patterns but aren't plural
+        false_positives = {
+            'process', 'address', 'analysis', 'class', 'pass',
+            'access', 'success', 'express', 'suppress', 'progress',
+            'business', 'status', 'focus', 'basis', 'crisis', 'stress',
+            'eness', 'ness'  # Common suffixes that aren't plural
+        }
+        
+        # Check if the entire name ends with a false positive word
+        if any(name_lower.endswith(fp) for fp in false_positives):
+            return False
+            
+        # Additional check: avoid very short names that might be acronyms
+        if len(name_lower) <= 3:
+            return False
+            
+        return True
+    return False
+
+
+def _get_collection_keywords():
+    """Get collection keywords. Consistent with _detect_batch_patterns."""
+    return {
+        'files', 'documents', 'document', 'items', 'records', 'entries', 'elements',
+        'data', 'chunks', 'pieces', 'segments', 'batches', 'groups',
+        'collections', 'collection', 'lists', 'arrays', 'datasets', 'sources',
+        'inputs', 'outputs', 'results', 'responses', 'queries'
+    }
+
+
+def _get_batch_node_types():
+    """Get batch node types. Consistent with _detect_batch_patterns."""
+    return {'BatchNode', 'AsyncBatchNode', 'AsyncParallelBatchNode'}
+
+
+def has_collection_processing(spec: WorkflowSpec) -> bool:
+    """Detect if the spec involves collection/batch processing patterns."""
+    if not spec or not hasattr(spec, 'nodes') or not spec.nodes:
+        return False
+    
+    collection_keywords = _get_collection_keywords()
+    
+    for node in spec.nodes:
+        if not isinstance(node, dict):
+            continue
+            
+        node_name = node.get('name', '')
+        node_desc = node.get('description', '')
+        
+        # Check for plural forms in node names (using improved logic)
+        if _is_likely_plural(node_name):
+            return True
+            
+        # Check for collection keywords in descriptions (using regex word extraction)
+        if node_desc:
+            node_desc_lower = node_desc.lower()
+            desc_words = set(re.findall(r'\b\w+\b', node_desc_lower))
+            if desc_words & collection_keywords:
+                return True
+                
+        # Check for explicit multiple item mentions
+        if node_desc:
+            node_desc_lower = node_desc.lower()
+            plural_phrases = ['multiple', 'many', 'all', 'each', 'every', 'several', 'various']
+            if any(phrase in node_desc_lower for phrase in plural_phrases):
+                return True
+    
+    return False
+
+
+def uses_batch_nodes(spec: WorkflowSpec) -> bool:
+    """Check if the spec uses any BatchNode variants."""
+    if not spec or not hasattr(spec, 'nodes') or not spec.nodes:
+        return False
+    
+    batch_node_types = _get_batch_node_types()
+    
+    for node in spec.nodes:
+        if isinstance(node, dict):
+            node_type = node.get('type', 'Node')
+            if node_type in batch_node_types:
+                return True
+    
+    return False
+
+
+def has_trivial_utilities(spec: WorkflowSpec) -> bool:
+    """Detect if utilities contain predominantly simple I/O operations."""
+    if not spec or not hasattr(spec, 'utilities') or not spec.utilities:
+        return False
+    
+    trivial_indicators = {
+        'read', 'write', 'load', 'save', 'get', 'set', 'fetch', 'store',
+        'file', 'json', 'csv', 'txt', 'parse', 'format'
+    }
+    
+    complex_indicators = {
+        'llm', 'ai', 'analyze', 'process', 'transform', 'reasoning', 
+        'generate', 'classify', 'extract', 'summarize', 'translate'
+    }
+    
+    trivial_count = 0
+    complex_count = 0
+    
+    for utility in spec.utilities:
+        if not isinstance(utility, dict):
+            continue
+            
+        util_name = utility.get('name', '').lower()
+        util_desc = utility.get('description', '').lower()
+        
+        # Use regex for better word extraction
+        name_words = set(re.findall(r'\b\w+\b', util_name.replace('_', ' ')))
+        desc_words = set(re.findall(r'\b\w+\b', util_desc)) if util_desc else set()
+        
+        all_words = name_words | desc_words
+        
+        # Check if utility suggests simple I/O
+        if all_words & trivial_indicators:
+            # Only count as trivial if there's no indication of complex processing
+            if not (all_words & complex_indicators):
+                trivial_count += 1
+        elif all_words & complex_indicators:
+            complex_count += 1
+    
+    # Return True if we have trivial utilities and no complex ones, 
+    # or if trivial utilities significantly outnumber complex ones
+    total_utilities = len(spec.utilities)
+    if total_utilities == 0:
+        return False
+        
+    return trivial_count > 0 and (complex_count == 0 or trivial_count >= complex_count * 2)
+
+
+def pre_generation_check(spec: WorkflowSpec) -> Dict[str, List[str]]:
+    """Validate spec before code generation begins.
+    
+    Returns dict with 'warnings' and 'errors' lists to match existing validation patterns.
+    """
+    warnings = []
+    errors = []
+    
+    # Check 1: Collection processing without batch nodes
+    if has_collection_processing(spec) and not uses_batch_nodes(spec):
+        warnings.append(
+            "Consider BatchNode for collection processing - detected batch patterns but using regular Node types. "
+            "BatchNodes provide better performance and error handling for multiple items."
+        )
+    
+    # Check 2: Trivial utilities
+    if has_trivial_utilities(spec):
+        warnings.append(
+            "Move simple I/O operations to node prep() methods instead of utilities. "
+            "Reserve utilities for complex business logic and external integrations."
+        )
+    
+    return {"warnings": warnings, "errors": errors}
 
 
 class PocketFlowGenerator:
@@ -346,6 +516,23 @@ class PocketFlowGenerator:
         
         # Enrich spec with pattern-specific nodes, utilities, and endpoints
         enriched_spec = self._enrich_spec_with_pattern_nodes(spec_with_patterns)
+        
+        # Run pre-generation validation checks
+        validation_results = pre_generation_check(enriched_spec)
+        
+        # Log validation results if any issues found
+        logger = logging.getLogger(__name__)
+        
+        if validation_results["warnings"]:
+            logger.warning("Pre-generation validation found potential issues:")
+            for warning in validation_results["warnings"]:
+                logger.warning(f"  - {warning}")
+                
+        if validation_results["errors"]:
+            # Future: could raise exception to block generation based on errors
+            logger.error("Pre-generation validation found critical issues:")
+            for error in validation_results["errors"]:
+                logger.error(f"  - {error}")
         
         output_files = {}
         
