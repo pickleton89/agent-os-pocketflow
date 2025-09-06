@@ -23,7 +23,8 @@
       "Bash(./test-ci-workflow.sh:*)",
       "Bash(git checkout:*)",
       "mcp__graphiti__search_memory_facts",
-      "mcp__claude-context__index_codebase"
+      "mcp__claude-context__index_codebase",
+      "Bash(./scripts/run-all-tests.sh:*)"
     ],
     "deny": [],
     "ask": [],
