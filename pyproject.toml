@@ -9,9 +9,13 @@ description = "Agent OS + PocketFlow Framework - Meta-system for generating Pock
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.104.0",
-    "pytest>=8.4.1",
     "pyyaml>=6.0.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4.1",
+    "ruff>=0.1.0",
 ]
 
 [tool.setuptools.packages.find]

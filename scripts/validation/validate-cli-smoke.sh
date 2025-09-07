@@ -11,6 +11,7 @@ cd "$ROOT_DIR"
 echo "[cli-smoke] Using Python: $(python3 -V 2>/dev/null || echo 'python3 not found')"
 
 # Check PyYAML availability; do not install here to keep framework clean
+set +e
 python3 - << 'PY' 2>/dev/null
 try:
     import yaml  # noqa: F401
@@ -18,6 +19,7 @@ try:
 except Exception:
     raise SystemExit(1)
 PY
+set -e
 if [ $? -ne 0 ]; then
   echo "[cli-smoke] SKIP: PyYAML not available. Install with: uv pip install pyyaml" >&2
   exit 0
@@ -27,7 +29,7 @@ echo "[cli-smoke] PyYAML detected. Running tests..."
 
 # 0) Help command
 set +e
-out=$(python3 -m pocketflow_tools.cli --help 2>&1)
+out=$(uv run python -m pocketflow_tools.cli --help 2>&1)
 code=$?
 set -e
 echo "$out" | rg -n "Generate PocketFlow workflows from specifications" >/dev/null || {
@@ -36,7 +38,7 @@ test "$code" -eq 0 || { echo "[cli-smoke] FAIL: Help should return zero"; exit 1
 
 # 1) Missing file
 set +e
-out=$(python3 -m pocketflow_tools.cli --spec does-not-exist.yaml 2>&1)
+out=$(uv run python -m pocketflow_tools.cli --spec does-not-exist.yaml 2>&1)
 code=$?
 set -e
 echo "$out" | rg -n "Error: Specification file not found" >/dev/null || {
@@ -47,7 +49,7 @@ test "$code" -ne 0 || { echo "[cli-smoke] FAIL: Missing file should return non-z
 tmp_yaml="$(mktemp -t invalid-spec.XXXXXX.yaml)"
 printf 'name: "BadSpec"\npattern: [unterminated\n' > "$tmp_yaml"
 set +e
-out=$(python3 -m pocketflow_tools.cli --spec "$tmp_yaml" 2>&1)
+out=$(uv run python -m pocketflow_tools.cli --spec "$tmp_yaml" 2>&1)
 code=$?
 set -e
 rm -f "$tmp_yaml"
@@ -58,7 +60,7 @@ test "$code" -ne 0 || { echo "[cli-smoke] FAIL: Invalid YAML should return non-z
 # 3) Valid generation (agent example)
 outdir=".agent-os/workflows/cli-smoke"
 rm -rf "$outdir" || true
-python3 -m pocketflow_tools.cli \
+uv run python -m pocketflow_tools.cli \
   --spec pocketflow-tools/examples/agent-workflow-spec.yaml \
   --output "$outdir"
 

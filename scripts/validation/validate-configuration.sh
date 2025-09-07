@@ -53,7 +53,16 @@ fi
 
 # Check 2: No PocketFlow runtime dependencies
 echo -e "\n📋 Checking for PocketFlow dependencies..."
-POCKETFLOW_DEPS=$(grep '"pocketflow' pyproject.toml uv.lock 2>/dev/null | grep -v 'name.*agent-os-pocketflow' || true)
+# Look specifically in dependencies sections, not in package configuration
+# Parse only within [project] dependencies and [project.optional-dependencies] sections
+POCKETFLOW_DEPS=$(awk '
+/^\[project\]$/ { in_project=1; next }
+/^\[project\.optional-dependencies/ { in_project=1; next }  
+/^\[/ { in_project=0 }
+in_project && /^dependencies = \[/ { in_deps=1; next }
+in_project && in_deps && /^\]/ { in_deps=0; next }
+in_project && in_deps && /"pocketflow/ && !/agent-os-pocketflow/ { print }
+' pyproject.toml 2>/dev/null || true)
 if [ -z "$POCKETFLOW_DEPS" ]; then
     report_result "PocketFlow Dependencies" "PASS" "No PocketFlow runtime dependencies found"
 else

@@ -191,7 +191,7 @@ def test_generator():
         print("+ Generator created successfully")
 
         # Check if templates are loaded
-        print(f"  Templates loaded: {list(generator.templates.keys())}")
+        print(f"  Templates loaded: {list(generator.context.templates.keys())}")
 
         return generator
     except Exception as e:

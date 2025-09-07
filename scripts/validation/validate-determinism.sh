@@ -82,7 +82,7 @@ EOF
     
     # Generate workflow using CLI
     local output_dir="$TEST_OUTPUT_DIR/$test_name"
-    if ! python3 -m pocketflow_tools.cli --spec "$spec_file" --output "$TEST_OUTPUT_DIR" 2>/dev/null; then
+    if ! uv run python -m pocketflow_tools.cli --spec "$spec_file" --output "$TEST_OUTPUT_DIR" 2>/dev/null; then
         log_error "$pattern: CLI generation failed"
         FAILED_PATTERNS+=("$pattern (CLI generation failed)")
         return 1

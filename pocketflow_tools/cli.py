@@ -11,21 +11,11 @@ from __future__ import annotations
 import argparse
 from typing import Any
 
-try:
-    import yaml  # type: ignore
-    YAML_AVAILABLE = True
-except Exception:  # pragma: no cover - optional at runtime
-    YAML_AVAILABLE = False
-
 from pocketflow_tools.generators.workflow_composer import PocketFlowGenerator
 from pocketflow_tools.spec import WorkflowSpec
 
 
 def main() -> int:
-    if not YAML_AVAILABLE:
-        print("Error: PyYAML is required for CLI usage. Install with: pip install pyyaml")
-        return 1
-
     parser = argparse.ArgumentParser(
         description="Generate PocketFlow workflows from specifications"
     )
@@ -33,6 +23,13 @@ def main() -> int:
     parser.add_argument("--output", help="Output directory (default: .agent-os/workflows)")
 
     args = parser.parse_args()
+
+    # Check PyYAML availability only after parsing args (allows --help to work)
+    try:
+        import yaml  # type: ignore
+    except ImportError:
+        print("Error: PyYAML is required for CLI usage. Install with: uv pip install pyyaml")
+        return 1
 
     # Load specification
     try:

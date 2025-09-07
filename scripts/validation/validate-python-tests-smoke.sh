@@ -34,10 +34,10 @@ main() {
   log_info "Starting Python smoke tests (framework)"
 
   # Run generator smoke
-  run_py "generator smoke" python3 pocketflow-tools/test-generator.py
+  run_py "generator smoke" uv run python pocketflow-tools/test-generator.py
 
   # Run dependency orchestrator smoke
-  run_py "dependency orchestrator smoke" python3 pocketflow-tools/test_dependency_orchestrator_simple.py
+  run_py "dependency orchestrator smoke" uv run python pocketflow-tools/test_dependency_orchestrator_simple.py
 
   log_success "All smoke tests passed"
 }

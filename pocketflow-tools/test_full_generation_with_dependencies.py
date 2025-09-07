@@ -151,17 +151,18 @@ def test_dependency_coordination():
         generator = PocketFlowGenerator()
         
         # Test dependency config generation
-        config = generator.generate_dependency_config("RAG")
+        from pocketflow_tools.generators.config_generators import generate_basic_dependency_config
+        config = generate_basic_dependency_config("RAG")
         
-        assert hasattr(config, 'base_dependencies')
-        assert hasattr(config, 'pattern_dependencies')
-        assert hasattr(config, 'dev_dependencies')
-        assert hasattr(config, 'tool_configs')
+        assert 'base_dependencies' in config
+        assert 'pattern_dependencies' in config
+        assert 'dev_dependencies' in config
+        assert 'tool_configs' in config
         
         print("  SUCCESS: Dependency orchestrator coordination works")
-        print(f"  SUCCESS: Config has {len(config.base_dependencies)} base deps")
-        print(f"  SUCCESS: Config has {len(config.pattern_dependencies)} pattern deps")
-        print(f"  SUCCESS: Config has {len(config.dev_dependencies)} dev deps")
+        print(f"  SUCCESS: Config has {len(config['base_dependencies'])} base deps")
+        print(f"  SUCCESS: Config has {len(config['pattern_dependencies'])} pattern deps")
+        print(f"  SUCCESS: Config has {len(config['dev_dependencies'])} dev deps")
         
         return True
         

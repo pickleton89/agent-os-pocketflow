@@ -100,7 +100,7 @@ check_prerequisites() {
     done
     
     # Check that PocketFlow tools CLI is available
-    if [[ -d "$PROJECT_ROOT/pocketflow_tools" ]] && python3 -m pocketflow_tools.cli --help >/dev/null 2>&1; then
+    if [[ -d "$PROJECT_ROOT/pocketflow_tools" ]] && uv run python -m pocketflow_tools.cli --help >/dev/null 2>&1; then
         log_info "Using pocketflow_tools package CLI"
     else
         log_error "pocketflow_tools CLI not found"
