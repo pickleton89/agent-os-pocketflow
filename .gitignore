@@ -86,3 +86,6 @@ test-user-experience/
 
 # Agent OS workspace
 .agent-os/
+
+# Local agent run artifacts
+.code/
