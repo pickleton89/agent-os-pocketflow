@@ -477,9 +477,42 @@ install_pocketflow_tools() {
         exit 1
     fi
     
+    # Ensure pocketflow-tools directory exists
+    mkdir -p ".agent-os/pocketflow-tools"
+    
+    # Copy developer tools from base installation or framework
+    if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/pocketflow-tools" ]]; then
+        log_info "Copying PocketFlow developer tools from base installation..."
+        if safe_copy "$BASE_INSTALL_PATH/pocketflow-tools" ".agent-os/pocketflow-tools-temp" "pocketflow-tools"; then
+            # Move contents to target directory (including subdirectories)
+            cp -r ".agent-os/pocketflow-tools-temp"/* ".agent-os/pocketflow-tools/" 2>/dev/null || true
+            rm -rf ".agent-os/pocketflow-tools-temp"
+            log_success "Copied PocketFlow developer tools"
+        else
+            log_error "Failed to copy PocketFlow developer tools"
+            exit 1
+        fi
+    else
+        # Fallback: Copy from framework repository if available
+        local script_realpath
+        script_realpath="$(realpath "$0" 2>/dev/null)" || script_realpath="$0"
+        local framework_tools_dir="$(dirname "$(dirname "$script_realpath")")/pocketflow-tools"
+        if [[ -d "$framework_tools_dir" ]]; then
+            log_info "Copying PocketFlow developer tools from framework..."
+            # Copy all files and subdirectories from framework
+            cp -r "$framework_tools_dir"/* ".agent-os/pocketflow-tools/" 2>/dev/null || true
+            log_success "Copied PocketFlow developer tools from framework"
+        else
+            log_warning "PocketFlow developer tools not found - agents may have limited functionality"
+        fi
+    fi
+    
     # Install templates
     if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/templates" ]]; then
-        if safe_copy "$BASE_INSTALL_PATH/templates"/* ".agent-os/templates/" "templates"; then
+        if safe_copy "$BASE_INSTALL_PATH/templates" ".agent-os/templates-temp" "templates"; then
+            # Move contents to target directory
+            cp -r ".agent-os/templates-temp"/* ".agent-os/templates/" 2>/dev/null || true
+            rm -rf ".agent-os/templates-temp"
             log_success "Copied templates from base installation"
         else
             log_warning "Failed to copy templates from base installation"
