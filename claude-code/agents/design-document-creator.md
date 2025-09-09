@@ -240,8 +240,95 @@ class SharedStore(BaseModel):
 
 - **Triggers**: Auto-invoked when specs require LLM/AI features
 - **Coordinates With**: pattern-analyzer for pattern validation, file-creator for document creation
+- **Workflow Graph Generation**: Leverages workflow_graph_generator.py for Mermaid diagrams
 - **Reads From**: .agent-os/specs/, existing project documentation
 - **Writes To**: docs/design.md, updates project documentation
+
+### ToolCoordinator Integration
+
+```python
+# TODO: Integrate with ToolCoordinator for comprehensive workflow generation
+import sys
+sys.path.append('.agent-os/pocketflow-tools')
+from coordinator import ToolCoordinator
+
+def coordinate_design_generation(project_name: str, pattern: str, requirements: str = "") -> dict:
+    """Coordinate design document generation using ToolCoordinator."""
+    
+    # TODO: Initialize tool coordinator
+    # coordinator = ToolCoordinator()
+    
+    # TODO: Generate workflow graph for design document
+    # graph_result = coordinator.generate_workflow_graph(pattern, requirements, "medium")
+    
+    # TODO: Get pattern-specific design recommendations
+    # analysis_result = coordinator.analyze_pattern(project_name, requirements)
+    
+    # TODO: Combine results for comprehensive design document
+    # return {
+    #     "workflow_graph": graph_result["workflow_graph"],
+    #     "mermaid_diagram": graph_result["mermaid_diagram"],
+    #     "pattern_analysis": analysis_result,
+    #     "design_context": prepare_design_context(analysis_result, graph_result)
+    # }
+    
+    raise NotImplementedError("Implement ToolCoordinator integration for design document generation")
+```
+
+### Workflow Graph Generation Template
+
+When creating design documents, integrate workflow graph generation using the following template:
+
+```python
+# TODO: Integrate workflow graph generation based on selected pattern
+# Example workflow graph generation for design documents
+from pocketflow_tools.workflow_graph_generator import WorkflowGraphGenerator, PatternType
+
+def generate_design_workflow_graph(pattern: PatternType, requirements: str) -> str:
+    """Generate Mermaid diagram for design document based on pattern."""
+    
+    # TODO: Initialize workflow graph generator
+    # generator = WorkflowGraphGenerator()
+    
+    # TODO: Generate workflow graph based on detected pattern
+    # workflow_graph = generator.generate_workflow_graph(
+    #     pattern=pattern,
+    #     requirements=requirements,
+    #     complexity_level="medium"  # Adjust based on requirements analysis
+    # )
+    
+    # TODO: Convert to Mermaid diagram for design document
+    # mermaid_diagram = generator.generate_mermaid_diagram(workflow_graph)
+    
+    # TODO: Return formatted diagram for inclusion in design.md
+    # return mermaid_diagram
+    
+    raise NotImplementedError("Implement workflow graph generation for your specific design patterns")
+
+# TODO: Pattern-specific workflow generation examples
+def generate_rag_workflow_example():
+    """Example: Generate RAG pattern workflow for design document."""
+    # Shows how to create Document → Embedding → Retrieval → LLM flow
+    pass
+
+def generate_agent_workflow_example():
+    """Example: Generate Agent pattern workflow for design document."""
+    # Shows how to create Task Analysis → Planning → Reasoning → Action flow
+    pass
+
+def generate_multi_agent_workflow_example():
+    """Example: Generate Multi-Agent pattern workflow for design document."""
+    # Shows how to create Coordinator → Specialists → Consensus → Integration flow
+    pass
+```
+
+### Workflow Graph Integration Process
+
+1. **Pattern Detection**: Identify primary pattern from requirements analysis
+2. **Graph Generation**: Use WorkflowGraphGenerator to create workflow structure
+3. **Mermaid Conversion**: Generate diagram syntax for design document inclusion
+4. **Design Integration**: Embed generated diagram in design.md architecture section
+5. **Customization Guidance**: Provide pattern-specific customization instructions
 
 ## Success Indicators
 

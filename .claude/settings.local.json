@@ -30,7 +30,8 @@
       "Bash(./run.sh:*)",
       "Bash(.agent-os/pocketflow-tools/run.sh check-pocketflow-install:*)",
       "Bash(.agent-os/pocketflow-tools/run.sh:*)",
-      "Read(//private/tmp/test-pocketflow-install/**)"
+      "Read(//private/tmp/test-pocketflow-install/**)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": [],

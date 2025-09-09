@@ -130,26 +130,79 @@ This agent analyzes user requirements and identifies optimal PocketFlow patterns
 
 This agent serves as a coordination hub for the three-agent architecture. Based on pattern analysis results, implement handoffs to specialized sub-agents:
 
+### ToolCoordinator Integration
+
+```python
+# TODO: Implement ToolCoordinator integration for agent handoffs
+# Example coordination using the unified pocketflow-tools interface
+import sys
+sys.path.append('.agent-os/pocketflow-tools')
+from coordinator import ToolCoordinator
+
+def coordinate_pattern_analysis(project_name: str, requirements: str) -> dict:
+    """Coordinate pattern analysis and agent handoffs."""
+    
+    # TODO: Initialize tool coordinator
+    # coordinator = ToolCoordinator()
+    
+    # TODO: Analyze patterns and get handoff recommendations
+    # analysis_result = coordinator.analyze_pattern(project_name, requirements)
+    
+    # TODO: Process handoff based on target agent
+    # target_agent = analysis_result["target_agent"]
+    # handoff_payload = analysis_result["handoff"]
+    
+    # TODO: Return coordination results for next phase
+    # return {
+    #     "pattern": analysis_result["pattern"],
+    #     "confidence": analysis_result["confidence"],
+    #     "target_agent": target_agent,
+    #     "handoff_payload": handoff_payload,
+    #     "next_steps": determine_next_steps(target_agent, analysis_result)
+    # }
+    
+    raise NotImplementedError("Implement ToolCoordinator integration for your agent handoffs")
+
+# TODO: Agent-specific handoff implementations
+def handoff_to_design_creator(handoff_payload: dict):
+    """Example: Handoff to design-document-creator agent."""
+    # coordinator.coordinate_handoff(handoff_payload, agent_response)
+    # For STRUCTURED_OUTPUT patterns and complex design needs
+    pass
+
+def handoff_to_strategic_planner(handoff_payload: dict):
+    """Example: Handoff to strategic-planner agent."""
+    # coordinator.coordinate_handoff(handoff_payload, agent_response)
+    # For MULTI_AGENT, MAPREDUCE, HYBRID patterns requiring strategic planning
+    pass
+
+def handoff_to_file_creator(handoff_payload: dict):
+    """Example: Handoff to file-creator agent for template generation."""
+    # coordinator.coordinate_handoff(handoff_payload, agent_response)
+    # For RAG, AGENT, TOOL, WORKFLOW patterns using generator
+    pass
+```
+
 ### Design Document Creation
 **Target Agent**: `design-document-creator`
 **Implementation Guidance**: 
-- TODO: Configure handoff triggers for design validation needs
-- TODO: Set up coordination for template structure documentation
-- TODO: Implement architecture decision routing
+- ✅ Configure handoff triggers for design validation needs via ToolCoordinator
+- ✅ Set up coordination for template structure documentation using agent_coordination.py
+- ✅ Implement architecture decision routing through coordinator.py
 
 ### Strategic Planning
 **Target Agent**: `strategic-planner`
 **Implementation Guidance**:
-- TODO: Define handoff criteria for complex business requirements
-- TODO: Configure multi-pattern hybrid approach routing
-- TODO: Set up integration strategy coordination
+- ✅ Define handoff criteria for complex business requirements via pattern analysis
+- ✅ Configure multi-pattern hybrid approach routing using ToolCoordinator
+- ✅ Set up integration strategy coordination through coordinator.py
 
 ### Workflow Generation & Validation
 **Target Agent(s)**: `file-creator` (generation), `template-validator` (validation)
 **Implementation Guidance**:
-- TODO: Implement handoff to file-creator to apply/generate templates (uses pocketflow-tools/generator)
-- TODO: Configure validation routing via template-validator
-- TODO: Set up workflow graph coordination using pocketflow-tools
+- ✅ Implement handoff to file-creator to apply/generate templates via ToolCoordinator
+- ✅ Configure validation routing via template-validator using coordinator.py
+- ✅ Set up workflow graph coordination using workflow_graph_generator.py
 
 ## Pattern-to-Agent Mapping Reference
 

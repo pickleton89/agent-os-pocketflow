@@ -145,3 +145,117 @@ This agent manages Python tooling configuration and dependency specifications fo
 2. **Status Report**: Generate comprehensive configuration summary
 3. **Integration Notes**: Prepare context for next workflow steps
 4. **Error Handling**: Report any issues or missing requirements
+
+## Dependency Generation Implementation
+
+### ToolCoordinator Integration
+
+```python
+# TODO: Integrate with ToolCoordinator for unified dependency management
+import sys
+sys.path.append('.agent-os/pocketflow-tools')
+from coordinator import ToolCoordinator
+
+def coordinate_dependency_generation(project_name: str, pattern: str, requirements: str = "") -> dict:
+    """Coordinate dependency generation using ToolCoordinator."""
+    
+    # TODO: Initialize tool coordinator
+    # coordinator = ToolCoordinator()
+    
+    # TODO: Generate comprehensive dependency configuration
+    # deps_result = coordinator.generate_dependencies(project_name, pattern)
+    
+    # TODO: Get pattern analysis for additional context
+    # analysis_result = coordinator.analyze_pattern(project_name, requirements)
+    
+    # TODO: Combine results for complete dependency setup
+    # return {
+    #     "dependency_config": deps_result,
+    #     "pattern_context": analysis_result,
+    #     "integration_status": validate_dependency_integration(deps_result, analysis_result)
+    # }
+    
+    raise NotImplementedError("Implement ToolCoordinator integration for dependency management")
+```
+
+### Core Invocation Code
+
+```python
+# TODO: Implement dependency orchestration using the pocketflow-tools module
+# Example dependency generation for PocketFlow templates
+from pocketflow_tools.dependency_orchestrator import DependencyOrchestrator, PyProjectConfig
+
+def generate_template_dependencies(pattern: str, project_name: str, requirements: str = "") -> dict:
+    """Generate dependency configuration for PocketFlow template."""
+    
+    # TODO: Initialize dependency orchestrator
+    # orchestrator = DependencyOrchestrator()
+    
+    # TODO: Generate pattern-specific configuration
+    # config = orchestrator.generate_config_for_pattern(pattern)
+    
+    # TODO: Create pyproject.toml content
+    # pyproject_content = orchestrator.generate_pyproject_toml(project_name, pattern)
+    
+    # TODO: Generate tool configurations (ruff, pytest, etc.)
+    # tool_configs = orchestrator.generate_tool_configs(pattern)
+    
+    # TODO: Create UV environment configuration
+    # uv_config = orchestrator.generate_uv_config(project_name, pattern)
+    
+    # TODO: Return complete configuration package
+    # return {
+    #     "pyproject.toml": pyproject_content,
+    #     "tool_configs": tool_configs,
+    #     "uv_config": uv_config,
+    #     "dependency_summary": config
+    # }
+    
+    raise NotImplementedError("Implement dependency orchestration for your specific project patterns")
+
+# TODO: Pattern-specific dependency generation examples
+def generate_rag_dependencies(project_name: str):
+    """Example: Generate RAG pattern dependencies."""
+    # Shows ChromaDB, sentence-transformers, vector database dependencies
+    # orchestrator.generate_config_for_pattern("RAG")
+    pass
+
+def generate_agent_dependencies(project_name: str):
+    """Example: Generate Agent pattern dependencies."""
+    # Shows OpenAI, LLM client, reasoning libraries
+    # orchestrator.generate_config_for_pattern("AGENT")
+    pass
+
+def generate_tool_dependencies(project_name: str):
+    """Example: Generate Tool pattern dependencies."""
+    # Shows API clients, integration libraries, data processing
+    # orchestrator.generate_config_for_pattern("TOOL")
+    pass
+
+def generate_multi_agent_dependencies(project_name: str):
+    """Example: Generate Multi-Agent pattern dependencies."""
+    # Shows coordination libraries, consensus management, agent communication
+    # orchestrator.generate_config_for_pattern("MULTI-AGENT")
+    pass
+```
+
+### Integration Process
+
+1. **Pattern Analysis**: Determine dependency requirements from pattern type
+2. **Configuration Generation**: Use DependencyOrchestrator to create configs
+3. **Tool Setup**: Generate ruff, pytest, and development tool configurations
+4. **Environment Creation**: Set up UV environment with proper constraints
+5. **Validation**: Ensure dependency compatibility and version resolution
+6. **File Generation**: Write configuration files to template directories
+
+### CLI Integration Template
+
+```python
+# TODO: CLI interface for direct dependency generation
+# Example command-line usage for end-user projects
+def cli_generate_dependencies():
+    """CLI interface for dependency generation."""
+    # python3 dependency_orchestrator.py --pattern RAG --project-name my-app --output-pyproject
+    # Generates complete pyproject.toml with pattern-specific dependencies
+    pass
+```
