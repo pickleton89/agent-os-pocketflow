@@ -206,7 +206,7 @@ Create `test_pocketflow_integration.sh`:
 uv run python -m pocketflow_tools.cli --help || exit 1
 
 # Test 2: Developer tools availability
-python3 .agent-os/pocketflow-tools/pattern_analyzer.py --help || exit 1
+.agent-os/pocketflow-tools/run.sh pattern_analyzer --help || exit 1
 
 # Test 3: Coordinator module
 python3 .agent-os/pocketflow-tools/coordinator.py analyze \
@@ -232,7 +232,7 @@ python3 .agent-os/pocketflow-tools/coordinator.py analyze \
 
 ### Immediate (Phase 1)
 - [ ] Developer tools copied to project during installation
-- [ ] Basic Python invocation works: `python3 .agent-os/pocketflow-tools/pattern_analyzer.py`
+- [ ] Basic Python invocation works: `.agent-os/pocketflow-tools/run.sh pattern_analyzer`
 
 ### Short-term (Phase 2-3)
 - [ ] Wrapper scripts simplify invocation

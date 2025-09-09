@@ -170,8 +170,7 @@ Based on my analysis of the codebase, here are all the ways
 
   1. Direct Script Execution
 
-  cd pocketflow-tools
-  python3 pattern_analyzer.py
+  .agent-os/pocketflow-tools/run.sh pattern_analyzer
   Runs built-in test scenarios with 4 example requirements (lines 1124-1150).
 
   2. Programmatic Import & Usage
