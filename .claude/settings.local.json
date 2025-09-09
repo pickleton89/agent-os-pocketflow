@@ -26,7 +26,10 @@
       "mcp__claude-context__index_codebase",
       "Bash(./scripts/run-all-tests.sh:*)",
       "Bash(git rm:*)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "Bash(./run.sh:*)",
+      "Bash(.agent-os/pocketflow-tools/run.sh check-pocketflow-install:*)",
+      "Bash(.agent-os/pocketflow-tools/run.sh:*)"
     ],
     "deny": [],
     "ask": [],
