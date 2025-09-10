@@ -93,7 +93,7 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="2" name="context_gathering">
+<step number="2" subagent="context-manager" name="context_gathering">
 
 ### Step 2: Context Gathering
 
@@ -104,7 +104,14 @@ This instruction file uses modular templates from:
     - @.agent-os/product/tech-stack.md
   </reads>
   <purpose>understand spec alignment</purpose>
+  <uses>context-manager subagent</uses>
 </step_metadata>
+
+<subagent_context>
+  **Context:** Product documentation analysis for spec alignment
+  **Output:** Consolidated context analysis with PocketFlow pattern recommendations
+  **Next Step:** Requirements clarification with informed context
+</subagent_context>
 
 <context_analysis>
   <mission>overall product vision</mission>
@@ -114,7 +121,13 @@ This instruction file uses modular templates from:
 </context_analysis>
 
 <instructions>
-  ACTION: Read all three product documents
+  ACTION: Use context-manager subagent for product document analysis
+  REQUEST: "Analyze product documentation for spec alignment:
+            - Mission: @.agent-os/product/mission.md
+            - Roadmap: @.agent-os/product/roadmap.md  
+            - Tech Stack: @.agent-os/product/tech-stack.md
+            - Focus: PocketFlow pattern recommendations and implementation implications"
+  PROCESS: Returned context analysis and pattern recommendations
   ANALYZE: Spec alignment with each document
   NOTE: Consider implications for implementation and PocketFlow architecture pattern selection.
 </instructions>

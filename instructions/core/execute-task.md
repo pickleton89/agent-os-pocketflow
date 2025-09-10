@@ -447,11 +447,19 @@ Use the test-runner subagent to run and verify only the tests specific to this p
 
 </step>
 
-<step number="8" name="task_status_updates">
+<step number="8" subagent="status-reporter" name="task_status_updates">
 
 ### Step 8: Task Status Updates
 
-Update the tasks.md file immediately after completing each task to track progress.
+**Uses:** status-reporter subagent for comprehensive task tracking
+
+Use the status-reporter subagent to update task status and provide comprehensive progress reporting.
+
+<subagent_context>
+  **Context:** Task completion status, progress tracking, blocking issues
+  **Output:** Updated tasks.md file and progress summary
+  **Next Step:** Task completion notification
+</subagent_context>
 
 <update_format>
   <completed>- [x] Task description</completed>
@@ -469,7 +477,15 @@ Update the tasks.md file immediately after completing each task to track progres
 </blocking_criteria>
 
 <instructions>
-  ACTION: Update tasks.md after each task completion
+  ACTION: Use status-reporter subagent for task status updates
+  REQUEST: "Update task status and progress tracking:
+            - Parent task: [CURRENT_TASK_NUMBER_AND_DESCRIPTION]
+            - Subtasks completed: [LIST_OF_COMPLETED_SUBTASKS]
+            - Implementation files: [FILES_CREATED_OR_MODIFIED]
+            - Test results: [TASK_SPECIFIC_TEST_OUTCOMES]
+            - Blocking issues: [ANY_UNRESOLVED_ISSUES]"
+  PROCESS: Returned status update and progress analysis
+  UPDATE: tasks.md after each task completion
   MARK: [x] for completed items immediately
   DOCUMENT: Blocking issues with ⚠️ emoji
   LIMIT: 3 attempts before marking as blocked
