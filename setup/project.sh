@@ -523,6 +523,29 @@ install_pocketflow_tools() {
         echo "# PocketFlow Templates" > ".agent-os/templates/README.md"
         log_info "Created basic template structure"
     fi
+    
+    # Install validation templates (always from framework)
+    mkdir -p ".agent-os/validation"
+    
+    # Get framework path for validation templates
+    local script_realpath
+    script_realpath="$(realpath "$0" 2>/dev/null)" || script_realpath="$0"
+    local framework_validation_dir="$(dirname "$(dirname "$script_realpath")")/templates/validation"
+    
+    if [[ -d "$framework_validation_dir" ]]; then
+        log_info "Installing project validation templates from framework..."
+        # Copy validation templates from framework
+        cp -r "$framework_validation_dir"/* ".agent-os/validation/" 2>/dev/null || true
+        
+        # Make validation scripts executable
+        find ".agent-os/validation" -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
+        
+        log_success "Installed project validation templates"
+        log_info "Use: ./.agent-os/validation/test_pocketflow_integration.sh to validate project setup"
+    else
+        log_warning "Framework validation templates not found - skipping validation template installation"
+        echo "# Validation scripts will be installed here" > ".agent-os/validation/README.md"
+    fi
 }
 
 # Install Claude Code integration (Agent OS v1.4.0 compliant)

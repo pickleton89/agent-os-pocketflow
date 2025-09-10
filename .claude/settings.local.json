@@ -31,7 +31,11 @@
       "Bash(.agent-os/pocketflow-tools/run.sh check-pocketflow-install:*)",
       "Bash(.agent-os/pocketflow-tools/run.sh:*)",
       "Read(//private/tmp/test-pocketflow-install/**)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(.agent-os/bin/analyze-pattern:*)",
+      "Bash(.agent-os/bin/generate-deps:*)",
+      "Bash(.agent-os/bin/pattern-info:*)",
+      "Bash(./scripts/validation/test_pocketflow_integration.sh:*)"
     ],
     "deny": [],
     "ask": [],

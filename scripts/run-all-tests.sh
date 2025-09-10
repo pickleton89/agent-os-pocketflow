@@ -66,6 +66,7 @@ done
 declare -a TEST_SUITES=(
     "Configuration:scripts/validation/validate-configuration.sh:Framework configuration validation"
     "Integration:scripts/validation/validate-integration.sh:Core integration validation"
+    "PocketFlow Tools:scripts/validation/test_pocketflow_integration.sh:PocketFlow tool accessibility testing"
     "Design:scripts/validation/validate-design.sh:Design document validation" 
     "PocketFlow:scripts/validation/validate-pocketflow.sh:PocketFlow setup validation"
     "Sub-Agents:scripts/validation/validate-sub-agents.sh:Sub-agent implementation validation"
@@ -77,6 +78,7 @@ declare -a TEST_SUITES=(
 declare -a QUICK_SUITES=(
     "Configuration:scripts/validation/validate-configuration.sh:Framework configuration validation"
     "Integration:scripts/validation/validate-integration.sh:Core integration validation"
+    "PocketFlow Tools:scripts/validation/test_pocketflow_integration.sh:PocketFlow tool accessibility testing"
     "PocketFlow:scripts/validation/validate-pocketflow.sh:PocketFlow setup validation"
     "Sub-Agents:scripts/validation/validate-sub-agents.sh:Sub-agent implementation validation"
     "Orchestration:scripts/validation/validate-orchestration.sh:Orchestration system validation"
@@ -86,6 +88,7 @@ declare -a QUICK_SUITES=(
 declare -a FRAMEWORK_SUITES=(
     "Configuration:scripts/validation/validate-configuration.sh:Framework configuration validation"
     "Integration:scripts/validation/validate-integration.sh:Framework sanity checks + skip project-only"
+    "PocketFlow Tools:scripts/validation/test_pocketflow_integration.sh:Framework tool component validation"
     "CLI Smoke:scripts/validation/validate-cli-smoke.sh:CLI smoke tests (help/invalid YAML/valid run)"
     "Determinism:scripts/validation/validate-determinism.sh:Deterministic output validation"
     "Python Smoke:scripts/validation/validate-python-tests-smoke.sh:Framework Python smoke tests"
@@ -95,6 +98,7 @@ declare -a FRAMEWORK_SUITES=(
 declare -a FRAMEWORK_QUICK_SUITES=(
     "Configuration:scripts/validation/validate-configuration.sh:Framework configuration validation"
     "Integration:scripts/validation/validate-integration.sh:Framework sanity checks + skip project-only"
+    "PocketFlow Tools:scripts/validation/test_pocketflow_integration.sh:Framework tool component validation"
     "CLI Smoke:scripts/validation/validate-cli-smoke.sh:CLI smoke tests (help/invalid YAML/valid run)"
     "Python Smoke:scripts/validation/validate-python-tests-smoke.sh:Framework Python smoke tests"
 )
@@ -233,6 +237,7 @@ ensure_scripts_executable() {
     local scripts=(
         "scripts/validation/validate-configuration.sh"
         "scripts/validation/validate-integration.sh"
+        "scripts/validation/test_pocketflow_integration.sh"
         "scripts/validation/validate-design.sh"
         "scripts/validation/validate-pocketflow.sh"
         "scripts/validation/validate-sub-agents.sh"
