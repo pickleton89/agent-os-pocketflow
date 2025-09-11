@@ -1,10 +1,6 @@
 # Agent OS + PocketFlow Framework
 
-[![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-4A90E2?style=flat-square&logo=anthropic&logoColor=white)](https://claude.ai/code)
-[![Agentic Coding](https://img.shields.io/badge/Development-Agentic%20Coding-FF6B6B?style=flat-square)](https://the-pocket.github.io/PocketFlow/guide.html)
-[![Agent OS](https://img.shields.io/badge/Framework-Agent%20OS-00B4D8?style=flat-square)](https://buildermethods.com/agent-os)
-[![PocketFlow](https://img.shields.io/badge/LLM%20Framework-PocketFlow-00F5FF?style=flat-square)](https://github.com/The-Pocket/PocketFlow)
-[![Integration Status](https://img.shields.io/badge/Integration-Production%20Ready-28a745?style=flat-square)]()
+THIS IS NOT A FINISHED PRODUCT AND STILL NEEDS WORK AND TESTING
 
 **Enhanced Agent OS framework with integrated PocketFlow template generation.**
 
@@ -589,3 +585,4 @@ In framework CI, SKIP messages will appear for project‑only checks, keeping si
 **Agent OS** by [Brian Casel](https://buildermethods.com) - Structured workflow management  
 **PocketFlow** by [The Pocket](https://github.com/The-Pocket) - LLM orchestration framework  
 **Integration** - Seamless combination of both systems for enhanced AI development
+
