@@ -21,7 +21,7 @@ DEFAULT_INSTALL_PATH="$HOME/.agent-os"
 
 # Installation options (can be set via command line arguments)
 INSTALL_PATH="$DEFAULT_INSTALL_PATH"
-ENABLE_CLAUDE_CODE=true  # Default enabled for consistency with project.sh
+ENABLE_CLAUDE_CODE=true  # Default enabled for global Claude Code integration
 ENABLE_POCKETFLOW=true  # Default enabled in our enhanced version
 OVERWRITE_INSTRUCTIONS=false
 OVERWRITE_STANDARDS=false
@@ -225,10 +225,6 @@ create_directory_structure() {
         "$INSTALL_PATH/templates"
     )
     
-    # Claude Code directories (only agents, commands are in base commands/ directory)
-    local ide_dirs=(
-        "$INSTALL_PATH/claude-code/agents"
-    )
     
     # Create core directories
     for dir in "${core_dirs[@]}"; do
@@ -598,7 +594,6 @@ paths:
   pocketflow_tools: "$INSTALL_PATH/pocketflow-tools"
   templates: "$INSTALL_PATH/templates"
   commands: "$INSTALL_PATH/commands"
-  claude_code_agents: "$INSTALL_PATH/claude-code/agents"
 
 # Framework identification
 framework:
@@ -863,24 +858,75 @@ EOF
     fi
 }
 
-# Install Claude Code integration
+# Install Claude Code integration globally
 install_claude_code_integration() {
     if [[ "$ENABLE_CLAUDE_CODE" != "true" ]]; then
         log_info "Skipping Claude Code integration (not enabled)"
         return 0
     fi
     
-    log_info "Installing Claude Code integration..."
+    log_info "Installing Claude Code integration globally..."
     
-    # Install Claude Code agents (commands are handled by install_commands function)
-    local agents_dir="$INSTALL_PATH/claude-code/agents"
+    # Determine Claude Code's global commands/agents directory
+    local claude_global_dir=""
+    
+    # Try common Claude Code installation locations
+    local claude_locations=(
+        "$HOME/.claude"
+        "$HOME/.config/claude"
+        "/usr/local/share/claude"
+    )
+    
+    for location in "${claude_locations[@]}"; do
+        if [[ -d "$location" ]]; then
+            claude_global_dir="$location"
+            break
+        fi
+    done
+    
+    # If no existing Claude installation found, create in ~/.claude
+    if [[ -z "$claude_global_dir" ]]; then
+        claude_global_dir="$HOME/.claude"
+        mkdir -p "$claude_global_dir/commands" "$claude_global_dir/agents"
+        log_info "Created Claude Code global directory: $claude_global_dir"
+    else
+        mkdir -p "$claude_global_dir/commands" "$claude_global_dir/agents"
+        log_info "Using existing Claude Code installation: $claude_global_dir"
+    fi
+    
+    # Install command files to global Claude Code location
+    local instruction_files=(
+        "analyze-product"
+        "create-spec"
+        "execute-task"
+        "execute-tasks"
+        "plan-product"
+    )
+    
+    # Copy commands from base installation
+    for cmd in "${instruction_files[@]}"; do
+        if [[ -f "$INSTALL_PATH/commands/$cmd.md" ]]; then
+            if cp "$INSTALL_PATH/commands/$cmd.md" "$claude_global_dir/commands/$cmd.md" 2>/dev/null; then
+                log_success "Installed global Claude Code command: $cmd.md"
+            else
+                log_warning "Failed to install Claude Code command: $cmd.md"
+            fi
+        fi
+    done
+    
+    # Install agents to global Claude Code location
     local source_agents_dir="$(dirname "$(dirname "$(realpath "$0")")")/claude-code/agents"
     
     if [[ -d "$source_agents_dir" ]]; then
-        cp -r "$source_agents_dir"/* "$agents_dir/"
-        log_success "Copied Claude Code agents"
+        # Copy from framework source
+        if cp -r "$source_agents_dir"/* "$claude_global_dir/agents/" 2>/dev/null; then
+            log_success "Installed Claude Code agents globally from framework source"
+        else
+            log_warning "Failed to install Claude Code agents from framework source"
+        fi
     else
-        # Download agents from repository
+        # Last resort: download from repository
+        log_info "Downloading Claude Code agents from repository..."
         local agent_files=(
             "context-fetcher.md"
             "date-checker.md"
@@ -890,32 +936,26 @@ install_claude_code_integration() {
             "git-workflow.md"
         )
         
+        if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
+            agent_files+=(
+                "design-document-creator.md"
+                "strategic-planner.md"
+                "pattern-analyzer.md"
+                "template-validator.md"
+                "dependency-orchestrator.md"
+            )
+        fi
+        
         for agent in "${agent_files[@]}"; do
-            curl -s -o "$agents_dir/$agent" "$REPO_URL/claude-code/agents/$agent"
-            if [[ $? -eq 0 ]]; then
+            if curl -s -o "$claude_global_dir/agents/$agent" "$REPO_URL/claude-code/agents/$agent"; then
                 log_success "Downloaded Claude Code agent: $agent"
             else
-                log_error "Failed to download agent: $agent"
+                log_warning "Failed to download agent: $agent"
             fi
         done
     fi
     
-    if [[ "$ENABLE_POCKETFLOW" == "true" ]] && [[ ! -d "$source_agents_dir" ]]; then
-        # Add PocketFlow-specific agents (only if not copied locally)
-        local pocketflow_agents=(
-            "design-document-creator.md"
-            "strategic-planner.md"
-            "pattern-analyzer.md"
-            "template-validator.md"
-            "dependency-orchestrator.md"
-        )
-        
-        for agent in "${pocketflow_agents[@]}"; do
-            curl -s -o "$agents_dir/$agent" "$REPO_URL/claude-code/agents/$agent" || {
-                log_warning "Could not download $agent - will be created during project setup"
-            }
-        done
-    fi
+    log_success "Claude Code integration installed globally - slash commands available in all projects"
 }
 
 # Run installation validation
@@ -938,11 +978,6 @@ validate_installation() {
         )
     fi
     
-    if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then
-        required_dirs+=(
-            "$INSTALL_PATH/claude-code/agents"
-        )
-    fi
     
     for dir in "${required_dirs[@]}"; do
         if [[ ! -d "$dir" ]]; then
@@ -995,8 +1030,8 @@ EOF
     echo ""
     
     if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then
-        echo "2. For Claude Code projects, also add:"
-        echo "   $INSTALL_PATH/setup/project.sh --claude-code"
+        echo "2. Claude Code integration is now active globally:"
+        echo "   Slash commands like /analyze-product work in any project"
         echo ""
     fi
     

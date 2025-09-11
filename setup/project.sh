@@ -21,7 +21,6 @@ REPO_URL="https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main
 # Installation options (can be set via command line arguments)
 BASE_INSTALL_PATH=""
 ENABLE_POCKETFLOW=true
-ENABLE_CLAUDE_CODE=true
 NO_BASE_INSTALL=false
 PROJECT_TYPE="pocketflow-enhanced"
 FORCE_INSTALL=false
@@ -127,10 +126,6 @@ parse_arguments() {
                 PROJECT_TYPE="standard-agent-os"
                 shift
                 ;;
-            --claude-code)
-                ENABLE_CLAUDE_CODE=true
-                shift
-                ;;
             --project-type)
                 if [[ -z "$2" ]]; then
                     log_error "--project-type requires a type argument"
@@ -170,7 +165,6 @@ OPTIONS:
     --no-base              Install without base installation (standalone mode)
     --pocketflow           Enable PocketFlow features (default)
     --no-pocketflow        Disable PocketFlow features (standard Agent OS only)
-    --claude-code          Enable Claude Code integration
     --project-type TYPE    Project type (default: pocketflow-enhanced)
     --force                Force installation even if .agent-os exists
     --help                 Show this help message
@@ -185,22 +179,20 @@ EXAMPLES:
     # Basic enhanced Agent OS + PocketFlow installation
     $0
     
-    # With Claude Code support
-    $0 --claude-code
-    
     # Standard Agent OS only (no PocketFlow)
-    $0 --no-pocketflow --claude-code
+    $0 --no-pocketflow
     
     # Standalone installation (no base required)
-    $0 --no-base --claude-code
+    $0 --no-base
     
     # Custom project type
-    $0 --project-type python-pocketflow --claude-code
+    $0 --project-type python-pocketflow
 
 NOTES:
     • Run this script from your project's root directory
     • If no base installation is found, --no-base mode will be used automatically
     • PocketFlow features include workflow generators, pattern analyzers, and validators
+    • Claude Code integration is handled by base installation (run base setup first)
 
 EOF
 }
@@ -213,28 +205,29 @@ detect_base_installation() {
         return 0
     fi
     
-    # Try to detect from script location
-    local script_dir="$(dirname "$(dirname "$(realpath "$0")")" 2>/dev/null || echo "")"
-    if [[ -f "$script_dir/config.yml" ]]; then
-        BASE_INSTALL_PATH="$script_dir"
-        log_info "Detected base installation: $BASE_INSTALL_PATH"
-        return 0
-    fi
-    
-    # Common installation locations
+    # Common installation locations (prioritize actual base installations)
     local common_paths=(
         "$HOME/.agent-os"
         "/usr/local/agent-os"
         "$(pwd)/../.agent-os"
     )
     
+    # First check standard base installation locations
     for path in "${common_paths[@]}"; do
-        if [[ -f "$path/config.yml" ]] && [[ -d "$path/setup" ]]; then
+        if [[ -f "$path/config.yml" ]] && [[ -d "$path/commands" ]]; then
             BASE_INSTALL_PATH="$path"
             log_info "Found base installation: $BASE_INSTALL_PATH"
             return 0
         fi
     done
+    
+    # Fallback: try to detect from script location (framework location)
+    local script_dir="$(dirname "$(dirname "$(realpath "$0")")" 2>/dev/null || echo "")"
+    if [[ -f "$script_dir/config.yml" ]]; then
+        BASE_INSTALL_PATH="$script_dir"
+        log_info "Detected framework installation: $BASE_INSTALL_PATH (commands will be copied from framework source)"
+        return 0
+    fi
     
     return 1
 }
@@ -346,13 +339,6 @@ create_project_structure() {
         )
     fi
     
-    # Claude Code directories
-    if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then
-        core_dirs+=(
-            ".claude/commands"
-            ".claude/agents"
-        )
-    fi
     
     # Create directories
     for dir in "${core_dirs[@]}"; do
@@ -548,75 +534,6 @@ install_pocketflow_tools() {
     fi
 }
 
-# Install Claude Code integration (Agent OS v1.4.0 compliant)
-install_claude_code_integration() {
-    if [[ "$ENABLE_CLAUDE_CODE" != "true" ]]; then
-        log_info "Skipping Claude Code integration (not enabled)"
-        return 0
-    fi
-    
-    log_info "Installing Claude Code integration..."
-    
-    # Copy command files from base installation
-    local instruction_files=(
-        "analyze-product"
-        "create-spec"
-        "execute-task"
-        "execute-tasks"
-        "plan-product"
-        "post-execution-tasks"
-    )
-    
-    for cmd in "${instruction_files[@]}"; do
-        if [[ -f "$BASE_INSTALL_PATH/commands/$cmd.md" ]]; then
-            if safe_copy "$BASE_INSTALL_PATH/commands/$cmd.md" ".claude/commands/$cmd.md" "Claude Code command $cmd.md"; then
-                log_success "Created Claude Code command: $cmd.md"
-            else
-                log_warning "Failed to create Claude Code command: $cmd.md"
-            fi
-        else
-            log_warning "Command file not found in base installation: $cmd.md"
-        fi
-    done
-    
-    # Install Claude Code agents from base installation or repository
-    if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/claude-code/agents" ]]; then
-        if safe_copy "$BASE_INSTALL_PATH/claude-code/agents"/* ".claude/agents/" "Claude Code agents"; then
-            log_success "Copied Claude Code agents from base installation"
-        else
-            log_warning "Failed to copy Claude Code agents from base installation"
-        fi
-    else
-        # Download basic agents from repository
-        local agent_files=(
-            "context-fetcher.md"
-            "date-checker.md"
-            "file-creator.md"
-            "test-runner.md"
-            "project-manager.md"
-            "git-workflow.md"
-        )
-        
-        if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
-            agent_files+=(
-                "design-document-creator.md"
-                "strategic-planner.md"
-                "pattern-analyzer.md"
-                "template-validator.md"
-                "dependency-orchestrator.md"
-            )
-        fi
-        
-        for agent in "${agent_files[@]}"; do
-            if ! safe_download "$REPO_URL/claude-code/agents/$agent" ".claude/agents/$agent" "$agent"; then
-                log_warning "Could not download $agent - will create minimal version"
-                # Create minimal agent file
-                echo "# $agent" > ".claude/agents/$agent"
-                echo "This agent provides enhanced functionality. Please check the repository for the latest version." >> ".claude/agents/$agent"
-            fi
-        done
-    fi
-}
 
 
 # Create project configuration
@@ -635,7 +552,6 @@ project_type: "$PROJECT_TYPE"
 
 # Tool configuration
 tools:
-  claude_code: $ENABLE_CLAUDE_CODE
   pocketflow: $ENABLE_POCKETFLOW
 
 # Project paths
@@ -717,12 +633,6 @@ validate_installation() {
         )
     fi
     
-    if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then
-        required_dirs+=(
-            ".claude/commands"
-            ".claude/agents"
-        )
-    fi
     
     
     for dir in "${required_dirs[@]}"; do
@@ -785,12 +695,6 @@ EOF
         echo ""
     fi
     
-    if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then
-        log_info "Claude Code Integration:"
-        echo "  • Commands available in .claude/commands/"
-        echo "  • Enhanced agents in .claude/agents/"
-        echo ""
-    fi
     
     
     echo "📖 Documentation: https://github.com/pickleton89/agent-os-pocketflow"
@@ -805,7 +709,6 @@ main() {
     
     log_info "Starting Enhanced Agent OS + PocketFlow project installation..."
     log_info "Project Type: $PROJECT_TYPE"
-    log_info "Claude Code: $(if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then echo "Enabled"; else echo "Disabled"; fi)"
     log_info "PocketFlow: $(if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then echo "Enabled"; else echo "Disabled"; fi)"
     echo ""
     
@@ -816,7 +719,6 @@ main() {
     install_instructions
     install_standards
     install_pocketflow_tools
-    install_claude_code_integration
     create_project_configuration
     update_gitignore
     validate_installation
