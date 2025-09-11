@@ -657,7 +657,7 @@ BASE_INSTALL_PATH="$(dirname "$(dirname "$(realpath "$0")")")"
 
 # Options
 ENABLE_POCKETFLOW=true
-ENABLE_CLAUDE_CODE=false
+ENABLE_CLAUDE_CODE=true
 
 # Parse arguments
 parse_arguments() {

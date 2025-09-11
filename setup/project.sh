@@ -557,7 +557,7 @@ install_claude_code_integration() {
     
     log_info "Installing Claude Code integration..."
     
-    # Copy command files from instructions (v1.4.0 self-contained design)
+    # Copy command files from base installation
     local instruction_files=(
         "analyze-product"
         "create-spec"
@@ -568,14 +568,14 @@ install_claude_code_integration() {
     )
     
     for cmd in "${instruction_files[@]}"; do
-        if [[ -f ".agent-os/instructions/core/$cmd.md" ]]; then
-            if safe_copy ".agent-os/instructions/core/$cmd.md" ".claude/commands/$cmd.md" "Claude Code command $cmd.md"; then
+        if [[ -f "$BASE_INSTALL_PATH/commands/$cmd.md" ]]; then
+            if safe_copy "$BASE_INSTALL_PATH/commands/$cmd.md" ".claude/commands/$cmd.md" "Claude Code command $cmd.md"; then
                 log_success "Created Claude Code command: $cmd.md"
             else
                 log_warning "Failed to create Claude Code command: $cmd.md"
             fi
         else
-            log_warning "Instruction file not found: $cmd.md"
+            log_warning "Command file not found in base installation: $cmd.md"
         fi
     done
     
