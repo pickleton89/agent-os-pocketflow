@@ -40,7 +40,8 @@
       "Read(//Users/jeffkiefer/Documents/projects/testing_project/.agent-os/**)",
       "Read(//Users/jeffkiefer/Documents/projects/testing_project/**)",
       "Read(//Users/jeffkiefer/.agent-os/setup/**)",
-      "Read(//Users/jeffkiefer/.agent-os/commands/**)"
+      "Read(//Users/jeffkiefer/.agent-os/commands/**)",
+      "Bash(git stash:*)"
     ],
     "deny": [],
     "ask": [],
