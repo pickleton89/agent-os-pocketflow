@@ -35,7 +35,12 @@
       "Bash(.agent-os/bin/analyze-pattern:*)",
       "Bash(.agent-os/bin/generate-deps:*)",
       "Bash(.agent-os/bin/pattern-info:*)",
-      "Bash(./scripts/validation/test_pocketflow_integration.sh:*)"
+      "Bash(./scripts/validation/test_pocketflow_integration.sh:*)",
+      "Bash(curl:*)",
+      "Read(//Users/jeffkiefer/Documents/projects/testing_project/.agent-os/**)",
+      "Read(//Users/jeffkiefer/Documents/projects/testing_project/**)",
+      "Read(//Users/jeffkiefer/.agent-os/setup/**)",
+      "Read(//Users/jeffkiefer/.agent-os/commands/**)"
     ],
     "deny": [],
     "ask": [],
