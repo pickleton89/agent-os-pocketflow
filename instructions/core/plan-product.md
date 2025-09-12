@@ -263,14 +263,28 @@ Use the strategic-planner subagent to create a comprehensive strategic plan and 
 
     **Application Architecture:** PocketFlow-based design
 
+    ### System Overview
+    ```mermaid
+    graph TD
+        A[Users] --> B[API Endpoints]
+        B --> C[PocketFlow Orchestration]
+        C --> D[Business Logic Nodes]
+        D --> E[SharedStore]
+        E --> F[Utility Functions]
+        F --> G[External Services]
+        
+        %% TODO: Customize based on your specific architecture
+    ```
+
+    ### Architecture Details
     - **Primary Framework:** PocketFlow
     - **Development Methodology:** Design-first approach with structured workflow patterns
-    - **Rationale:** Chosen for its minimalism, flexibility (Nodes, Flows, Shared Store), and scalability from simple workflows to complex multi-agent systems. It provides explicit graph-based design for all application patterns.
     - **Key Patterns Utilized:** [LIST_POCKETFLOW_PATTERNS_TO_BE_USED_E.G._WORKFLOW,_TOOL,_AGENT,_RAG,_MAPREDUCE,_STRUCTURED_OUTPUT]
+    - **Integration Pattern:** FastAPI endpoints → PocketFlow Flows → Node execution → Utility functions
     - **Complexity Level:** [SIMPLE_WORKFLOW/ENHANCED_WORKFLOW/COMPLEX_APPLICATION/LLM_APPLICATION]
+    - **Rationale:** Chosen for its minimalism, flexibility (Nodes, Flows, Shared Store), and scalability from simple workflows to complex multi-agent systems. It provides explicit graph-based design for all application patterns.
     - **Utility Philosophy:** "Examples provided, implement your own" - custom utility functions for maximum flexibility
     - **Design Requirements:** All projects require `docs/design.md` completion before implementation begins
-    - **Integration Pattern:** FastAPI endpoints → PocketFlow Flows → Node execution → Utility functions
     - **LLM Providers/Models:** [LIST_IF_APPLICABLE, OTHERWISE_N/A]
   </template>
   <instructions>
