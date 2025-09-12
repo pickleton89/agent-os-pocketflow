@@ -416,6 +416,91 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 </step>
 
+<step number="2.7" name="documentation_registry_validation">
+
+### Step 2.7: Documentation Registry Validation
+
+<step_metadata>
+  <validates>external documentation registry exists and is accessible</validates>
+  <ensures>implementation has accurate technical context</ensures>
+  <condition>applies when .agent-os/docs-registry.yaml exists</condition>
+</step_metadata>
+
+<registry_validation>
+  <registry_check>
+    <path>.agent-os/docs-registry.yaml</path>
+    <required>false - optional but validated if present</required>
+    <purpose>ensure external documentation sources are accessible and current</purpose>
+  </registry_check>
+  <content_validation>
+    - Registry structure follows documented schema
+    - All documented sources are accessible
+    - Version information is current and compatible
+    - Pattern extraction metadata is valid
+  </content_validation>
+  <accessibility_checks>
+    - URL sources return valid responses
+    - Local file sources exist and are readable
+    - API specification sources are parseable
+    - Version compatibility warnings are addressed
+  </accessibility_checks>
+</registry_validation>
+
+<validation_process>
+  <step1>Check if .agent-os/docs-registry.yaml exists</step1>
+  <step2>Validate registry structure using validate-docs-registry.py script</step2>
+  <step3>Test accessibility of all documented sources</step3>
+  <step4>Check version compatibility for current project dependencies</step4>
+  <step5>Validate pattern suggestions match current task context</step5>
+  <step6>Warn about stale or inaccessible documentation sources</step6>
+</validation_process>
+
+<accessibility_failure_handling>
+  <warning_message>
+    ⚠️ **Documentation Registry Issues Detected**
+    
+    Some external documentation sources are inaccessible or outdated:
+    
+    **Issues Found:**
+    - [LIST_ACCESSIBILITY_ISSUES]
+    - [LIST_VERSION_WARNINGS]
+    - [LIST_STALE_SOURCES]
+    
+    **Recommendations:**
+    1. Update inaccessible documentation sources
+    2. Refresh stale documentation entries
+    3. Review version compatibility warnings
+    4. Consider using fallback documentation sources
+    
+    Implementation can proceed but may lack complete technical context.
+    Consider updating the documentation registry for optimal results.
+  </warning_message>
+</accessibility_failure_handling>
+
+<pattern_suggestions>
+  <context_analysis>
+    - Analyze current task specifications for technology patterns
+    - Compare detected patterns against registry entries
+    - Suggest relevant documentation based on implementation context
+  </context_analysis>
+  <smart_recommendations>
+    - Use TechPatternDetector for context-aware suggestions
+    - Apply progressive disclosure based on execution phase
+    - Prioritize critical and high-priority documentation needs
+  </smart_recommendations>
+</pattern_suggestions>
+
+<instructions>
+  VALIDATE: .agent-os/docs-registry.yaml structure and accessibility if present
+  CHECK: All documented sources are accessible and current
+  ANALYZE: Current task context for relevant documentation patterns
+  SUGGEST: Critical documentation needed for implementation success
+  WARN: About inaccessible or stale documentation sources
+  CONTINUE: Implementation regardless of registry status (non-blocking)
+</instructions>
+
+</step>
+
 <step number="3" name="implementation_planning">
 
 ### Step 3: Implementation Planning

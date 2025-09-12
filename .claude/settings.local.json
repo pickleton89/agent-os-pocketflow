@@ -49,7 +49,8 @@
       "Bash(sed:*)",
       "Read(//Users/jeffkiefer/.agent-os/**)",
       "Bash(xargs git ls-files)",
-      "mcp__graphiti__search_memory_nodes"
+      "mcp__graphiti__search_memory_nodes",
+      "WebSearch"
     ],
     "deny": [],
     "ask": [],
