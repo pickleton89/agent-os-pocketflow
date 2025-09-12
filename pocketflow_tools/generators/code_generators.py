@@ -593,10 +593,12 @@ def generate_nodes(spec) -> str:
             "        # Framework guidance: Read only what exec() needs from shared store",
         ])
 
-        # Enhanced TODOs for prep
-        prep_todos = enhanced_todos[:2] if enhanced_todos else [
+        # Enhanced TODOs for prep with framework guidance
+        base_prep_todos = [
             "# TODO: Extract the exact data exec() needs from shared store",
             "# TODO: Consider input validation if needed (but keep it lightweight)",
+        ]
+        framework_guidance = [
             "# ",
             "# FRAMEWORK GUIDANCE: These TODOs are intentional. The Agent OS + PocketFlow",
             "# framework provides templates and structure, but YOU implement the specific",
@@ -609,6 +611,9 @@ def generate_nodes(spec) -> str:
             "# 2. Follow PocketFlow node lifecycle: prep() → exec() → post()",
             "# 3. See ~/.agent-os/standards/best-practices.md for patterns",
         ]
+        
+        # Always include framework guidance, with optional enhanced todos first
+        prep_todos = (enhanced_todos[:2] if enhanced_todos else base_prep_todos) + framework_guidance
         for todo in prep_todos:
             nodes_code.append(f"        {todo}")
 
@@ -631,25 +636,15 @@ def generate_nodes(spec) -> str:
             "        # Framework guidance: Process prep_result, avoid shared store access",
         ])
 
-        exec_todos = (
-            enhanced_todos[2:4]
-            if len(enhanced_todos) > 2
-            else [
-                "# TODO: Implement the core processing logic using only prep_result",
-                "# TODO: Return the processed result (avoid side effects here)",
-                "# ",
-                "# FRAMEWORK GUIDANCE: These TODOs are intentional. The Agent OS + PocketFlow",
-                "# framework provides templates and structure, but YOU implement the specific",
-                "# business logic for your use case.",
-                "#",
-                "# Why? This ensures maximum flexibility and prevents vendor lock-in.",
-                "# ",
-                "# Next Steps:",
-                "# 1. Review docs/design.md for your specific requirements",
-                "# 2. Follow PocketFlow node lifecycle: prep() → exec() → post()",
-                "# 3. See ~/.agent-os/standards/best-practices.md for patterns",
-            ]
-        )
+        # Enhanced TODOs for exec with framework guidance
+        base_exec_todos = [
+            "# TODO: Implement the core processing logic using only prep_result",
+            "# TODO: Return the processed result (avoid side effects here)",
+        ]
+        # Reuse framework guidance (same for all sections)
+        
+        # Always include framework guidance, with optional enhanced todos first
+        exec_todos = (enhanced_todos[2:4] if len(enhanced_todos) > 2 else base_exec_todos) + framework_guidance
         for todo in exec_todos:
             nodes_code.append(f"        {todo}")
 
@@ -672,25 +667,15 @@ def generate_nodes(spec) -> str:
             "        # Framework guidance: Store exec_result in shared store, return flow signal",
         ])
 
-        post_todos = (
-            enhanced_todos[4:]
-            if len(enhanced_todos) > 4
-            else [
-                "# TODO: Store exec_result in shared store with appropriate key",
-                "# TODO: Return flow signal for branching ('success', 'error', specific state)",
-                "# ",
-                "# FRAMEWORK GUIDANCE: These TODOs are intentional. The Agent OS + PocketFlow",
-                "# framework provides templates and structure, but YOU implement the specific",
-                "# business logic for your use case.",
-                "#",
-                "# Why? This ensures maximum flexibility and prevents vendor lock-in.",
-                "# ",
-                "# Next Steps:",
-                "# 1. Review docs/design.md for your specific requirements",
-                "# 2. Follow PocketFlow node lifecycle: prep() → exec() → post()",
-                "# 3. See ~/.agent-os/standards/best-practices.md for patterns",
-            ]
-        )
+        # Enhanced TODOs for post with framework guidance
+        base_post_todos = [
+            "# TODO: Store exec_result in shared store with appropriate key",
+            "# TODO: Return flow signal for branching ('success', 'error', specific state)",
+        ]
+        # Reuse framework guidance (same for all sections)
+        
+        # Always include framework guidance, with optional enhanced todos first
+        post_todos = (enhanced_todos[4:] if len(enhanced_todos) > 4 else base_post_todos) + framework_guidance
         for todo in post_todos:
             nodes_code.append(f"        {todo}")
 
