@@ -80,6 +80,29 @@ SharedStore = {
 }
 ```
 
+## External Documentation References
+
+### Framework Documentation
+- **[Framework Name]**: [Version] - [Documentation URL]
+  - Key patterns utilized: [List relevant patterns]
+  - Constraints considered: [List constraints]
+  - Last validated: [Date]
+  - Compatibility notes: [Version compatibility details]
+
+### API Integrations
+- **[API Name]**: [Version/Spec] - [Documentation URL]
+  - Endpoints used: [List endpoints with documentation links]
+  - Authentication method: [Method with documentation reference]
+  - Rate limits: [Limits with documentation reference]
+  - Error handling: [Error codes and handling from documentation]
+  - SDK version: [If applicable, with compatibility notes]
+
+### Compliance Considerations
+- **[Requirement Type]**: [Specific requirements addressed]
+  - Implementation approach: [How requirement is met with documentation reference]
+  - Validation criteria: [How compliance is verified]
+  - Documentation reference: [Link to compliance documentation]
+
 ## Architecture Decision Records
 
 ### Pattern Selection Rationale
@@ -89,11 +112,16 @@ Document why specific PocketFlow patterns were chosen:
 - **Use Case Fit**: [WHY_THIS_PATTERN_FITS_THE_PROBLEM]
 - **Alternatives Considered**: [OTHER_PATTERNS_EVALUATED]
 - **Trade-offs**: [BENEFITS_VS_LIMITATIONS]
+- **Documentation Reference**: [Link to pattern documentation]
 
 #### Integration Strategy
 - **External APIs**: [THIRD_PARTY_INTEGRATIONS_NEEDED]
+  - Documentation links: [API documentation URLs]
+  - Version compatibility: [Supported versions]
 - **Data Persistence**: [DATABASE_OR_FILE_STORAGE_APPROACH]
+  - Documentation reference: [Database/storage documentation]
 - **Authentication**: [USER_AUTH_AND_SESSION_MANAGEMENT]
+  - Documentation reference: [Auth provider documentation]
 
 ## Development Phases
 
@@ -128,6 +156,42 @@ Document why specific PocketFlow patterns were chosen:
 - **Error Monitoring**: Detailed error context and stack traces
 - **Performance Monitoring**: Node execution times and bottlenecks
 - **Business Metrics**: Feature usage and success rates
+
+## Cross-Reference Navigation
+
+### Related Documents (Generated in End-User Projects)
+- **Mission Document**: @docs/mission.md - Product purpose and goals (created by end-user)
+- **Roadmap Document**: @docs/roadmap.md - Feature prioritization and timeline (created by end-user)  
+- **Technical Specifications**: @.agent-os/specs/ - Individual feature specifications (created by end-user)
+- **Task Lists**: @.agent-os/specs/[spec-name]/tasks.md - Implementation task breakdown (created by end-user)
+
+### Template References
+- **Design Template**: See "Design Document Template" section below
+- **Task Template**: @templates/task-templates.md - Implementation task structure
+- **LLM Workflow Template**: See "LLM Workflow Section Template" below
+
+### Documentation Standards
+- **External References**: Use full URLs with version information
+- **Internal References**: Use @-notation for relative paths
+- **Cross-Links**: Reference specific sections with line numbers where applicable
+
+### Version Compatibility Warnings
+⚠️ **COMPATIBILITY NOTICE**: Always verify version compatibility before implementation
+
+#### Framework Version Compatibility (For End-User Projects)
+- **Agent OS + PocketFlow Framework**: These templates require framework installation (this repository)
+- **FastAPI**: Compatible with versions 0.100.0+ (current versions have stable async/await patterns)  
+- **Pydantic**: v2.x required for advanced validation features (breaking changes from v1.x)
+
+#### LLM Provider Compatibility
+- **OpenAI API**: Check model availability (GPT-4, GPT-3.5-turbo versions change frequently)
+- **Anthropic Claude**: API version compatibility (v1 vs v2 API differences)
+- **Model Deprecation**: Verify model availability before implementation
+
+#### API Integration Warnings
+- **Rate Limits**: API rate limits change frequently - always check current documentation
+- **Authentication**: OAuth flows and API key formats may change between versions
+- **Breaking Changes**: Check API changelog for breaking changes in newer versions
 
 ## Next Steps
 
@@ -234,10 +298,16 @@ Following PocketFlow's "implement your own" philosophy, specify all utility func
 
 ### LLM Integration Specifics
 - **Model/Provider:** [SPECIFIC_MODEL_E.G._GPT-4, CLAUDE-3.5]
+  - Documentation: [Provider API documentation URL]
+  - Version: [Model version with compatibility notes]
 - **Prompt Strategy:** [FEW-SHOT/CHAIN-OF-THOUGHT/STRUCTURED]
+  - Best practices reference: [Link to prompting guidelines]
 - **Temperature/Parameters:** [SPECIFIC_SETTINGS]
+  - Parameter documentation: [Link to parameter explanations]
 - **Token Limits:** [MAX_TOKENS_CONSIDERATIONS]
+  - Model limits reference: [Link to token limit documentation]
 - **Cost Estimation:** [APPROXIMATE_COST_PER_OPERATION]
+  - Pricing reference: [Link to current pricing documentation]
 
 ## Data Design
 
@@ -423,6 +493,9 @@ Final State: {
 ### Integration Patterns
 
 #### FastAPI + PocketFlow Integration
+**Documentation References:**
+- FastAPI docs: [https://fastapi.tiangolo.com/]
+- PocketFlow integration guide: [Link to integration documentation]
 ```python
 @app.post("/process", response_model=ProcessResponse)
 async def process_endpoint(request: ProcessRequest):

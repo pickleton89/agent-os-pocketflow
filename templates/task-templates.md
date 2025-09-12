@@ -20,6 +20,40 @@ Following PocketFlow's "Agentic Coding" methodology:
 7. **Optimization** (collaborative)
 8. **Reliability** (AI-led)
 
+## Cross-Reference Navigation
+
+### Related Documents (Created in End-User Projects)
+- **Design Document**: @docs/design.md - Complete feature design (must exist before tasks)
+- **PocketFlow Templates**: @templates/pocketflow-templates.md - Design and spec templates (from framework)
+- **Spec Document**: @.agent-os/specs/[spec-name]/spec.md - Feature specification (created by end-user)
+- **Mission Document**: @docs/mission.md - Product goals and context (created by end-user)
+- **Roadmap Document**: @docs/roadmap.md - Feature prioritization (created by end-user)
+
+### Template Cross-References
+- **Design Template**: Line 211 in @templates/pocketflow-templates.md
+- **LLM Workflow Template**: Line 408 in @templates/pocketflow-templates.md
+- **FastAPI Templates**: @templates/fastapi-templates.md
+
+### Documentation Standards
+- **Design Document Required**: Phase 0 must be completed before any implementation
+- **Cross-Link Format**: Use @-notation for internal references
+- **Validation Links**: Include documentation URLs for external dependencies
+
+### Version Compatibility Warnings
+⚠️ **IMPORTANT**: Verify all dependency versions before starting implementation
+
+#### Critical Version Checks (For End-User Projects)
+- **Python**: 3.8+ required for modern async patterns
+- **Agent OS + PocketFlow Framework**: Requires framework installation (this repository provides templates)
+- **FastAPI**: 0.100.0+ for proper async/await support
+- **Pydantic**: v2.x only (v1.x is incompatible with templates)
+
+#### Pre-Implementation Validation Tasks
+- [ ] **Check LLM Provider Status**: Verify API endpoints and model availability
+- [ ] **Validate API Documentation**: Ensure all referenced APIs are current
+- [ ] **Version Compatibility Matrix**: Create compatibility matrix in design.md
+- [ ] **Deprecation Warnings**: Document any deprecated dependencies
+
 ## Task Organization Phases
 
 - **Phase 0:** Design Document Creation (mandatory for LLM/AI)
@@ -54,7 +88,12 @@ Following PocketFlow's 8-step Agentic Coding methodology:
 - [ ] 0.4 Specify all Utility functions with input/output contracts
 - [ ] 0.5 Define SharedStore schema with complete data structure
 - [ ] 0.6 Detail Node Design with prep/exec/post specifications
-- [ ] 0.7 Validate design completeness before proceeding
+- [ ] 0.7 Add External Documentation References section with:
+  - [ ] Framework documentation links and version compatibility
+  - [ ] API integration documentation and rate limits
+  - [ ] Compliance requirements and validation criteria
+- [ ] 0.8 Validate design completeness before proceeding
+- [ ] 0.9 Verify all documentation links are accessible and current
 
 ### Phase 1: Pydantic Schemas & Data Models
 - [ ] 1.1 Write tests for Pydantic model validation
@@ -70,9 +109,13 @@ Following PocketFlow's 8-step Agentic Coding methodology:
 - [ ] 2.2 Implement utility functions in `utils/` directory (one file per function)
 - [ ] 2.3 Add proper type hints and docstrings for all utilities
 - [ ] 2.4 Implement LLM integration utilities (if applicable)
+  - [ ] Validate API documentation links and endpoint specifications
+  - [ ] Verify authentication methods against provider documentation
+  - [ ] Check rate limits and implement according to documentation
 - [ ] 2.5 Add error handling without try/catch (fail fast approach)
 - [ ] 2.6 Create standalone main() functions for utility testing
 - [ ] 2.7 Verify all utility tests pass with mocked dependencies
+- [ ] 2.8 Cross-reference implementation against design.md documentation sections
 
 ### Phase 3: FastAPI Endpoints (If Applicable)
 - [ ] 3.1 Write tests for FastAPI endpoints (with mocked flows)
@@ -108,7 +151,12 @@ Following PocketFlow's 8-step Agentic Coding methodology:
 - [ ] 6.4 Validate error propagation from flow to API responses
 - [ ] 6.5 Test performance under expected load
 - [ ] 6.6 Verify type safety across all boundaries
-- [ ] 6.7 Run complete test suite and ensure 100% pass rate
+- [ ] 6.7 Validate integration against documented API specifications
+  - [ ] Test all documented endpoints and parameters
+  - [ ] Verify error responses match API documentation
+  - [ ] Validate rate limiting implementation against documentation
+- [ ] 6.8 Create cross-reference validation between implementation and design.md
+- [ ] 6.9 Run complete test suite and ensure 100% pass rate
 
 ### Phase 7: Optimization & Reliability
 - [ ] 7.1 Add comprehensive logging throughout the system
@@ -125,6 +173,12 @@ Following PocketFlow's 8-step Agentic Coding methodology:
 - Run `uvx ty check` for type checking
 - Run `pytest` for all tests
 - Verify all checks pass before proceeding to next phase
+
+**Version Compatibility Validation (Every Phase):**
+- ⚠️ Check for dependency updates before each phase
+- ⚠️ Validate API endpoints are still accessible
+- ⚠️ Verify model/service availability (for LLM integrations)
+- ⚠️ Review breaking changes in dependency changelogs
 ```
 
 ## Phase Dependencies
@@ -208,6 +262,12 @@ Following modern Python development practices:
 - Run `uvx ty check` for type checking
 - Run `pytest` for all tests
 - Verify all checks pass before proceeding to next phase
+
+**Version Compatibility Validation (Every Phase):**
+- ⚠️ Check for dependency updates before each phase
+- ⚠️ Validate API endpoints are still accessible
+- ⚠️ Verify model/service availability (for LLM integrations)
+- ⚠️ Review breaking changes in dependency changelogs
 ```
 
 ## Task Customization Guidelines
