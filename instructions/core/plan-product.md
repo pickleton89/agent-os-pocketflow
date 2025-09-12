@@ -578,18 +578,25 @@ Use the pattern-analyzer subagent to validate the recommended technical patterns
 
     - [ ] [FEATURE] - [DESCRIPTION] `[EFFORT]`
         - **PocketFlow Pattern:** [POCKETFLOW_PATTERN] (e.g., WORKFLOW, TOOL, AGENT, RAG, MAPREDUCE)
-        - **Design Requirement:** `docs/design.md` must be completed before implementation
+        - **Node Types**: [SUGGESTED_NODE_TYPES] (Node/AsyncNode/BatchNode)
+        - **SharedStore Updates**: [DATA_CHANGES_REQUIRED]
+        - **Error Handling**: [ERROR_STRATEGY_APPROACH]
+        - **Design Requirement:** `docs/design.md` extension required for implementation
 
     ### Should-Have Features
 
     - [ ] [FEATURE] - [DESCRIPTION] `[EFFORT]`
-        - **PocketFlow Pattern:** [POCKETFLOW_PATTERN]
-        - **Design Requirement:** `docs/design.md` must be completed before implementation
+        - **PocketFlow Pattern:** [POCKETFLOW_PATTERN] (e.g., WORKFLOW, TOOL, AGENT, RAG, MAPREDUCE)
+        - **Node Types**: [SUGGESTED_NODE_TYPES] (Node/AsyncNode/BatchNode)
+        - **SharedStore Updates**: [DATA_CHANGES_REQUIRED]
+        - **Error Handling**: [ERROR_STRATEGY_APPROACH]
+        - **Design Requirement:** `docs/design.md` extension required for implementation
 
     ### Dependencies
 
     - [DEPENDENCY]
-    - Complete design documentation for all features before implementation begins
+    - Feature-specific design document sections
+    - SharedStore schema updates in docs/design.md
   </phase_template>
 </phase_structure>
 
