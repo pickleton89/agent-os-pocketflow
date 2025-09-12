@@ -5,7 +5,7 @@ last_updated: YYYY-MM-DD
 
 # Technical stack documentation
 tech_stack: {}
-  # Example entries (remove {} and replace with actual stack):
+  # To add entries: remove the {} above and uncomment/customize examples below:
   # fastapi:
   #   type: "framework|library|tool"
   #   source: "https://fastapi.tiangolo.com/"
@@ -32,7 +32,7 @@ tech_stack: {}
 
 # External API documentation
 external_apis: {}
-  # Example entries (remove {} and replace with actual APIs):
+  # To add entries: remove the {} above and uncomment/customize examples below:
   # stripe:
   #   type: "rest|graphql|websocket|custom"
   #   source: "https://stripe.com/docs/api"
@@ -52,7 +52,7 @@ external_apis: {}
 
 # Internal standards and architecture
 internal_standards: {}
-  # Example entries (remove {} and customize based on your organization):
+  # To add entries: remove the {} above and uncomment/customize examples below:
   # coding_standards:
   #   type: "architecture|style|security|compliance"
   #   source: "docs/coding-standards.md"
@@ -75,7 +75,7 @@ internal_standards: {}
 
 # Compliance and security requirements
 compliance: {}
-  # Example entries (remove {} and customize based on your requirements):
+  # To add entries: remove the {} above and uncomment/customize examples below:
   # hipaa:
   #   type: "regulatory|security|industry"
   #   source: "docs/hipaa-compliance.md"
@@ -101,7 +101,7 @@ compliance: {}
 
 # PocketFlow-specific patterns and conventions
 pocketflow_patterns: {}
-  # Example entries (remove {} and replace with framework-specific patterns):
+  # To add entries: remove the {} above and uncomment/customize examples below:
   # data_flow:
   #   type: "architecture"
   #   source: "docs/pocketflow-data-flow.md"
