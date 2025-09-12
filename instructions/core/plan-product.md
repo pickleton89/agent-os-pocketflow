@@ -377,9 +377,130 @@ Use the strategic-planner subagent to create a comprehensive strategic plan and 
 
 </step>
 
-<step number="4.5" subagent="pattern-analyzer" name="technical_pattern_validation">
+<step number="4.5" name="generate_initial_design_document">
 
-### Step 4.5: Technical Pattern Validation
+### Step 4.5: Generate Initial Product Design Document
+
+<step_metadata>
+  <creates>
+    - file: docs/design.md
+  </creates>
+  <condition>universal for all projects using PocketFlow architecture</condition>
+  <priority>critical - establishes design-first foundation</priority>
+</step_metadata>
+
+<design_document_requirement>
+  <philosophy>
+    Following PocketFlow's methodology: **Humans design, agents code**.
+    Initial product design establishes architectural foundation before feature development.
+  </philosophy>
+</design_document_requirement>
+
+<template_content>
+  **Template Structure:** Create docs/design.md with the following sections:
+  
+  ```markdown
+  # [PRODUCT_NAME] Design Document
+  
+  > Product: [PRODUCT_NAME]
+  > Created: [CURRENT_DATE] 
+  > Status: Initial Architecture Planning
+  > Framework: PocketFlow
+  
+  **FOUNDATION**: This initial design document establishes the architectural foundation. 
+  Feature-specific designs will be created during spec development.
+  
+  ## Product Architecture Overview
+  
+  ### System Purpose
+  [PRODUCT_MISSION_SUMMARY_FROM_MISSION_MD]
+  
+  ### Primary PocketFlow Patterns
+  Based on planned features, this product will primarily use:
+  - **[PRIMARY_PATTERN]**: [JUSTIFICATION_FROM_FEATURE_ANALYSIS]
+  - **[SECONDARY_PATTERN]**: [JUSTIFICATION_IF_APPLICABLE]
+  
+  ### Complexity Assessment
+  - **Overall Complexity**: [SIMPLE_WORKFLOW/ENHANCED_WORKFLOW/COMPLEX_APPLICATION/LLM_APPLICATION]
+  - **Rationale**: [BASED_ON_FEATURE_COUNT_AND_INTEGRATION_REQUIREMENTS]
+  
+  ## System-Wide Data Flow
+  
+  ### High-Level Architecture
+  ```mermaid
+  graph TD
+      A[User Input] --> B[API Layer]
+      B --> C{Processing Required?}
+      C -->|Simple| D[Direct Processing]
+      C -->|Complex| E[PocketFlow Pipeline]
+      E --> F[SharedStore]
+      F --> G[Business Logic Nodes]
+      G --> H[Output Processing]
+      D --> I[Response]
+      H --> I
+      
+      %% TODO: Replace with actual system flow based on your features
+  ```
+  
+  ### Major Data Transformations
+  - **Input**: [TYPICAL_USER_INPUT_FORMATS]
+  - **Processing**: [CORE_BUSINESS_LOGIC_TRANSFORMATIONS] 
+  - **Output**: [EXPECTED_RESULT_FORMATS]
+  
+  ## Core Shared Store Schema (Outline)
+  
+  ### Initial Schema Planning
+  ```python
+  # TODO: Define based on feature requirements from roadmap
+  SharedStore = {
+      "user_context": "Dict[str, Any]",  # User session and preferences
+      "processing_state": "Dict[str, Any]",  # Current operation state
+      "results": "Dict[str, Any]",  # Processed outputs
+      # Additional keys will be defined during feature spec creation
+  }
+  ```
+  
+  ## Major System Utilities (Identification)
+  
+  ### External Integration Points
+  - **[UTILITY_CATEGORY_1]**: [EXTERNAL_SERVICES_OR_APIS]
+    - TODO: Define input/output contracts during spec creation
+  - **[UTILITY_CATEGORY_2]**: [FILE_PROCESSING_OR_DATA_HANDLING]
+    - TODO: Implement following PocketFlow utility philosophy
+  
+  ## Integration Points (External Systems)
+  
+  ### Planned External Dependencies
+  - **[INTEGRATION_1]**: [DESCRIPTION_AND_PURPOSE]
+  - **[INTEGRATION_2]**: [DESCRIPTION_AND_PURPOSE]
+  
+  ## Implementation Phases Alignment
+  
+  This design document will evolve through roadmap phases:
+  - **Phase 1**: [CORE_FEATURES] → Detailed design in specs
+  - **Phase 2**: [ENHANCEMENT_FEATURES] → Extended design sections  
+  - **Phase 3+**: [ADVANCED_FEATURES] → Additional pattern integration
+  
+  **Next Steps**: 
+  1. Use `/create-spec` for each roadmap feature
+  2. Each spec will extend this foundational design
+  3. Implementation follows feature-specific design documents
+  ```
+</template_content>
+
+<instructions>
+  ACTION: Create docs/design.md with TODO templates
+  TEMPLATE: Use Initial Product Design template structure
+  DIAGRAMS: Include high-level Mermaid diagram placeholder
+  LINKING: Connect to roadmap phases for implementation planning
+  VALIDATION: Ensure compliance with PocketFlow Universal Framework requirements
+</instructions>
+
+</step>
+
+<step number="4.6" subagent="pattern-analyzer" name="technical_pattern_validation">
+
+### Step 4.6: Technical Pattern Validation
 
 **Uses:** pattern-analyzer subagent for technical pattern validation
 
@@ -410,9 +531,9 @@ Use the pattern-analyzer subagent to validate the recommended technical patterns
 
 </step>
 
-<step number="5" name="create_roadmap_md">
+<step number="6" name="create_roadmap_md">
 
-### Step 5: Create roadmap.md
+### Step 6: Create roadmap.md
 
 <step_metadata>
   <creates>
@@ -495,9 +616,9 @@ Use the pattern-analyzer subagent to validate the recommended technical patterns
 </step>
 
 
-<step number="6" name="create_or_update_claude_md">
+<step number="7" name="create_or_update_claude_md">
 
-### Step 6: Create or Update CLAUDE.md
+### Step 7: Create or Update CLAUDE.md
 
 <step_metadata>
   <creates>
@@ -571,6 +692,7 @@ When asked to work on this codebase:
 <final_checklist>
   <verify>
     - [ ] All 3 files created in .agent-os/product/
+    - [ ] docs/design.md created with architectural foundation
     - [ ] User inputs incorporated throughout
     - [ ] Missing tech stack items requested
     - [ ] CLAUDE.md created or updated with Agent OS documentation
@@ -581,9 +703,10 @@ When asked to work on this codebase:
   1. Gather and validate all inputs
   2. Create directory structure
   3. Generate each file sequentially
-  4. Request any missing information
-  5. Create or update project CLAUDE.md file
-  6. Validate complete documentation set
+  4. Generate initial design document (docs/design.md)
+  5. Request any missing information
+  6. Create or update project CLAUDE.md file
+  7. Validate complete documentation set
 </execution_order>
 
 ## Standard Project Structure
