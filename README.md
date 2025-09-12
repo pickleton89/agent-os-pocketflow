@@ -24,8 +24,6 @@ Usage Repository (end-user projects):
 
 Key Principle: Missing implementations in generated templates are features, not bugs. This framework creates starting points for developers, not finished applications.
 
-See the full statement in `docs/FRAMEWORK_VS_USAGE.md`.
-
 ## What This Framework Provides
 
 ### ✅ Full Agent OS v1.4.0 Workflow
@@ -227,6 +225,9 @@ curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main
 ## 📋 How to Use
 
 ### Pattern Analyzer — Phase 4 Summary
+
+The Pattern Analyzer automatically detects which PocketFlow pattern best fits your requirements and can identify meaningful pattern combinations.
+
 - Configurable thresholds: `PatternAnalyzer` exposes combination detection thresholds at the class level via `DEFAULT_COMBINATION_RULES` and at the instance level via `combination_rules`. Tune per combo using normalized `min_norm` values (relative to the max score in a run).
 - Rationale prefix: When a valid combination is detected (e.g., RAG + AGENT), the analyzer prepends a brief line like: "Detected composite scenario: RAG + AGENT. Top patterns: TOOL (1.00), RAG (0.85)."
 - Confidence bump: For robust combos where all member patterns have normalized scores ≥ 0.8, the analyzer adds a small confidence bump (+0.05, capped at 1.0).
@@ -234,7 +235,7 @@ curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main
 
 To customize thresholds:
 ```python
-from pocketflow-tools.pattern_analyzer import PatternAnalyzer, PatternType
+from pocketflow_tools.pattern_analyzer import PatternAnalyzer, PatternType
 
 custom = {
     "intelligent_rag": {"patterns": [PatternType.RAG, PatternType.AGENT], "min_norm": 0.6},
@@ -315,7 +316,7 @@ The framework automatically selects the appropriate pattern based on your specif
 # If running inside a project repo, adjust sys.path to the tools directory
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path('pocketflow-tools')))  # or '.agent-os/pocketflow-tools' in projects
+sys.path.insert(0, str(Path('.agent-os/pocketflow-tools')))  # project tools directory
 import generator as gen
 
 # Opt-in to compose nodes and graph when combinations are detected

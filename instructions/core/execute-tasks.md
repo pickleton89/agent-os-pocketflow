@@ -2,7 +2,7 @@
 description: Task Execution Rules for Agent OS
 globs:
 alwaysApply: false
-version: 2.1 # Updated to use 3-phase execution model from v1.4.1
+version: 2.1 # Updated to use 3-phase execution model from v1.4.0
 encoding: UTF-8
 ---
 
@@ -762,7 +762,7 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 <step_metadata>
   <delegates>post-execution-tasks.md for completion workflow</delegates>
   <handles>testing, git operations, documentation, and reporting</handles>
-  <implements>3-phase execution model from Agent OS v1.4.1</implements>
+  <implements>3-phase execution model from Agent OS v1.4.0</implements>
 </step_metadata>
 
 After all tasks in tasks.md have been implemented, use @.agent-os/instructions/core/post-execution-tasks.md to run the complete series of steps we always execute when finishing and delivering a new feature.

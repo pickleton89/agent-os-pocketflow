@@ -2,7 +2,7 @@
 description: Rules to finish off and deliver to user set of tasks that have been completed using Agent OS + PocketFlow
 globs:
 alwaysApply: false
-version: 2.1 # Complete 3-phase post-execution workflow for v1.4.1
+version: 2.1 # Complete 3-phase post-execution workflow for v1.4.0
 encoding: UTF-8
 ---
 
