@@ -106,6 +106,59 @@ Use the strategic-planner subagent to create a comprehensive strategic plan and 
 
 </step>
 
+<step number="1.6" name="documentation_discovery">
+### Step 1.6: Documentation Discovery and Integration
+
+<step_metadata>
+  <purpose>Gather external documentation for accurate technical context</purpose>
+  <optional>true - user can skip</optional>
+  <timing>after strategic planning, before documentation creation</timing>
+</step_metadata>
+
+<interactive_prompts>
+  "I can reference external documentation to ensure accurate technical implementation.
+   Would you like me to incorporate any of the following?
+   
+   1. **Tech Stack Documentation** 
+      Examples: FastAPI docs, Next.js guides, Django documentation
+      
+   2. **External API Documentation**
+      Examples: Stripe API, Auth0, AWS services, custom APIs
+      
+   3. **Internal Standards & Architecture**
+      Examples: Company style guides, architecture decisions, design systems
+      
+   4. **Compliance & Security Requirements**
+      Examples: HIPAA, SOC2, GDPR, security policies
+   
+   For each category you want to include:
+   - Provide a URL to fetch documentation from, OR
+   - Provide a local file path (starting with / or ~), OR
+   - Type 'skip' to proceed without
+   
+   Format: [category_number]: [url_or_path_or_skip]"
+</interactive_prompts>
+
+<documentation_processing>
+  FOR each provided documentation:
+    1. Validate source accessibility
+    2. Fetch content using appropriate handler
+    3. Extract relevant patterns and constraints
+    4. Store in docs-registry.yaml
+    5. Include in planning context
+</documentation_processing>
+
+<instructions>
+  ACTION: Present interactive documentation prompts to user
+  PROCESS: Each provided documentation source using appropriate handlers
+  VALIDATE: Source accessibility before processing
+  STORE: Processed documentation in .agent-os/docs-registry.yaml
+  ENRICH: Planning context with extracted patterns and constraints
+  CONTINUE: Proceed to next step regardless of user response (skip allowed)
+</instructions>
+
+</step>
+
 <step number="2" name="create_documentation_structure">
 
 ### Step 2: Create Documentation Structure

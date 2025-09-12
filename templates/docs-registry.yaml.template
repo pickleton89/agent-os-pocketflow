@@ -1,75 +1,103 @@
 # Agent OS Documentation Registry Template
-# Auto-populated from user responses and framework usage
+# Auto-populated from user responses during Phase 2 documentation discovery
 version: 1.0.0
 last_updated: YYYY-MM-DD
 
-# Tech stack documentation references
+# Technical stack documentation
 tech_stack: {}
   # Example entries (remove {} and replace with actual stack):
+  # fastapi:
+  #   type: "framework|library|tool"
+  #   source: "https://fastapi.tiangolo.com/"
+  #   last_fetched: "YYYY-MM-DD"
+  #   relevance: ["api_patterns", "async_support", "dependency_injection"]
+  #   version: "0.104.1"
+  #   extracted_patterns:
+  #     - "API endpoint definition patterns"
+  #     - "Pydantic model integration"
+  #     - "Dependency injection for utilities"
+  #   cache_ttl: 24  # hours
+  #   status: "active|stale|error"
+  
   # react:
   #   type: "framework"
   #   source: "https://reactjs.org/docs"
   #   last_fetched: "YYYY-MM-DD"
   #   relevance: ["components", "hooks", "state-management"]
   #   version: "18.x"
-  
-  # fastapi:
-  #   type: "framework"
-  #   source: "https://fastapi.tiangolo.com/"
-  #   last_fetched: "YYYY-MM-DD"
-  #   relevance: ["api-development", "async", "validation"]
-  #   version: "0.100+"
+  #   extracted_patterns:
+  #     - "Component composition patterns"
+  #     - "State management with hooks"
+  #     - "Event handling conventions"
 
-# External API documentation references
+# External API documentation
 external_apis: {}
   # Example entries (remove {} and replace with actual APIs):
-  # stripe_api:
-  #   type: "rest"
+  # stripe:
+  #   type: "rest|graphql|websocket|custom"
   #   source: "https://stripe.com/docs/api"
-  #   spec_format: "openapi"
-  #   relevance: ["payments", "webhooks"]
-  
-  # github_api:
-  #   type: "rest"
-  #   source: "https://docs.github.com/en/rest"
-  #   spec_format: "openapi"
-  #   relevance: ["repository-management", "ci-cd"]
+  #   spec_format: "openapi|swagger|custom"
+  #   last_fetched: "YYYY-MM-DD"
+  #   relevance: ["payment_processing", "webhook_handling", "subscription_management"]
+  #   version: "2023-10-16"
+  #   extracted_patterns:
+  #     - "Payment intent workflow patterns"
+  #     - "Webhook signature verification"
+  #     - "Error handling and retry logic"
+  #   endpoints_count: 150
+  #   auth_method: "bearer_token|api_key|oauth"
+  #   rate_limits:
+  #     requests_per_second: 25
+  #     burst_limit: 100
 
-# Internal standards and conventions
+# Internal standards and architecture
 internal_standards: {}
   # Example entries (remove {} and customize based on your organization):
   # coding_standards:
-  #   type: "style"
+  #   type: "architecture|style|security|compliance"
   #   source: "docs/coding-standards.md"
-  #   relevance: ["code-formatting", "naming-conventions"]
+  #   last_fetched: "YYYY-MM-DD"
+  #   relevance: ["code_formatting", "naming_conventions", "best_practices"]
+  #   extracted_patterns:
+  #     - "Function naming conventions"
+  #     - "Code organization patterns"
+  #     - "Documentation requirements"
   
-  # architecture_guidelines:
+  # architecture_decisions:
   #   type: "architecture"
-  #   source: "docs/architecture.md"
-  #   relevance: ["system-design", "patterns"]
-  
-  # security_policies:
-  #   type: "security"
-  #   source: "docs/security-policies.md"
-  #   relevance: ["authentication", "data-protection"]
+  #   source: "docs/architecture-decisions.md"
+  #   last_fetched: "YYYY-MM-DD"
+  #   relevance: ["system_design", "pattern_selection", "trade_offs"]
+  #   extracted_patterns:
+  #     - "Microservices vs monolith guidelines"
+  #     - "Database selection criteria"
+  #     - "Technology evaluation framework"
 
-# Compliance and regulatory documentation
+# Compliance and security requirements
 compliance: {}
   # Example entries (remove {} and customize based on your requirements):
+  # hipaa:
+  #   type: "regulatory|security|industry"
+  #   source: "docs/hipaa-compliance.md"
+  #   last_fetched: "YYYY-MM-DD"
+  #   requirements:
+  #     - "Data encryption at rest and in transit"
+  #     - "Access logging and audit trails"
+  #     - "User consent and data retention policies"
+  #   technical_controls:
+  #     - "Database encryption implementation"
+  #     - "API authentication and authorization"
+  #     - "Audit logging middleware"
+  #   validation_frequency: "quarterly"
+  
   # gdpr:
   #   type: "regulatory"
   #   source: "docs/gdpr-compliance.md"
-  #   requirements: ["data-privacy", "consent-management"]
-  
-  # hipaa:
-  #   type: "regulatory"
-  #   source: "docs/hipaa-compliance.md"
-  #   requirements: ["healthcare-data", "audit-trails"]
-  
-  # soc2:
-  #   type: "security"
-  #   source: "docs/soc2-controls.md"
-  #   requirements: ["security-controls", "monitoring"]
+  #   last_fetched: "YYYY-MM-DD"
+  #   requirements:
+  #     - "Data subject rights implementation"
+  #     - "Privacy by design principles"
+  #     - "Data breach notification procedures"
 
 # PocketFlow-specific patterns and conventions
 pocketflow_patterns: {}
@@ -110,6 +138,32 @@ discovery_settings:
     - ".venv/"
     - "dist/"
     - "build/"
+
+# Documentation processing metadata
+processing_metadata:
+  total_sources: 0
+  last_discovery: "YYYY-MM-DD"
+  auto_refresh_enabled: true
+  cache_size_mb: 0
+  
+# Source accessibility tracking
+source_health: {}
+  # Automatically populated during processing
+  # example_source:
+  #   status: "accessible|error|timeout"
+  #   last_check: "YYYY-MM-DD HH:MM:SS"
+  #   error_count: 0
+  #   response_time_ms: 1200
+
+# Documentation usage analytics
+usage_analytics:
+  # Tracks which documentation is most referenced
+  most_referenced: []
+  least_used: []
+  workflow_usage:
+    plan_product: 0
+    create_spec: 0
+    execute_tasks: 0
 
 # Registry metadata
 metadata:

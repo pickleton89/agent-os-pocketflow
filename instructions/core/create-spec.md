@@ -145,6 +145,24 @@ This instruction file uses modular templates from:
   </required_clarifications>
 </step_metadata>
 
+<documentation_discovery>
+  <pattern_detection>
+    ANALYZE spec requirements for technology mentions
+    IF detected_technology NOT IN current_docs_registry:
+      PROMPT: "I noticed you're using [TECHNOLOGY]. 
+               Would you like me to reference its documentation?
+               [URL/path/skip]:"
+  </pattern_detection>
+  
+  <feature_specific_docs>
+    Based on feature type, suggest relevant documentation:
+    - Payment features → Payment provider docs
+    - Auth features → Auth service docs
+    - Data processing → Database/queue docs
+    - UI components → Component library docs
+  </feature_specific_docs>
+</documentation_discovery>
+
 <clarification_areas>
   <scope>
     - in_scope: what is included
@@ -178,7 +196,9 @@ This instruction file uses modular templates from:
 </clarification_process>
 
 <instructions>
-  ACTION: Evaluate need for clarification
+  ACTION: Perform pattern detection for documentation needs
+  SUGGEST: Relevant documentation based on feature type  
+  EVALUATE: Need for clarification after documentation discovery
   ASK: Numbered questions if needed
   PROCEED: Only with clear requirements
   PRIORITIZE: PocketFlow pattern and architecture questions for all projects.
