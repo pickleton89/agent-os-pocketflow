@@ -362,30 +362,8 @@ Enhance design document validation to check for evolution from initial design.
 - [ ] Checks for consistency in SharedStore evolution
 - [ ] Ensures no architectural conflicts
 
-#### Task 4.2: Update CLAUDE.md Template
-**Files Modified**: `instructions/core/plan-product.md` (CLAUDE.md section)
 
-Add reference to design document in project-level CLAUDE.md.
 
-```markdown
-### Product Context
-- **Mission & Vision:** @.agent-os/product/mission.md
-- **Technical Architecture:** @.agent-os/product/tech-stack.md
-- **Development Roadmap:** @.agent-os/product/roadmap.md
-- **System Design:** @docs/design.md (foundational architecture)
-- **Pre-flight Checklist:** @.agent-os/checklists/pre-flight.md
-
-### Design-First Workflow
-1. **Review foundational design**: @docs/design.md
-2. **Plan features**: Use roadmap phases for prioritization
-3. **Create detailed specs**: Each feature extends the foundational design
-4. **Implement with validation**: Design document compliance required
-```
-
-**Acceptance Criteria**:
-- [ ] CLAUDE.md references design document
-- [ ] Includes design-first workflow instructions
-- [ ] Links to pre-flight checklist
 
 ## Testing Strategy
 

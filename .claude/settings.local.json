@@ -41,7 +41,15 @@
       "Read(//Users/jeffkiefer/Documents/projects/testing_project/**)",
       "Read(//Users/jeffkiefer/.agent-os/setup/**)",
       "Read(//Users/jeffkiefer/.agent-os/commands/**)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(git push:*)",
+      "Read(//Users/jeffkiefer/.agent-os/claude-code/**)",
+      "Bash(/Users/jeffkiefer/Documents/projects/agent-os-pocketflow/setup/project.sh:*)",
+      "Bash(xmllint:*)",
+      "Bash(sed:*)",
+      "Read(//Users/jeffkiefer/.agent-os/**)",
+      "Bash(xargs git ls-files)",
+      "mcp__graphiti__search_memory_nodes"
     ],
     "deny": [],
     "ask": [],
