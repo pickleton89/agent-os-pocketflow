@@ -66,7 +66,11 @@ encoding: UTF-8
     - **PocketFlow Component Detection**:
       - Core files: `nodes.py`, `flow.py`, `main.py` entry point
       - Utility functions: `utils/` directory structure and LLM integrations
-      - Design documentation: `docs/design.md` existence and completeness
+      - **Design documentation analysis**: 
+        - `docs/design.md` presence and location (absolute requirement)
+        - Existing design document completeness assessment
+        - Architecture sections coverage (Nodes, Flows, SharedStore, Integrations)
+        - Missing sections identification for existing docs
       - Node types: AsyncNode, BatchNode, custom implementations
       - Flow patterns: Agent, RAG, Workflow, MapReduce, Multi-Agent
       - SharedStore usage: Data structure patterns and Pydantic integration
@@ -162,6 +166,68 @@ Use the pattern-analyzer subagent to analyze the existing project for optimal Po
             - Pattern options: Agent, RAG, Workflow, MapReduce, Multi-Agent, Structured Output"
   PROCESS: Pattern recommendations and architectural guidance
   APPLY: Pattern analysis results to strategic planning
+</instructions>
+
+</step>
+
+<step number="1.7" subagent="design-document-creator" name="design_document_assessment_and_creation">
+
+### Step 1.7: Design Document Assessment and Creation
+
+**Uses:** design-document-creator subagent for design document handling
+
+<step_metadata>
+  <purpose>Ensure all projects have complete design documentation</purpose>
+  <handles>existing design.md assessment and creation for missing docs</handles>
+  <preserves>existing design content while filling gaps</preserves>
+</step_metadata>
+
+<design_document_assessment>
+  <check_existing_docs>
+    - **Location Detection**: Check for `docs/design.md`, `DESIGN.md`, `design.md` in root, or other design document locations
+    - **Content Analysis**: If design document exists, analyze completeness of standard sections:
+      - Project Overview and Architecture
+      - PocketFlow Patterns (Node types, Flow implementations) 
+      - SharedStore schema design
+      - LLM integrations and utility functions
+      - API design and data models
+    - **Gap Identification**: Identify missing or incomplete sections in existing docs
+  </check_existing_docs>
+  
+  <create_or_enhance_design>
+    <if_no_design_doc>
+      <action>Use design-document-creator subagent to create comprehensive design.md</action>
+      <location>docs/design.md (standard location)</location>
+      <content>Full design document based on codebase analysis and pattern recommendations</content>
+    </if_no_design_doc>
+    
+    <if_incomplete_design_doc>
+      <action>Use design-document-creator subagent to enhance existing document</action>
+      <preserve>All existing content and architectural decisions</preserve>
+      <enhance>Add missing sections while maintaining existing structure and style</enhance>
+    </if_incomplete_design_doc>
+  </create_or_enhance_design>
+</design_document_assessment>
+
+<subagent_context>
+  **Context:** Codebase analysis results, pattern recommendations, existing design content (if any)
+  **Input:** Complete technical analysis and pattern recommendations from previous steps
+  **Output:** Complete or enhanced design.md document
+  **Preservation Rule:** Never overwrite existing architectural decisions or content
+</subagent_context>
+
+<instructions>
+  ACTION: Use design-document-creator subagent for design document handling
+  REQUEST: "Handle design document for existing project:
+            - Codebase analysis: [COMPLETE_TECHNICAL_ANALYSIS_FROM_STEP_1]
+            - Pattern recommendations: [POCKETFLOW_PATTERNS_FROM_STEP_1_5]
+            - Existing design doc: [DETECTED_DESIGN_DOC_LOCATION_AND_CONTENT]
+            - Missing sections: [GAP_ANALYSIS_FROM_DESIGN_DOC_ASSESSMENT]
+            - Action needed: [CREATE_NEW_OR_ENHANCE_EXISTING]
+            - Preservation requirements: [MAINTAIN_EXISTING_DECISIONS_AND_CONTENT]"
+  ENSURE: Design document reflects actual codebase state and includes pattern analysis
+  PRESERVE: All existing architectural decisions and content in current design docs
+  OUTPUT: Complete design.md in standard location with all required sections
 </instructions>
 
 </step>
@@ -342,6 +408,13 @@ Use the strategic-planner subagent to create strategic analysis and comprehensiv
     - Include existing design.md analysis if present
     - Map current node implementations to standard PocketFlow patterns
   </llm_strategy_refinement>
+  <design_document_integration>
+    - **Preserve Existing Design**: Ensure any pre-existing design.md content is preserved and integrated into Agent OS documentation
+    - **Cross-Reference Design**: Link design document findings in mission.md and tech-stack.md for consistency
+    - **Update Product Documentation**: Ensure .agent-os/product/ documentation reflects design decisions from existing design.md
+    - **Architecture Alignment**: Verify generated roadmap aligns with architectural decisions in existing design documents
+    - **Design Document Maintenance**: If design.md was created or enhanced in Step 1.7, ensure it's referenced in Agent OS documentation structure
+  </design_document_integration>
 </customization_tasks>
 
 <conditional_documentation>
@@ -401,7 +474,9 @@ Use the strategic-planner subagent to create strategic analysis and comprehensiv
   MODIFY: Roadmap to show completed work
   VERIFY: Tech stack matches actual implementation
   ADD: Historical context notes to roadmap.md
-  REFINE: LLM/AI specific documentation based on analysis.
+  REFINE: LLM/AI specific documentation based on analysis
+  INTEGRATE: Design document content and architectural decisions from existing design.md
+  PRESERVE: All existing design decisions while ensuring consistency across Agent OS documentation
 </instructions>
 
 </step>
