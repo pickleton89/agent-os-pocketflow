@@ -8,6 +8,142 @@
 
 This file contains all PocketFlow-specific templates for creating comprehensive LLM/AI component specifications. These templates follow PocketFlow's "Agentic Coding" methodology and minimalist graph-based approach.
 
+## Initial Product Design Template
+
+### Complete docs/design.md Structure for New Products
+
+```markdown
+# [PRODUCT_NAME] Design Document
+
+> Product: [PRODUCT_NAME]
+> Created: [CURRENT_DATE]
+> Status: Initial Architecture Planning
+> Framework: PocketFlow
+
+**FOUNDATION**: This initial design document establishes the architectural foundation. 
+Feature-specific designs will be created during spec development.
+
+## Product Architecture Overview
+
+### System Purpose
+[PRODUCT_MISSION_SUMMARY_FROM_MISSION_MD]
+
+### Primary PocketFlow Patterns
+Based on planned features, this product will primarily use:
+- **[PRIMARY_PATTERN]**: [JUSTIFICATION_FROM_FEATURE_ANALYSIS]
+- **[SECONDARY_PATTERN]**: [JUSTIFICATION_IF_APPLICABLE]
+
+### Complexity Assessment
+- **Overall Complexity**: [SIMPLE_WORKFLOW/ENHANCED_WORKFLOW/COMPLEX_APPLICATION/LLM_APPLICATION]
+- **Rationale**: [BASED_ON_FEATURE_COUNT_AND_INTEGRATION_REQUIREMENTS]
+
+## System-Wide Data Flow
+
+### High-Level Architecture
+\`\`\`mermaid
+graph TD
+    A[User Input] --> B[API Layer]
+    B --> C{Processing Required?}
+    C -->|Simple| D[Direct Processing]
+    C -->|Complex| E[PocketFlow Pipeline]
+    E --> F[SharedStore]
+    F --> G[Business Logic Nodes]
+    G --> H[Output Processing]
+    D --> I[Response]
+    H --> I
+    
+    %% TODO: Replace with actual system flow based on your features
+\`\`\`
+
+### Major Data Transformations
+- **Input**: [TYPICAL_USER_INPUT_FORMATS]
+- **Processing**: [CORE_BUSINESS_LOGIC_TRANSFORMATIONS]
+- **Output**: [EXPECTED_RESULT_FORMATS]
+
+## Core Shared Store Schema (Outline)
+
+### Initial Schema Planning
+```python
+# TODO: Define based on feature requirements from roadmap
+SharedStore = {
+    "user_context": "Dict[str, Any]",  # User session and preferences
+    "processing_state": "Dict[str, Any]",  # Current operation state
+    "feature_data": {
+        # Feature-specific data structures will be defined
+        # during individual feature specification
+    },
+    "system_metadata": {
+        "product_version": "str",
+        "request_id": "str", 
+        "timestamp": "datetime"
+    }
+}
+```
+
+## Architecture Decision Records
+
+### Pattern Selection Rationale
+Document why specific PocketFlow patterns were chosen:
+
+#### [PRIMARY_PATTERN] Selection
+- **Use Case Fit**: [WHY_THIS_PATTERN_FITS_THE_PROBLEM]
+- **Alternatives Considered**: [OTHER_PATTERNS_EVALUATED]
+- **Trade-offs**: [BENEFITS_VS_LIMITATIONS]
+
+#### Integration Strategy
+- **External APIs**: [THIRD_PARTY_INTEGRATIONS_NEEDED]
+- **Data Persistence**: [DATABASE_OR_FILE_STORAGE_APPROACH]
+- **Authentication**: [USER_AUTH_AND_SESSION_MANAGEMENT]
+
+## Development Phases
+
+### Phase 1: Foundation
+- [ ] Core SharedStore schema implementation
+- [ ] Basic API endpoints structure
+- [ ] Authentication integration
+- [ ] Error handling framework
+
+### Phase 2: Core Features
+- [ ] [FEATURE_1] implementation
+- [ ] [FEATURE_2] implementation  
+- [ ] Feature integration testing
+- [ ] Performance optimization
+
+### Phase 3: Enhancement
+- [ ] Advanced features based on user feedback
+- [ ] Scaling optimizations
+- [ ] Analytics and monitoring
+- [ ] Documentation completion
+
+## Monitoring and Observability
+
+### Key Metrics
+- **Performance**: Response times, throughput
+- **Quality**: Error rates, user satisfaction
+- **Usage**: Feature adoption, usage patterns
+- **Cost**: LLM API costs, infrastructure costs
+
+### Logging Strategy
+- **Request Tracking**: Full request/response logging for debugging
+- **Error Monitoring**: Detailed error context and stack traces
+- **Performance Monitoring**: Node execution times and bottlenecks
+- **Business Metrics**: Feature usage and success rates
+
+## Next Steps
+
+### Immediate Actions
+1. **Complete Mission Definition**: Finalize docs/mission.md with clear product goals
+2. **Feature Roadmap**: Create detailed feature list in docs/roadmap.md
+3. **Technical Research**: Investigate specific PocketFlow patterns for planned features
+4. **Architecture Validation**: Review this design with stakeholders
+
+### Ongoing Documentation
+- Feature-specific designs will expand this foundation
+- Regular architecture reviews and updates
+- Performance benchmarking and optimization plans
+- User feedback integration and iteration planning
+```
+
 ## Design Document Template
 
 ### Complete docs/design.md Structure
