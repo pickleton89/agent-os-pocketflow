@@ -233,78 +233,89 @@ Focus on technical implementation requirements.
 ### Pattern Detection Algorithm
 **Objective**: Automatically suggest relevant documentation based on context
 
+**Implementation**: Use the `TechPatternDetector` class from `pocketflow-tools/smart_features.py`
+
 ```python
-def detect_documentation_needs(spec_text, context="create-spec"):
-    """
-    Detect documentation needs based on spec content and context
-    
-    Args:
-        spec_text: Text content of specification
-        context: Workflow context (plan-product, create-spec)
-    
-    Returns:
-        List of suggested documentation categories
-    """
-    tech_patterns = {
-        "stripe": ["payment", "subscription", "checkout", "billing"],
-        "auth0": ["authentication", "login", "jwt", "oauth"],
-        "aws": ["s3", "lambda", "dynamodb", "sqs"],
-        "fastapi": ["api", "endpoint", "router", "dependency"],
-        "django": ["model", "view", "template", "orm"],
-        "react": ["component", "jsx", "state", "hook"],
-        "postgresql": ["database", "query", "transaction", "index"]
-    }
-    
-    suggested_docs = []
-    for tech, patterns in tech_patterns.items():
-        if any(pattern in spec_text.lower() for pattern in patterns):
-            if tech not in current_docs_registry():
-                suggested_docs.append({
-                    "technology": tech,
-                    "reason": f"Detected {tech} patterns in specification",
-                    "priority": "high" if context == "create-spec" else "medium"
-                })
-    
-    return suggested_docs
+# NOTE: This is framework-internal code. End-user projects would get 
+# generated templates that use these smart features via workflow integration.
+
+# Framework usage (internal to Agent OS):
+from smart_features import analyze_specification_for_documentation
+
+# Analyze specification for documentation needs
+result = analyze_specification_for_documentation(
+    spec_text=specification_content,
+    context=current_workflow_context,  # "plan-product", "create-spec", "execute-tasks"
+    registry_path=".agent-os/docs-registry.yaml"
+)
+
+# Access pattern suggestions
+pattern_suggestions = result["pattern_suggestions"]["by_priority"]
+critical_suggestions = [s for s in pattern_suggestions if s["priority"] == "critical"]
 ```
+
+**Key Features**:
+- Detects 14+ technology patterns with weighted scoring
+- Context-aware suggestions (different priorities for plan vs spec vs execute phases)
+- Confidence scoring based on pattern match frequency
+- Integration with existing documentation registry
 
 ### Progressive Disclosure Strategy
 **Objective**: Load documentation depth based on workflow needs
 
-**Loading Strategy**:
-1. **Initial Load**: High-level overview and getting started sections
-2. **Feature Planning**: Drill down to specific functionality documentation  
-3. **Implementation Phase**: Load detailed API references and examples
-4. **Optimization Phase**: Access performance and best practices sections
+**Implementation**: Use the `ProgressiveDisclosure` class from `pocketflow-tools/smart_features.py`
 
-**Implementation**:
 ```python
-disclosure_levels = {
-    "overview": ["introduction", "getting-started", "overview"],
-    "planning": ["architecture", "patterns", "best-practices"],
-    "implementation": ["api-reference", "examples", "integration"],
-    "optimization": ["performance", "scaling", "troubleshooting"]
-}
+# NOTE: Framework-internal usage. End-user projects get generated templates.
+from smart_features import ProgressiveDisclosure
+
+disclosure = ProgressiveDisclosure(cache_dir=".agent-os/cache")
+
+# Get content appropriate for current phase
+content = disclosure.get_content_for_level(
+    documentation_source="fastapi",
+    level="implementation"  # overview, planning, implementation, optimization
+)
 ```
+
+**Loading Strategy**:
+1. **Overview Level**: Introduction, getting-started, concepts (24h cache TTL)
+2. **Planning Level**: Architecture, patterns, best-practices (12h cache TTL)
+3. **Implementation Level**: API references, examples, integration (6h cache TTL)  
+4. **Optimization Level**: Performance, scaling, troubleshooting (24h cache TTL)
+
+**Automatic Level Detection**: System determines appropriate level based on workflow context and user history
 
 ### Version Management
 **Objective**: Track and manage documentation version compatibility
 
-**Features**:
-- Track framework/API versions in registry
-- Warn when documentation version differs from project requirements
-- Suggest documentation updates when versions change
-- Maintain version-specific documentation cache
+**Implementation**: Use the `VersionManager` class from `pocketflow-tools/smart_features.py`
 
-**Version Tracking**:
-```yaml
-version_tracking:
-  framework_version: "1.2.3"
-  docs_version: "1.2.x"  
-  compatibility_status: "compatible|warning|incompatible"
-  last_checked: "2025-01-12"
-  update_available: true
+```python
+# NOTE: Framework-internal usage. End-user projects get generated templates.
+from smart_features import VersionManager
+
+version_manager = VersionManager(registry_path=".agent-os/docs-registry.yaml")
+
+# Check compatibility for a specific technology
+compatibility = version_manager.check_compatibility(
+    tech="fastapi",
+    project_version="0.104.1"
+)
+
+# Handle version warnings
+if compatibility["warnings"]:
+    for warning in compatibility["warnings"]:
+        print(f"⚠️ {warning}")
 ```
+
+**Version Detection**: Automatically detects semantic versions (1.2.3), date versions (2025-01-12), and simple versions (v1.2) from documentation content
+
+**Compatibility Checking**: 
+- Exact match: Fully compatible
+- Minor differences: Probably compatible (warnings)
+- Major differences: Potentially incompatible (strong warnings)
+- Format mismatches: Cannot compare (manual review needed)
 
 ## Error Handling and Fallbacks
 

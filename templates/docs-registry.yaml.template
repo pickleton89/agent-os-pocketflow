@@ -165,6 +165,44 @@ usage_analytics:
     create_spec: 0
     execute_tasks: 0
 
+# Smart features configuration
+smart_features:
+  # Pattern detection settings
+  pattern_detection:
+    enabled: true
+    confidence_threshold: 0.3  # minimum confidence for suggestions
+    max_suggestions: 10  # maximum suggestions per analysis
+    context_weights:
+      plan_product: 0.8
+      create_spec: 1.2
+      execute_tasks: 1.0
+  
+  # Progressive disclosure settings  
+  progressive_disclosure:
+    enabled: true
+    cache_enabled: true
+    cache_ttl_hours:
+      overview: 24
+      planning: 12
+      implementation: 6
+      optimization: 24
+    auto_level_detection: true
+  
+  # Version management settings
+  version_management:
+    enabled: true
+    compatibility_warnings: true
+    auto_version_detection: true
+    version_check_frequency: "weekly"
+    stale_threshold_days: 30
+  
+  # Intelligent suggestion settings
+  intelligent_suggestions:
+    enabled: true
+    priority_threshold: "medium"  # minimum priority for display
+    max_recommendations: 5
+    learning_enabled: false  # user history learning
+
 # Registry metadata
 metadata:
   created_by: "Agent OS Framework"
