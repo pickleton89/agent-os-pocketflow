@@ -207,6 +207,117 @@ encoding: UTF-8
 
 </step>
 
+<step number="2.6" name="design_evolution_validation">
+
+### Step 2.6: Design Evolution Validation
+
+<step_metadata>
+  <validates>design consistency between initial and feature-specific designs</validates>
+  <ensures>architectural evolution coherence</ensures>
+  <condition>applies to projects with both docs/design.md and specs/*/design.md files</condition>
+</step_metadata>
+
+<design_evolution_validation>
+  <initial_design>docs/design.md (product-level)</initial_design>
+  <feature_designs>specs/*/design.md sections</feature_designs>
+  <validation_checks>
+    - Initial design exists and is complete
+    - Feature designs reference and extend initial design
+    - No conflicts between initial and feature-specific designs
+    - SharedStore schema evolution is consistent
+  </validation_checks>
+</design_evolution_validation>
+
+<validation_requirements>
+  <initial_design_check>
+    <path>docs/design.md</path>
+    <required>true for projects with feature-specific designs</required>
+    <validates>completeness and architectural foundation</validates>
+  </initial_design_check>
+  <feature_design_checks>
+    <pattern>specs/*/design.md</pattern>
+    <validates>
+      - References to initial design components
+      - Extension patterns that build upon base architecture
+      - SharedStore schema compatibility and evolution
+      - PocketFlow pattern consistency
+    </validates>
+  </feature_design_checks>
+  <consistency_validation>
+    - SharedStore schema fields are additive or compatible
+    - PocketFlow patterns align with initial architecture decisions
+    - Utility function contracts remain consistent
+    - Node/Flow relationships maintain architectural coherence
+    - Error handling patterns follow established conventions
+  </consistency_validation>
+</validation_requirements>
+
+<evolution_validation_process>
+  <step1>Check if both docs/design.md and specs/*/design.md files exist</step1>
+  <step2>Read initial design document and identify base architecture</step2>
+  <step3>Read all feature-specific design documents in specs directories</step3>
+  <step4>Validate that feature designs reference and extend initial design</step4>
+  <step5>Check SharedStore schema evolution for compatibility</step5>
+  <step6>Ensure no architectural conflicts between designs</step6>
+  <step7>Validate PocketFlow pattern consistency across all designs</step7>
+</evolution_validation_process>
+
+<conflict_detection>
+  <schema_conflicts>
+    - Field type changes that break compatibility
+    - Removal of fields referenced in initial design
+    - Conflicting data validation rules
+  </schema_conflicts>
+  <architectural_conflicts>
+    - Different PocketFlow patterns for similar functionality
+    - Inconsistent utility function interfaces
+    - Conflicting Node/Flow interaction patterns
+  </architectural_conflicts>
+  <pattern_conflicts>
+    - Mixed synchronous/asynchronous patterns
+    - Inconsistent error handling approaches
+    - Conflicting API design conventions
+  </pattern_conflicts>
+</conflict_detection>
+
+<validation_failure_handling>
+  <blocking_message>
+    ❌ **Design Evolution Conflict Detected**
+    
+    The feature-specific design conflicts with the initial product design.
+    
+    **Conflicts Found:**
+    - [LIST_SPECIFIC_CONFLICTS]
+    
+    **Resolution Required:**
+    1. Review docs/design.md for base architectural decisions
+    2. Update specs/*/design.md to extend rather than conflict
+    3. Ensure SharedStore schema evolution is additive
+    4. Maintain PocketFlow pattern consistency
+    5. Resolve architectural inconsistencies
+    
+    Implementation cannot proceed until design conflicts are resolved.
+    Please update the conflicting design documents or ask me to help resolve them.
+  </blocking_message>
+</validation_failure_handling>
+
+<conditional_execution>
+  <condition>Execute only if both docs/design.md and specs/*/design.md exist</condition>
+  <skip_if>Only docs/design.md exists (no feature-specific designs)</skip_if>
+  <skip_if>Only specs/*/design.md exist (no initial design - handled by Step 2.5)</skip_if>
+</conditional_execution>
+
+<instructions>
+  VALIDATE: Relationship between initial and feature-specific designs
+  CHECK: SharedStore schema evolution for consistency
+  DETECT: Architectural conflicts between design documents
+  ENSURE: PocketFlow pattern consistency across all designs
+  BLOCK: Implementation if conflicts are detected
+  GUIDE: User to resolve design inconsistencies before proceeding
+</instructions>
+
+</step>
+
 <step number="2.7" subagent="context-fetcher" name="best_practices_review">
 
 ### Step 2.7: Best Practices Review
