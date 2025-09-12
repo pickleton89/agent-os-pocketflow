@@ -545,6 +545,39 @@ Use the pattern-analyzer subagent to validate the recommended technical patterns
 
 </step>
 
+<step number="5.5" name="generate_prelight_checklist">
+
+### Step 5.5: Generate Pre-flight Checklist
+
+<step_metadata>
+  <creates>
+    - file: .agent-os/checklists/pre-flight.md
+  </creates>
+</step_metadata>
+
+<checklist_content>
+  Based on @docs/POCKETFLOW_BEST_PRACTICES.md, generate comprehensive checklist covering:
+  1. Requirements Analysis
+  2. Architecture Planning
+  3. Data Flow Design
+  4. Node Selection and Design
+  5. Utility Function Strategy
+  6. Error Handling and Resilience
+  7. Testing and Validation Strategy
+  8. Performance and Scalability
+  9. Deployment Planning
+</checklist_content>
+
+<instructions>
+  ACTION: Create .agent-os/checklists/ directory if it doesn't exist
+  GENERATE: Comprehensive pre-flight checklist based on PocketFlow best practices
+  STRUCTURE: Each of the 9 areas should have actionable TODO items with guidance
+  LINKS: Include references to relevant documentation sections
+  VALIDATION: Ensure all critical areas from best practices are covered
+</instructions>
+
+</step>
+
 <step number="6" name="create_roadmap_md">
 
 ### Step 6: Create roadmap.md
@@ -714,6 +747,7 @@ When asked to work on this codebase:
   <verify>
     - [ ] All 3 files created in .agent-os/product/
     - [ ] docs/design.md created with architectural foundation
+    - [ ] Pre-flight checklist generated in .agent-os/checklists/pre-flight.md
     - [ ] User inputs incorporated throughout
     - [ ] Missing tech stack items requested
     - [ ] CLAUDE.md created or updated with Agent OS documentation
@@ -725,9 +759,10 @@ When asked to work on this codebase:
   2. Create directory structure
   3. Generate each file sequentially
   4. Generate initial design document (docs/design.md)
-  5. Request any missing information
-  6. Create or update project CLAUDE.md file
-  7. Validate complete documentation set
+  5. Generate pre-flight checklist (.agent-os/checklists/pre-flight.md)
+  6. Request any missing information
+  7. Create or update project CLAUDE.md file
+  8. Validate complete documentation set
 </execution_order>
 
 ## Standard Project Structure
