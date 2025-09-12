@@ -532,9 +532,83 @@ install_pocketflow_tools() {
         log_warning "Framework validation templates not found - skipping validation template installation"
         echo "# Validation scripts will be installed here" > ".agent-os/validation/README.md"
     fi
+    
+    # Initialize documentation registry
+    initialize_docs_registry
 }
 
+# Initialize documentation registry
+initialize_docs_registry() {
+    log_info "Initializing documentation registry..."
+    
+    # Get framework path for registry template
+    local script_realpath
+    script_realpath="$(realpath "$0" 2>/dev/null)" || script_realpath="$0"
+    local framework_template_dir="$(dirname "$(dirname "$script_realpath")")/templates"
+    local registry_template="$framework_template_dir/docs-registry.yaml.template"
+    
+    # Create docs registry from template if it exists and registry doesn't exist
+    if [[ -f "$registry_template" ]] && [[ ! -f ".agent-os/docs-registry.yaml" ]]; then
+        # Copy template and customize it
+        cp "$registry_template" ".agent-os/docs-registry.yaml"
+        
+        # Update the template with current date
+        local current_date
+        current_date="$(date +'%Y-%m-%d')"
+        
+        # Use sed to update the date placeholder
+        if command -v sed >/dev/null 2>&1; then
+            sed -i.bak "s/YYYY-MM-DD/$current_date/g" ".agent-os/docs-registry.yaml" 2>/dev/null || true
+            rm -f ".agent-os/docs-registry.yaml.bak" 2>/dev/null || true
+        fi
+        
+        log_success "Created documentation registry at .agent-os/docs-registry.yaml"
+        log_info "Customize the registry by editing .agent-os/docs-registry.yaml with your tech stack and API references"
+    elif [[ -f ".agent-os/docs-registry.yaml" ]]; then
+        log_info "Documentation registry already exists - skipping initialization"
+    else
+        log_warning "Documentation registry template not found - creating basic registry"
+        # Create a minimal registry if template is missing
+        local current_date
+        current_date="$(date +'%Y-%m-%d')"
+        cat > ".agent-os/docs-registry.yaml" << EOF
+# Agent OS Documentation Registry
+version: 1.0.0
+last_updated: $current_date
 
+tech_stack: {}
+external_apis: {}
+internal_standards: {}
+compliance: {}
+pocketflow_patterns: {}
+
+discovery_settings:
+  auto_discover: true
+  scan_paths:
+    - "docs/"
+    - "README.md"
+    - "*.md"
+    - ".agent-os/"
+  include_patterns:
+    - "*.md"
+    - "*.yaml"
+    - "*.yml"
+    - "*.json"
+  exclude_patterns:
+    - "node_modules/"
+    - ".git/"
+    - ".venv/"
+    - "dist/"
+    - "build/"
+
+metadata:
+  created_by: "Agent OS Framework"
+  framework_version: "1.4.0"
+  registry_format_version: "1.0.0"
+EOF
+        log_info "Created basic documentation registry - customize by editing .agent-os/docs-registry.yaml"
+    fi
+}
 
 # Create project configuration
 create_project_configuration() {

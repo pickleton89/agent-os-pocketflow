@@ -1,0 +1,124 @@
+# Agent OS Documentation Registry Template
+# Auto-populated from user responses and framework usage
+version: 1.0.0
+last_updated: YYYY-MM-DD
+
+# Tech stack documentation references
+tech_stack: {}
+  # Example entries (remove {} and replace with actual stack):
+  # react:
+  #   type: "framework"
+  #   source: "https://reactjs.org/docs"
+  #   last_fetched: "YYYY-MM-DD"
+  #   relevance: ["components", "hooks", "state-management"]
+  #   version: "18.x"
+  
+  # fastapi:
+  #   type: "framework"
+  #   source: "https://fastapi.tiangolo.com/"
+  #   last_fetched: "YYYY-MM-DD"
+  #   relevance: ["api-development", "async", "validation"]
+  #   version: "0.100+"
+
+# External API documentation references
+external_apis: {}
+  # Example entries (remove {} and replace with actual APIs):
+  # stripe_api:
+  #   type: "rest"
+  #   source: "https://stripe.com/docs/api"
+  #   spec_format: "openapi"
+  #   relevance: ["payments", "webhooks"]
+  
+  # github_api:
+  #   type: "rest"
+  #   source: "https://docs.github.com/en/rest"
+  #   spec_format: "openapi"
+  #   relevance: ["repository-management", "ci-cd"]
+
+# Internal standards and conventions
+internal_standards: {}
+  # Example entries (remove {} and customize based on your organization):
+  # coding_standards:
+  #   type: "style"
+  #   source: "docs/coding-standards.md"
+  #   relevance: ["code-formatting", "naming-conventions"]
+  
+  # architecture_guidelines:
+  #   type: "architecture"
+  #   source: "docs/architecture.md"
+  #   relevance: ["system-design", "patterns"]
+  
+  # security_policies:
+  #   type: "security"
+  #   source: "docs/security-policies.md"
+  #   relevance: ["authentication", "data-protection"]
+
+# Compliance and regulatory documentation
+compliance: {}
+  # Example entries (remove {} and customize based on your requirements):
+  # gdpr:
+  #   type: "regulatory"
+  #   source: "docs/gdpr-compliance.md"
+  #   requirements: ["data-privacy", "consent-management"]
+  
+  # hipaa:
+  #   type: "regulatory"
+  #   source: "docs/hipaa-compliance.md"
+  #   requirements: ["healthcare-data", "audit-trails"]
+  
+  # soc2:
+  #   type: "security"
+  #   source: "docs/soc2-controls.md"
+  #   requirements: ["security-controls", "monitoring"]
+
+# PocketFlow-specific patterns and conventions
+pocketflow_patterns: {}
+  # Example entries (remove {} and replace with framework-specific patterns):
+  # data_flow:
+  #   type: "architecture"
+  #   source: "docs/pocketflow-data-flow.md"
+  #   relevance: ["node-communication", "state-management"]
+  
+  # error_handling:
+  #   type: "architecture"
+  #   source: "docs/pocketflow-error-handling.md"
+  #   relevance: ["fault-tolerance", "recovery-strategies"]
+
+# Auto-discovery settings
+discovery_settings:
+  # Enable automatic documentation discovery
+  auto_discover: true
+  
+  # Paths to scan for documentation references
+  scan_paths:
+    - "docs/"
+    - "README.md"
+    - "*.md"
+    - ".agent-os/"
+  
+  # File patterns to include
+  include_patterns:
+    - "*.md"
+    - "*.yaml"
+    - "*.yml"
+    - "*.json"
+  
+  # File patterns to exclude
+  exclude_patterns:
+    - "node_modules/"
+    - ".git/"
+    - ".venv/"
+    - "dist/"
+    - "build/"
+
+# Registry metadata
+metadata:
+  created_by: "Agent OS Framework"
+  framework_version: "1.4.0"
+  registry_format_version: "1.0.0"
+  
+  # Tracking for updates and maintenance
+  maintenance:
+    check_frequency: "weekly"
+    auto_update: false
+    notification_threshold: 30  # days before staleness warning
