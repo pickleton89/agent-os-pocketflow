@@ -17,6 +17,13 @@ Extract document creation logic from core instructions and move it into speciali
 ### Target Installation Location
 These sub-agents will be installed in end-user projects at `claude-code/agents/` when the framework is set up, allowing core instructions to delegate document creation to specialized agents.
 
+### Directory Structure Clarification
+⚠️ **CRITICAL**: Do not confuse these directories:
+- **`claude-code/agents/`** - WHERE DOCUMENT CREATION AGENTS GO (framework creates this)
+- **`.claude/agents/`** - NOT for document creation agents (user's personal Claude configuration)
+
+This is the #1 implementation error - always verify agents are placed in `claude-code/agents/` per the location specifications in each agent section below.
+
 ---
 
 ## Document Creation Inventory
@@ -201,6 +208,19 @@ Based on investigation of `instructions/core/` directory, here are all documents
 4. Update core instructions to call sub-agents instead of inline creation
 5. Test with existing plan-product workflow
 
+### Phase 1 Verification Checklist
+Before proceeding to Phase 2, verify each agent has:
+
+- [ ] **Correct Location**: Placed in `claude-code/agents/` (NOT `.claude/agents/`)
+- [ ] **Complete Structure**: All 9 required sections from lines 247-257 present
+- [ ] **Proactive Keywords**: "MUST BE USED PROACTIVELY" in YAML description
+- [ ] **Self-Contained Templates**: Embedded template structure, no external dependencies
+- [ ] **Workflow Process**: Numbered step-by-step procedures section
+- [ ] **Output Formats**: Structured Success/Error response templates
+- [ ] **Tool Restrictions**: Only Read, Write, Edit tools specified
+- [ ] **Context Requirements**: Clear input/output specifications
+- [ ] **Integration Points**: Documentation of coordination with other agents
+
 ### Phase 2: Spec Creation Agents (Priority 2)
 **Timeline**: After Phase 1 completion
 **Agents**: 7, 8, 11, 12 (spec, technical-spec, tests, tasks)
@@ -288,6 +308,14 @@ Every sub-agent follows a consistent structure:
 - **Weak Invocation Keywords** - Use "MUST BE USED PROACTIVELY" for reliable automation
 - **Absent Context Documentation** - Always specify required input context and expected outputs
 
+### Common Implementation Pitfalls
+Based on actual implementation experience:
+
+- **Directory Confusion** - #1 error: Placing agents in `.claude/agents/` instead of `claude-code/agents/`
+- **Missing Workflow Process** - Forgetting the mandatory step-by-step Workflow Process section (line 253 requirement)
+- **Over-Engineering Templates** - Creating complex external dependencies instead of self-contained embedded templates
+- **Insufficient Testing** - Not using Task tool to validate agent structure and output before considering complete
+
 This architecture ensures each document creation process operates in its own context window, preventing token accumulation while maintaining optimal quality through specialized, focused sub-agents.
 
 ---
@@ -298,7 +326,7 @@ This architecture ensures each document creation process operates in its own con
 Each document creation agent will:
 - **Independent Operation**: Run in isolated Claude Code context
 - **Standardized Interface**: Accept structured input, return document content
-- **Template Integration**: Use existing templates from `templates/` directory
+- **Template Integration**: Reference existing template patterns from `templates/` directory where applicable, but document creation agents should be self-contained with their own template structures embedded within them
 - **Error Handling**: Graceful degradation with fallback to current approach
 - **Validation**: Ensure output meets quality standards before returning
 
@@ -321,6 +349,29 @@ Each core instruction will be modified to:
 - **Fallback Mechanism**: Automatic fallback if agent system fails
 - **Gradual Migration**: Phase-by-phase rollout with testing at each stage
 - **Performance Monitoring**: Compare token usage and quality metrics
+
+### Testing Strategy for Sub-Agents
+Since sub-agents cannot be directly invoked via Claude Code CLI:
+
+**1. Manual Testing**
+- Use Task tool with general-purpose agent to simulate invocation
+- Provide sample context and verify agent produces expected output
+- Test structured input/output format compliance
+
+**2. Content Validation**
+- Verify agent structure meets all 9 requirements from lines 247-257
+- Check YAML frontmatter format and tool restrictions
+- Validate "MUST BE USED PROACTIVELY" keyword presence
+
+**3. Template Testing**
+- Create sample documents using agent specifications
+- Verify template structure matches expected output format
+- Test with various input scenarios (missing items, defaults, etc.)
+
+**4. Integration Testing**
+- Test through modified core instructions once available
+- Verify proper context passing and result integration
+- Check fallback mechanisms when agent fails
 
 ---
 
