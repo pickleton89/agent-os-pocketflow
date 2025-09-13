@@ -195,7 +195,7 @@ This agent validates generated PocketFlow templates for structural correctness w
 ```python
 # TODO: Integrate with ToolCoordinator for comprehensive template validation
 import sys
-sys.path.append('.agent-os/pocketflow-tools')
+sys.path.append('.agent-os/framework-tools')
 from coordinator import ToolCoordinator
 
 def coordinate_template_validation(template_dir: str, pattern: str = "", project_name: str = "") -> dict:
@@ -230,7 +230,7 @@ def coordinate_template_validation(template_dir: str, pattern: str = "", project
 ### Core Validation Code
 
 ```python
-# TODO: Implement template validation using the pocketflow-tools module
+# TODO: Implement template validation using the framework-tools module
 # Example template validation for generated PocketFlow templates
 from pocketflow_tools.template_validator import TemplateValidator, ValidationResult
 

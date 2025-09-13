@@ -239,10 +239,10 @@ python scripts/validation/validate-best-practices.py templates/examples/bad/
 ### Antipattern Detector
 ```bash
 # Should find no antipatterns
-python pocketflow-tools/antipattern_detector.py templates/examples/good/
+python framework-tools/antipattern_detector.py templates/examples/good/
 
 # Should detect multiple antipatterns
-python pocketflow-tools/antipattern_detector.py templates/examples/bad/
+python framework-tools/antipattern_detector.py templates/examples/bad/
 ```
 
 ## Common Patterns Summary
@@ -288,6 +288,6 @@ When adding new examples:
 ## Related Documentation
 
 - [PocketFlow Best Practices](../../docs/POCKETFLOW_BEST_PRACTICES.md)
-- [Validation Tools](../../pocketflow-tools/README.md)
+- [Validation Tools](../../framework-tools/README.md)
 - [Implementation Plan](../../docs/POCKETFLOW_IMPLEMENTATION_PLAN.md)
 - [Standards Documentation](../../standards/)

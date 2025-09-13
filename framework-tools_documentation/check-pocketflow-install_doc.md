@@ -24,7 +24,7 @@ How does the check-pocketflow-install.py file work?
 
   4. Security-First Installation (install_package)
   - Validates package names against PyPI naming conventions
-  (pocketflow-tools/check-pocketflow-install.py:43)
+  (framework-tools/check-pocketflow-install.py:43)
   - Prevents installation of malicious package names
   - Tries uv add first (preferred), falls back to pip install
   - 5-minute timeout protection against hanging installs
@@ -55,7 +55,7 @@ How does the check-pocketflow-install.py file work?
   dependencies
   - Clear guidance on manual installation commands using uv or pip
 
-  This utility is deployed to ~/.agent-os/pocketflow-tools/ during base
+  This utility is deployed to ~/.agent-os/framework-tools/ during base
   installation and copied as a shim to generated projects for local dependency
   validation.
 
@@ -81,14 +81,14 @@ How does it actually work in the context of this project?
   locations
   - It's part of the framework's tooling, not meant to validate the framework
   itself
-  - Gets copied to ~/.agent-os/pocketflow-tools/ during base installation via
+  - Gets copied to ~/.agent-os/framework-tools/ during base installation via
   setup/base.sh
 
   In End-User Project Context (Its Intended Use)
 
   Deployment Process:
   1. Base Installation: setup/base.sh copies this file to
-  ~/.agent-os/pocketflow-tools/
+  ~/.agent-os/framework-tools/
   2. Project Generation: The generator creates a shim in each generated project
    that points to the base installation
   3. Project Usage: End-users run it in their PocketFlow project directory
@@ -135,8 +135,8 @@ How does the check-pocketflow-install.py get called or activated for use?
   curl -sSL https://raw.githubusercontent.com/.../setup.sh | bash
 
   The setup script:
-  - Copies pocketflow-tools/check-pocketflow-install.py →
-  ~/.agent-os/pocketflow-tools/
+  - Copies framework-tools/check-pocketflow-install.py →
+  ~/.agent-os/framework-tools/
   - Makes it available system-wide for all PocketFlow projects
 
   2. Project Generation (via Generator)
@@ -150,7 +150,7 @@ How does the check-pocketflow-install.py get called or activated for use?
   def main():
       """Run the main installation checker."""
       # Path to the main checker in Agent OS
-      agent_os_checker = Path.home() / ".agent-os" / "pocketflow-tools" /
+      agent_os_checker = Path.home() / ".agent-os" / "framework-tools" /
   "check-pocketflow-install.py"
 
       if not agent_os_checker.exists():
@@ -168,18 +168,18 @@ How does the check-pocketflow-install.py get called or activated for use?
   python check-install.py [--install]
 
   # Or directly from base installation  
-  python ~/.agent-os/pocketflow-tools/check-pocketflow-install.py [--install]
+  python ~/.agent-os/framework-tools/check-pocketflow-install.py [--install]
 
   4. Project Installation (via setup/project.sh)
 
   When installing Agent OS into existing projects:
-  - Copies the tool from base → .agent-os/pocketflow-tools/ (project-local
+  - Copies the tool from base → .agent-os/framework-tools/ (project-local
   copy)
 
   Key Design Principles
 
   1. Single Source of Truth: One canonical checker in
-  ~/.agent-os/pocketflow-tools/
+  ~/.agent-os/framework-tools/
   2. Smart Routing: Generated shims redirect to the base installation
   3. Local Copies: Project installations get local copies for offline use
   4. Automatic Discovery: No complex PATH setup - just python check-install.py

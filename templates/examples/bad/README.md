@@ -129,7 +129,7 @@ These examples are designed to be caught by PocketFlow validation tools:
 ### Expected Antipattern Detector Results
 
 ```bash
-$ python pocketflow-tools/antipattern_detector.py templates/examples/bad/
+$ python framework-tools/antipattern_detector.py templates/examples/bad/
 
 # Should detect:
 # - Monolithic node syndrome

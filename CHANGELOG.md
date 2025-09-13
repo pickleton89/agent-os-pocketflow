@@ -11,13 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### PocketFlow Tools Integration Gap Analysis
 - **🔍 Identified Critical Issue**: Developer tools not being copied to end-user projects
-  - `pocketflow-tools/` directory missing from project installations
+  - `framework-tools/` directory missing from project installations
   - Agents and instructions unable to invoke Python analysis/validation tools
   - CLI package (`pocketflow_tools`) works but developer tools inaccessible
   
 - **📐 Designed Three-Layer Architecture**:
   - Layer 1: Framework Package (`pocketflow_tools/`) - Installable CLI ✅
-  - Layer 2: Developer Tools (`pocketflow-tools/`) - Missing in projects ❌
+  - Layer 2: Developer Tools (`framework-tools/`) - Missing in projects ❌
   - Layer 3: Agent/Instruction Integration - Broken due to Layer 2 ❌
 
 - **📝 Created Comprehensive Implementation Plan**:
@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Phase 6: Comprehensive testing and validation
   
 - **🎯 Immediate Actions Identified**:
-  - Update `setup/project.sh` to copy pocketflow-tools
+  - Update `setup/project.sh` to copy framework-tools
   - Create `coordinator.py` module for agent integration
   - Replace agent TODO placeholders with working invocations
   
@@ -296,7 +296,7 @@ The PocketFlow generator is integrated INTO Agent OS commands, not a separate ma
 - **🏗️ Framework Architecture Restructured**: Successfully completed Phase 1 of Agent OS v1.4.0 migration
   - **setup/** directory created for new v1.4.0 installation scripts (base.sh and project.sh)
   - **commands/** directory created for Claude Code command files (ready for future commands)
-  - **pocketflow-tools/** directory created by moving .agent-os/workflows/ (preserving all PocketFlow generators)
+  - **framework-tools/** directory created by moving .agent-os/workflows/ (preserving all PocketFlow generators)
   - **config.yml** template created with enhanced Agent OS + PocketFlow configuration
   - **setup-legacy.sh** archived from original setup.sh
 - **🔧 PocketFlow Tools Relocated**: All framework tools successfully moved to new structure

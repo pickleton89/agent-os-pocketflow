@@ -170,7 +170,7 @@ Based on my analysis of the codebase, here are all the ways
 
   1. Direct Script Execution
 
-  .agent-os/pocketflow-tools/run.sh pattern_analyzer
+  .agent-os/framework-tools/run.sh pattern_analyzer
   Runs built-in test scenarios with 4 example requirements (lines 1124-1150).
 
   2. Programmatic Import & Usage
@@ -226,7 +226,7 @@ Based on my analysis of the codebase, here are all the ways
   - Part of the toolkit being developed
 
   End-User Projects (when framework is installed):
-  - Would get copies in .agent-os/pocketflow-tools/
+  - Would get copies in .agent-os/framework-tools/
   - Intended to be called by orchestrator agent
   - Currently no activation pathway provided
 

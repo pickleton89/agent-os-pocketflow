@@ -19,7 +19,7 @@ log_error() { echo -e "${RED}❌ $1${NC}"; }
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-POCKETFLOW_TOOLS_DIR="$PROJECT_ROOT/pocketflow-tools"
+POCKETFLOW_TOOLS_DIR="$PROJECT_ROOT/framework-tools"
 
 main() {
     log_info "End-to-End Universal PocketFlow Scenarios Validation"
@@ -32,9 +32,9 @@ main() {
         return 1
     fi
     
-    # Navigate to the pocketflow-tools directory
+    # Navigate to the framework-tools directory
     cd "$POCKETFLOW_TOOLS_DIR" || {
-        log_error "Could not access pocketflow-tools directory: $POCKETFLOW_TOOLS_DIR"
+        log_error "Could not access framework-tools directory: $POCKETFLOW_TOOLS_DIR"
         return 1
     }
     

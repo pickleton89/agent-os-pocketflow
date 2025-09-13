@@ -153,7 +153,7 @@ This agent manages Python tooling configuration and dependency specifications fo
 ```python
 # TODO: Integrate with ToolCoordinator for unified dependency management
 import sys
-sys.path.append('.agent-os/pocketflow-tools')
+sys.path.append('.agent-os/framework-tools')
 from coordinator import ToolCoordinator
 
 def coordinate_dependency_generation(project_name: str, pattern: str, requirements: str = "") -> dict:
@@ -181,7 +181,7 @@ def coordinate_dependency_generation(project_name: str, pattern: str, requiremen
 ### Core Invocation Code
 
 ```python
-# TODO: Implement dependency orchestration using the pocketflow-tools module
+# TODO: Implement dependency orchestration using the framework-tools module
 # Example dependency generation for PocketFlow templates
 from pocketflow_tools.dependency_orchestrator import DependencyOrchestrator, PyProjectConfig
 

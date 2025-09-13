@@ -45,7 +45,7 @@ This repository contains the Agent OS + PocketFlow system itself - NOT a project
 ./scripts/run-all-tests.sh
 
 # Test the generator system  
-cd pocketflow-tools
+cd framework-tools
 python3 test-generator.py
 python3 test_full_generation_with_dependencies.py
 

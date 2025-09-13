@@ -61,7 +61,7 @@ test "$code" -ne 0 || { echo "[cli-smoke] FAIL: Invalid YAML should return non-z
 outdir=".agent-os/workflows/cli-smoke"
 rm -rf "$outdir" || true
 uv run python -m pocketflow_tools.cli \
-  --spec pocketflow-tools/examples/agent-workflow-spec.yaml \
+  --spec framework-tools/examples/agent-workflow-spec.yaml \
   --output "$outdir"
 
 expected=(

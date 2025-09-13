@@ -6,7 +6,7 @@
 # Get the absolute directory of this script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-COORDINATOR_PATH="$PROJECT_ROOT/.agent-os/pocketflow-tools/coordinator.py"
+COORDINATOR_PATH="$PROJECT_ROOT/.agent-os/framework-tools/coordinator.py"
 
 # Check if coordinator exists
 if [ ! -f "$COORDINATOR_PATH" ]; then

@@ -2,7 +2,7 @@
 
 # validate-template-structure.sh
 # Minimal structural validation wrapper. Delegates core checks to
-# pocketflow-tools/template_validator.py (canonical source of truth).
+# framework-tools/template_validator.py (canonical source of truth).
 # Last Updated: 2025-08-31
 
 set -e
@@ -97,11 +97,11 @@ fi
 # Delegate comprehensive checks to canonical Python validator
 echo -e "\n🔍 Running canonical template validation..."
 pushd "$(dirname "$0")/../.." > /dev/null
-if python3 pocketflow-tools/template_validator.py "$TEMPLATE_DIR" > /dev/null 2>&1; then
+if python3 framework-tools/template_validator.py "$TEMPLATE_DIR" > /dev/null 2>&1; then
     report_result "Canonical Validation" "PASS" "All canonical checks passed"
 else
     echo -e "\n📋 Detailed canonical validation results:"
-    python3 pocketflow-tools/template_validator.py "$TEMPLATE_DIR"
+    python3 framework-tools/template_validator.py "$TEMPLATE_DIR"
     report_result "Canonical Validation" "FAIL" "See issues above (source of truth)"
 fi
 popd > /dev/null

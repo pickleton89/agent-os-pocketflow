@@ -153,7 +153,7 @@ basic_validate_design_doc() {
 # Function to run template validator
 run_template_validator() {
     local project_dir="$1"
-    local validator_script="$PROJECT_ROOT/pocketflow-tools/template_validator.py"
+    local validator_script="$PROJECT_ROOT/framework-tools/template_validator.py"
     
     if [[ ! -f "$validator_script" ]]; then
         log_warning "Template validator not found at $validator_script"

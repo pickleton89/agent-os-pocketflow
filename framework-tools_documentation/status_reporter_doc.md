@@ -110,7 +110,7 @@ How does it actually work in the context of this project?
   - Currently exists as unused capability
 
   End-User Projects (where it would be used):
-  - Would get copied to .agent-os/pocketflow-tools/
+  - Would get copied to .agent-os/framework-tools/
   - Intended for tracking complex PocketFlow workflow generation
   - Would provide user feedback during long-running template creation
 
@@ -266,7 +266,7 @@ How does the status_reporter.py get called or activated for use?
 
   2. Setup Scripts (should be but isn't):
   # In setup/project.sh (not implemented)  
-  python ~/.agent-os/pocketflow-tools/status_reporter.py project setup init
+  python ~/.agent-os/framework-tools/status_reporter.py project setup init
 
   3. Orchestrator Agent (planned but inactive):
   The pocketflow-orchestrator agent could activate it but isn't currently

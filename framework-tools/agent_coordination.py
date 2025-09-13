@@ -13,7 +13,7 @@ module coordinates actions.
 Handles coordination between pattern-analyzer and PocketFlow components:
 - design-document-creator: PocketFlow design document creation specialist
 - strategic-planner: Product strategy and PocketFlow integration planning
-- file-creator: Applies templates; uses pocketflow-tools/generator for generation
+- file-creator: Applies templates; uses framework-tools/generator for generation
 - template-validator: Validates generated templates
 Implements handoff protocols and pattern override capabilities.
 """

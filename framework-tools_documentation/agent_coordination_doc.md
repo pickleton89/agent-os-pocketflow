@@ -1,6 +1,6 @@
 How does the agent_coordination.py file work?
 
- The pocketflow-tools/agent_coordination.py file implements a runtime coordination system
+ The framework-tools/agent_coordination.py file implements a runtime coordination system
   that manages handoffs and state between different PocketFlow agents. Here's how it works:
 
   Core Purpose
@@ -96,7 +96,7 @@ How does it actually work in the context of this project?
   The agent_coordination.py file is part of the template generation system in this framework
   repository:
 
-  - Location: pocketflow-tools/agent_coordination.py
+  - Location: framework-tools/agent_coordination.py
   - Purpose: Provides coordination logic that gets installed into end-user projects
   - Usage: Currently used primarily in testing/validation within this framework repo
 
@@ -105,8 +105,8 @@ How does it actually work in the context of this project?
   Based on my analysis, agent_coordination.py is currently used by:
 
   - complex_scenario_tests.py: Tests complex pattern analysis scenarios
-  (pocketflow-tools/complex_scenario_tests.py:13,16)
-  - Template system: Part of the pocketflow-tools that get copied to end-user projects
+  (framework-tools/complex_scenario_tests.py:13,16)
+  - Template system: Part of the framework-tools that get copied to end-user projects
   - Documentation: Referenced in analysis docs and changelogs
 
   3. Relationship to PocketFlow Orchestrator Agent
@@ -122,7 +122,7 @@ How does it actually work in the context of this project?
   4. Two-Phase Architecture Impact
 
   Base Installation (~/.agent-os/):
-  - Framework installs pocketflow-tools/ including agent_coordination.py
+  - Framework installs framework-tools/ including agent_coordination.py
   - Available across all projects as shared framework
 
   Project Installation (.agent-os/ in each project):

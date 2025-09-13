@@ -63,7 +63,7 @@ parse_arguments() {
                 UPDATE_STANDARDS=true
                 shift
                 ;;
-            --update-pocketflow-tools)
+            --update-framework-tools)
                 UPDATE_POCKETFLOW_TOOLS=true
                 shift
                 ;;
@@ -108,7 +108,7 @@ OPTIONS:
     --base-path PATH            Path to base installation (auto-detected if not provided)
     --update-instructions       Update instructions directory
     --update-standards          Update standards directory  
-    --update-pocketflow-tools   Update PocketFlow tools
+    --update-framework-tools   Update PocketFlow tools
     --update-all                Update all components
     --no-backup                 Skip backing up existing files
     --force                     Force update even if no changes detected
@@ -122,7 +122,7 @@ EXAMPLES:
     $0 --update-instructions
     
     # Update standards and PocketFlow tools
-    $0 --update-standards --update-pocketflow-tools
+    $0 --update-standards --update-framework-tools
     
     # Update with custom base path
     $0 --base-path ~/my-agent-os --update-all
@@ -228,9 +228,9 @@ backup_files() {
         log_success "Backed up standards to $backup_dir/"
     fi
     
-    if [[ "$UPDATE_POCKETFLOW_TOOLS" == "true" && -d ".agent-os/pocketflow-tools" ]]; then
-        cp -r ".agent-os/pocketflow-tools" "$backup_dir/"
-        log_success "Backed up pocketflow-tools to $backup_dir/"
+    if [[ "$UPDATE_POCKETFLOW_TOOLS" == "true" && -d ".agent-os/framework-tools" ]]; then
+        cp -r ".agent-os/framework-tools" "$backup_dir/"
+        log_success "Backed up framework-tools to $backup_dir/"
     fi
     
     log_info "Backup completed: $backup_dir"
@@ -300,19 +300,19 @@ update_pocketflow_tools() {
     
     log_info "Updating PocketFlow tools from base installation..."
     
-    if [[ ! -d "$BASE_INSTALL_PATH/pocketflow-tools" ]]; then
-        log_warning "Base installation missing pocketflow-tools directory - skipping"
+    if [[ ! -d "$BASE_INSTALL_PATH/framework-tools" ]]; then
+        log_warning "Base installation missing framework-tools directory - skipping"
         return 0
     fi
     
     # Remove existing PocketFlow tools
-    if [[ -d ".agent-os/pocketflow-tools" ]]; then
-        rm -rf ".agent-os/pocketflow-tools"
+    if [[ -d ".agent-os/framework-tools" ]]; then
+        rm -rf ".agent-os/framework-tools"
     fi
     
     # Copy new PocketFlow tools
-    mkdir -p ".agent-os/pocketflow-tools"
-    cp -r "$BASE_INSTALL_PATH/pocketflow-tools"/* ".agent-os/pocketflow-tools/"
+    mkdir -p ".agent-os/framework-tools"
+    cp -r "$BASE_INSTALL_PATH/framework-tools"/* ".agent-os/framework-tools/"
     if [[ $? -eq 0 ]]; then
         log_success "Updated PocketFlow tools from base installation"
     else

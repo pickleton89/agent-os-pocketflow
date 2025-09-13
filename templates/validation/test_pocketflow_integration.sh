@@ -12,7 +12,7 @@ echo "ℹ️  Project mode: validating framework-generated templates and setup"
 echo "🔍 Testing framework-generated directory structure..."
 essential_dirs=(
     ".agent-os"
-    ".agent-os/pocketflow-tools" 
+    ".agent-os/framework-tools" 
     ".agent-os/instructions"
     ".agent-os/templates"
 )
@@ -35,9 +35,9 @@ fi
 # Test 2: Framework-generated tool templates
 echo "🔍 Testing framework-generated tool templates..."
 expected_templates=(
-    ".agent-os/pocketflow-tools/pattern_analyzer.py"
-    ".agent-os/pocketflow-tools/dependency_orchestrator.py" 
-    ".agent-os/pocketflow-tools/agent_coordination.py"
+    ".agent-os/framework-tools/pattern_analyzer.py"
+    ".agent-os/framework-tools/dependency_orchestrator.py" 
+    ".agent-os/framework-tools/agent_coordination.py"
 )
 
 missing_templates=()
@@ -116,11 +116,11 @@ fi
 
 # Test 6: Framework-generated wrapper scripts (if they exist)
 echo "🔍 Testing framework-generated wrapper scripts..."
-if [[ -f ".agent-os/pocketflow-tools/run.sh" ]]; then
+if [[ -f ".agent-os/framework-tools/run.sh" ]]; then
     echo "✅ Framework-generated wrapper script exists"
     
     # Test that wrapper can show help (basic functionality test)
-    if bash ".agent-os/pocketflow-tools/run.sh" --help >/dev/null 2>&1; then
+    if bash ".agent-os/framework-tools/run.sh" --help >/dev/null 2>&1; then
         echo "✅ Wrapper script shows help (basic functionality working)"
     else
         echo "ℹ️  Wrapper script may need customization for your project"
@@ -161,7 +161,7 @@ echo "  🛠️  You implement and customize these templates for your project"
 echo "  🚀 Templates become working applications through your development"
 echo ""
 echo "💡 Next Steps (Template Customization):"
-echo "  1. Review templates in .agent-os/pocketflow-tools/ for TODO stubs"
+echo "  1. Review templates in .agent-os/framework-tools/ for TODO stubs"
 echo "  2. Implement the template functions according to your project needs"  
 echo "  3. Create agent files in .claude/agents/ for your workflow"
 echo "  4. Test your implementations as you develop them"

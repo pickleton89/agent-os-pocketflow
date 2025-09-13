@@ -3,7 +3,7 @@
 Coordination module for agent-tool integration
 
 This module provides a unified interface for Claude Code agents to access
-pocketflow-tools functionality, implementing agent handoff protocols and
+framework-tools functionality, implementing agent handoff protocols and
 coordination between pattern analysis, workflow generation, and validation.
 """
 
@@ -13,7 +13,7 @@ import logging
 from pathlib import Path
 from typing import Dict, Any, Optional
 
-# Add pocketflow-tools to path for imports
+# Add framework-tools to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
 from agent_coordination import coordinate_pattern_analysis, create_subagent_handoff, AgentCoordinator
@@ -27,10 +27,10 @@ logger = logging.getLogger(__name__)
 
 class ToolCoordinator:
     """
-    Unified interface for agents to access pocketflow-tools functionality.
+    Unified interface for agents to access framework-tools functionality.
     
     This class serves as the bridge between Claude Code agents and the
-    pocketflow-tools system, providing agent handoff protocols and 
+    framework-tools system, providing agent handoff protocols and 
     coordination between different workflow phases.
     """
     
@@ -42,7 +42,7 @@ class ToolCoordinator:
         self.template_validator = TemplateValidator()
         self.agent_coordinator = AgentCoordinator()
         
-        logger.info("ToolCoordinator initialized with all pocketflow-tools components")
+        logger.info("ToolCoordinator initialized with all framework-tools components")
     
     def analyze_pattern(self, project_name: str, requirements: str) -> Dict[str, Any]:
         """

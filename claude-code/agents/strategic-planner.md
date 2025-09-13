@@ -331,7 +331,7 @@ You are a specialized strategic planning agent for Agent OS + PocketFlow project
 ```python
 # TODO: Integrate with ToolCoordinator for strategic pattern analysis
 import sys
-sys.path.append('.agent-os/pocketflow-tools')
+sys.path.append('.agent-os/framework-tools')
 from coordinator import ToolCoordinator
 
 def coordinate_strategic_analysis(project_name: str, requirements: str, product_context: str = "") -> dict:
@@ -368,7 +368,7 @@ def coordinate_strategic_analysis(project_name: str, requirements: str, product_
 ### Core Pattern Analysis Code
 
 ```python
-# TODO: Implement pattern analysis integration using the pocketflow-tools module
+# TODO: Implement pattern analysis integration using the framework-tools module
 # Example pattern analysis for strategic planning
 from pocketflow_tools.pattern_analyzer import PatternAnalyzer, PatternRecommendation
 

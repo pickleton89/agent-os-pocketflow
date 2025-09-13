@@ -5,22 +5,22 @@ Date: 2025-09-08
 - Batch ID: a711c364-a5da-4c24-8b7b-fdee9dfb401d
 - Models used in parallel (read-only planning): [Claude, Gemini, Code]
 
-This document unifies how the documentation under `pocketflow-tools_documentation/` drives correct invocation of the Python tools in `pocketflow-tools/` by sub‑agents in `claude-code/agents/` and by instruction files in `instructions/**` within an end‑user project.
+This document unifies how the documentation under `framework-tools_documentation/` drives correct invocation of the Python tools in `framework-tools/` by sub‑agents in `claude-code/agents/` and by instruction files in `instructions/**` within an end‑user project.
 
 ## Executive Summary
 
 - The framework offers robust analysis, orchestration, generation, and validation tools, but activation paths in end‑user flows are inconsistent.
 - Add a single canonical call graph, an Invocation Matrix, and copy/paste‑ready snippets for agents and instructions.
 - Close the loop with validation → feedback → (optional) override → re‑run.
-- Clarify Framework vs Usage: `pocketflow_tools/` (installable package + CLI) vs. `pocketflow-tools/` (developer tools used by agents/instructions).
+- Clarify Framework vs Usage: `pocketflow_tools/` (installable package + CLI) vs. `framework-tools/` (developer tools used by agents/instructions).
 
 ## Repository Map (Concise)
 
 - `claude-code/agents/`: sub‑agent behaviors (context‑fetcher, pattern‑analyzer, file‑creator, template‑validator, dependency‑orchestrator, etc.).
 - `instructions/{core,extensions,meta,orchestration}`: end‑user runnable playbooks and hooks.
-- `pocketflow-tools/`: developer tools for analysis/orchestration/validation (Python scripts).
+- `framework-tools/`: developer tools for analysis/orchestration/validation (Python scripts).
 - `pocketflow_tools/`: installable package; CLI entry (`pocketflow_tools/cli.py`) that generates workflows from a YAML spec.
-- `pocketflow-tools_documentation/`: component docs (e.g., `pattern_analyzer_doc.md`) + overview (`pocketflow-tools-analysis.md`).
+- `framework-tools_documentation/`: component docs (e.g., `pattern_analyzer_doc.md`) + overview (`framework-tools-analysis.md`).
 
 ### Directory Structure (Excerpt)
 
@@ -38,7 +38,7 @@ instructions/
   extensions/ (pocketflow-integration.md, ...)
   meta/ (pre-flight.md, post-flight-rules.md)
   orchestration/ (coordination.yaml, dependency-validation.md, template-standards.md)
-pocketflow-tools/
+framework-tools/
   agent_coordination.py
   context_manager.py
   dependency_orchestrator.py
@@ -51,8 +51,8 @@ pocketflow-tools/
 pocketflow_tools/
   cli.py
   generators/{workflow_composer.py, ...}
-pocketflow-tools_documentation/
-  pocketflow-tools-analysis.md
+framework-tools_documentation/
+  framework-tools-analysis.md
   *_doc.md (per-component)
 ```
 
@@ -75,7 +75,7 @@ flowchart TD
 
 ## Invocation Matrix (Summary)
 
-| Tool (pocketflow-tools) | Primary Callers | Typical Trigger | Inputs | Outputs | Invocation | Failure Handling |
+| Tool (framework-tools) | Primary Callers | Typical Trigger | Inputs | Outputs | Invocation | Failure Handling |
 |---|---|---|---|---|---|---|
 | agent_coordination.py | Agents: pattern-analyzer → design-document-creator / strategic-planner / file-creator / template-validator | After pattern analysis; before each specialized step | project_name, requirements, user_overrides | HandoffPackage, updated CoordinationContext | Programmatic import | Default route to file-creator if no recommendation; ignore invalid override with warning |
 | context_manager.py | Agent: context-fetcher; Instruction: core/create-spec.md | Before planning/generation | `--project-root`, `--workflow-name`, `--output`, `--spec` | context_analysis.json, optional spec YAML | CLI | Missing docs → minimal context + warnings |
@@ -91,12 +91,12 @@ flowchart TD
 
 1) Pre‑flight
 ```bash
-python3 ~/.agent-os/pocketflow-tools/check-pocketflow-install.py --install
+python3 ~/.agent-os/framework-tools/check-pocketflow-install.py --install
 ```
 
 2) Extract context and spec
 ```bash
-python3 pocketflow-tools/context_manager.py \
+python3 framework-tools/context_manager.py \
   --project-root . \
   --workflow-name "MyFeature" \
   --output context_analysis.json \
@@ -105,7 +105,7 @@ python3 pocketflow-tools/context_manager.py \
 
 3) Analyze patterns and create handoff
 ```python
-from pocketflow-tools.agent_coordination import (
+from framework-tools.agent_coordination import (
     coordinate_pattern_analysis, create_subagent_handoff
 )
 
@@ -116,7 +116,7 @@ print(handoff.target_agent, ctx.pattern_recommendation.primary_pattern)
 
 4) Orchestrate dependencies
 ```bash
-python3 pocketflow-tools/dependency_orchestrator.py \
+python3 framework-tools/dependency_orchestrator.py \
   --pattern RAG \
   --project-name my-app \
   --output-pyproject > pyproject.toml
@@ -129,18 +129,18 @@ uv run python -m pocketflow_tools.cli --spec workflow.yaml --output .agent-os/wo
 
 6) Validate templates
 ```bash
-python3 pocketflow-tools/template_validator.py .agent-os/workflows/MyFeature | tee validation.txt
+python3 framework-tools/template_validator.py .agent-os/workflows/MyFeature | tee validation.txt
 ```
 
 7) Feedback and iteration
 ```bash
-python3 pocketflow-tools/validation_feedback.py validation.txt \
+python3 framework-tools/validation_feedback.py validation.txt \
   --context context_analysis.json \
   --markdown feedback.md
 ```
 If needed, apply an override and loop:
 ```python
-from pocketflow-tools.agent_coordination import AgentCoordinator
+from framework-tools.agent_coordination import AgentCoordinator
 coordinator = AgentCoordinator()
 ctx = coordinator.handle_pattern_override_request(ctx, {
   "force_pattern": "WORKFLOW", "complexity_preference": "simple"
@@ -160,15 +160,15 @@ mermaid = gen.generate_mermaid_diagram(graph)
 
 9) Status tracking (optional)
 ```bash
-python3 pocketflow-tools/status_reporter.py "MyFeature" generation init
-python3 pocketflow-tools/status_reporter.py "MyFeature" generation step 1 "Analyzing patterns"
+python3 framework-tools/status_reporter.py "MyFeature" generation init
+python3 framework-tools/status_reporter.py "MyFeature" generation step 1 "Analyzing patterns"
 ```
 
 ## Agent & Instruction Snippets (Ready to Paste)
 
 ### claude-code/agents/pattern-analyzer.md
 ```python
-from pocketflow-tools.agent_coordination import coordinate_pattern_analysis, create_subagent_handoff
+from framework-tools.agent_coordination import coordinate_pattern_analysis, create_subagent_handoff
 
 def run_pattern_analysis(project_name: str, requirements: str):
     ctx = coordinate_pattern_analysis(project_name, requirements)
@@ -195,28 +195,28 @@ def generate_configs(project_name: str, pattern: str):
 
 ### claude-code/agents/template-validator.md
 ```bash
-python3 pocketflow-tools/template_validator.py .agent-os/workflows/$WORKFLOW | tee validation.txt
+python3 framework-tools/template_validator.py .agent-os/workflows/$WORKFLOW | tee validation.txt
 ```
 
 ### instructions/orchestration/orchestrator-hooks.md (post-generation)
 ```bash
-python3 pocketflow-tools/template_validator.py ".agent-os/workflows/${feature}" > validation.txt || true
-python3 pocketflow-tools/validation_feedback.py validation.txt --context context_analysis.json --markdown feedback.md
+python3 framework-tools/template_validator.py ".agent-os/workflows/${feature}" > validation.txt || true
+python3 framework-tools/validation_feedback.py validation.txt --context context_analysis.json --markdown feedback.md
 ```
 
 ### instructions/core/create-spec.md (context gathering)
 ```bash
-python3 pocketflow-tools/context_manager.py --project-root . --workflow-name "$FEATURE" --output context_analysis.json --spec workflow.yaml
+python3 framework-tools/context_manager.py --project-root . --workflow-name "$FEATURE" --output context_analysis.json --spec workflow.yaml
 ```
 
 ### instructions/orchestration/dependency-validation.md
 ```bash
-python3 pocketflow-tools/dependency_orchestrator.py --pattern "$PATTERN" --project-name "$PROJECT" --output-pyproject > pyproject.toml
+python3 framework-tools/dependency_orchestrator.py --pattern "$PATTERN" --project-name "$PROJECT" --output-pyproject > pyproject.toml
 ```
 
 ## Documentation Changes (By File)
 
-- `pocketflow-tools-analysis.md`
+- `framework-tools-analysis.md`
   - Add sections: “Invocation Matrix” and “Unified Call Graph” (link to this plan).
   - Add banner clarifying Framework vs Usage contexts.
 
@@ -241,7 +241,7 @@ python3 pocketflow-tools/dependency_orchestrator.py --pattern "$PATTERN" --proje
 - `status_reporter_doc.md`
   - Minimal integration snippets and recommended event names.
 
-- New `pocketflow-tools_documentation/index.md`
+- New `framework-tools_documentation/index.md`
   - Landing page with the call graph and Invocation Matrix; links to all components.
 
 ## Errors & Edge Cases (Playbook)

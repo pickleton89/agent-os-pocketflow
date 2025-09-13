@@ -93,7 +93,7 @@ How does it actually work in the context of this project?
 
   The template validator operates as part of a layered validation system:
 
-  1. Core Validation Engine (pocketflow-tools/template_validator.py)
+  1. Core Validation Engine (framework-tools/template_validator.py)
 
   - Single source of truth for all PocketFlow template validation logic
   - Contains comprehensive AST-based Python validation
@@ -122,7 +122,7 @@ How does it actually work in the context of this project?
   The validator ensures the framework itself generates proper templates:
 
   # Direct usage for validating generated templates
-  python3 pocketflow-tools/template_validator.py
+  python3 framework-tools/template_validator.py
   .agent-os/workflows/my_workflow
 
   # Via wrapper scripts
@@ -173,10 +173,10 @@ How does the template_validator.py get called or activated for use?
   1. Direct CLI Usage
 
   # Direct invocation as standalone script
-  python3 pocketflow-tools/template_validator.py <template_directory>
+  python3 framework-tools/template_validator.py <template_directory>
 
   # Example usage
-  python3 pocketflow-tools/template_validator.py
+  python3 framework-tools/template_validator.py
   .agent-os/workflows/my_workflow
 
   2. Shell Script Wrappers
@@ -186,7 +186,7 @@ How does the template_validator.py get called or activated for use?
   ./scripts/validation/validate-template-structure.sh
   .agent-os/workflows/my_workflow
   - Does basic structural checks first
-  - Then calls: python3 pocketflow-tools/template_validator.py "$TEMPLATE_DIR"
+  - Then calls: python3 framework-tools/template_validator.py "$TEMPLATE_DIR"
 
   validate-design-docs.sh
 

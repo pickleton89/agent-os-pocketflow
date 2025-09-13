@@ -1,4 +1,4 @@
-# Detailed Report: Non-Test Files in `pocketflow-tools/`
+# Detailed Report: Non-Test Files in `framework-tools/`
 
 ## 🏗️ Core Framework Infrastructure
 
@@ -88,7 +88,7 @@
 
 ## Summary
 
-The `pocketflow-tools/` directory serves as a comprehensive **framework development workspace** containing:
+The `framework-tools/` directory serves as a comprehensive **framework development workspace** containing:
 
 - **Core orchestration tools** for managing agent workflows
 - **Analysis engines** for pattern detection and validation  
@@ -104,6 +104,6 @@ This is much more than just testing - it's the complete development and validati
 **Important Note:** This repository IS the Agent OS + PocketFlow framework itself, NOT a project using it.
 
 - `pocketflow_tools/` (underscore) = The installable Python package 
-- `pocketflow-tools/` (hyphen) = The framework development workspace
+- `framework-tools/` (hyphen) = The framework development workspace
 
-The `pocketflow-tools/` directory contains the tools and infrastructure needed to build, validate, and maintain the framework, while `pocketflow_tools/` contains the actual framework code that gets installed in end-user projects.
+The `framework-tools/` directory contains the tools and infrastructure needed to build, validate, and maintain the framework, while `pocketflow_tools/` contains the actual framework code that gets installed in end-user projects.

@@ -34,10 +34,10 @@ main() {
   log_info "Starting Python comprehensive tests (framework)"
 
   # Full generation with dependencies (end-to-end within framework constraints)
-  run_py "full generation + deps" uv run python pocketflow-tools/test_full_generation_with_dependencies.py
+  run_py "full generation + deps" uv run python framework-tools/test_full_generation_with_dependencies.py
 
   # Dependency orchestrator comprehensive suite
-  run_py "dependency orchestrator comprehensive" uv run python pocketflow-tools/test_dependency_orchestrator.py
+  run_py "dependency orchestrator comprehensive" uv run python framework-tools/test_dependency_orchestrator.py
 
   log_success "All comprehensive tests passed"
 }

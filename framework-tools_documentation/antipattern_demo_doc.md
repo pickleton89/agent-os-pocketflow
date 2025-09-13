@@ -127,12 +127,12 @@ How does the antipattern_demo.py get called or activated for use?
 
   1. Direct Command Line (Main Usage)
 
-  cd pocketflow-tools
+  cd framework-tools
   python antipattern_detector.py antipattern_demo.py --format console
 
   2. Standalone Execution
 
-  cd pocketflow-tools
+  cd framework-tools
   python antipattern_demo.py
   - Prints instructions and expected violation summaries
   - Lines 304-313 show the if __name__ == '__main__' block
@@ -147,7 +147,7 @@ How does the antipattern_demo.py get called or activated for use?
 
   4. Educational Documentation
 
-  - Referenced in pocketflow-tools-analysis.md as a key educational tool
+  - Referenced in framework-tools-analysis.md as a key educational tool
   - Used to demonstrate detector capabilities to developers
 
   5. Quality Assurance Workflows

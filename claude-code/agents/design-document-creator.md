@@ -249,7 +249,7 @@ class SharedStore(BaseModel):
 ```python
 # TODO: Integrate with ToolCoordinator for comprehensive workflow generation
 import sys
-sys.path.append('.agent-os/pocketflow-tools')
+sys.path.append('.agent-os/framework-tools')
 from coordinator import ToolCoordinator
 
 def coordinate_design_generation(project_name: str, pattern: str, requirements: str = "") -> dict:

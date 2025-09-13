@@ -3,7 +3,7 @@
 Code Generation Validation Script (Wrapper)
 
 Delegates core design/nodes/flow checks to the canonical validator at
-`pocketflow-tools/template_validator.py` to ensure a single source of truth.
+`framework-tools/template_validator.py` to ensure a single source of truth.
 Retains lightweight quality checks (ruff/type) as advisories.
 """
 
@@ -47,9 +47,9 @@ class WorkflowValidator:
             return False, self.errors, self.warnings
 
     def _delegate_to_canonical_validator(self) -> None:
-        """Call pocketflow-tools/template_validator.py for core validation."""
+        """Call framework-tools/template_validator.py for core validation."""
         project_root = Path(__file__).resolve().parents[2]
-        validator_path = project_root / "pocketflow-tools" / "template_validator.py"
+        validator_path = project_root / "framework-tools" / "template_validator.py"
 
         if not validator_path.exists():
             # Hard fail: canonical module not found

@@ -786,7 +786,7 @@ from pathlib import Path
 def main():
     """Run the main installation checker."""
     # Path to the main checker in Agent OS
-    agent_os_checker = Path.home() / ".agent-os" / "pocketflow-tools" / "check-pocketflow-install.py"
+    agent_os_checker = Path.home() / ".agent-os" / "framework-tools" / "check-pocketflow-install.py"
     
     if not agent_os_checker.exists():
         print("❌ Agent OS + PocketFlow installation checker not found.")

@@ -73,7 +73,7 @@ parse_arguments() {
                 OVERWRITE_STANDARDS=true
                 shift
                 ;;
-            --update-pocketflow-tools)
+            --update-framework-tools)
                 UPDATE_POCKETFLOW_TOOLS=true
                 shift
                 ;;
@@ -112,7 +112,7 @@ OPTIONS:
     --no-pocketflow         Disable PocketFlow enhancements (standard Agent OS only)
     --overwrite-instructions Overwrite existing instructions directory
     --overwrite-standards   Overwrite existing standards directory
-    --update-pocketflow-tools Update PocketFlow tools to latest version
+    --update-framework-tools Update PocketFlow tools to latest version
     --force                 Force installation even if directory exists
     --help                  Show this help message
 
@@ -139,7 +139,7 @@ EXAMPLES:
     $0 --overwrite-standards --claude-code
     
     # Update PocketFlow tools only
-    $0 --update-pocketflow-tools
+    $0 --update-framework-tools
 
 EOF
 }
@@ -221,7 +221,7 @@ create_directory_structure() {
     
     # PocketFlow enhancement directories
     local pocketflow_dirs=(
-        "$INSTALL_PATH/pocketflow-tools"
+        "$INSTALL_PATH/framework-tools"
         "$INSTALL_PATH/templates"
     )
     
@@ -529,18 +529,18 @@ install_pocketflow_tools() {
         log_info "Created basic template structure"
     fi
     
-    # Copy pocketflow-tools files for project use
-    local tools_source_dir="$(dirname "$(dirname "$(realpath "$0")")")/pocketflow-tools"
+    # Copy framework-tools files for project use
+    local tools_source_dir="$(dirname "$(dirname "$(realpath "$0")")")/framework-tools"
     if [[ -d "$tools_source_dir" ]]; then
         # Copy specific tool files that projects need
-        cp "$tools_source_dir"/*.py "$INSTALL_PATH/pocketflow-tools/" 2>/dev/null || true
-        cp "$tools_source_dir"/*.sh "$INSTALL_PATH/pocketflow-tools/" 2>/dev/null || true
+        cp "$tools_source_dir"/*.py "$INSTALL_PATH/framework-tools/" 2>/dev/null || true
+        cp "$tools_source_dir"/*.sh "$INSTALL_PATH/framework-tools/" 2>/dev/null || true
         if [[ -d "$tools_source_dir/examples" ]]; then
-            cp -r "$tools_source_dir/examples" "$INSTALL_PATH/pocketflow-tools/"
+            cp -r "$tools_source_dir/examples" "$INSTALL_PATH/framework-tools/"
         fi
-        log_success "Copied PocketFlow tools to $INSTALL_PATH/pocketflow-tools/"
+        log_success "Copied PocketFlow tools to $INSTALL_PATH/framework-tools/"
     else
-        log_info "No pocketflow-tools source directory found"
+        log_info "No framework-tools source directory found"
     fi
 }
 
@@ -591,7 +591,7 @@ paths:
   base_installation: "$INSTALL_PATH"
   instructions: "$INSTALL_PATH/instructions"
   standards: "$INSTALL_PATH/standards"
-  pocketflow_tools: "$INSTALL_PATH/pocketflow-tools"
+  pocketflow_tools: "$INSTALL_PATH/framework-tools"
   templates: "$INSTALL_PATH/templates"
   commands: "$INSTALL_PATH/commands"
 
@@ -728,7 +728,7 @@ install_project() {
     
     if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
         project_dirs+=(
-            ".agent-os/pocketflow-tools"
+            ".agent-os/framework-tools"
             ".agent-os/templates"
         )
     fi
@@ -765,8 +765,8 @@ install_project() {
     fi
     
     # Copy PocketFlow tools if enabled
-    if [[ "$ENABLE_POCKETFLOW" == "true" ]] && [[ -d "$BASE_INSTALL_PATH/pocketflow-tools" ]]; then
-        cp -r "$BASE_INSTALL_PATH/pocketflow-tools"/* ".agent-os/pocketflow-tools/"
+    if [[ "$ENABLE_POCKETFLOW" == "true" ]] && [[ -d "$BASE_INSTALL_PATH/framework-tools" ]]; then
+        cp -r "$BASE_INSTALL_PATH/framework-tools"/* ".agent-os/framework-tools/"
         log_success "Copied PocketFlow tools from base installation"
     fi
     
@@ -801,7 +801,7 @@ tools:
 paths:
   instructions: ".agent-os/instructions"
   standards: ".agent-os/standards"
-  pocketflow_tools: ".agent-os/pocketflow-tools"
+  pocketflow_tools: ".agent-os/framework-tools"
   templates: ".agent-os/templates"
 CONFIG_EOF
     
@@ -809,10 +809,10 @@ CONFIG_EOF
     
     # Create .gitignore entries
     if [[ -f ".gitignore" ]]; then
-        if ! grep -q ".agent-os/pocketflow-tools/__pycache__" .gitignore 2>/dev/null; then
+        if ! grep -q ".agent-os/framework-tools/__pycache__" .gitignore 2>/dev/null; then
             echo -e "\n# Agent OS + PocketFlow" >> .gitignore
-            echo ".agent-os/pocketflow-tools/__pycache__/" >> .gitignore
-            echo ".agent-os/pocketflow-tools/*.pyc" >> .gitignore
+            echo ".agent-os/framework-tools/__pycache__/" >> .gitignore
+            echo ".agent-os/framework-tools/*.pyc" >> .gitignore
             log_success "Updated .gitignore"
         fi
     fi
@@ -830,7 +830,7 @@ CONFIG_EOF
     if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
         echo ""
         log_info "PocketFlow features available:"
-        echo "  • Workflow generators in .agent-os/pocketflow-tools/"
+        echo "  • Workflow generators in .agent-os/framework-tools/"
         echo "  • Pattern analyzers and validators"
         echo "  • Enhanced LLM workflow capabilities"
     fi
@@ -973,7 +973,7 @@ validate_installation() {
     
     if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
         required_dirs+=(
-            "$INSTALL_PATH/pocketflow-tools"
+            "$INSTALL_PATH/framework-tools"
             "$INSTALL_PATH/templates"
         )
     fi

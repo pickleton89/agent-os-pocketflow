@@ -55,7 +55,7 @@ Agent OS + PocketFlow uses a **two-phase installation architecture** compatible 
 ~/.agent-os/                    # Base Installation (Framework)
 ├── instructions/               # Core Agent OS instructions
 ├── standards/                  # Your customizable coding standards
-├── pocketflow-tools/          # PocketFlow generators & validators
+├── framework-tools/          # PocketFlow generators & validators
 ├── templates/                 # PocketFlow application templates
 └── setup/
     ├── project.sh            # Project installation script
@@ -65,7 +65,7 @@ your-project/                   # Project Installation (Self-contained)
 ├── .agent-os/                 # Project-specific Agent OS files
 │   ├── instructions/          # Copied from base installation
 │   ├── standards/             # Copied from base installation
-│   ├── pocketflow-tools/      # PocketFlow tools for this project
+│   ├── framework-tools/      # PocketFlow tools for this project
 │   └── config.yml            # Project configuration
 ├── .claude/                   # Claude Code integration (if enabled)
 │   ├── commands/              # Agent OS slash commands
@@ -135,7 +135,7 @@ cd /path/to/your-project
 | `--no-pocketflow` | Install standard Agent OS only | `--no-pocketflow --claude-code` |
 | `--overwrite-instructions` | Update instructions only | `--overwrite-instructions` |
 | `--overwrite-standards` | Update standards only | `--overwrite-standards` |
-| `--update-pocketflow-tools` | Update PocketFlow tools only | `--update-pocketflow-tools` |
+| `--update-framework-tools` | Update PocketFlow tools only | `--update-framework-tools` |
 | `--force` | Force complete overwrite | `--force` |
 
 #### Project Installation Flags (`setup/project.sh`)
@@ -165,7 +165,7 @@ curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main
 curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --overwrite-standards --claude-code
 
 # Update PocketFlow tools only
-curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --update-pocketflow-tools
+curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --update-framework-tools
 
 # Update everything (⚠️ overwrites customizations)
 curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main/setup/base.sh | bash -s -- --overwrite-instructions --overwrite-standards --claude-code
@@ -179,7 +179,7 @@ curl -sSL https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main
 # Update specific components
 ~/.agent-os/setup/update-project.sh --update-instructions
 ~/.agent-os/setup/update-project.sh --update-standards
-~/.agent-os/setup/update-project.sh --update-pocketflow-tools
+~/.agent-os/setup/update-project.sh --update-framework-tools
 
 # Update without backing up existing files
 ~/.agent-os/setup/update-project.sh --update-all --no-backup
@@ -316,7 +316,7 @@ The framework automatically selects the appropriate pattern based on your specif
 # If running inside a project repo, adjust sys.path to the tools directory
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path('.agent-os/pocketflow-tools')))  # project tools directory
+sys.path.insert(0, str(Path('.agent-os/framework-tools')))  # project tools directory
 import generator as gen
 
 # Opt-in to compose nodes and graph when combinations are detected
@@ -416,9 +416,9 @@ ls -la .claude/commands/
 **PocketFlow generation not working**
 ```bash
 # Verify PocketFlow tools are installed
-ls -la .agent-os/pocketflow-tools/
+ls -la .agent-os/framework-tools/
 # Update if missing:
-~/.agent-os/setup/update-project.sh --update-pocketflow-tools
+~/.agent-os/setup/update-project.sh --update-framework-tools
 ```
 
 ### Checking Your Installation
@@ -432,7 +432,7 @@ cat ~/.agent-os/config.yml
 # Expected directories:
 # ~/.agent-os/instructions/
 # ~/.agent-os/standards/
-# ~/.agent-os/pocketflow-tools/
+# ~/.agent-os/framework-tools/
 # ~/.agent-os/setup/
 ```
 
@@ -445,7 +445,7 @@ cat .agent-os/config.yml
 # Expected directories:
 # .agent-os/instructions/
 # .agent-os/standards/
-# .agent-os/pocketflow-tools/ (if PocketFlow enabled)
+# .agent-os/framework-tools/ (if PocketFlow enabled)
 # .claude/commands/ (if Claude Code enabled)
 ```
 

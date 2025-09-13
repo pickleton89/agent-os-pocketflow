@@ -1,6 +1,6 @@
 How does the validation_feedback.py file work?
 
-The pocketflow-tools/validation_feedback.py file implements an intelligent
+The framework-tools/validation_feedback.py file implements an intelligent
   feedback loop system that analyzes validation results and provides actionable
    insights for improving generated workflows. Here's how it works:
 
@@ -99,14 +99,14 @@ How does it actually work in the context of this project?
   4. Expected Workflow
 
   # Generate template
-  python pocketflow-tools/generator.py --workflow "MyWorkflow" --pattern RAG
+  python framework-tools/generator.py --workflow "MyWorkflow" --pattern RAG
 
   # Validate generated template  
-  python pocketflow-tools/template_validator.py generated_project/ >
+  python framework-tools/template_validator.py generated_project/ >
   validation_output.txt
 
   # Analyze validation results and create feedback
-  python pocketflow-tools/validation_feedback.py validation_output.txt \
+  python framework-tools/validation_feedback.py validation_output.txt \
     --context context.json \
     --markdown feedback.md
 
@@ -138,10 +138,10 @@ Based on my analysis of the codebase, validation_feedback.py can be activated
   1. Direct CLI Usage (Manual)
 
   # Basic usage
-  python pocketflow-tools/validation_feedback.py validation_output.txt
+  python framework-tools/validation_feedback.py validation_output.txt
 
   # With context and spec files
-  python pocketflow-tools/validation_feedback.py validation_output.txt \
+  python framework-tools/validation_feedback.py validation_output.txt \
     --context context.json \
     --spec workflow.yaml \
     --output feedback.json \
@@ -184,14 +184,14 @@ Based on my analysis of the codebase, validation_feedback.py can be activated
   Based on the design, it should work like this:
 
   # 1. Generate template (this works)
-  python pocketflow-tools/generator.py --workflow "MyProject" --pattern RAG
+  python framework-tools/generator.py --workflow "MyProject" --pattern RAG
 
   # 2. Auto-validate (this works) 
-  python pocketflow-tools/template_validator.py generated_project/ >
+  python framework-tools/template_validator.py generated_project/ >
   validation.txt
 
   # 3. Auto-feedback (NOT YET INTEGRATED)
-  python pocketflow-tools/validation_feedback.py validation.txt --context
+  python framework-tools/validation_feedback.py validation.txt --context
   context.json
 
   Summary

@@ -233,7 +233,7 @@ Focus on technical implementation requirements.
 ### Pattern Detection Algorithm
 **Objective**: Automatically suggest relevant documentation based on context
 
-**Implementation**: Use the `TechPatternDetector` class from `pocketflow-tools/smart_features.py`
+**Implementation**: Use the `TechPatternDetector` class from `framework-tools/smart_features.py`
 
 ```python
 # NOTE: This is framework-internal code. End-user projects would get 
@@ -263,7 +263,7 @@ critical_suggestions = [s for s in pattern_suggestions if s["priority"] == "crit
 ### Progressive Disclosure Strategy
 **Objective**: Load documentation depth based on workflow needs
 
-**Implementation**: Use the `ProgressiveDisclosure` class from `pocketflow-tools/smart_features.py`
+**Implementation**: Use the `ProgressiveDisclosure` class from `framework-tools/smart_features.py`
 
 ```python
 # NOTE: Framework-internal usage. End-user projects get generated templates.
@@ -289,7 +289,7 @@ content = disclosure.get_content_for_level(
 ### Version Management
 **Objective**: Track and manage documentation version compatibility
 
-**Implementation**: Use the `VersionManager` class from `pocketflow-tools/smart_features.py`
+**Implementation**: Use the `VersionManager` class from `framework-tools/smart_features.py`
 
 ```python
 # NOTE: Framework-internal usage. End-user projects get generated templates.

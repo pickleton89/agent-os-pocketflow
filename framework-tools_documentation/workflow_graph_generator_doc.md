@@ -176,7 +176,7 @@ How does the workflow_graph_generator.py get called or activated for use?
   print(mermaid)
 
   Command Line Testing:
-  cd pocketflow-tools
+  cd framework-tools
   python3 workflow_graph_generator.py  # Runs self-test for all patterns
 
   Architectural Reality

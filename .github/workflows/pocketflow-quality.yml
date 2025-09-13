@@ -51,7 +51,7 @@ jobs:
           echo "### Tool Distribution" >> quality-report.md
           echo "Validation tools are provided to end-user projects:" >> quality-report.md
           echo "- scripts/validation/validate-best-practices.py" >> quality-report.md
-          echo "- pocketflow-tools/antipattern_detector.py" >> quality-report.md
+          echo "- framework-tools/antipattern_detector.py" >> quality-report.md
           echo "" >> quality-report.md
           echo "Note: End-user projects will test these tools in their own environments" >> quality-report.md
       
@@ -141,7 +141,7 @@ jobs:
       - name: Test generator functionality
         run: |
           echo "⚙️ Testing code generation functionality..."
-          cd pocketflow-tools
+          cd framework-tools
           uv run python test-generator.py
           uv run python test_full_generation_with_dependencies.py
 
@@ -169,7 +169,7 @@ jobs:
           # Install security tools
           uv add --dev bandit[toml] safety
           # Run bandit on source code only, excluding .venv and test files
-          uv run bandit -r scripts/ pocketflow-tools/ -f json -o bandit-report.json --exclude '**/test_*,**/__pycache__/**' || true
+          uv run bandit -r scripts/ framework-tools/ -f json -o bandit-report.json --exclude '**/test_*,**/__pycache__/**' || true
           uv run safety check --json > safety-report.json || true
       
       - name: Upload security reports

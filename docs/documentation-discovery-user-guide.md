@@ -419,7 +419,7 @@ stripe: docs=2023-10-16, project=unknown (cannot compare)
 Add custom technology patterns to smart features:
 
 ```python
-# In pocketflow-tools/smart_features.py (framework development)
+# In framework-tools/smart_features.py (framework development)
 custom_patterns = {
     "your_custom_tech": {
         "patterns": ["custom", "pattern", "keywords"],
@@ -492,7 +492,7 @@ Documentation Discovery enhances template generation:
 ### Getting Help
 
 1. **Validation Scripts**: Use `scripts/validate-docs-registry.py` for registry validation
-2. **Test Suite**: Run `pocketflow-tools/test_smart_features.py` for functionality testing
+2. **Test Suite**: Run `framework-tools/test_smart_features.py` for functionality testing
 3. **Debug Mode**: Enable verbose logging in smart features for detailed analysis
 
 ### Reporting Issues

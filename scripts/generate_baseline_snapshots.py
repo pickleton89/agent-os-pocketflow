@@ -5,7 +5,7 @@ under `baseline_out/` for deterministic comparison during the refactor.
 
 Note: Uses programmatically constructed WorkflowSpec objects (to avoid
 external YAML dependency) mirroring the approach in
-`pocketflow-tools/test_full_generation_with_dependencies.py`.
+`framework-tools/test_full_generation_with_dependencies.py`.
 """
 
 from pathlib import Path

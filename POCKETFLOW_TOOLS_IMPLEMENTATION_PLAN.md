@@ -2,25 +2,25 @@
 
 ## Executive Summary
 
-This plan outlines how to properly integrate the `pocketflow-tools/` Python tools into end-user projects, ensuring they are accessible via command-line, sub-agents in `claude-code/agents/`, and instruction files. The current gap is that while the framework installs the pocketflow_tools package (installable CLI), it doesn't properly copy the developer tools (`pocketflow-tools/` directory) that agents and instructions need to invoke.
+This plan outlines how to properly integrate the `framework-tools/` Python tools into end-user projects, ensuring they are accessible via command-line, sub-agents in `claude-code/agents/`, and instruction files. The current gap is that while the framework installs the pocketflow_tools package (installable CLI), it doesn't properly copy the developer tools (`framework-tools/` directory) that agents and instructions need to invoke.
 
 ## Current State Analysis
 
 ### What Works
 1. **Base Installation** (`setup/base.sh`):
    - Installs pocketflow_tools package via `uv pip install -e .`
-   - Copies pocketflow-tools/*.py files to `~/.agent-os/pocketflow-tools/`
+   - Copies framework-tools/*.py files to `~/.agent-os/framework-tools/`
    - Verifies CLI availability via `uv run python -m pocketflow_tools.cli`
 
 2. **Project Installation** (`setup/project.sh`):
    - Creates `.agent-os/` directory structure in project
    - Checks for pocketflow_tools CLI availability
-   - Does NOT copy pocketflow-tools files to project
+   - Does NOT copy framework-tools files to project
 
 ### The Gap
-- **Missing Link**: End-user projects don't have access to the Python tools in `pocketflow-tools/` directory
-- **Agent References**: Agents reference tools like `python3 pocketflow-tools/pattern_analyzer.py` but these files don't exist in the project
-- **Instruction References**: Instructions expect to call `python3 pocketflow-tools/template_validator.py` but path doesn't exist
+- **Missing Link**: End-user projects don't have access to the Python tools in `framework-tools/` directory
+- **Agent References**: Agents reference tools like `python3 framework-tools/pattern_analyzer.py` but these files don't exist in the project
+- **Instruction References**: Instructions expect to call `python3 framework-tools/template_validator.py` but path doesn't exist
 
 ## Implementation Architecture
 
@@ -32,9 +32,9 @@ This plan outlines how to properly integrate the `pocketflow-tools/` Python tool
 - **Usage**: `uv run python -m pocketflow_tools.cli --spec workflow.yaml`
 - **Status**: ✅ Working
 
-#### Layer 2: Developer Tools (`pocketflow-tools/`)
+#### Layer 2: Developer Tools (`framework-tools/`)
 - **Purpose**: Analysis, validation, and orchestration tools
-- **Location**: Should be in `.agent-os/pocketflow-tools/` in each project
+- **Location**: Should be in `.agent-os/framework-tools/` in each project
 - **Usage**: Direct Python invocation by agents/instructions
 - **Status**: ❌ Not being copied to projects
 
@@ -52,9 +52,9 @@ This plan outlines how to properly integrate the `pocketflow-tools/` Python tool
 ```bash
 # Add after line 456 in install_pocketflow_tools()
 # Copy developer tools from base installation or framework
-if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/pocketflow-tools" ]]; then
+if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/framework-tools" ]]; then
     log_info "Copying PocketFlow developer tools from base installation..."
-    if safe_copy "$BASE_INSTALL_PATH/pocketflow-tools"/* ".agent-os/pocketflow-tools/" "pocketflow-tools"; then
+    if safe_copy "$BASE_INSTALL_PATH/framework-tools"/* ".agent-os/framework-tools/" "framework-tools"; then
         log_success "Copied PocketFlow developer tools"
     else
         log_error "Failed to copy PocketFlow developer tools"
@@ -62,10 +62,10 @@ if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/pocketflow-t
     fi
 else
     # Fallback: Copy from framework repository if available
-    local framework_tools_dir="$(dirname "$(dirname "$(realpath "$0")")")/pocketflow-tools"
+    local framework_tools_dir="$(dirname "$(dirname "$(realpath "$0")")")/framework-tools"
     if [[ -d "$framework_tools_dir" ]]; then
         log_info "Copying PocketFlow developer tools from framework..."
-        cp "$framework_tools_dir"/*.py ".agent-os/pocketflow-tools/" 2>/dev/null || true
+        cp "$framework_tools_dir"/*.py ".agent-os/framework-tools/" 2>/dev/null || true
         log_success "Copied PocketFlow developer tools from framework"
     else
         log_warning "PocketFlow developer tools not found - agents may have limited functionality"
@@ -75,30 +75,30 @@ fi
 
 ### Phase 2: Create Tool Wrapper Scripts (Day 1-2)
 
-#### 2.1 Create `.agent-os/pocketflow-tools/run.sh`
+#### 2.1 Create `.agent-os/framework-tools/run.sh`
 ```bash
 #!/bin/bash
-# Wrapper script for running pocketflow-tools with proper Python environment
+# Wrapper script for running framework-tools with proper Python environment
 TOOL_NAME="$1"
 shift
 uv run python "$(dirname "$0")/${TOOL_NAME}.py" "$@"
 ```
 
 #### 2.2 Update Agent References
-- Change: `python3 pocketflow-tools/pattern_analyzer.py`
-- To: `.agent-os/pocketflow-tools/run.sh pattern_analyzer`
+- Change: `python3 framework-tools/pattern_analyzer.py`
+- To: `.agent-os/framework-tools/run.sh pattern_analyzer`
 
 ### Phase 3: Implement Agent Coordination (Day 3-5)
 
 #### 3.1 Create Coordination Module
-Create `.agent-os/pocketflow-tools/coordinator.py`:
+Create `.agent-os/framework-tools/coordinator.py`:
 ```python
 """Coordination module for agent-tool integration"""
 import sys
 import json
 from pathlib import Path
 
-# Add pocketflow-tools to path for imports
+# Add framework-tools to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
 from agent_coordination import coordinate_pattern_analysis, create_subagent_handoff
@@ -106,7 +106,7 @@ from pattern_analyzer import PatternAnalyzer
 from dependency_orchestrator import DependencyOrchestrator
 
 class ToolCoordinator:
-    """Unified interface for agents to access pocketflow-tools"""
+    """Unified interface for agents to access framework-tools"""
     
     def analyze_pattern(self, project_name: str, requirements: str) -> dict:
         """Analyze requirements and return pattern recommendation"""
@@ -157,7 +157,7 @@ Update `claude-code/agents/pattern-analyzer.md`:
 ### Option 1: Direct Python (if in project)
 ```python
 import sys
-sys.path.append('.agent-os/pocketflow-tools')
+sys.path.append('.agent-os/framework-tools')
 from coordinator import ToolCoordinator
 
 coordinator = ToolCoordinator()
@@ -166,7 +166,7 @@ result = coordinator.analyze_pattern(project_name, requirements)
 
 ### Option 2: CLI Invocation
 ```bash
-cd .agent-os/pocketflow-tools
+cd .agent-os/framework-tools
 python coordinator.py analyze --project "$PROJECT" --requirements "$REQUIREMENTS"
 ```
 ```
@@ -191,7 +191,7 @@ Create `.agent-os/bin/` directory with wrapper scripts:
 ```bash
 # .agent-os/bin/analyze-pattern
 #!/bin/bash
-exec python3 .agent-os/pocketflow-tools/coordinator.py analyze "$@"
+exec python3 .agent-os/framework-tools/coordinator.py analyze "$@"
 ```
 
 ### Phase 6: Testing & Validation (Day 10-12)
@@ -206,10 +206,10 @@ Create `test_pocketflow_integration.sh`:
 uv run python -m pocketflow_tools.cli --help || exit 1
 
 # Test 2: Developer tools availability
-.agent-os/pocketflow-tools/run.sh pattern_analyzer --help || exit 1
+.agent-os/framework-tools/run.sh pattern_analyzer --help || exit 1
 
 # Test 3: Coordinator module
-python3 .agent-os/pocketflow-tools/coordinator.py analyze \
+python3 .agent-os/framework-tools/coordinator.py analyze \
     --project test --requirements "Build a RAG system" || exit 1
 
 # Test 4: Agent invocation simulation
@@ -220,7 +220,7 @@ python3 .agent-os/pocketflow-tools/coordinator.py analyze \
 
 ### For Projects Without Tools
 1. Run updated `setup/project.sh` with `--update-tools` flag
-2. Verify tools copied to `.agent-os/pocketflow-tools/`
+2. Verify tools copied to `.agent-os/framework-tools/`
 3. Test agent invocations
 
 ### For Projects With Old Structure
@@ -232,7 +232,7 @@ python3 .agent-os/pocketflow-tools/coordinator.py analyze \
 
 ### Immediate (Phase 1)
 - [ ] Developer tools copied to project during installation
-- [ ] Basic Python invocation works: `.agent-os/pocketflow-tools/run.sh pattern_analyzer`
+- [ ] Basic Python invocation works: `.agent-os/framework-tools/run.sh pattern_analyzer`
 
 ### Short-term (Phase 2-3)
 - [ ] Wrapper scripts simplify invocation
@@ -261,7 +261,7 @@ python3 .agent-os/pocketflow-tools/coordinator.py analyze \
 
 ## Recommended Immediate Actions
 
-1. **Fix `setup/project.sh`** to copy pocketflow-tools (30 minutes)
+1. **Fix `setup/project.sh`** to copy framework-tools (30 minutes)
 2. **Create coordinator.py** module (2 hours)
 3. **Update pattern-analyzer.md** agent with working code (1 hour)
 4. **Test in a fresh project** (1 hour)
@@ -269,11 +269,11 @@ python3 .agent-os/pocketflow-tools/coordinator.py analyze \
 
 ## Long-term Improvements
 
-1. **Package pocketflow-tools** as a separate installable package
+1. **Package framework-tools** as a separate installable package
 2. **Create MCP server** for tool access
 3. **Build VS Code extension** for visual tool invocation
 4. **Implement tool versioning** for compatibility
 
 ## Conclusion
 
-The core issue is that `pocketflow-tools/` developer tools aren't being copied to end-user projects. The immediate fix is updating the installation scripts, followed by creating wrapper scripts and coordination modules to make the tools easily accessible to agents and instructions. This plan provides a clear path from the current broken state to a fully integrated tool system.
+The core issue is that `framework-tools/` developer tools aren't being copied to end-user projects. The immediate fix is updating the installation scripts, followed by creating wrapper scripts and coordination modules to make the tools easily accessible to agents and instructions. This plan provides a clear path from the current broken state to a fully integrated tool system.

@@ -285,7 +285,7 @@ validate_base_installation() {
     
     if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
         required_base_dirs+=(
-            "$BASE_INSTALL_PATH/pocketflow-tools"
+            "$BASE_INSTALL_PATH/framework-tools"
         )
     fi
     
@@ -331,7 +331,7 @@ create_project_structure() {
     # PocketFlow enhancement directories
     if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
         core_dirs+=(
-            ".agent-os/pocketflow-tools"
+            ".agent-os/framework-tools"
             ".agent-os/templates"
             ".agent-os/product"
             ".agent-os/specs"
@@ -463,16 +463,16 @@ install_pocketflow_tools() {
         exit 1
     fi
     
-    # Ensure pocketflow-tools directory exists
-    mkdir -p ".agent-os/pocketflow-tools"
+    # Ensure framework-tools directory exists
+    mkdir -p ".agent-os/framework-tools"
     
     # Copy developer tools from base installation or framework
-    if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/pocketflow-tools" ]]; then
+    if [[ "$NO_BASE_INSTALL" == "false" ]] && [[ -d "$BASE_INSTALL_PATH/framework-tools" ]]; then
         log_info "Copying PocketFlow developer tools from base installation..."
-        if safe_copy "$BASE_INSTALL_PATH/pocketflow-tools" ".agent-os/pocketflow-tools-temp" "pocketflow-tools"; then
+        if safe_copy "$BASE_INSTALL_PATH/framework-tools" ".agent-os/framework-tools-temp" "framework-tools"; then
             # Move contents to target directory (including subdirectories)
-            cp -r ".agent-os/pocketflow-tools-temp"/* ".agent-os/pocketflow-tools/" 2>/dev/null || true
-            rm -rf ".agent-os/pocketflow-tools-temp"
+            cp -r ".agent-os/framework-tools-temp"/* ".agent-os/framework-tools/" 2>/dev/null || true
+            rm -rf ".agent-os/framework-tools-temp"
             log_success "Copied PocketFlow developer tools"
         else
             log_error "Failed to copy PocketFlow developer tools"
@@ -482,11 +482,11 @@ install_pocketflow_tools() {
         # Fallback: Copy from framework repository if available
         local script_realpath
         script_realpath="$(realpath "$0" 2>/dev/null)" || script_realpath="$0"
-        local framework_tools_dir="$(dirname "$(dirname "$script_realpath")")/pocketflow-tools"
+        local framework_tools_dir="$(dirname "$(dirname "$script_realpath")")/framework-tools"
         if [[ -d "$framework_tools_dir" ]]; then
             log_info "Copying PocketFlow developer tools from framework..."
             # Copy all files and subdirectories from framework
-            cp -r "$framework_tools_dir"/* ".agent-os/pocketflow-tools/" 2>/dev/null || true
+            cp -r "$framework_tools_dir"/* ".agent-os/framework-tools/" 2>/dev/null || true
             log_success "Copied PocketFlow developer tools from framework"
         else
             log_warning "PocketFlow developer tools not found - agents may have limited functionality"
@@ -632,7 +632,7 @@ tools:
 paths:
   instructions: ".agent-os/instructions"
   standards: ".agent-os/standards"
-  pocketflow_tools: ".agent-os/pocketflow-tools"
+  pocketflow_tools: ".agent-os/framework-tools"
   templates: ".agent-os/templates"
   product: ".agent-os/product"
   specs: ".agent-os/specs"
@@ -658,11 +658,11 @@ EOF
 # Update .gitignore
 update_gitignore() {
     if [[ -f ".gitignore" ]]; then
-        if ! grep -q ".agent-os/pocketflow-tools/__pycache__" .gitignore 2>/dev/null; then
+        if ! grep -q ".agent-os/framework-tools/__pycache__" .gitignore 2>/dev/null; then
             echo "" >> .gitignore
             echo "# Agent OS + PocketFlow" >> .gitignore
-            echo ".agent-os/pocketflow-tools/__pycache__/" >> .gitignore
-            echo ".agent-os/pocketflow-tools/*.pyc" >> .gitignore
+            echo ".agent-os/framework-tools/__pycache__/" >> .gitignore
+            echo ".agent-os/framework-tools/*.pyc" >> .gitignore
             echo ".agent-os/product/*.tmp" >> .gitignore
             echo ".agent-os/specs/*.tmp" >> .gitignore
             log_success "Updated .gitignore"
@@ -671,8 +671,8 @@ update_gitignore() {
         # Create .gitignore if it doesn't exist
         cat > .gitignore << EOF
 # Agent OS + PocketFlow
-.agent-os/pocketflow-tools/__pycache__/
-.agent-os/pocketflow-tools/*.pyc
+.agent-os/framework-tools/__pycache__/
+.agent-os/framework-tools/*.pyc
 .agent-os/product/*.tmp
 .agent-os/specs/*.tmp
 
@@ -702,7 +702,7 @@ validate_installation() {
     
     if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
         required_dirs+=(
-            ".agent-os/pocketflow-tools"
+            ".agent-os/framework-tools"
             ".agent-os/templates"
         )
     fi
@@ -762,7 +762,7 @@ EOF
     
     if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
         log_info "PocketFlow Features Available:"
-        echo "  • Workflow generators in .agent-os/pocketflow-tools/"
+        echo "  • Workflow generators in .agent-os/framework-tools/"
         echo "  • Pattern analyzers and validators"
         echo "  • Enhanced LLM workflow capabilities"
         echo "  • Template validation tools"

@@ -134,9 +134,9 @@ This agent serves as a coordination hub for the three-agent architecture. Based 
 
 ```python
 # TODO: Implement ToolCoordinator integration for agent handoffs
-# Example coordination using the unified pocketflow-tools interface
+# Example coordination using the unified framework-tools interface
 import sys
-sys.path.append('.agent-os/pocketflow-tools')
+sys.path.append('.agent-os/framework-tools')
 from coordinator import ToolCoordinator
 
 def coordinate_pattern_analysis(project_name: str, requirements: str) -> dict:

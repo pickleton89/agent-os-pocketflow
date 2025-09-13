@@ -365,7 +365,7 @@ How does the dependency_orchestrator.py get called or activated for use?
   3. Direct User Invocation
 
   # Manual usage (works now)
-  python3 pocketflow-tools/dependency_orchestrator.py --pattern RAG --output-pyproject >
+  python3 framework-tools/dependency_orchestrator.py --pattern RAG --output-pyproject >
   pyproject.toml
 
   Key Finding
@@ -473,7 +473,7 @@ How does the file get called or activated for use?
   1. Direct CLI Usage
 
   # Generate pyproject.toml for RAG pattern
-  cd pocketflow-tools
+  cd framework-tools
   python3 dependency_orchestrator.py --pattern RAG --project-name my-rag-app --output-pyproject > ../my-project/pyproject.toml
 
   2. Pattern-Specific Generation

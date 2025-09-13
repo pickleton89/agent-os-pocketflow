@@ -21,4 +21,4 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["pocketflow_tools*"]
-exclude = ["setup*", "shared*", "templates*", "standards*", "instructions*", "pocketflow-tools*"]
+exclude = ["setup*", "shared*", "templates*", "standards*", "instructions*", "framework-tools*"]

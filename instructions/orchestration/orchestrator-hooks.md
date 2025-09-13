@@ -83,7 +83,7 @@ validate_workflow_implementation() {
     # TODO: Implement workflow file existence check
     if [[ ! -f "$workflow_file" ]]; then
         echo "❌ Workflow missing: $workflow_file"
-        echo "💡 Run: claude-code agent invoke file-creator --feature $feature_name (uses pocketflow-tools/generator)"
+        echo "💡 Run: claude-code agent invoke file-creator --feature $feature_name (uses framework-tools/generator)"
         return 1
     fi
     

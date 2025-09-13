@@ -1,6 +1,6 @@
 How does the test-generator.py file work?
 
-⏺ The pocketflow-tools/test-generator.py file is a comprehensive test suite for
+⏺ The framework-tools/test-generator.py file is a comprehensive test suite for
    the PocketFlow workflow generator system. Here's how it works:
 
   Core Structure
@@ -120,7 +120,7 @@ How does the test-generator.py get called or activated for use?
   1. Smoke Tests (Most Common)
 
   Via scripts/validation/validate-python-tests-smoke.sh:37:
-  run_py "generator smoke" uv run python pocketflow-tools/test-generator.py
+  run_py "generator smoke" uv run python framework-tools/test-generator.py
 
   2. Master Test Runner
 
@@ -132,17 +132,17 @@ How does the test-generator.py get called or activated for use?
   3. GitHub CI Pipeline
 
   Via .github/workflows/pocketflow-quality.yml:145:
-  cd pocketflow-tools
+  cd framework-tools
   uv run python test-generator.py
 
   4. Direct Manual Execution
 
   Can be run directly from the repository root:
   # From project root
-  uv run python pocketflow-tools/test-generator.py
+  uv run python framework-tools/test-generator.py
 
-  # Or from pocketflow-tools directory  
-  cd pocketflow-tools
+  # Or from framework-tools directory  
+  cd framework-tools
   uv run python test-generator.py
 
   Activation Context

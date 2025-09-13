@@ -122,7 +122,7 @@ Based on my analysis of the codebase, here's how pattern_definitions.py gets
 
   1. WorkflowGraphGenerator (Only Active User)
 
-  # pocketflow-tools/workflow_graph_generator.py:20-22
+  # framework-tools/workflow_graph_generator.py:20-22
   from .pattern_definitions import get_node_templates
 
   # Used in _load_pattern_flows() method:

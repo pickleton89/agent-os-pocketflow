@@ -56,7 +56,7 @@ uv add --dev pytest ruff ty
 
 # Verify framework components
 ls -la setup/  # Contains base.sh and project.sh for end-users
-ls -la pocketflow-tools/  # Contains generator and validation tools
+ls -la framework-tools/  # Contains generator and validation tools
 ```
 
 **End-User Installation**: This framework provides `setup/base.sh` and `setup/project.sh` scripts that end-users run to install the framework. End-user installation instructions are in the main [README.md](README.md).
@@ -82,7 +82,7 @@ This meta-framework includes a Python-based generator that creates educational P
 **Framework Development Testing:**
 ```bash
 # Test the generator in framework repository
-cd pocketflow-tools
+cd framework-tools
 python3 generator.py example-workflow-spec.yaml
 python3 test-generator.py  # smoke
 python3 test_full_generation_with_dependencies.py  # comprehensive
@@ -272,7 +272,7 @@ agent-os-pocketflow/
 
 ### Generator Testing
 ```bash
-cd pocketflow-tools
+cd framework-tools
 python3 test-generator.py
 python3 test_full_generation_with_dependencies.py
 ```

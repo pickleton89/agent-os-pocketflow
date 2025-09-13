@@ -34,7 +34,7 @@ paths:
   base_installation: ""        # Set during installation (e.g., ~/.agent-os)
   instructions: ""             # Base + /instructions
   standards: ""                # Base + /standards  
-  pocketflow_tools: ""         # Base + /pocketflow-tools
+  pocketflow_tools: ""         # Base + /framework-tools
   templates: ""                # Base + /templates
   commands: ""                 # Base + /commands
   claude_code_agents: ""       # Base + /claude-code/agents

@@ -7,7 +7,7 @@ This is the starting point for using the PocketFlow tools, agents, and instructi
 ## Start Here
 
 - Integration plan: see `pocketflow-integration-plan.md` (how everything fits together, with Invocation Matrix and step-by-step flow).
-- Overview of tools: `pocketflow-tools-analysis.md` (what each non-test file does).
+- Overview of tools: `framework-tools-analysis.md` (what each non-test file does).
 
 ## Unified Call Graph
 
@@ -30,12 +30,12 @@ flowchart TD
 
 1) Pre‑flight
 ```bash
-python3 ~/.agent-os/pocketflow-tools/check-pocketflow-install.py --install
+python3 ~/.agent-os/framework-tools/check-pocketflow-install.py --install
 ```
 
 2) Extract context + spec
 ```bash
-python3 pocketflow-tools/context_manager.py \
+python3 framework-tools/context_manager.py \
   --project-root . \
   --workflow-name "MyFeature" \
   --output context_analysis.json \
@@ -44,7 +44,7 @@ python3 pocketflow-tools/context_manager.py \
 
 3) Analyze patterns (programmatic handoff)
 ```python
-from pocketflow-tools.agent_coordination import coordinate_pattern_analysis, create_subagent_handoff
+from framework-tools.agent_coordination import coordinate_pattern_analysis, create_subagent_handoff
 ctx = coordinate_pattern_analysis("MyProject", open("requirements.txt").read())
 handoff = create_subagent_handoff(ctx)
 print(handoff.target_agent, ctx.pattern_recommendation.primary_pattern)
@@ -52,7 +52,7 @@ print(handoff.target_agent, ctx.pattern_recommendation.primary_pattern)
 
 4) Orchestrate dependencies
 ```bash
-python3 pocketflow-tools/dependency_orchestrator.py --pattern RAG --project-name my-app --output-pyproject > pyproject.toml
+python3 framework-tools/dependency_orchestrator.py --pattern RAG --project-name my-app --output-pyproject > pyproject.toml
 ```
 
 5) Generate workflow (installable CLI)
@@ -62,8 +62,8 @@ uv run python -m pocketflow_tools.cli --spec workflow.yaml --output .agent-os/wo
 
 6) Validate and feed back
 ```bash
-python3 pocketflow-tools/template_validator.py .agent-os/workflows/MyFeature | tee validation.txt
-python3 pocketflow-tools/validation_feedback.py validation.txt --context context_analysis.json --markdown feedback.md
+python3 framework-tools/template_validator.py .agent-os/workflows/MyFeature | tee validation.txt
+python3 framework-tools/validation_feedback.py validation.txt --context context_analysis.json --markdown feedback.md
 ```
 
 ## Component Docs
@@ -101,8 +101,8 @@ python3 pocketflow-tools/validation_feedback.py validation.txt --context context
 
 ## Framework vs Usage
 
-- Framework (this repo) houses both developer tools (`pocketflow-tools/`) and the installable package (`pocketflow_tools/`).
-- End‑users primarily invoke the CLI in `pocketflow_tools/` and rely on agents/instructions that call into `pocketflow-tools/` capabilities as shown above.
+- Framework (this repo) houses both developer tools (`framework-tools/`) and the installable package (`pocketflow_tools/`).
+- End‑users primarily invoke the CLI in `pocketflow_tools/` and rely on agents/instructions that call into `framework-tools/` capabilities as shown above.
 
 ## Next Steps
 

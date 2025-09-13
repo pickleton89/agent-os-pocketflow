@@ -24,18 +24,18 @@ if type is_framework >/dev/null 2>&1 && is_framework; then
   fi
   
   # Framework Test 2: Developer tools directory
-  if [[ -d "pocketflow-tools" ]]; then
+  if [[ -d "framework-tools" ]]; then
     echo "✅ Developer tools directory present"
   else
-    echo "❌ Developer tools directory missing: pocketflow-tools/"
+    echo "❌ Developer tools directory missing: framework-tools/"
     exit 1
   fi
   
   # Framework Test 3: Key developer tool files
   dev_tools=(
-    "pocketflow-tools/pattern_analyzer.py"
-    "pocketflow-tools/dependency_orchestrator.py" 
-    "pocketflow-tools/agent_coordination.py"
+    "framework-tools/pattern_analyzer.py"
+    "framework-tools/dependency_orchestrator.py" 
+    "framework-tools/agent_coordination.py"
   )
   
   for tool in "${dev_tools[@]}"; do

@@ -106,7 +106,7 @@ Examples:
     except ImportError as e:
         print(f"❌ Import Error: {e}")
         print()
-        print("Make sure you're running this script from the pocketflow-tools directory.")
+        print("Make sure you're running this script from the framework-tools directory.")
         print("Required files:")
         print("  - end_to_end_test_scenarios.py")
         print("  - pattern_analyzer.py")

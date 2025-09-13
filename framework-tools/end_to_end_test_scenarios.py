@@ -57,7 +57,7 @@ class EndToEndTestRunner:
         
         # Ensure we have access to the framework tools and package
         sys.path.insert(0, str(self.framework_root))
-        sys.path.insert(0, str(self.framework_root / "pocketflow-tools"))
+        sys.path.insert(0, str(self.framework_root / "framework-tools"))
         
         # Change to framework root so generator can find templates
         self.original_cwd = os.getcwd()

@@ -1,7 +1,7 @@
 How does the context_manager.py file work?
 
 
-The pocketflow-tools/context_manager.py file is a design-time content extractor that
+The framework-tools/context_manager.py file is a design-time content extractor that
   analyzes project documentation to inform PocketFlow template generation. Here's how it
   works:
 
@@ -164,7 +164,7 @@ How does it actually work in the context of this project?
   4. Framework Architecture Role
 
   As Framework Component:
-  - Location: pocketflow-tools/context_manager.py (tools directory)
+  - Location: framework-tools/context_manager.py (tools directory)
   - Purpose: Provides context extraction capability for end-user projects
   - Installation: Gets copied to end-user projects during project installation
   - Usage: Intended for use by end-user projects to analyze their own docs
@@ -226,11 +226,11 @@ How does the context_manager.py get called or activated for use?
 
   1. Direct CLI Usage (Primary Method)
   # Basic usage
-  python3 pocketflow-tools/context_manager.py --project-root . --workflow-name
+  python3 framework-tools/context_manager.py --project-root . --workflow-name
   "MyApp"
 
   # With full options
-  python3 pocketflow-tools/context_manager.py \
+  python3 framework-tools/context_manager.py \
     --project-root /path/to/project \
     --workflow-name "MyWorkflow" \
     --output context_analysis.json \

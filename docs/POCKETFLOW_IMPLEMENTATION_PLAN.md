@@ -206,7 +206,7 @@ class BestPracticesValidator:
 
 #### Task 3.2: Create Antipattern Detector
 
-**What it is**: Tool (`pocketflow-tools/antipattern_detector.py`) to identify common mistakes.
+**What it is**: Tool (`framework-tools/antipattern_detector.py`) to identify common mistakes.
 
 **How to accomplish**:
 ```python
@@ -246,7 +246,7 @@ jobs:
       - name: Run Best Practices Validator
         run: python scripts/validation/validate-best-practices.py
       - name: Check for Antipatterns
-        run: python pocketflow-tools/antipattern_detector.py
+        run: python framework-tools/antipattern_detector.py
 ```
 
 **What it provides**:
@@ -385,7 +385,7 @@ Project-wide coordination layer that orchestrates specialized agents while enfor
 - docs/POCKETFLOW_BEST_PRACTICES.md
 - docs/COMMON_ANTIPATTERNS.md
 - scripts/validation/validate-best-practices.py
-- pocketflow-tools/antipattern_detector.py
+- framework-tools/antipattern_detector.py
 
 ## Invocation Interface
 Standard: claude-code agent invoke pocketflow-orchestrator --task [task]
