@@ -14,6 +14,12 @@
 
 ---
 
+## Implementation Context Clarification
+
+These sub-agents are Claude Code agent definitions that will execute within Claude Code sessions when users invoke framework commands (like `/plan-product`, `/analyze-product`). They are specialized agents that Claude Code will use to break down complex document creation workflows into focused, efficient components that generate actual documentation files in end-user projects.
+
+---
+
 ## Current State Analysis
 
 ### Existing Document Creation Workflow
@@ -188,9 +194,8 @@ Each template generation agent will be implemented as:
 
 ### Migration Path
 1. **Backward Compatibility**: New system works alongside current approach
-2. **Gradual Rollout**: Test with new projects before retrofitting existing workflows
-3. **Performance Monitoring**: Compare token usage and quality metrics
-4. **User Feedback Integration**: Adjust based on developer experience
+2. **Performance Monitoring**: Compare token usage and quality metrics
+3. **User Feedback Integration**: Adjust based on developer experience
 
 ## Success Metrics
 
