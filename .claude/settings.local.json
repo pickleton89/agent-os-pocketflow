@@ -53,7 +53,10 @@
       "WebSearch",
       "Bash(xargs sed:*)",
       "Bash(setup/base.sh:*)",
-      "Bash(/dev/null)"
+      "Bash(/dev/null)",
+      "Read(//Users/jeffkiefer/.claude/agents/**)",
+      "Bash(claude --agent tech-stack-document-creator --input \"Project: AI-powered content management system\nprogramming_language: Python 3.12\ndatabase_system: PostgreSQL  \nfrontend_framework: Next.js\napplication_hosting: Railway\nllm_providers: [\"\"OpenAI\"\", \"\"Anthropic\"\"]\n\nPlease create a tech-stack.md document for this AI-powered content management system project with the specified technologies and modern Python defaults.\")",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": [],
