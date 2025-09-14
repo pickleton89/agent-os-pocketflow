@@ -778,9 +778,11 @@ install_project() {
             log_success "Copied Claude Code commands"
         fi
         
-        if [[ -d "$BASE_INSTALL_PATH/claude-code/agents" ]]; then
-            cp -r "$BASE_INSTALL_PATH/claude-code/agents"/* ".claude/agents/"
+        if [[ -d "$HOME/.claude/agents" ]]; then
+            cp -r "$HOME/.claude/agents"/* ".claude/agents/"
             log_success "Copied Claude Code agents"
+        else
+            log_warning "No agents found in global Claude Code installation. Run base setup with --claude-code first."
         fi
     fi
     
@@ -833,6 +835,10 @@ CONFIG_EOF
         echo "  • Workflow generators in .agent-os/framework-tools/"
         echo "  • Pattern analyzers and validators"
         echo "  • Enhanced LLM workflow capabilities"
+        echo ""
+        log_info "Remember to install PocketFlow package in your project:"
+        echo "  cd <your-project>"
+        echo "  uv add pocketflow uvicorn pytest-asyncio httpx"
     fi
 }
 
