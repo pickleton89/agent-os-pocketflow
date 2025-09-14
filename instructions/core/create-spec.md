@@ -770,39 +770,62 @@ This instruction file uses modular templates from:
     - file: sub-specs/database-schema.md
   </creates>
   <condition>only if database changes needed</condition>
+  <uses>database-schema-creator subagent</uses>
 </step_metadata>
 
 <decision_tree>
   IF spec_requires_database_changes:
-    CREATE sub-specs/database-schema.md
+    USE database-schema-creator subagent to create sub-specs/database-schema.md
   ELSE:
     SKIP this_step
 </decision_tree>
 
-<schema_template>
-  # Database Schema
-  
-  ## Changes
-  - new tables
-  - new columns
-  - modifications
-  - migrations
+<subagent_context>
+  **Context:** Database schema creation for PocketFlow project specification
+  **Input:** Technical requirements, existing schema structure, data model specifications
+  **Output:** Complete database-schema.md with migration procedures and performance optimizations
+  **Conditional Activation:** Only when database changes are identified in technical specification
+</subagent_context>
 
-  ## Specifications
-  - exact SQL or migration syntax
-  - indexes and constraints
-  - foreign key relationships
+<database_change_detection>
+  <analyze_requirements>
+    - New data models requiring table creation
+    - Existing table modifications for new functionality
+    - Database relationship changes (foreign keys, constraints)
+    - Performance optimization requirements (indexes, queries)
+    - Migration complexity assessment
+  </analyze_requirements>
 
-  ## Rationale
-  - reason for each change
-  - performance considerations
-  - data integrity rules
-</schema_template>
+  <decision_criteria>
+    DATABASE_CHANGES_NEEDED IF:
+    - New tables required for spec functionality
+    - Existing table schema modifications needed
+    - New relationships or constraints required
+    - Performance optimizations or indexing changes needed
+    - Data migration procedures required
+  </decision_criteria>
+</database_change_detection>
+
+<database_schema_creation_failure_handling>
+  IF database_schema_creation_fails:
+    - Document subagent errors or context preparation failures
+    - Attempt fallback database schema creation using embedded templates
+    - Verify technical specification contains sufficient database requirements
+    - BLOCK progression until database-schema.md is successfully created
+  ELSE:
+    - Proceed with successfully created database schema specification
+</database_schema_creation_failure_handling>
 
 <instructions>
-  ACTION: Check if database changes needed
-  CREATE: database-schema.md only if required
-  INCLUDE: Complete SQL/migration specifications
+  ACTION: Analyze technical specification for database change requirements
+  DETECT: New tables, schema modifications, relationships, and performance needs
+  INVOKE: database-schema-creator subagent only if database changes required
+  CONTEXT: "Create database schema specification for spec: [SPEC_NAME]
+            - Technical Requirements: @.agent-os/specs/[YYYY-MM-DD-spec-name]/sub-specs/technical-spec.md
+            - Spec Context: @.agent-os/specs/[YYYY-MM-DD-spec-name]/spec.md
+            - Focus: Migration procedures, constraints, indexing strategy, and performance optimization"
+  SKIP: If no database changes needed for the specification
+  BLOCK: Progression on database schema creation failures
 </instructions>
 
 </step>
@@ -816,24 +839,63 @@ This instruction file uses modular templates from:
     - file: sub-specs/api-spec.md
   </creates>
   <condition>only if API changes needed</condition>
+  <uses>api-spec-creator subagent</uses>
 </step_metadata>
 
 <decision_tree>
   IF spec_requires_api_changes:
-    CREATE sub-specs/api-spec.md using FastAPI template
+    USE api-spec-creator subagent to create sub-specs/api-spec.md
   ELSE:
     SKIP this_step
 </decision_tree>
 
-<template_reference>
-  **Template:** Use complete API specification template from @templates/fastapi-templates.md
-  **Include:** FastAPI endpoints, Pydantic models, PocketFlow integration, status codes
-</template_reference>
+<subagent_context>
+  **Context:** API specification creation for PocketFlow project specification
+  **Input:** Technical requirements, existing API structure, endpoint specifications
+  **Output:** Complete api-spec.md with FastAPI endpoints, Pydantic models, and PocketFlow integration
+  **Conditional Activation:** Only when API changes are identified in technical specification
+</subagent_context>
+
+<api_change_detection>
+  <analyze_requirements>
+    - New API endpoints required for spec functionality
+    - Existing endpoint modifications or extensions
+    - New data models requiring API exposure
+    - Authentication and authorization changes
+    - PocketFlow workflow integration endpoints
+  </analyze_requirements>
+
+  <decision_criteria>
+    API_CHANGES_NEEDED IF:
+    - New REST endpoints required for functionality
+    - Existing API endpoints need modification or extension
+    - New Pydantic models require API exposure
+    - Authentication/authorization patterns need updates
+    - PocketFlow workflow integration requires API access
+    - External service integrations need API wrappers
+  </decision_criteria>
+</api_change_detection>
+
+<api_spec_creation_failure_handling>
+  IF api_spec_creation_fails:
+    - Document subagent errors or context preparation failures
+    - Attempt fallback API specification creation using embedded templates
+    - Verify technical specification contains sufficient API requirements
+    - BLOCK progression until api-spec.md is successfully created
+  ELSE:
+    - Proceed with successfully created API specification
+</api_spec_creation_failure_handling>
 
 <instructions>
-  ACTION: Check if API changes needed
-  CREATE: api-spec.md only if required using FastAPI template
-  DOCUMENT: All endpoints and controllers with proper patterns
+  ACTION: Analyze technical specification for API change requirements
+  DETECT: New endpoints, model modifications, authentication changes, and PocketFlow integrations
+  INVOKE: api-spec-creator subagent only if API changes required
+  CONTEXT: "Create API specification for spec: [SPEC_NAME]
+            - Technical Requirements: @.agent-os/specs/[YYYY-MM-DD-spec-name]/sub-specs/technical-spec.md
+            - Spec Context: @.agent-os/specs/[YYYY-MM-DD-spec-name]/spec.md
+            - Focus: FastAPI endpoints, Pydantic models, authentication patterns, and PocketFlow integration"
+  SKIP: If no API changes needed for the specification
+  BLOCK: Progression on API specification creation failures
 </instructions>
 
 </step>
