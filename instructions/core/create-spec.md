@@ -610,153 +610,90 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="7" name="create_spec_md">
+<step number="7" subagent="spec-document-creator" name="create_spec_md">
 
 ### Step 7: Create spec.md
 
-<step_metadata>
-  <creates>
-    - file: .agent-os/specs/YYYY-MM-DD-spec-name/spec.md
-  </creates>
-</step_metadata>
+**Uses:** spec-document-creator subagent for comprehensive spec requirements document creation
 
-<file_template>
-  <header>
-    # Spec Requirements Document
+Use the spec-document-creator subagent to create the comprehensive `.agent-os/specs/YYYY-MM-DD-spec-name/spec.md` file that establishes spec overview, user stories, scope definitions, and PocketFlow architecture integration.
 
-    > Spec: [SPEC_NAME]
-    > Created: [CURRENT_DATE]
-    > Status: Planning
-  </header>
-  <required_sections>
-    - Overview
-    - User Stories  
-    - Spec Scope
-    - Out of Scope
-    - Expected Deliverable
-    - API & Data Models
-    - PocketFlow Architecture (universal)
-  </required_sections>
-</file_template>
+<subagent_context>
+  **Context:** Requirements clarification from steps 1-3.5, pattern validation, design document foundation
+  **Output:** Complete spec.md file with all required sections
+  **Next Step:** Technical specification creation
+</subagent_context>
 
-<section_templates>
-  <overview>
-    ## Overview
-    [1-2_SENTENCE_GOAL_AND_OBJECTIVE]
-  </overview>
-  
-  <user_stories>
-    ## User Stories
-    ### [STORY_TITLE]
-    As a [USER_TYPE], I want to [ACTION], so that [BENEFIT].
-    [DETAILED_WORKFLOW_DESCRIPTION]
-  </user_stories>
+**Spec Foundation:** Overview, user stories, scope, expected deliverables, API & data models, PocketFlow architecture
 
-  <spec_scope>
-    ## Spec Scope
-    1. **[FEATURE_NAME]** - [ONE_SENTENCE_DESCRIPTION]
-    2. **[FEATURE_NAME]** - [ONE_SENTENCE_DESCRIPTION]
-  </spec_scope>
-
-  <out_of_scope>
-    ## Out of Scope
-    - [EXCLUDED_FUNCTIONALITY_1]
-    - [EXCLUDED_FUNCTIONALITY_2]
-  </out_of_scope>
-
-  <expected_deliverable>
-    ## Expected Deliverable
-    1. [TESTABLE_OUTCOME_1]
-    2. [TESTABLE_OUTCOME_2]
-  </expected_deliverable>
-
-  <api_data_models>
-    **Template:** Use API & Data Models template from @templates/fastapi-templates.md
-    **Include:** FastAPI endpoints, Pydantic models, error handling, PocketFlow integration
-  </api_data_models>
-
-  <pocketflow_architecture>
-    **Template:** Use PocketFlow Architecture template from @templates/pocketflow-templates.md  
-    **Condition:** Universal for all projects
-    **Include:** PocketFlow pattern, node specifications, design patterns, appropriate complexity level
-  </pocketflow_architecture>
-</section_templates>
+**Blocking:** Must complete spec document before technical specifications
 
 <spec_file_creation_failure_handling>
   IF spec_file_creation_fails:
-    - Document file creation or template processing errors
-    - Attempt manual spec.md creation using basic template
-    - Verify file system permissions and disk space
+    - Document subagent errors or context preparation failures
+    - Attempt fallback spec.md creation using embedded templates
+    - Verify spec folder exists and is accessible
     - BLOCK progression until spec.md is successfully created
   ELSE:
     - Proceed with successfully created spec.md
 </spec_file_creation_failure_handling>
 
 <instructions>
-  ACTION: Create spec.md with all sections
-  TEMPLATES: Use referenced templates for complex sections
-  FILL: Use spec details from steps 1-3.5
-  MAINTAIN: Clear, concise descriptions
+  ACTION: Use spec-document-creator subagent for spec requirements document creation
+  REQUEST: "Create comprehensive spec requirements document with context:
+            - Spec name: [SPEC_NAME_FROM_FOLDER_CREATION]
+            - Requirements clarification: [CLARIFIED_REQUIREMENTS_FROM_STEP_3]
+            - Pattern validation: [VALIDATION_RESULTS_FROM_STEP_5]
+            - Design document: [DESIGN_DOCUMENT_FROM_STEP_4_5]
+            - Project context: [PRODUCT_CONTEXT_FROM_STEP_2]
+            - PocketFlow patterns: [PATTERN_RECOMMENDATIONS_AND_VALIDATION]"
+  PROCESS: Spec document creation with all required sections
+  APPLY: Complete spec.md file creation in .agent-os/specs/[YYYY-MM-DD-spec-name]/
   BLOCK: Progression on spec file creation failures
 </instructions>
 
 </step>
 
-<step number="8" name="create_technical_spec">
+<step number="8" subagent="technical-spec-creator" name="create_technical_spec">
 
 ### Step 8: Create Technical Specification
 
-<step_metadata>
-  <creates>
-    - directory: sub-specs/
-    - file: sub-specs/technical-spec.md
-  </creates>
-</step_metadata>
+**Uses:** technical-spec-creator subagent for comprehensive technical specification creation
 
-<file_template>
-  <header>
-    # Technical Specification
+Use the technical-spec-creator subagent to create the comprehensive `sub-specs/technical-spec.md` file that establishes functionality details, UI/UX specifications, integration requirements, and PocketFlow architecture implementation.
 
-    This is the technical specification for the spec detailed in @.agent-os/specs/YYYY-MM-DD-spec-name/spec.md
+<subagent_context>
+  **Context:** Spec requirements document from Step 7, pattern validation, design foundation
+  **Output:** Complete technical-spec.md file with detailed implementation specifications
+  **Next Step:** Database schema creation (conditional)
+</subagent_context>
 
-    > Created: [CURRENT_DATE]
-    > Version: 1.0.0
-  </header>
-</file_template>
+**Technical Foundation:** Functionality details, approach selection, dependencies, Pydantic/FastAPI sections, PocketFlow implementation specifications
 
-<spec_sections>
-  <technical_requirements>
-    - functionality details
-    - UI/UX specifications
-    - integration requirements
-    - performance criteria
-  </technical_requirements>
-  <approach_options>
-    - multiple approaches (if applicable)
-    - selected approach
-    - rationale for selection
-  </approach_options>
-  <external_dependencies>
-    - new libraries/packages
-    - justification for each
-    - version requirements
-  </external_dependencies>
-  <pydantic_fastapi_sections>
-    **Templates:** Use Pydantic and FastAPI templates from @templates/fastapi-templates.md
-    **Include:** Schema specifications, route organization, error handling
-  </pydantic_fastapi_sections>
-  <pocketflow_sections>
-    **Templates:** Use utility, SharedStore, and node templates from @templates/pocketflow-templates.md
-    **Condition:** Universal for all projects
-    **Include:** Utility specifications, data structures/SharedStore schema, node implementations for chosen pattern
-  </pocketflow_sections>
-</spec_sections>
+**Blocking:** Must complete technical specification before database and API specifications
+
+<technical_spec_creation_failure_handling>
+  IF technical_spec_creation_fails:
+    - Document subagent errors or context preparation failures
+    - Attempt fallback technical-spec.md creation using embedded templates
+    - Verify sub-specs folder exists and is accessible
+    - BLOCK progression until technical-spec.md is successfully created
+  ELSE:
+    - Proceed with successfully created technical-spec.md
+</technical_spec_creation_failure_handling>
 
 <instructions>
-  ACTION: Create sub-specs folder and technical-spec.md
-  TEMPLATES: Use referenced templates for detailed sections
-  DOCUMENT: All technical decisions and requirements
-  JUSTIFY: Any new dependencies
+  ACTION: Use technical-spec-creator subagent for technical specification creation
+  REQUEST: "Create comprehensive technical specification with context:
+            - Spec document: [COMPLETE_SPEC_MD_FROM_STEP_7]
+            - Design document: [DESIGN_DOCUMENT_FROM_STEP_4_5]
+            - Pattern validation: [VALIDATION_RESULTS_FROM_STEP_5]
+            - Requirements clarification: [CLARIFIED_REQUIREMENTS_FROM_STEP_3]
+            - Project context: [PRODUCT_CONTEXT_FROM_STEP_2]
+            - PocketFlow architecture: [PATTERN_SPECIFICATIONS_AND_IMPLEMENTATION_GUIDANCE]"
+  PROCESS: Technical specification creation with all required sections
+  APPLY: Complete technical-spec.md file creation in sub-specs/ directory
+  BLOCK: Progression on technical specification creation failures
 </instructions>
 
 </step>
@@ -900,53 +837,46 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="11" name="create_tests_spec">
+<step number="11" subagent="test-spec-creator" name="create_tests_spec">
 
 ### Step 11: Create Tests Specification
 
-<step_metadata>
-  <creates>
-    - file: sub-specs/tests.md
-  </creates>
-</step_metadata>
+**Uses:** test-spec-creator subagent for comprehensive test specification creation
 
-<test_template>
-  # Tests Specification
-  
-  ## Test Coverage
-  ### Unit Tests
-  - model tests
-  - service tests
-  - helper tests
-  
-  ### Integration Tests
-  - controller tests
-  - API tests
-  - workflow tests
-  
-  ### Feature Tests
-  - end-to-end scenarios
-  - user workflows
-  
-  ### Mocking Requirements
-  - external services
-  - API responses
-  - time-based tests
-  
-  ### PocketFlow Pattern Tests (universal)
-  - Pattern-specific workflow tests
-  - Node execution tests (prep/exec/post)
-  - Data flow validation tests
-  - Performance tests (latency, throughput)
-  - Integration tests for chosen pattern
-  - End-to-end PocketFlow workflow tests
-</test_template>
+Use the test-spec-creator subagent to create the comprehensive `sub-specs/tests.md` file that establishes complete test coverage, mocking requirements, and universal PocketFlow pattern tests.
+
+<subagent_context>
+  **Context:** Technical specification from Step 8, spec requirements from Step 7, PocketFlow pattern implementation
+  **Output:** Complete tests.md file with comprehensive test coverage specifications
+  **Next Step:** User review of all documentation
+</subagent_context>
+
+**Test Foundation:** Unit tests, integration tests, feature tests, mocking requirements, PocketFlow pattern-specific tests
+
+**Blocking:** Must complete test specification before user review phase
+
+<test_spec_creation_failure_handling>
+  IF test_spec_creation_fails:
+    - Document subagent errors or context preparation failures
+    - Attempt fallback tests.md creation using embedded templates
+    - Verify sub-specs folder exists and is accessible
+    - BLOCK progression until tests.md is successfully created
+  ELSE:
+    - Proceed with successfully created tests.md
+</test_spec_creation_failure_handling>
 
 <instructions>
-  ACTION: Create comprehensive test specification
-  ENSURE: All new functionality has test coverage
-  SPECIFY: Mock requirements for external services
-  INCLUDE: PocketFlow pattern-specific tests for all projects
+  ACTION: Use test-spec-creator subagent for test specification creation
+  REQUEST: "Create comprehensive test specification with context:
+            - Technical specification: [TECHNICAL_SPEC_FROM_STEP_8]
+            - Spec requirements: [SPEC_DOCUMENT_FROM_STEP_7]
+            - Design document: [DESIGN_DOCUMENT_FROM_STEP_4_5]
+            - PocketFlow patterns: [PATTERN_SPECIFICATIONS_AND_TESTING_REQUIREMENTS]
+            - Database changes: [DATABASE_SCHEMA_IF_CREATED_IN_STEP_9]
+            - API changes: [API_SPECIFICATION_IF_CREATED_IN_STEP_10]"
+  PROCESS: Test specification creation with all required coverage areas
+  APPLY: Complete tests.md file creation in sub-specs/ directory
+  BLOCK: Progression on test specification creation failures
 </instructions>
 
 </step>
@@ -981,33 +911,48 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="13" name="create_tasks">
+<step number="13" subagent="task-breakdown-creator" name="create_tasks">
 
 ### Step 13: Create tasks.md
 
-<step_metadata>
-  <creates>
-    - file: tasks.md
-  </creates>
-  <depends_on>user approval from step 12</depends_on>
-</step_metadata>
+**Uses:** task-breakdown-creator subagent for comprehensive task breakdown creation
 
-<template_selection>
-  <pocketflow_architecture>
-    **Template:** Use appropriate PocketFlow template from @templates/task-templates.md
-    **Complex Patterns (AGENT, RAG, MAPREDUCE):** Full 8-phase template
-    **Phases:** Design → Pydantic Schemas → Utilities → FastAPI → Nodes → Flow → Integration → Optimization
-    **Simple Patterns (WORKFLOW, TOOL, STRUCTURED-OUTPUT):** Streamlined template  
-    **Phases:** Design → Data Models → Utilities → Nodes → Flow → Integration & Testing
-  </pocketflow_architecture>
-</template_selection>
+Use the task-breakdown-creator subagent to create the comprehensive `tasks.md` file with appropriate pattern-specific templates, proper phase dependencies, and toolchain validation.
+
+<subagent_context>
+  **Context:** All specification documents from Steps 7-11, user approval from Step 12, PocketFlow pattern complexity
+  **Output:** Complete tasks.md file with appropriate phase breakdown and dependencies
+  **Next Step:** Documentation cross-references update
+</subagent_context>
+
+**Task Foundation:** Pattern-specific templates, phase dependencies, toolchain validation, proper complexity matching
+
+**Blocking:** Must complete task breakdown after user approval and before cross-references
+
+<task_breakdown_creation_failure_handling>
+  IF task_breakdown_creation_fails:
+    - Document subagent errors or context preparation failures
+    - Attempt fallback tasks.md creation using embedded templates
+    - Verify pattern complexity assessment and template selection
+    - BLOCK progression until tasks.md is successfully created
+  ELSE:
+    - Proceed with successfully created tasks.md
+</task_breakdown_creation_failure_handling>
 
 <instructions>
-  ACTION: Create task breakdown using appropriate PocketFlow template
-  TEMPLATE: Select from @templates/task-templates.md based on pattern complexity
-  STRUCTURE: Follow full 8-phase for complex patterns or streamlined for simple patterns
-  ORDER: Ensure proper phase dependencies
-  VALIDATE: Include toolchain validation at every phase
+  ACTION: Use task-breakdown-creator subagent for task breakdown creation
+  REQUEST: "Create comprehensive task breakdown with context:
+            - Spec requirements: [SPEC_DOCUMENT_FROM_STEP_7]
+            - Technical specification: [TECHNICAL_SPEC_FROM_STEP_8]
+            - Database schema: [DATABASE_SCHEMA_IF_CREATED_IN_STEP_9]
+            - API specification: [API_SPEC_IF_CREATED_IN_STEP_10]
+            - Test specification: [TEST_SPEC_FROM_STEP_11]
+            - Design document: [DESIGN_DOCUMENT_FROM_STEP_4_5]
+            - PocketFlow pattern: [PATTERN_COMPLEXITY_AND_TEMPLATE_SELECTION]
+            - User approval: [CONFIRMED_FROM_STEP_12]"
+  PROCESS: Task breakdown creation with appropriate pattern-specific templates
+  APPLY: Complete tasks.md file creation in spec root directory
+  BLOCK: Progression on task breakdown creation failures
 </instructions>
 
 </step>
