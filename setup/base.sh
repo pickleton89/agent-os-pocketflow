@@ -268,7 +268,7 @@ install_instructions() {
         mkdir -p "$INSTALL_PATH/instructions/core"
         mkdir -p "$INSTALL_PATH/instructions/meta"
         
-        local instruction_files=("analyze-product.md" "create-spec.md" "execute-task.md" "execute-tasks.md" "plan-product.md" "post-execution-tasks.md")
+        local instruction_files=("analyze-product.md" "create-spec.md" "documentation-discovery.md" "execute-task.md" "execute-tasks.md" "plan-product.md" "post-execution-tasks.md")
         
         for file in "${instruction_files[@]}"; do
             local target_file="$INSTALL_PATH/instructions/core/$file"
@@ -408,9 +408,11 @@ install_commands() {
         local instruction_files=(
             "analyze-product"
             "create-spec"
+            "documentation-discovery"
             "execute-task"
             "execute-tasks"
             "plan-product"
+            "post-execution-tasks"
         )
         
         for cmd in "${instruction_files[@]}"; do
@@ -773,12 +775,12 @@ install_project() {
     # Copy Claude Code files if enabled
     if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then
         # Copy commands from base commands directory (Agent OS v1.4.0 architecture)
-        if [[ -d "$BASE_INSTALL_PATH/commands" ]]; then
+        if [[ -d "$BASE_INSTALL_PATH/commands" ]] && [[ -n "$(ls -A "$BASE_INSTALL_PATH/commands" 2>/dev/null)" ]]; then
             cp -r "$BASE_INSTALL_PATH/commands"/* ".claude/commands/"
             log_success "Copied Claude Code commands"
         fi
         
-        if [[ -d "$HOME/.claude/agents" ]]; then
+        if [[ -d "$HOME/.claude/agents" ]] && [[ -n "$(ls -A "$HOME/.claude/agents" 2>/dev/null)" ]]; then
             cp -r "$HOME/.claude/agents"/* ".claude/agents/"
             log_success "Copied Claude Code agents"
         else
@@ -904,9 +906,11 @@ install_claude_code_integration() {
     local instruction_files=(
         "analyze-product"
         "create-spec"
+        "documentation-discovery"
         "execute-task"
         "execute-tasks"
         "plan-product"
+        "post-execution-tasks"
     )
     
     # Copy commands from base installation
@@ -925,10 +929,14 @@ install_claude_code_integration() {
     
     if [[ -d "$source_agents_dir" ]]; then
         # Copy from framework source
-        if cp -r "$source_agents_dir"/* "$claude_global_dir/agents/" 2>/dev/null; then
-            log_success "Installed Claude Code agents globally from framework source"
+        if [[ -n "$(ls -A "$source_agents_dir" 2>/dev/null)" ]]; then
+            if cp -r "$source_agents_dir"/* "$claude_global_dir/agents/" 2>/dev/null; then
+                log_success "Installed Claude Code agents globally from framework source"
+            else
+                log_warning "Failed to install Claude Code agents from framework source"
+            fi
         else
-            log_warning "Failed to install Claude Code agents from framework source"
+            log_warning "No agents found in framework source directory"
         fi
     else
         # Last resort: download from repository
