@@ -447,13 +447,13 @@ Use the test-runner subagent to run and verify only the tests specific to this p
 
 </step>
 
-<step number="8" subagent="status-reporter" name="task_status_updates">
+<step number="8" subagent="project-manager" name="task_status_updates">
 
 ### Step 8: Task Status Updates
 
-**Uses:** status-reporter subagent for comprehensive task tracking
+**Uses:** project-manager subagent for comprehensive task tracking
 
-Use the status-reporter subagent to update task status and provide comprehensive progress reporting.
+Use the project-manager subagent to update task status and provide comprehensive progress reporting.
 
 <subagent_context>
   **Context:** Task completion status, progress tracking, blocking issues
@@ -477,7 +477,7 @@ Use the status-reporter subagent to update task status and provide comprehensive
 </blocking_criteria>
 
 <instructions>
-  ACTION: Use status-reporter subagent for task status updates
+  ACTION: Use project-manager subagent for task status updates
   REQUEST: "Update task status and progress tracking:
             - Parent task: [CURRENT_TASK_NUMBER_AND_DESCRIPTION]
             - Subtasks completed: [LIST_OF_COMPLETED_SUBTASKS]
