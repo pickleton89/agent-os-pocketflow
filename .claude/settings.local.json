@@ -59,7 +59,8 @@
       "Bash(echo:*)",
       "Bash(uv pip:*)",
       "Bash(.agent-os/framework-tools/check-pocketflow-install.py)",
-      "Read(//Users/jeffkiefer/.claude/commands/**)"
+      "Read(//Users/jeffkiefer/.claude/commands/**)",
+      "mcp__graphiti__get_episodes"
     ],
     "deny": [],
     "ask": [],
