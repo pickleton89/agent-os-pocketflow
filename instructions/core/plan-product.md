@@ -192,375 +192,101 @@ Use the strategic-planner subagent to create a comprehensive strategic plan and 
 
 </step>
 
-<step number="3" name="create_mission_md">
+<step number="3" subagent="mission-document-creator" name="create_mission_md">
 
 ### Step 3: Create mission.md
 
-<step_metadata>
-  <creates>
-    - file: .agent-os/product/mission.md
-  </creates>
-</step_metadata>
+**Uses:** mission-document-creator subagent for comprehensive mission document creation
 
-<file_template>
-  <header>
-    # Product Mission
+Use the mission-document-creator subagent to create the comprehensive `.agent-os/product/mission.md` file that establishes product vision, user personas, competitive positioning, and architecture strategy.
 
-    > Last Updated: [CURRENT_DATE]
-    > Version: 1.0.0
-  </header>
-  <required_sections>
-    - Pitch
-    - Users
-    - The Problem
-    - Differentiators
-    - Key Features
-    - Architecture Strategy
-  </required_sections>
-</file_template>
+<subagent_context>
+  **Context:** User input from Step 1, strategic planning recommendations, product requirements
+  **Output:** Complete mission.md file with all required sections
+  **Next Step:** Tech stack documentation creation
+</subagent_context>
 
-<section name="pitch">
-  <template>
-    ## Pitch
+**Mission Foundation:** Product vision, user personas, problems, differentiators, key features, PocketFlow architecture strategy
 
-    [PRODUCT_NAME] is a [PRODUCT_TYPE] that helps [TARGET_USERS] [SOLVE_PROBLEM] by providing [KEY_VALUE_PROPOSITION].
-  </template>
-  <constraints>
-    - length: 1-2 sentences
-    - style: elevator pitch
-  </constraints>
-</section>
-
-<section name="users">
-  <template>
-    ## Users
-
-    ### Primary Customers
-
-    - [CUSTOMER_SEGMENT_1]: [DESCRIPTION]
-    - [CUSTOMER_SEGMENT_2]: [DESCRIPTION]
-
-    ### User Personas
-
-    **[USER_TYPE]** ([AGE_RANGE])
-    - **Role:** [JOB_TITLE]
-    - **Context:** [BUSINESS_CONTEXT]
-    - **Pain Points:** [PAIN_POINT_1], [PAIN_POINT_2]
-    - **Goals:** [GOAL_1], [GOAL_2]
-  </template>
-  <schema>
-    - name: string
-    - age_range: "XX-XX years old"
-    - role: string
-    - context: string
-    - pain_points: array[string]
-    - goals: array[string]
-  </schema>
-</section>
-
-<section name="problem">
-  <template>
-    ## The Problem
-
-    ### [PROBLEM_TITLE]
-
-    [PROBLEM_DESCRIPTION]. [QUANTIFIABLE_IMPACT].
-
-    **Our Solution:** [SOLUTION_DESCRIPTION]
-  </template>
-  <constraints>
-    - problems: 2-4
-    - description: 1-3 sentences
-    - impact: include metrics
-    - solution: 1 sentence
-  </constraints>
-</section>
-
-<section name="differentiators">
-  <template>
-    ## Differentiators
-
-    ### [DIFFERENTIATOR_TITLE]
-
-    Unlike [COMPETITOR_OR_ALTERNATIVE], we provide [SPECIFIC_ADVANTAGE]. This results in [MEASURABLE_BENEFIT].
-  </template>
-  <constraints>
-    - count: 2-3
-    - focus: competitive advantages
-    - evidence: required
-  </constraints>
-</section>
-
-<section name="features">
-  <template>
-    ## Key Features
-
-    ### Core Features
-
-    - **[FEATURE_NAME]:** [USER_BENEFIT_DESCRIPTION]
-
-    ### Collaboration Features
-
-    - **[FEATURE_NAME]:** [USER_BENEFIT_DESCRIPTION]
-  </template>
-  <constraints>
-    - total: 8-10 features
-    - grouping: by category
-    - description: user-benefit focused
-  </constraints>
-</section>
-
-<section name="architecture_strategy">
-  <template>
-    ## Architecture Strategy
-
-    **Application Architecture:** PocketFlow-based design
-
-    ### System Overview
-    ```mermaid
-    graph TD
-        A[Users] --> B[API Endpoints]
-        B --> C[PocketFlow Orchestration]
-        C --> D[Business Logic Nodes]
-        D --> E[SharedStore]
-        E --> F[Utility Functions]
-        F --> G[External Services]
-        
-        %% TODO: Customize based on your specific architecture
-    ```
-
-    ### Architecture Details
-    - **Primary Framework:** PocketFlow
-    - **Development Methodology:** Design-first approach with structured workflow patterns
-    - **Key Patterns Utilized:** [LIST_POCKETFLOW_PATTERNS_TO_BE_USED_E.G._WORKFLOW,_TOOL,_AGENT,_RAG,_MAPREDUCE,_STRUCTURED_OUTPUT]
-    - **Integration Pattern:** FastAPI endpoints → PocketFlow Flows → Node execution → Utility functions
-    - **Complexity Level:** [SIMPLE_WORKFLOW/ENHANCED_WORKFLOW/COMPLEX_APPLICATION/LLM_APPLICATION]
-    - **Rationale:** Chosen for its minimalism, flexibility (Nodes, Flows, Shared Store), and scalability from simple workflows to complex multi-agent systems. It provides explicit graph-based design for all application patterns.
-    - **Utility Philosophy:** "Examples provided, implement your own" - custom utility functions for maximum flexibility
-    - **Design Requirements:** All projects require `docs/design.md` completion before implementation begins
-    - **LLM Providers/Models:** [LIST_IF_APPLICABLE, OTHERWISE_N/A]
-  </template>
-  <instructions>
-    UNIVERSAL: Generate this section for ALL products
-    PATTERN_MAPPING: Map project features to appropriate PocketFlow patterns
-    COMPLEXITY: Assess and assign appropriate complexity level
-    PATTERNS: Select patterns based on feature analysis (WORKFLOW for simple, TOOL for APIs, AGENT for complex logic, etc.)
-    DESIGN_FIRST: Emphasize mandatory docs/design.md for all projects
-    UNIVERSAL_REQUIREMENT: Include appropriate providers and integrations for all PocketFlow projects
-  </instructions>
-</section>
+**Blocking:** Must complete mission document before technical documentation
 
 <instructions>
-  ACTION: Create mission.md using all section templates
-  FILL: Use data from Step 1 user inputs
-  FORMAT: Maintain exact template structure
+  ACTION: Use mission-document-creator subagent for mission document creation
+  REQUEST: "Create comprehensive mission document with context:
+            - Main idea: [MAIN_IDEA_FROM_USER_INPUT]
+            - Key features: [KEY_FEATURES_FROM_USER_INPUT]
+            - Target users: [TARGET_USERS_FROM_USER_INPUT]
+            - Strategic planning: [STRATEGIC_RECOMMENDATIONS_FROM_STEP_1_5]
+            - Product requirements: [ALL_GATHERED_REQUIREMENTS]
+            - PocketFlow integration: [UNIVERSAL_ARCHITECTURE_STRATEGY]"
+  PROCESS: Mission document creation with all required sections
+  APPLY: Complete mission.md file creation in .agent-os/product/
 </instructions>
 
 </step>
 
-<step number="4" name="create_tech_stack_md">
+<step number="4" subagent="tech-stack-document-creator" name="create_tech_stack_md">
 
 ### Step 4: Create tech-stack.md
 
-<step_metadata>
-  <creates>
-    - file: .agent-os/product/tech-stack.md
-  </creates>
-</step_metadata>
+**Uses:** tech-stack-document-creator subagent for comprehensive tech stack documentation
 
-<file_template>
-  <header>
-    # Technical Stack
+Use the tech-stack-document-creator subagent to create the comprehensive `.agent-os/product/tech-stack.md` file with modern Python defaults and universal PocketFlow framework integration.
 
-    > Last Updated: [CURRENT_DATE]
-    > Version: 1.0.0
-  </header>
-</file_template>
+<subagent_context>
+  **Context:** User input, strategic planning, mission requirements, technical preferences
+  **Output:** Complete tech-stack.md file with all required sections and modern defaults
+  **Next Step:** Initial design document generation
+</subagent_context>
 
-<required_items>
-  - programming_language: string + version (defaults to Python 3.12+)
-  - application_framework: string + version (defaults to FastAPI)
-  - data_validation: string + version (defaults to Pydantic)
-  - package_manager: string (defaults to uv)
-  - linting_formatting: string (defaults to Ruff)
-  - type_checking: string (defaults to mypy/ty)
-  - testing_framework: string (defaults to pytest)
-  - database_system: string (defaults to SQLite)
-  - workflow_framework: string + version (defaults to PocketFlow)
-  - vector_store: string (defaults to ChromaDB, if needed)
-  - frontend_framework: string (defaults to "None - API only")
-  - application_hosting: string
-  - database_hosting: string
-  - deployment_solution: string
-  - code_repository_url: string
-  - llm_providers: array[string] (if applicable)
-</required_items>
+**Tech Stack Focus:** Modern Python toolchain, PocketFlow integration, interactive preference gathering, missing items identification
 
-<data_resolution>
-  <for_each item="required_items">
-    <if_not_in>user_input</if_not_in>
-    <then_check>
-      1. @~/.agent-os/standards/tech-stack.md
-      2. @~/.claude/CLAUDE.md
-    </then_check>
-    <else>add_to_missing_list</else>
-  </for_each>
-</data_resolution>
-
-<universal_tech_stack>
-  <default_stack>
-    - workflow_framework: "PocketFlow (latest)"
-    - programming_language: "Python 3.12+"
-    - application_framework: "FastAPI"
-    - data_validation: "Pydantic"
-    - vector_store: "ChromaDB" (universal requirement for data storage and retrieval)
-  </default_stack>
-  
-  <project_structure_inclusion>
-    <always_include>
-      - nodes.py file for PocketFlow nodes
-      - flow.py file for PocketFlow flows
-      - docs/design.md (MANDATORY before implementation)
-      - utils/ directory for application-specific utility functions
-    </always_include>
-  </project_structure_inclusion>
-</universal_tech_stack>
-
-<missing_items_template>
-  Please provide the following technical stack details:
-  [NUMBERED_LIST_OF_MISSING_ITEMS]
-
-  You can respond with the technology choice or "n/a" for each item.
-</missing_items_template>
+**Blocking:** Must complete tech stack documentation before design document creation
 
 <instructions>
-  ACTION: Document all tech stack choices with modern Python defaults
-  RESOLUTION: Check user input first, then config files, then apply defaults
-  DEFAULTS: Use Python 3.12+ with FastAPI, Pydantic, uv, Ruff, and pytest unless user specifies otherwise
-  REQUEST: Ask for any missing items using template
-  UNIVERSAL: PocketFlow for workflow_framework for all projects
-  EMPHASIZE: Modern type-safe Python development stack with PocketFlow architecture as foundation
+  ACTION: Use tech-stack-document-creator subagent for tech stack documentation
+  REQUEST: "Create comprehensive tech stack document with context:
+            - User input: [TECH_STACK_PREFERENCES_FROM_USER_INPUT]
+            - Mission context: [PRODUCT_REQUIREMENTS_FROM_MISSION]
+            - Strategic planning: [TECHNICAL_RECOMMENDATIONS_FROM_STEP_1_5]
+            - Modern defaults: [PYTHON_3_12_FASTAPI_PYDANTIC_UV_RUFF_PYTEST]
+            - Universal requirements: [POCKETFLOW_CHROMADB_INTEGRATION]
+            - Missing items handling: [INTERACTIVE_PREFERENCE_GATHERING]"
+  PROCESS: Tech stack documentation with modern Python defaults and PocketFlow integration
+  APPLY: Complete tech-stack.md file creation in .agent-os/product/
 </instructions>
 
 </step>
 
-<step number="4.5" name="generate_initial_design_document">
+<step number="4.5" subagent="design-document-creator" name="generate_initial_design_document">
 
 ### Step 4.5: Generate Initial Product Design Document
 
-<step_metadata>
-  <creates>
-    - file: docs/design.md
-  </creates>
-  <condition>universal for all projects using PocketFlow architecture</condition>
-  <priority>critical - establishes design-first foundation</priority>
-</step_metadata>
+**Uses:** design-document-creator subagent for comprehensive design document creation
 
-<design_document_requirement>
-  <philosophy>
-    Following PocketFlow's methodology: **Humans design, agents code**.
-    Initial product design establishes architectural foundation before feature development.
-  </philosophy>
-</design_document_requirement>
+Use the design-document-creator subagent to create the initial `docs/design.md` file that establishes the architectural foundation following PocketFlow's design-first methodology.
 
-<template_content>
-  **Template Structure:** Create docs/design.md with the following sections:
-  
-  ```markdown
-  # [PRODUCT_NAME] Design Document
-  
-  > Product: [PRODUCT_NAME]
-  > Created: [CURRENT_DATE] 
-  > Status: Initial Architecture Planning
-  > Framework: PocketFlow
-  
-  **FOUNDATION**: This initial design document establishes the architectural foundation. 
-  Feature-specific designs will be created during spec development.
-  
-  ## Product Architecture Overview
-  
-  ### System Purpose
-  [PRODUCT_MISSION_SUMMARY_FROM_MISSION_MD]
-  
-  ### Primary PocketFlow Patterns
-  Based on planned features, this product will primarily use:
-  - **[PRIMARY_PATTERN]**: [JUSTIFICATION_FROM_FEATURE_ANALYSIS]
-  - **[SECONDARY_PATTERN]**: [JUSTIFICATION_IF_APPLICABLE]
-  
-  ### Complexity Assessment
-  - **Overall Complexity**: [SIMPLE_WORKFLOW/ENHANCED_WORKFLOW/COMPLEX_APPLICATION/LLM_APPLICATION]
-  - **Rationale**: [BASED_ON_FEATURE_COUNT_AND_INTEGRATION_REQUIREMENTS]
-  
-  ## System-Wide Data Flow
-  
-  ### High-Level Architecture
-  ```mermaid
-  graph TD
-      A[User Input] --> B[API Layer]
-      B --> C{Processing Required?}
-      C -->|Simple| D[Direct Processing]
-      C -->|Complex| E[PocketFlow Pipeline]
-      E --> F[SharedStore]
-      F --> G[Business Logic Nodes]
-      G --> H[Output Processing]
-      D --> I[Response]
-      H --> I
-      
-      %% TODO: Replace with actual system flow based on your features
-  ```
-  
-  ### Major Data Transformations
-  - **Input**: [TYPICAL_USER_INPUT_FORMATS]
-  - **Processing**: [CORE_BUSINESS_LOGIC_TRANSFORMATIONS] 
-  - **Output**: [EXPECTED_RESULT_FORMATS]
-  
-  ## Core Shared Store Schema (Outline)
-  
-  ### Initial Schema Planning
-  ```python
-  # TODO: Define based on feature requirements from roadmap
-  SharedStore = {
-      "user_context": "Dict[str, Any]",  # User session and preferences
-      "processing_state": "Dict[str, Any]",  # Current operation state
-      "results": "Dict[str, Any]",  # Processed outputs
-      # Additional keys will be defined during feature spec creation
-  }
-  ```
-  
-  ## Major System Utilities (Identification)
-  
-  ### External Integration Points
-  - **[UTILITY_CATEGORY_1]**: [EXTERNAL_SERVICES_OR_APIS]
-    - TODO: Define input/output contracts during spec creation
-  - **[UTILITY_CATEGORY_2]**: [FILE_PROCESSING_OR_DATA_HANDLING]
-    - TODO: Implement following PocketFlow utility philosophy
-  
-  ## Integration Points (External Systems)
-  
-  ### Planned External Dependencies
-  - **[INTEGRATION_1]**: [DESCRIPTION_AND_PURPOSE]
-  - **[INTEGRATION_2]**: [DESCRIPTION_AND_PURPOSE]
-  
-  ## Implementation Phases Alignment
-  
-  This design document will evolve through roadmap phases:
-  - **Phase 1**: [CORE_FEATURES] → Detailed design in specs
-  - **Phase 2**: [ENHANCEMENT_FEATURES] → Extended design sections  
-  - **Phase 3+**: [ADVANCED_FEATURES] → Additional pattern integration
-  
-  **Next Steps**: 
-  1. Use `/create-spec` for each roadmap feature
-  2. Each spec will extend this foundational design
-  3. Implementation follows feature-specific design documents
-  ```
-</template_content>
+<subagent_context>
+  **Context:** Mission document, tech stack, strategic planning, pattern validation, product requirements
+  **Output:** Complete docs/design.md file with architectural foundation
+  **Next Step:** Pre-flight checklist generation
+</subagent_context>
+
+**Design Foundation:** PocketFlow architecture, system purpose, pattern selection, data flow, SharedStore schema, utilities identification
+
+**Critical Priority:** Establishes design-first foundation for all future feature development
 
 <instructions>
-  ACTION: Create docs/design.md with TODO templates
-  TEMPLATE: Use Initial Product Design template structure
-  DIAGRAMS: Include high-level Mermaid diagram placeholder
-  LINKING: Connect to roadmap phases for implementation planning
-  VALIDATION: Ensure compliance with PocketFlow Universal Framework requirements
+  ACTION: Use design-document-creator subagent for initial design document creation
+  REQUEST: "Create comprehensive initial design document with context:
+            - Mission context: [PRODUCT_MISSION_AND_ARCHITECTURE_FROM_MISSION_MD]
+            - Tech stack: [TECHNICAL_STACK_FROM_TECH_STACK_MD]
+            - Strategic planning: [STRATEGIC_RECOMMENDATIONS_FROM_STEP_1_5]
+            - Pattern validation: [PATTERN_RECOMMENDATIONS_FROM_STEP_4_6]
+            - Product requirements: [ALL_GATHERED_REQUIREMENTS]
+            - Design philosophy: [HUMANS_DESIGN_AGENTS_CODE_METHODOLOGY]"
+  PROCESS: Initial design document creation with PocketFlow architectural foundation
+  APPLY: Complete docs/design.md file creation with TODO templates for future expansion
 </instructions>
 
 </step>
@@ -598,196 +324,102 @@ Use the pattern-analyzer subagent to validate the recommended technical patterns
 
 </step>
 
-<step number="5.5" name="generate_prelight_checklist">
+<step number="5.5" subagent="pre-flight-checklist-creator" name="generate_prelight_checklist">
 
 ### Step 5.5: Generate Pre-flight Checklist
 
-<step_metadata>
-  <creates>
-    - file: .agent-os/checklists/pre-flight.md
-  </creates>
-</step_metadata>
+**Uses:** pre-flight-checklist-creator subagent for comprehensive pre-flight checklist creation
 
-<checklist_content>
-  Based on @docs/POCKETFLOW_BEST_PRACTICES.md, generate comprehensive checklist covering:
-  1. Requirements Analysis
-  2. Architecture Planning
-  3. Data Flow Design
-  4. Node Selection and Design
-  5. Utility Function Strategy
-  6. Error Handling and Resilience
-  7. Testing and Validation Strategy
-  8. Performance and Scalability
-  9. Deployment Planning
-</checklist_content>
+Use the pre-flight-checklist-creator subagent to create the comprehensive `.agent-os/checklists/pre-flight.md` file based on PocketFlow best practices.
+
+<subagent_context>
+  **Context:** Design document, tech stack, mission requirements, PocketFlow best practices
+  **Output:** Complete pre-flight checklist with 9 critical areas and actionable TODO items
+  **Next Step:** Roadmap document creation
+</subagent_context>
+
+**Checklist Coverage:** Requirements analysis, architecture planning, data flow design, node selection, utility strategy, error handling, testing, performance, deployment
+
+**Validation Focus:** Ensure all critical PocketFlow best practices are covered with actionable guidance
 
 <instructions>
-  ACTION: Create .agent-os/checklists/ directory if it doesn't exist
-  GENERATE: Comprehensive pre-flight checklist based on PocketFlow best practices
-  STRUCTURE: Each of the 9 areas should have actionable TODO items with guidance
-  LINKS: Include references to relevant documentation sections
-  VALIDATION: Ensure all critical areas from best practices are covered
+  ACTION: Use pre-flight-checklist-creator subagent for pre-flight checklist creation
+  REQUEST: "Create comprehensive pre-flight checklist with context:
+            - Design foundation: [ARCHITECTURAL_FOUNDATION_FROM_DESIGN_MD]
+            - Tech stack: [TECHNICAL_REQUIREMENTS_FROM_TECH_STACK_MD]
+            - Mission requirements: [PRODUCT_REQUIREMENTS_FROM_MISSION_MD]
+            - PocketFlow best practices: [REFERENCE_POCKETFLOW_BEST_PRACTICES_MD]
+            - Checklist areas: [9_CRITICAL_AREAS_WITH_ACTIONABLE_TODOS]
+            - Documentation links: [RELEVANT_DOCUMENTATION_REFERENCES]"
+  PROCESS: Pre-flight checklist creation with PocketFlow best practices integration
+  APPLY: Complete pre-flight checklist creation in .agent-os/checklists/
 </instructions>
 
 </step>
 
-<step number="6" name="create_roadmap_md">
+<step number="6" subagent="roadmap-document-creator" name="create_roadmap_md">
 
 ### Step 6: Create roadmap.md
 
-<step_metadata>
-  <creates>
-    - file: .agent-os/product/roadmap.md
-  </creates>
-</step_metadata>
+**Uses:** roadmap-document-creator subagent for comprehensive roadmap document creation
 
-<file_template>
-  <header>
-    # Product Roadmap
+Use the roadmap-document-creator subagent to create the comprehensive `.agent-os/product/roadmap.md` file with 5-phase development roadmap and PocketFlow pattern tagging.
 
-    > Last Updated: [CURRENT_DATE]
-    > Version: 1.0.0
-    > Status: Planning
-  </header>
-</file_template>
+<subagent_context>
+  **Context:** Mission document, design document, tech stack, pattern validation, strategic planning
+  **Output:** Complete roadmap.md file with 5 phases, PocketFlow patterns, and effort estimates
+  **Next Step:** CLAUDE.md project documentation creation
+</subagent_context>
 
-<phase_structure>
-  <phase_count>5</phase_count>
-  <features_per_phase>3-7</features_per_phase>
-  <phase_template>
-    ## Phase [NUMBER]: [NAME] ([DURATION])
+**Roadmap Structure:** 5 development phases, 3-7 features per phase, PocketFlow pattern tagging, effort estimates, design-first enforcement
 
-    **Goal:** [PHASE_GOAL]
-    **Success Criteria:** [MEASURABLE_CRITERIA]
-
-    ### Must-Have Features
-
-    - [ ] [FEATURE] - [DESCRIPTION] `[EFFORT]`
-        - **PocketFlow Pattern:** [POCKETFLOW_PATTERN] (e.g., WORKFLOW, TOOL, AGENT, RAG, MAPREDUCE)
-        - **Node Types**: [SUGGESTED_NODE_TYPES] (Node/AsyncNode/BatchNode)
-        - **SharedStore Updates**: [DATA_CHANGES_REQUIRED]
-        - **Error Handling**: [ERROR_STRATEGY_APPROACH]
-        - **Design Requirement:** `docs/design.md` extension required for implementation
-
-    ### Should-Have Features
-
-    - [ ] [FEATURE] - [DESCRIPTION] `[EFFORT]`
-        - **PocketFlow Pattern:** [POCKETFLOW_PATTERN] (e.g., WORKFLOW, TOOL, AGENT, RAG, MAPREDUCE)
-        - **Node Types**: [SUGGESTED_NODE_TYPES] (Node/AsyncNode/BatchNode)
-        - **SharedStore Updates**: [DATA_CHANGES_REQUIRED]
-        - **Error Handling**: [ERROR_STRATEGY_APPROACH]
-        - **Design Requirement:** `docs/design.md` extension required for implementation
-
-    ### Dependencies
-
-    - [DEPENDENCY]
-    - Feature-specific design document sections
-    - SharedStore schema updates in docs/design.md
-  </phase_template>
-</phase_structure>
-
-<phase_guidelines>
-  - Phase 1: Core MVP functionality
-  - Phase 2: Key differentiators
-  - Phase 3: Scale and polish
-  - Phase 4: Advanced features
-  - Phase 5: Enterprise features
-</phase_guidelines>
-
-<effort_scale>
-  - XS: 1 day
-  - S: 2-3 days
-  - M: 1 week
-  - L: 2 weeks
-  - XL: 3+ weeks
-</effort_scale>
-
-**Universal Requirements:**
-- Design Document Creation prerequisite for all features
-- Tag features with PocketFlow patterns (WORKFLOW, TOOL, AGENT, RAG, MAPREDUCE)
-- Include design.md requirement in dependencies
-- Enforce design-first methodology
+**Universal Requirements:** Design document prerequisites, PocketFlow pattern compliance, logical phase progression
 
 <instructions>
-  ACTION: Create 5 development phases
-  PRIORITIZE: Based on dependencies and mission importance
-  ESTIMATE: Use effort_scale for all features
-  VALIDATE: Ensure logical progression between phases
-  UNIVERSAL: Apply PocketFlow requirements to all projects
-  TAG: All features with relevant PocketFlow patterns (WORKFLOW, TOOL, AGENT, RAG, MAPREDUCE, etc.)
-  ENFORCE: Design-first requirement for all features (docs/design.md)
-  EMPHASIZE: No implementation begins without completed design documentation
-  PATTERN_MAP: Map project complexity to appropriate PocketFlow patterns
+  ACTION: Use roadmap-document-creator subagent for roadmap document creation
+  REQUEST: "Create comprehensive development roadmap with context:
+            - Mission features: [KEY_FEATURES_FROM_MISSION_MD]
+            - Design foundation: [ARCHITECTURAL_REQUIREMENTS_FROM_DESIGN_MD]
+            - Tech stack: [IMPLEMENTATION_CONSTRAINTS_FROM_TECH_STACK_MD]
+            - Pattern validation: [RECOMMENDED_PATTERNS_FROM_STEP_4_6]
+            - Strategic priorities: [DEVELOPMENT_PHASES_FROM_STRATEGIC_PLANNING]
+            - Universal requirements: [DESIGN_FIRST_POCKETFLOW_PATTERN_TAGGING]"
+  PROCESS: Roadmap creation with 5 phases, pattern tagging, and effort estimation
+  APPLY: Complete roadmap.md file creation in .agent-os/product/
 </instructions>
 
 </step>
 
 
-<step number="7" name="create_or_update_claude_md">
+<step number="7" subagent="claude-md-manager" name="create_or_update_claude_md">
 
 ### Step 7: Create or Update CLAUDE.md
 
-<step_metadata>
-  <creates>
-    - file: CLAUDE.md
-  </creates>
-  <updates>
-    - file: CLAUDE.md (if exists)
-  </updates>
-  <merge_strategy>append_or_replace_section</merge_strategy>
-</step_metadata>
+**Uses:** claude-md-manager subagent for CLAUDE.md project documentation management
 
-<file_location>
-  <path>./CLAUDE.md</path>
-  <description>Project root directory</description>
-</file_location>
+Use the claude-md-manager subagent to create or update the `CLAUDE.md` file in the project root with Agent OS documentation and workflow references.
 
-<content_template>
-## Agent OS Documentation
+<subagent_context>
+  **Context:** All created product documents, Agent OS standards, workflow instructions, project structure
+  **Output:** Complete or updated CLAUDE.md file with Agent OS documentation section
+  **Next Step:** Process completion and validation
+</subagent_context>
 
-### Product Context
-- **Mission & Vision:** @.agent-os/product/mission.md
-- **Technical Architecture:** @.agent-os/product/tech-stack.md
-- **Development Roadmap:** @.agent-os/product/roadmap.md
+**Documentation Scope:** Product context references, development standards, project management workflows, merge strategy handling
 
-### Development Standards
-- **Code Style:** @~/.agent-os/standards/code-style.md
-- **Best Practices:** @~/.agent-os/standards/best-practices.md
-- **PocketFlow Principles:** @~/.agent-os/standards/best-practices.md (universal architecture standards)
-
-### Project Management
-- **Active Specs:** @.agent-os/specs/
-- **Spec Planning:** Use `@~/.agent-os/instructions/create-spec.md`
-- **Tasks Execution:** Use `@~/.agent-os/instructions/execute-tasks.md`
-
-## Workflow Instructions
-
-When asked to work on this codebase:
-
-1. **First**, check @.agent-os/product/roadmap.md for current priorities
-2. **Then**, follow the appropriate instruction file:
-   - For new features: @.agent-os/instructions/create-spec.md
-   - For tasks execution: @.agent-os/instructions/execute-tasks.md
-3. **Always**, adhere to the standards in the files listed above, including PocketFlow principles for all development tasks.
-
-## Important Notes
-
-- Product-specific files in `.agent-os/product/` override any global standards
-- User's specific instructions override (or amend) instructions found in `.agent-os/specs/...`
-- Always adhere to established patterns, code style, and best practices documented above.
-</content_template>
-
-**Merge Strategy:**
-- If CLAUDE.md exists and has "## Agent OS Documentation" section: Replace section
-- If CLAUDE.md exists but no Agent OS section: Append to end
-- If CLAUDE.md doesn't exist: Create new file
+**File Management:** Smart merge strategy, preserve existing content, cross-document references
 
 <instructions>
-  ACTION: Check if CLAUDE.md exists in project root
-  MERGE: Replace "Agent OS Documentation" section if it exists
-  APPEND: Add section to end if file exists but section doesn't
-  CREATE: Create new file with template content if file doesn't exist
-  PRESERVE: Keep all other existing content in the file
+  ACTION: Use claude-md-manager subagent for CLAUDE.md documentation management
+  REQUEST: "Create or update CLAUDE.md file with Agent OS documentation:
+            - Product references: [REFERENCES_TO_MISSION_TECH_STACK_ROADMAP]
+            - Generated documents: [ALL_CREATED_PRODUCT_DOCUMENTATION]
+            - Workflow instructions: [AGENT_OS_WORKFLOW_COMMANDS_AND_REFERENCES]
+            - Development standards: [POCKETFLOW_PRINCIPLES_AND_BEST_PRACTICES]
+            - Merge strategy: [INTELLIGENT_SECTION_REPLACEMENT_OR_APPEND]
+            - Content preservation: [MAINTAIN_ALL_EXISTING_NON_AGENT_OS_CONTENT]"
+  PROCESS: CLAUDE.md creation or update with smart merge strategy
+  APPLY: Complete CLAUDE.md file management in project root
 </instructions>
 
 </step>
