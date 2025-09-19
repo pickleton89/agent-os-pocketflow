@@ -62,7 +62,9 @@
       "Read(//Users/jeffkiefer/.claude/commands/**)",
       "mcp__graphiti__get_episodes",
       "WebFetch(domain:callmephilip.com)",
-      "WebFetch(domain:docs.claude.com)"
+      "WebFetch(domain:docs.claude.com)",
+      "Bash(./.agent-os/validation/test_pocketflow_integration.sh)",
+      "Bash(git -C /Users/jeffkiefer/Documents/projects/agent-os-pocketflow status)"
     ],
     "deny": [],
     "ask": [],
