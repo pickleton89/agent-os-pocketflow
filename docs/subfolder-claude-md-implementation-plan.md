@@ -28,6 +28,8 @@
 - **Boundary Documentation**: Explain when to modify vs when to regenerate
 - **Component Integration**: How framework pieces work together
 
+#### 5. Be concise and focused to keep new CLAUDE.md files focused and manageable.
+
 ## Action Plan
 
 ### Phase 1: Template Design and Creation
