@@ -81,7 +81,7 @@ Instructions coordinate specialized agents for:
 
 ### Framework Integration
 @../../../CLAUDE.md - Project-level instructions and framework usage
-@../standards/best-practices.md - Framework standards and compliance requirements
+@../../standards/best-practices.md - Framework standards and compliance requirements
 @../product/ - Product planning document templates and evolution guidelines
 @../framework-tools/ - Generator and validation tool integration
 

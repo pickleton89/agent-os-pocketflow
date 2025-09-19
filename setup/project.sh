@@ -610,6 +610,61 @@ EOF
     fi
 }
 
+# Install subfolder CLAUDE.md templates
+install_subfolder_claude_md() {
+    log_info "Installing subfolder CLAUDE.md templates..."
+
+    # Get framework path for templates
+    local script_realpath
+    script_realpath="$(realpath "$0" 2>/dev/null)" || script_realpath="$0"
+    local framework_templates_dir="$(dirname "$(dirname "$script_realpath")")/templates/claude-md"
+
+    # Install templates if framework directory exists
+    if [[ -d "$framework_templates_dir" ]]; then
+        # Framework-tools CLAUDE.md
+        if [[ -f "$framework_templates_dir/framework-tools.md" ]]; then
+            mkdir -p ".agent-os/framework-tools"
+            if safe_copy "$framework_templates_dir/framework-tools.md" ".agent-os/framework-tools/CLAUDE.md" "framework-tools CLAUDE.md"; then
+                log_success "Installed framework-tools CLAUDE.md"
+            else
+                log_error "Failed to install framework-tools CLAUDE.md"
+            fi
+        fi
+
+        # Instructions/core CLAUDE.md
+        if [[ -f "$framework_templates_dir/instructions-core.md" ]]; then
+            mkdir -p ".agent-os/instructions/core"
+            if safe_copy "$framework_templates_dir/instructions-core.md" ".agent-os/instructions/core/CLAUDE.md" "instructions/core CLAUDE.md"; then
+                log_success "Installed instructions/core CLAUDE.md"
+            else
+                log_error "Failed to install instructions/core CLAUDE.md"
+            fi
+        fi
+
+        # Product CLAUDE.md
+        if [[ -f "$framework_templates_dir/product.md" ]]; then
+            mkdir -p ".agent-os/product"
+            if safe_copy "$framework_templates_dir/product.md" ".agent-os/product/CLAUDE.md" "product CLAUDE.md"; then
+                log_success "Installed product CLAUDE.md"
+            else
+                log_error "Failed to install product CLAUDE.md"
+            fi
+        fi
+
+        # Standards CLAUDE.md
+        if [[ -f "$framework_templates_dir/standards.md" ]]; then
+            mkdir -p ".agent-os/standards"
+            if safe_copy "$framework_templates_dir/standards.md" ".agent-os/standards/CLAUDE.md" "standards CLAUDE.md"; then
+                log_success "Installed standards CLAUDE.md"
+            else
+                log_error "Failed to install standards CLAUDE.md"
+            fi
+        fi
+    else
+        log_warning "Framework CLAUDE.md templates not found - subfolder guidance will be limited"
+    fi
+}
+
 # Create project configuration
 create_project_configuration() {
     log_info "Creating project configuration..."
@@ -792,6 +847,7 @@ main() {
     create_project_structure
     install_instructions
     install_standards
+    install_subfolder_claude_md
     install_pocketflow_tools
     create_project_configuration
     update_gitignore
