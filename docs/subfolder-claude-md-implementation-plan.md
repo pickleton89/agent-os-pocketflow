@@ -76,12 +76,18 @@
 ### Phase 2: Template Implementation
 
 #### 2.1 Template Creation Process
-1. **Research Existing Patterns**: Analyze current framework documentation patterns
-2. **Draft Content**: Create comprehensive guidance for each directory
-3. **Cross-Reference Integration**: Establish proper import chains and links
-4. **Validation**: Ensure templates align with framework principles
+1. **Create Template Directory**: Establish `templates/claude-md/` to store all CLAUDE.md templates
+2. **Draft Content**: Create comprehensive guidance for each directory following the content structure
+3. **Cross-Reference Integration**: Establish proper import chains using `@path/to/import` syntax
+4. **Validation**: Ensure templates align with framework principles and v1.4.0 architecture
 
-#### 2.2 Content Structure for Each Template
+#### 2.2 Template Files to Create
+- **`templates/claude-md/framework-tools.md`**: For `.agent-os/framework-tools/CLAUDE.md`
+- **`templates/claude-md/instructions-core.md`**: For `.agent-os/instructions/core/CLAUDE.md`
+- **`templates/claude-md/product.md`**: For `.agent-os/product/CLAUDE.md`
+- **`templates/claude-md/standards.md`**: For `.agent-os/standards/CLAUDE.md`
+
+#### 2.3 Content Structure for Each Template
 ```markdown
 # Framework Component Guidance
 ## Overview
@@ -98,11 +104,105 @@
 - Cross-references to related components
 - Import chains and dependencies
 - Framework consistency requirements
+```
 
-## Examples
-- Template customization examples
-- Common modification patterns
-- Best practice implementations
+#### 2.4 Detailed Template Content Specifications
+
+##### Framework-Tools Template (`framework-tools.md`)
+```markdown
+# Framework Tools Guidance
+
+## Overview
+These tools generate PocketFlow templates and validate patterns. They are part of the framework, not your application code.
+
+## Usage Guidelines
+- Use pattern generators via `.agent-os/bin/` commands
+- Run validation with `check-pocketflow-install.py`
+- Coordinate agents with `coordinator.py`
+- Analyze patterns with `pattern_analyzer.py`
+
+## Safe Customization
+- ✅ Add new pattern validators in separate files
+- ✅ Extend coordinator with project-specific logic
+- ❌ Don't modify core generator.py logic
+- ❌ Don't change pattern analyzer fundamentals
+
+## Integration
+@../standards/pocket-flow.md - Pattern specifications
+@../instructions/core/create-spec.md - Specification workflow
+```
+
+##### Instructions-Core Template (`instructions-core.md`)
+```markdown
+# Workflow Instructions Customization
+
+## Overview
+Core workflow instructions that orchestrate the design-first methodology. Modify with caution.
+
+## Safe Customization Practices
+- ✅ Add project-specific validation steps
+- ✅ Extend pre/post execution hooks
+- ✅ Add custom quality gates
+- ❌ Don't remove design-first requirements
+- ❌ Don't bypass validation steps
+
+## Workflow Integration Points
+- Pre-flight checks: Add in `meta/pre-flight.md`
+- Custom specs: Extend `create-spec.md` templates
+- Task execution: Hook into `execute-tasks.md`
+
+## References
+@../../../CLAUDE.md - Project-level instructions
+@../standards/best-practices.md - Framework standards
+```
+
+##### Product Template (`product.md`)
+```markdown
+# Product Documentation Management
+
+## Overview
+Product planning documents that define your project's vision and architecture.
+
+## Document Standards
+- **mission.md**: Product vision and goals
+- **tech-stack.md**: Technology choices and rationale
+- **roadmap.md**: 5-phase development plan
+- **design.md**: Architectural blueprints
+
+## Evolution Guidelines
+1. Start with mission.md during /plan-product
+2. Expand design.md with each /create-spec
+3. Update roadmap.md after major milestones
+4. Keep tech-stack.md current with dependencies
+
+## Cross-References
+@../instructions/core/plan-product.md - Planning workflow
+@../specs/ - Feature specifications
+```
+
+##### Standards Template (`standards.md`)
+```markdown
+# Standards Customization Guide
+
+## Overview
+Framework standards that ensure consistency across your project. Customize carefully.
+
+## Override Hierarchy
+1. Project CLAUDE.md (highest priority)
+2. Local standards in .agent-os/standards/
+3. Base installation standards ~/.agent-os/
+4. Framework defaults (lowest priority)
+
+## Safe Customization
+- ✅ Add project-specific code style rules
+- ✅ Extend PocketFlow patterns for your domain
+- ✅ Define team conventions
+- ❌ Don't break PocketFlow architectural patterns
+- ❌ Don't remove design-first requirements
+
+## PocketFlow Integration
+@pocket-flow.md - Core patterns and rules
+@code-style/*.md - Language-specific standards
 ```
 
 ### Phase 3: Installation Integration
@@ -120,19 +220,61 @@
 ```bash
 # New installation steps in setup/project.sh
 install_subfolder_claude_md() {
-    cp "$FRAMEWORK_PATH/templates/claude-md/framework-tools.md" \
-       "$PROJECT_PATH/.agent-os/framework-tools/CLAUDE.md"
+    log_info "Installing subfolder CLAUDE.md templates..."
 
-    cp "$FRAMEWORK_PATH/templates/claude-md/instructions-core.md" \
-       "$PROJECT_PATH/.agent-os/instructions/core/CLAUDE.md"
+    # Get framework path for templates
+    local script_realpath
+    script_realpath="$(realpath "$0" 2>/dev/null)" || script_realpath="$0"
+    local framework_templates_dir="$(dirname "$(dirname "$script_realpath")")/templates/claude-md"
 
-    cp "$FRAMEWORK_PATH/templates/claude-md/product.md" \
-       "$PROJECT_PATH/.agent-os/product/CLAUDE.md"
+    # Install templates if framework directory exists
+    if [[ -d "$framework_templates_dir" ]]; then
+        # Framework-tools CLAUDE.md
+        if [[ -f "$framework_templates_dir/framework-tools.md" ]]; then
+            mkdir -p ".agent-os/framework-tools"
+            if safe_copy "$framework_templates_dir/framework-tools.md" ".agent-os/framework-tools/CLAUDE.md" "framework-tools CLAUDE.md"; then
+                log_success "Installed framework-tools CLAUDE.md"
+            else
+                log_error "Failed to install framework-tools CLAUDE.md"
+            fi
+        fi
 
-    cp "$FRAMEWORK_PATH/templates/claude-md/standards.md" \
-       "$PROJECT_PATH/.agent-os/standards/CLAUDE.md"
+        # Instructions/core CLAUDE.md
+        if [[ -f "$framework_templates_dir/instructions-core.md" ]]; then
+            mkdir -p ".agent-os/instructions/core"
+            if safe_copy "$framework_templates_dir/instructions-core.md" ".agent-os/instructions/core/CLAUDE.md" "instructions/core CLAUDE.md"; then
+                log_success "Installed instructions/core CLAUDE.md"
+            else
+                log_error "Failed to install instructions/core CLAUDE.md"
+            fi
+        fi
+
+        # Product CLAUDE.md
+        if [[ -f "$framework_templates_dir/product.md" ]]; then
+            mkdir -p ".agent-os/product"
+            if safe_copy "$framework_templates_dir/product.md" ".agent-os/product/CLAUDE.md" "product CLAUDE.md"; then
+                log_success "Installed product CLAUDE.md"
+            else
+                log_error "Failed to install product CLAUDE.md"
+            fi
+        fi
+
+        # Standards CLAUDE.md
+        if [[ -f "$framework_templates_dir/standards.md" ]]; then
+            mkdir -p ".agent-os/standards"
+            if safe_copy "$framework_templates_dir/standards.md" ".agent-os/standards/CLAUDE.md" "standards CLAUDE.md"; then
+                log_success "Installed standards CLAUDE.md"
+            else
+                log_error "Failed to install standards CLAUDE.md"
+            fi
+        fi
+    else
+        log_warning "Framework CLAUDE.md templates not found - subfolder guidance will be limited"
+    fi
 }
 ```
+
+**Integration Point**: Add call to `install_subfolder_claude_md()` in main installation flow after the `install_standards()` function call.
 
 ### Phase 4: Validation and Testing
 
@@ -153,7 +295,10 @@ install_subfolder_claude_md() {
 ### Session 1 (Current)
 - [x] Research best practices for subfolder CLAUDE.md files
 - [x] Create this implementation plan document
-- [ ] Design framework-specific template structure
+- [x] Design framework-specific template structure
+- [x] Define detailed template content specifications
+- [x] Plan installation integration strategy
+- [ ] Create template directory structure
 - [ ] Create first template (framework-tools)
 
 ### Session 2
