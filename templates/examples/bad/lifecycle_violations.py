@@ -8,12 +8,11 @@ improper method responsibilities, and SharedStore access violations.
 DO NOT COPY THESE PATTERNS - Use templates/examples/good/ instead.
 """
 
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 from pocketflow import SharedStore, Node, AsyncNode, BatchNode
 import requests
 import json
 import time
-import logging
 from datetime import datetime
 
 

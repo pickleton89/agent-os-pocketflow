@@ -9,9 +9,7 @@ import os
 import sys
 import time
 from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
-import subprocess
+from typing import Dict, Optional, Any
 
 
 class StatusReporter:
@@ -202,7 +200,7 @@ class StatusReporter:
             print(f"❌ Operation Failed: {self.operation} for '{self.workflow_name}'")
         
         print("")
-        print(f"📊 Operation Summary:")
+        print("📊 Operation Summary:")
         print(f"   ⏱️  Duration: {duration:.1f}s")
         print(f"   📝 Steps Completed: {self.current_step}/{self.total_steps}")
         print(f"   ❌ Errors: {len(self.errors)}")
@@ -260,7 +258,7 @@ class StatusReporter:
         summary = self.get_status_summary()
         
         print(f"📊 Status Report: {self.workflow_name}")
-        print(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         print(f"Operation: {summary['operation']}")
         print(f"Status: {summary['status']}")
         print(f"Progress: {summary.get('completion_percentage', 0)}%")

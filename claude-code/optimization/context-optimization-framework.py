@@ -12,10 +12,8 @@ Usage:
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Set, Tuple
-from dataclasses import dataclass, asdict
-from datetime import datetime
-import hashlib
+from typing import Dict, List, Optional, Any, Set
+from dataclasses import dataclass
 
 
 @dataclass
@@ -194,7 +192,7 @@ class ContextOptimizer:
                     'field': field_name,
                     'opportunity': 'optional_field_compression',
                     'potential_savings': usage['token_cost'] * 0.5,
-                    'description': f"Optional field with high token cost, consider summarization"
+                    'description': "Optional field with high token cost, consider summarization"
                 })
 
         return usage_analysis
@@ -485,7 +483,6 @@ def main():
     optimizer = ContextOptimizer()
 
     if args.analyze:
-        project_path = Path(args.analyze)
         # Mock context data for demonstration
         context_data = {
             "main_idea": "AI-powered content management system for small businesses",
@@ -544,7 +541,7 @@ def main():
             for ctx in optimized_contexts.values()
         )
 
-        print(f"📈 Optimization Summary:")
+        print("📈 Optimization Summary:")
         print(f"   Original: {original_size:,} tokens × {len(args.agents)} agents = {original_size * len(args.agents):,} tokens")
         print(f"   Optimized: {total_optimized:,} tokens total")
         print(f"   Reduction: {((original_size * len(args.agents) - total_optimized) / (original_size * len(args.agents))):.1%}")

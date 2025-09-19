@@ -8,7 +8,6 @@ import sys
 import yaml
 import os
 from pathlib import Path
-from typing import Dict, Any, List, Tuple
 from urllib.parse import urlparse
 from urllib.request import urlopen
 from urllib.error import URLError, HTTPError

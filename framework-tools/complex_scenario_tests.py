@@ -6,7 +6,6 @@ Tests complex requirements and edge cases to ensure robust pattern recognition.
 """
 
 import logging
-from typing import List, Dict, Any
 # Support running as a package (relative) and as a standalone script (absolute)
 try:
     from .pattern_analyzer import PatternAnalyzer  # type: ignore
@@ -273,7 +272,7 @@ class ComplexScenarioTester:
         print(f"Success Rate: {(passed/total)*100:.1f}%")
         
         if total - passed > 0:
-            print(f"\nFailed Tests:")
+            print("\nFailed Tests:")
             for result in self.test_results:
                 if result["status"] == "failed":
                     print(f"  - {result['test']}: {result['error']}")

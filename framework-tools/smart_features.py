@@ -10,7 +10,7 @@ templates/tools for end-user projects to use in their documentation discovery wo
 
 import re
 import yaml
-from typing import Dict, List, Tuple, Optional, Any
+from typing import Dict, List, Optional, Any
 from pathlib import Path
 from datetime import datetime, timedelta
 import hashlib

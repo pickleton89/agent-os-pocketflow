@@ -6,9 +6,8 @@ Validates the structure and content of .agent-os/docs-registry.yaml files
 
 import sys
 import yaml
-import os
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any
 from datetime import datetime
 
 class DocsRegistryValidator:

@@ -5,10 +5,9 @@ This example demonstrates the correct way to implement batch processing
 using BatchNode and AsyncParallelBatchNode for efficient collection handling.
 """
 
-from typing import List, Dict, Any, Optional
+from typing import Dict, Any, Optional
 from pocketflow import SharedStore, BatchNode, AsyncParallelBatchNode
 import asyncio
-import logging
 
 
 class DocumentBatchProcessor(BatchNode):

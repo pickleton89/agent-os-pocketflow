@@ -10,14 +10,12 @@ Usage:
     python3 test-phase4-optimization.py [--component COMPONENT] [--verbose]
 """
 
-import os
 import sys
 import json
 import time
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, Any
 import tempfile
-import subprocess
 
 # Add current directory to path for importing our modules
 sys.path.append(str(Path(__file__).parent.parent))
@@ -210,7 +208,7 @@ TestApp is a productivity tool that helps small business owners manage their dai
                 metrics = DocumentCreationMetrics(metrics_db_path=metrics_db)
 
                 # Simulate a document creation session
-                session_id = metrics.start_session("test_session")
+                metrics.start_session("test_session")
 
                 # Simulate agent executions
                 start1 = metrics.record_agent_start("mission-document-creator")

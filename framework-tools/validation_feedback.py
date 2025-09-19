@@ -7,12 +7,10 @@ Implements Phase 2 feedback requirements from INTEGRATION_GAP.md.
 """
 
 import json
-import os
 import logging
 import re
-from pathlib import Path
 from dataclasses import dataclass, field
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Optional
 from enum import Enum
 import yaml
 
@@ -523,7 +521,7 @@ def main():
         analyzer.create_markdown_report(feedback_loop, args.markdown)
     
     # Print summary
-    print(f"\n=== Validation Feedback Summary ===")
+    print("\n=== Validation Feedback Summary ===")
     print(f"Workflow: {feedback_loop.workflow_name}")
     print(f"Issues found: {len(feedback_loop.validation_issues)}")
     print(f"Auto-fixable: {len(feedback_loop.auto_fix_actions)}")

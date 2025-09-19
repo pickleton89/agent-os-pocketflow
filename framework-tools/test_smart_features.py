@@ -41,7 +41,7 @@ def test_pattern_detection():
     planning_suggestions = detector.detect_documentation_needs(test_spec, "plan-product")
     exec_suggestions = detector.detect_documentation_needs(test_spec, "execute-tasks")
     
-    print(f"\nContext sensitivity test:")
+    print("\nContext sensitivity test:")
     print(f"  plan-product context: {len(planning_suggestions)} suggestions")
     print(f"  create-spec context: {len(suggestions)} suggestions")
     print(f"  execute-tasks context: {len(exec_suggestions)} suggestions")
@@ -189,7 +189,7 @@ def test_registry_integration():
     detector = TechPatternDetector(test_registry_path)
     suggestions = detector.detect_documentation_needs("We need a FastAPI application", "create-spec")
     
-    print(f"Registry integration test:")
+    print("Registry integration test:")
     print(f"  FastAPI already in registry - suggestions: {len(suggestions)}")
     print(f"  Should be 0 (already documented): {'PASS' if len(suggestions) == 0 else 'FAIL'}")
     

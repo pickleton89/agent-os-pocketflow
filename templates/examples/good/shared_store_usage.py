@@ -8,11 +8,10 @@ This example demonstrates the correct way to use SharedStore in PocketFlow:
 - Clean data flow and state management
 """
 
-from typing import Dict, Any, Optional, List
-from pocketflow import SharedStore, Node, AsyncNode
+from typing import Dict, Any, Optional
+from pocketflow import SharedStore, Node
 from dataclasses import dataclass
 from datetime import datetime
-import json
 
 
 @dataclass
@@ -487,7 +486,7 @@ if __name__ == "__main__":
     exec_result = schema_node.exec(prep_result)
     action = schema_node.post(shared, prep_result, exec_result)
     
-    print(f"\nAfter schema processing:")
+    print("\nAfter schema processing:")
     print(f"  Action: {action}")
     print(f"  SharedStore keys: {list(shared.keys())}")
     print(f"  Processed user: {shared.get('processed_user', {}).get('normalized_name')}")
@@ -498,7 +497,7 @@ if __name__ == "__main__":
     exec_result = aggregator.exec(prep_result)
     action = aggregator.post(shared, prep_result, exec_result)
     
-    print(f"\nAfter aggregation:")
+    print("\nAfter aggregation:")
     print(f"  Action: {action}")
     print(f"  Profile completeness: {shared.get('aggregation_summary', {}).get('profile_completeness', 0):.2%}")
     print(f"  System stats: {shared.get('system_stats', {})}")
@@ -509,7 +508,7 @@ if __name__ == "__main__":
     exec_result = validator.exec(prep_result)
     action = validator.post(shared, prep_result, exec_result)
     
-    print(f"\nAfter validation:")
+    print("\nAfter validation:")
     print(f"  Action: {action}")
     print(f"  Validation status: {shared.get('validation_report', {}).get('status')}")
     print(f"  Final SharedStore keys: {list(shared.keys())}")

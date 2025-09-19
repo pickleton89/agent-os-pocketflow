@@ -16,8 +16,6 @@ import shutil
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 from pathlib import Path
-import subprocess
-import json
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -767,7 +765,7 @@ def main():
             logger.info("🎉 All test scenarios passed!")
             sys.exit(0)
             
-    except Exception as e:
+    except Exception:
         logger.exception("Test runner failed")
         sys.exit(1)
     finally:

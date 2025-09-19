@@ -12,7 +12,6 @@ represents runtime coordination state during agent handoffs and orchestration.
 Implements Phase 2 requirements per docs/POCKETFLOW_ORCHESTRATOR_UPDATE_PLAN.md.
 """
 
-import os
 import re
 import json
 import yaml
@@ -550,7 +549,7 @@ def main():
         print(f"Workflow specification saved to {args.spec}")
     
     # Print summary
-    print(f"\n=== Context Analysis Summary ===")
+    print("\n=== Context Analysis Summary ===")
     print(f"Project: {context.project_name}")
     print(f"Requirements found: {len(context.requirements)}")
     print(f"Technical stack: {', '.join(context.technical_stack[:5])}")

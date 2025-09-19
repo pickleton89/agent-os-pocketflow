@@ -8,13 +8,11 @@ import argparse
 import sys
 import yaml
 from pathlib import Path
-from typing import Optional
 
 from smart_features import (
     TechPatternDetector,
     ProgressiveDisclosure, 
     VersionManager,
-    IntelligentSuggestionSystem,
     analyze_specification_for_documentation
 )
 
@@ -48,14 +46,14 @@ def cmd_analyze(args):
         )
         
         # Display results
-        print(f"\n📊 Analysis Results:")
+        print("\n📊 Analysis Results:")
         print(f"   Total suggestions: {result['pattern_suggestions']['total_suggestions']}")
         print(f"   Version issues: {result['version_compatibility']['needs_attention']}")
         print(f"   Recommended disclosure level: {result['progressive_disclosure']['recommended_level']}")
         
         # Show pattern suggestions
         if result['pattern_suggestions']['by_priority']:
-            print(f"\n🔧 Technology Suggestions:")
+            print("\n🔧 Technology Suggestions:")
             for suggestion in result['pattern_suggestions']['by_priority']:
                 print(f"   {suggestion['technology']} ({suggestion['priority']} priority)")
                 print(f"     Confidence: {suggestion['confidence']:.1%}")
@@ -64,7 +62,7 @@ def cmd_analyze(args):
         
         # Show recommendations
         if result['recommendations']:
-            print(f"\n💡 Recommendations:")
+            print("\n💡 Recommendations:")
             for i, rec in enumerate(result['recommendations'], 1):
                 print(f"   {i}. {rec['title']} ({rec['priority']} priority)")
                 print(f"      {rec['description']}")
@@ -103,7 +101,7 @@ def cmd_detect_patterns(args):
         print("❌ Must provide either --text or --file")
         return 1
     
-    print(f"🔍 Detecting patterns in text...")
+    print("🔍 Detecting patterns in text...")
     print(f"📝 Context: {args.context}")
     print("-" * 50)
     
@@ -131,7 +129,7 @@ def cmd_detect_patterns(args):
 
 def cmd_check_versions(args):
     """Check version compatibility"""
-    print(f"🔍 Checking version compatibility...")
+    print("🔍 Checking version compatibility...")
     print(f"📋 Registry: {args.registry}")
     print("-" * 50)
     
@@ -148,12 +146,12 @@ def cmd_check_versions(args):
             print(f"   Status: {compatibility['status']}")
             
             if compatibility['warnings']:
-                print(f"   ⚠️  Warnings:")
+                print("   ⚠️  Warnings:")
                 for warning in compatibility['warnings']:
                     print(f"      - {warning}")
             
             if compatibility['suggestions']:
-                print(f"   💡 Suggestions:")
+                print("   💡 Suggestions:")
                 for suggestion in compatibility['suggestions']:
                     print(f"      - {suggestion}")
         else:
@@ -190,7 +188,7 @@ def cmd_check_versions(args):
 
 def cmd_test_disclosure(args):
     """Test progressive disclosure levels"""
-    print(f"🔍 Testing progressive disclosure...")
+    print("🔍 Testing progressive disclosure...")
     print(f"📋 Source: {args.source}")
     print(f"📈 Level: {args.level}")
     print("-" * 50)

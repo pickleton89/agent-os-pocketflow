@@ -9,12 +9,11 @@ Usage:
     python3 document-consistency-validator.py [project_root] [--fix-issues]
 """
 
-import os
 import re
 import json
 import yaml
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from enum import Enum
 
@@ -376,7 +375,7 @@ class DocumentConsistencyValidator:
         report.append("# Document Consistency Validation Report\n")
 
         # Summary
-        report.append(f"## Summary")
+        report.append("## Summary")
         report.append(f"- 🔴 Errors: {len(errors)}")
         report.append(f"- 🟡 Warnings: {len(warnings)}")
         report.append(f"- 🔵 Info: {len(infos)}")

@@ -12,10 +12,7 @@ from typing import Dict, Any, Optional, List
 from pocketflow import SharedStore, Node, BatchNode
 import requests
 import json
-import os
-import smtplib
 from datetime import datetime
-import logging
 
 
 class ProcessAndValidateAndSendNode(Node):

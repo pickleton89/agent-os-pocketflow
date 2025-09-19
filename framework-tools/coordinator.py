@@ -11,7 +11,7 @@ import sys
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 # Add framework-tools to path for imports
 sys.path.insert(0, str(Path(__file__).parent))

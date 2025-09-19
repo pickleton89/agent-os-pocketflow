@@ -1081,7 +1081,7 @@ class PatternAnalyzer:
         # Check cache first for performance optimization
         cache_key = hash(requirements_text.strip().lower())
         if cache_key in self._analysis_cache:
-            logger.debug(f"Cache hit for requirements analysis")
+            logger.debug("Cache hit for requirements analysis")
             return self._analysis_cache[cache_key]
             
         logger.info(f"Starting pattern analysis for requirements: {requirements_text[:100]}...")

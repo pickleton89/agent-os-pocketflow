@@ -11,11 +11,10 @@ Usage:
 
 import json
 import time
-import os
 from pathlib import Path
 from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, asdict
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from datetime import datetime
 import statistics
 import sqlite3
 
@@ -349,12 +348,12 @@ class DocumentCreationMetrics:
             return f"❌ {analysis['error']}"
 
         report = []
-        report.append(f"# Document Creation Performance Report")
+        report.append("# Document Creation Performance Report")
         report.append(f"*Analysis for last {days} days*\n")
 
         # Overall statistics
         orchestration = analysis["orchestration_performance"]
-        report.append(f"## Overall Performance")
+        report.append("## Overall Performance")
         report.append(f"- **Total Sessions**: {analysis['total_sessions']}")
         report.append(f"- **Average Duration**: {orchestration['avg_duration']:.2f}s")
         report.append(f"- **Duration Range**: {orchestration['min_duration']:.2f}s - {orchestration['max_duration']:.2f}s")
@@ -366,7 +365,7 @@ class DocumentCreationMetrics:
         report.append("")
 
         # Agent-specific performance
-        report.append(f"## Agent Performance")
+        report.append("## Agent Performance")
 
         for agent_name, stats in analysis["agent_performance"].items():
             report.append(f"### {agent_name}")
@@ -381,7 +380,7 @@ class DocumentCreationMetrics:
             report.append("")
 
         # Performance recommendations
-        report.append(f"## Recommendations")
+        report.append("## Recommendations")
 
         # Identify slow agents
         slow_agents = []
@@ -394,20 +393,20 @@ class DocumentCreationMetrics:
                 fast_agents.append((agent_name, stats['avg_duration']))
 
         if slow_agents:
-            report.append(f"### Slow Agents (>30s average)")
+            report.append("### Slow Agents (>30s average)")
             for agent, duration in sorted(slow_agents, key=lambda x: x[1], reverse=True):
                 report.append(f"- **{agent}**: {duration:.1f}s average - consider optimization")
 
         if fast_agents:
-            report.append(f"### Fast Agents (<5s average)")
+            report.append("### Fast Agents (<5s average)")
             for agent, duration in sorted(fast_agents, key=lambda x: x[1]):
                 report.append(f"- **{agent}**: {duration:.1f}s average - good performance")
 
         # Performance improvement opportunities
         if orchestration['avg_performance_improvement'] and orchestration['avg_performance_improvement'] < 20:
-            report.append(f"### Parallelization Opportunity")
+            report.append("### Parallelization Opportunity")
             report.append(f"- Current improvement: {orchestration['avg_performance_improvement']:.1f}%")
-            report.append(f"- Consider reviewing agent dependencies for better parallel execution")
+            report.append("- Consider reviewing agent dependencies for better parallel execution")
 
         return "\n".join(report)
 
@@ -484,7 +483,7 @@ def main():
     metrics = DocumentCreationMetrics(Path(args.project_root))
 
     if args.clear:
-        cleared = metrics.clear_old_metrics(args.clear)
+        metrics.clear_old_metrics(args.clear)
         return 0
 
     if args.export:

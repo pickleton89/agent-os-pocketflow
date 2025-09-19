@@ -8,14 +8,9 @@ violations of the separation between utilities and business logic.
 DO NOT COPY THESE PATTERNS - Use templates/examples/good/ instead.
 """
 
-from typing import Dict, Any, Optional, List, Union
-from pocketflow import SharedStore, Node, AsyncNode
+from typing import Dict, Any, Optional
+from pocketflow import SharedStore, Node
 import requests
-import json
-import re
-import logging
-from datetime import datetime
-from dataclasses import dataclass
 import openai
 
 
@@ -86,7 +81,7 @@ def process_customer_data_completely(customer_data: Dict[str, Any], business_rul
                 credit_report['score']
             )
             customer_data['rejection_message'] = rejection_message
-    except Exception as e:
+    except Exception:
         # ❌ Business decision on how to handle failures
         customer_data['credit_check_failed'] = True
         customer_data['requires_manual_review'] = True
