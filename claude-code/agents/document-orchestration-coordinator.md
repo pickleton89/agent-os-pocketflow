@@ -70,49 +70,83 @@ Wait for completion, then execute conditionally:
 
 ## Context Optimization Framework
 
-### 1. Shared Context Preparation
+### 1. Context Optimization Integration
 
-**Universal Context Package**:
-```markdown
-shared_context = {
-  "product_info": {
-    "main_idea": user_input.main_idea,
-    "key_features": user_input.key_features,
-    "target_users": user_input.target_users,
-    "tech_stack": user_input.tech_stack
-  },
-  "project_metadata": {
-    "project_name": extracted_project_name,
-    "current_date": current_date,
-    "agent_os_version": framework_version
-  },
-  "architectural_context": {
-    "pocketflow_patterns": selected_patterns,
-    "complexity_level": determined_complexity,
-    "design_requirements": design_constraints
-  },
-  "codebase_analysis": existing_codebase_context || null
-}
+**IMPORTANT**: All document orchestration sessions MUST use the ContextOptimizer class for token efficiency and optimized parallel execution.
+
+**Required Import and Initialization**:
+```python
+from optimization.context_optimization_framework import ContextOptimizer
+
+# Initialize context optimizer at the start of each orchestration session
+optimizer = ContextOptimizer()
 ```
 
-### 2. Agent-Specific Context Preparation
+**Context Analysis and Optimization**:
+```python
+# Before parallel execution, analyze and optimize context for all target agents
+target_agents = ["mission-document-creator", "tech-stack-document-creator", "roadmap-document-creator"]
 
-**Context Distribution Logic**:
-```markdown
-mission_context = shared_context + {
-  "focus": "product_vision_and_strategy",
-  "output_dependencies": ["roadmap", "claude_md"]
+# full_context should contain all user input and project context data
+# This is typically passed from the orchestrating agent or workflow
+full_context = {
+    "main_idea": user_input_main_idea,
+    "key_features": user_input_features,
+    "target_users": user_input_users,
+    "tech_stack": user_input_tech_stack,
+    # ... other context fields
 }
 
-tech_stack_context = shared_context + {
-  "focus": "technical_architecture_decisions",
-  "output_dependencies": ["design", "roadmap"]
-}
+# Analyze context usage patterns
+context_analysis = optimizer.analyze_context_usage(full_context, target_agents)
 
-pre_flight_context = shared_context + {
-  "focus": "implementation_readiness_checklist",
-  "output_dependencies": []
-}
+# Create optimized agent-specific contexts (30-50% token reduction target)
+optimized_contexts = optimizer.create_parallel_contexts(full_context, target_agents)
+
+# Generate optimization report for performance tracking
+optimization_report = optimizer.generate_optimization_report(full_context, target_agents)
+```
+
+### 2. Agent-Specific Context Distribution
+
+**Optimized Context Usage in Task Invocations**:
+```python
+# For each agent in parallel execution groups
+for agent_name in target_agents:
+    agent_context = optimized_contexts[agent_name]
+
+    # Invoke agent with optimized context
+    Task(
+        subagent_type=agent_name,
+        description=f"Create document with optimized context",
+        prompt=f"""Create comprehensive document:
+                Context: {agent_context}
+                Optimization applied: {agent_context.get('_agent_context', {}).get('optimization_applied', False)}
+                Token estimate: {agent_context.get('_agent_context', {}).get('token_estimate', 'unknown')}
+                Excluded fields: {agent_context.get('_agent_context', {}).get('excluded_fields', [])}"""
+    )
+```
+
+### 3. Context Optimization Performance Tracking
+
+**Token Usage Monitoring**:
+```python
+# Before optimization
+original_token_cost = sum(optimizer._estimate_token_cost(v) for v in full_context.values())
+total_unoptimized = original_token_cost * len(target_agents)
+
+# After optimization
+total_optimized = sum(
+    sum(optimizer._estimate_token_cost(v) for v in ctx.values() if not str(v).startswith('_'))
+    for ctx in optimized_contexts.values()
+)
+
+# Calculate and report efficiency gains
+token_reduction = ((total_unoptimized - total_optimized) / total_unoptimized) * 100
+print(f"🎯 Context Optimization: {token_reduction:.1f}% token reduction achieved")
+print(f"   Original: {total_unoptimized:,} tokens")
+print(f"   Optimized: {total_optimized:,} tokens")
+print(f"   Savings: {total_unoptimized - total_optimized:,} tokens")
 ```
 
 ## Validation Layers
@@ -246,25 +280,57 @@ Metrics to Track:
 
 ## Workflow Process
 
-### Step 1: Coordination Planning & Metrics Initialization
-1. **Initialize Performance Tracking**:
+### Step 1: Coordination Planning & Context Optimization
+1. **Initialize Performance Tracking and Context Optimization**:
    ```python
    metrics = DocumentCreationMetrics()
    session_id = metrics.start_session()
+
+   optimizer = ContextOptimizer()
    ```
 2. Analyze requested document set and identify dependencies
 3. Group documents into parallel execution batches
-4. Prepare shared context package with validation
+4. **Optimize Context for Target Agents**:
+   ```python
+   target_agents = ["mission-document-creator", "tech-stack-document-creator", "roadmap-document-creator"]
+   context_analysis = optimizer.analyze_context_usage(full_context, target_agents)
+   optimized_contexts = optimizer.create_parallel_contexts(full_context, target_agents)
+
+   # Track token optimization metrics
+   original_tokens = sum(optimizer._estimate_token_cost(v) for v in full_context.values()) * len(target_agents)
+   optimized_tokens = sum(sum(optimizer._estimate_token_cost(v) for v in ctx.values()) for ctx in optimized_contexts.values())
+   token_reduction = ((original_tokens - optimized_tokens) / original_tokens) * 100
+
+   print(f"🎯 Context optimized: {token_reduction:.1f}% token reduction achieved")
+   ```
 5. Verify all target agents are available and functional
 
-### Step 2: Parallel Execution Management with Monitoring
-1. **Launch Group A agents in parallel** with performance tracking:
+### Step 2: Parallel Execution Management with Context Optimization
+1. **Launch Group A agents in parallel** with optimized contexts and performance tracking:
    ```python
-   # For each agent in the parallel group
+   # For each agent in the parallel group with optimized context
    agent_start_times = {}
-   for agent_name in parallel_group_agents:
+   for agent_name in target_agents:
        agent_start_times[agent_name] = metrics.record_agent_start(agent_name)
-       # Launch Task(subagent_type=agent_name, ...)
+
+       # Get optimized context for this specific agent
+       agent_context = optimized_contexts[agent_name]
+
+       # Launch Task with optimized context
+       Task(
+           subagent_type=agent_name,
+           description=f"Create document with optimized context",
+           prompt=f"""Create comprehensive document with optimized context:
+
+Context: {agent_context}
+
+Optimization Status:
+- Optimization Applied: {agent_context.get('_agent_context', {}).get('optimization_applied', False)}
+- Estimated Tokens: {agent_context.get('_agent_context', {}).get('token_estimate', 'unknown')}
+- Excluded Fields: {len(agent_context.get('_agent_context', {}).get('excluded_fields', []))} fields excluded for efficiency
+
+Focus Areas: {agent_context.get('_agent_context', {}).get('focus_areas', 'standard')}"""
+       )
    ```
 2. **Monitor completion status** and record agent performance:
    ```python
@@ -301,11 +367,24 @@ Metrics to Track:
    ```python
    orchestration_metric = metrics.finish_session(parallel_groups=num_groups)
    ```
-4. **Generate performance summary**:
+4. **Generate performance and optimization summary**:
    ```python
    performance_report = metrics.generate_report(days=7)
+   optimization_report = optimizer.generate_optimization_report(full_context, target_agents)
+
    print("📊 ORCHESTRATION PERFORMANCE:")
    print(performance_report)
+
+   print("\n🎯 CONTEXT OPTIMIZATION REPORT:")
+   print(optimization_report)
+
+   # Log optimization metrics to performance database
+   metrics.record_optimization_metrics(
+       token_reduction_percentage=token_reduction,
+       original_tokens=original_tokens,
+       optimized_tokens=optimized_tokens,
+       agents_optimized=len(target_agents)
+   )
    ```
 
 ## Output Format
@@ -338,10 +417,16 @@ Metrics to Track:
 - **Sequential Baseline**: [TIME]
 - **Parallel Execution**: [TIME]
 - **Performance Gain**: [PERCENTAGE]
-- **Token Usage**: [TOTAL]
+- **Context Optimization**: [TOKEN_REDUCTION]% token reduction achieved
+- **Original Token Cost**: [ORIGINAL_TOKENS] tokens
+- **Optimized Token Cost**: [OPTIMIZED_TOKENS] tokens
+- **Token Savings**: [SAVED_TOKENS] tokens
 
 📊 **ORCHESTRATION PERFORMANCE REPORT:**
 [GENERATED_PERFORMANCE_REPORT]
+
+🎯 **CONTEXT OPTIMIZATION REPORT:**
+[GENERATED_OPTIMIZATION_REPORT]
 
 *Historical metrics database updated at: [METRICS_DB_PATH]*
 ```

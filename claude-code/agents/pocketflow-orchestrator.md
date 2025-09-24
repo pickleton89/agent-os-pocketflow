@@ -28,13 +28,15 @@ For comprehensive product planning, coordinate parallel document creation using 
 ```markdown
 Task(
   subagent_type="document-orchestration-coordinator",
-  description="Coordinate parallel document creation",
-  prompt="Create comprehensive product planning documents in parallel:
+  description="Coordinate parallel document creation with context optimization",
+  prompt="Create comprehensive product planning documents in parallel with context optimization:
           - User context: [COMPLETE_USER_REQUIREMENTS]
           - Strategic planning: [STRATEGIC_RECOMMENDATIONS]
           - Target documents: [mission.md, tech-stack.md, design.md, pre-flight.md, roadmap.md, CLAUDE.md]
           - Quality requirements: [CONSISTENCY_VALIDATION, POCKETFLOW_COMPLIANCE]
-          - Performance target: >20% improvement over sequential execution"
+          - Performance target: >20% improvement over sequential execution
+          - Context optimization target: 30-50% token reduction through agent-specific context preparation
+          - Optimization reporting: Include token usage analytics and efficiency metrics"
 )
 ```
 

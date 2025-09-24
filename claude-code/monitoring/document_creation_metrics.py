@@ -408,6 +408,52 @@ class DocumentCreationMetrics:
             report.append(f"- Current improvement: {orchestration['avg_performance_improvement']:.1f}%")
             report.append("- Consider reviewing agent dependencies for better parallel execution")
 
+        # Context optimization statistics
+        try:
+            optimization_stats = self.get_optimization_statistics(days)
+            if optimization_stats['total_sessions'] > 0:
+                report.append("")
+                report.append("## Context Optimization Performance")
+                report.append(f"- **Optimization Sessions**: {optimization_stats['total_sessions']}")
+                report.append(f"- **Average Token Reduction**: {optimization_stats['avg_token_reduction']:.1f}%")
+                report.append(f"- **Token Reduction Range**: {optimization_stats['min_token_reduction']:.1f}% - {optimization_stats['max_token_reduction']:.1f}%")
+                report.append(f"- **Total Token Savings**: {optimization_stats['total_token_savings']:,} tokens")
+                report.append(f"- **Average Token Savings per Session**: {optimization_stats['avg_token_savings']:,.0f} tokens")
+                report.append(f"- **Average Agents Optimized per Session**: {optimization_stats['avg_agents_optimized']:.1f}")
+
+                # Optimization trend
+                trend_emoji = {"improving": "📈", "declining": "📉", "stable": "📊", "insufficient_data": "❓", "no_data": "❌"}
+                trend_text = {
+                    "improving": "Optimization effectiveness is improving",
+                    "declining": "Optimization effectiveness is declining",
+                    "stable": "Optimization effectiveness is stable",
+                    "insufficient_data": "Insufficient data to determine trend",
+                    "no_data": "No optimization data available"
+                }
+
+                report.append(f"- **Optimization Trend**: {trend_emoji[optimization_stats['optimization_trend']]} {trend_text[optimization_stats['optimization_trend']]}")
+
+                if optimization_stats['total_fields_excluded'] > 0 or optimization_stats['total_fields_compressed'] > 0:
+                    report.append(f"- **Context Fields Excluded**: {optimization_stats['total_fields_excluded']} across all sessions")
+                    report.append(f"- **Context Fields Compressed**: {optimization_stats['total_fields_compressed']} across all sessions")
+
+                # Optimization recommendations
+                if optimization_stats['avg_token_reduction'] < 20:
+                    report.append("")
+                    report.append("### Optimization Opportunities")
+                    report.append(f"- Current token reduction: {optimization_stats['avg_token_reduction']:.1f}%")
+                    report.append("- Target: 30-50% token reduction")
+                    report.append("- Consider reviewing agent context requirements and field priorities")
+                elif optimization_stats['avg_token_reduction'] > 60:
+                    report.append("")
+                    report.append("### Optimization Quality Check")
+                    report.append(f"- High token reduction: {optimization_stats['avg_token_reduction']:.1f}%")
+                    report.append("- Verify that document quality is maintained with aggressive optimization")
+
+        except Exception as e:
+            # Optimization metrics are optional - don't fail the report if they're unavailable
+            pass
+
         return "\n".join(report)
 
     def export_metrics(self, output_path: Path, format: str = "json") -> None:
@@ -465,6 +511,129 @@ class DocumentCreationMetrics:
 
         print(f"🧹 Cleared {sessions_to_delete} old sessions (older than {days} days)")
         return sessions_to_delete
+
+    def record_optimization_metrics(self,
+                                   token_reduction_percentage: float,
+                                   original_tokens: int,
+                                   optimized_tokens: int,
+                                   agents_optimized: int,
+                                   context_fields_excluded: int = 0,
+                                   context_fields_compressed: int = 0) -> None:
+        """Record context optimization metrics for the current session"""
+        if not self.current_session_id:
+            print("⚠️  No active session for optimization metrics")
+            return
+
+        # Store optimization metrics in database
+        with sqlite3.connect(self.metrics_db) as conn:
+            # Create optimization metrics table if it doesn't exist
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS optimization_metrics (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id TEXT,
+                    token_reduction_percentage REAL,
+                    original_tokens INTEGER,
+                    optimized_tokens INTEGER,
+                    token_savings INTEGER,
+                    agents_optimized INTEGER,
+                    context_fields_excluded INTEGER,
+                    context_fields_compressed INTEGER,
+                    created_date TEXT,
+                    FOREIGN KEY (session_id) REFERENCES orchestration_sessions (session_id)
+                )
+            """)
+
+            # Insert optimization metrics
+            conn.execute("""
+                INSERT INTO optimization_metrics (
+                    session_id, token_reduction_percentage, original_tokens, optimized_tokens,
+                    token_savings, agents_optimized, context_fields_excluded,
+                    context_fields_compressed, created_date
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                self.current_session_id,
+                token_reduction_percentage,
+                original_tokens,
+                optimized_tokens,
+                original_tokens - optimized_tokens,  # token_savings
+                agents_optimized,
+                context_fields_excluded,
+                context_fields_compressed,
+                datetime.now().isoformat()
+            ))
+
+            conn.commit()
+
+        print(f"🎯 Optimization metrics recorded: {token_reduction_percentage:.1f}% token reduction")
+        print(f"   Original: {original_tokens:,} tokens → Optimized: {optimized_tokens:,} tokens")
+        print(f"   Savings: {original_tokens - optimized_tokens:,} tokens across {agents_optimized} agents")
+
+    def get_optimization_statistics(self, days: int = 30) -> Dict[str, Any]:
+        """Get context optimization statistics for the last N days"""
+        cutoff_time = time.time() - (days * 24 * 60 * 60)
+
+        with sqlite3.connect(self.metrics_db) as conn:
+            # Get optimization metrics
+            cursor = conn.execute("""
+                SELECT
+                    token_reduction_percentage,
+                    original_tokens,
+                    optimized_tokens,
+                    token_savings,
+                    agents_optimized,
+                    context_fields_excluded,
+                    context_fields_compressed,
+                    created_date
+                FROM optimization_metrics om
+                JOIN orchestration_sessions os ON om.session_id = os.session_id
+                WHERE os.start_time >= ?
+                ORDER BY os.start_time DESC
+            """, (cutoff_time,))
+
+            metrics = cursor.fetchall()
+
+        if not metrics:
+            return {
+                "total_sessions": 0,
+                "avg_token_reduction": 0,
+                "total_token_savings": 0,
+                "avg_agents_optimized": 0,
+                "optimization_trend": "no_data"
+            }
+
+        # Calculate statistics
+        reductions = [m[0] for m in metrics]
+        savings = [m[3] for m in metrics]
+        agents_counts = [m[4] for m in metrics]
+
+        stats = {
+            "total_sessions": len(metrics),
+            "avg_token_reduction": statistics.mean(reductions),
+            "min_token_reduction": min(reductions),
+            "max_token_reduction": max(reductions),
+            "total_token_savings": sum(savings),
+            "avg_token_savings": statistics.mean(savings),
+            "avg_agents_optimized": statistics.mean(agents_counts),
+            "total_fields_excluded": sum(m[5] for m in metrics),
+            "total_fields_compressed": sum(m[6] for m in metrics),
+            "recent_sessions": metrics[:5]  # Last 5 sessions
+        }
+
+        # Determine optimization trend
+        if len(reductions) >= 5:
+            recent_avg = statistics.mean(reductions[-3:])
+            earlier_avg = statistics.mean(reductions[-6:-3]) if len(reductions) >= 6 else statistics.mean(reductions[:-3])
+
+            if recent_avg > earlier_avg * 1.05:
+                stats["optimization_trend"] = "improving"
+            elif recent_avg < earlier_avg * 0.95:
+                stats["optimization_trend"] = "declining"
+            else:
+                stats["optimization_trend"] = "stable"
+        else:
+            stats["optimization_trend"] = "insufficient_data"
+
+        return stats
 
 
 def main():

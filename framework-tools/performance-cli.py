@@ -94,6 +94,24 @@ def main():
         help='Show metrics database status'
     )
 
+    # Optimization command
+    optimize_parser = subparsers.add_parser(
+        'optimize',
+        help='Show context optimization metrics and analysis'
+    )
+    optimize_parser.add_argument(
+        '--days',
+        type=int,
+        default=30,
+        help='Number of days to analyze (default: 30)'
+    )
+    optimize_parser.add_argument(
+        '--format',
+        choices=['text', 'json'],
+        default='text',
+        help='Output format (default: text)'
+    )
+
     args = parser.parse_args()
 
     if not args.command:
@@ -159,6 +177,8 @@ def main():
             return cmd_clear(metrics, args)
         elif args.command == 'status':
             return cmd_status(metrics, args)
+        elif args.command == 'optimize':
+            return cmd_optimize(metrics, args)
         else:
             print(f"❌ Unknown command: {args.command}")
             return 1
@@ -259,6 +279,79 @@ def cmd_status(metrics, args):
                 print(f"   {session_id}: {successful_agents}/{total_agents} agents - {created_date[:19]}")
     else:
         print("   No metrics database found - run a document creation workflow first")
+
+    return 0
+
+def cmd_optimize(metrics, args):
+    """Show context optimization analysis command"""
+    print(f"🎯 Analyzing context optimization for last {args.days} days...")
+
+    try:
+        optimization_stats = metrics.get_optimization_statistics(days=args.days)
+    except Exception as e:
+        print(f"❌ Error getting optimization statistics: {e}")
+        print("   This may indicate:")
+        print("   1. No optimization metrics recorded yet")
+        print("   2. Document orchestration coordinator not used with context optimization")
+        print("   3. Database schema needs to be updated")
+        print("")
+        print("   Try running a document creation workflow with optimization first:")
+        print("   /plan-product")
+        return 1
+
+    if optimization_stats['total_sessions'] == 0:
+        print("❌ No optimization data found for the specified time period.")
+        print("   Run document creation workflows to generate optimization metrics:")
+        print("   /plan-product")
+        return 1
+
+    if args.format == 'json':
+        print(json.dumps(optimization_stats, indent=2))
+    else:
+        # Text format
+        print("\n🎯 CONTEXT OPTIMIZATION SUMMARY:")
+        print(f"   Optimization sessions: {optimization_stats['total_sessions']}")
+        print(f"   Average token reduction: {optimization_stats['avg_token_reduction']:.1f}%")
+        print(f"   Token reduction range: {optimization_stats['min_token_reduction']:.1f}% - {optimization_stats['max_token_reduction']:.1f}%")
+        print(f"   Total token savings: {optimization_stats['total_token_savings']:,} tokens")
+        print(f"   Average agents optimized: {optimization_stats['avg_agents_optimized']:.1f} per session")
+
+        # Optimization trend with emoji
+        trend_emoji = {"improving": "📈", "declining": "📉", "stable": "📊", "insufficient_data": "❓", "no_data": "❌"}
+        trend_text = {
+            "improving": "Optimization effectiveness is improving",
+            "declining": "Optimization effectiveness is declining",
+            "stable": "Optimization effectiveness is stable",
+            "insufficient_data": "Insufficient data to determine trend",
+            "no_data": "No optimization data available"
+        }
+
+        print(f"   Optimization trend: {trend_emoji[optimization_stats['optimization_trend']]} {trend_text[optimization_stats['optimization_trend']]}")
+
+        if optimization_stats['total_fields_excluded'] > 0 or optimization_stats['total_fields_compressed'] > 0:
+            print(f"   Fields excluded: {optimization_stats['total_fields_excluded']}")
+            print(f"   Fields compressed: {optimization_stats['total_fields_compressed']}")
+
+        # Recent sessions summary
+        if optimization_stats['recent_sessions']:
+            print("\n📋 RECENT OPTIMIZATION SESSIONS:")
+            for i, session in enumerate(optimization_stats['recent_sessions'][:3], 1):
+                reduction_pct, orig_tokens, opt_tokens, savings, agents, excluded, compressed, date = session
+                print(f"   {i}. {reduction_pct:.1f}% reduction ({savings:,} tokens saved, {agents} agents) - {date[:19]}")
+
+        # Recommendations
+        print("\n💡 OPTIMIZATION RECOMMENDATIONS:")
+        if optimization_stats['avg_token_reduction'] < 20:
+            print("   🔧 Current token reduction is below target (20%+)")
+            print("   📝 Consider reviewing agent context requirements and field priorities")
+            print("   🎯 Target: 30-50% token reduction for optimal efficiency")
+        elif optimization_stats['avg_token_reduction'] > 60:
+            print("   ⚠️  High token reduction detected (>60%)")
+            print("   ✅ Verify document quality is maintained with aggressive optimization")
+            print("   📊 Consider sampling document outputs for quality validation")
+        else:
+            print("   ✅ Optimization performance is within target range (20-60%)")
+            print("   📈 Continue monitoring for consistent efficiency gains")
 
     return 0
 
