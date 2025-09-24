@@ -67,10 +67,11 @@ declare -a TEST_SUITES=(
     "Configuration:scripts/validation/validate-configuration.sh:Framework configuration validation"
     "Integration:scripts/validation/validate-integration.sh:Core integration validation"
     "PocketFlow Tools:scripts/validation/test_pocketflow_integration.sh:PocketFlow tool accessibility testing"
-    "Design:scripts/validation/validate-design.sh:Design document validation" 
+    "Design:scripts/validation/validate-design.sh:Design document validation"
     "PocketFlow:scripts/validation/validate-pocketflow.sh:PocketFlow setup validation"
     "Sub-Agents:scripts/validation/validate-sub-agents.sh:Sub-agent implementation validation"
     "Orchestration:scripts/validation/validate-orchestration.sh:Orchestration system validation"
+    "End-User Workflows:scripts/validation/validate-end-user-workflows.sh:End-user workflow integration testing"
     "End-to-End:scripts/validation/validate-end-to-end.sh:Complete end-to-end testing"
 )
 
@@ -89,6 +90,7 @@ declare -a FRAMEWORK_SUITES=(
     "Configuration:scripts/validation/validate-configuration.sh:Framework configuration validation"
     "Integration:scripts/validation/validate-integration.sh:Framework sanity checks + skip project-only"
     "PocketFlow Tools:scripts/validation/test_pocketflow_integration.sh:Framework tool component validation"
+    "End-User Workflows:scripts/validation/validate-end-user-workflows.sh:End-user workflow integration testing"
     "CLI Smoke:scripts/validation/validate-cli-smoke.sh:CLI smoke tests (help/invalid YAML/valid run)"
     "Determinism:scripts/validation/validate-determinism.sh:Deterministic output validation"
     "Python Smoke:scripts/validation/validate-python-tests-smoke.sh:Framework Python smoke tests"

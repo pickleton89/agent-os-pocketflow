@@ -145,6 +145,28 @@ jobs:
           uv run python test-generator.py
           uv run python test_full_generation_with_dependencies.py
 
+      - name: Run Phase 4 optimization tests
+        run: |
+          echo "🚀 Testing Phase 4 optimization components..."
+          python3 claude-code/testing/test-phase4-optimization.py --json --cleanup
+          if [ $? -ne 0 ]; then
+            echo "Phase 4 component tests failed"
+            exit 1
+          fi
+
+      - name: Run comprehensive Phase 4 CI suite
+        run: |
+          echo "📊 Running additional Phase 4 testing components..."
+          ./scripts/ci/run-phase4-ci-tests.sh --json --cleanup --all --verbose
+
+      - name: Upload Phase 4 test results and reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase4-ci-artifacts
+          path: |
+            ci-artifacts/
+
   security-scan:
     runs-on: ubuntu-latest
     steps:
