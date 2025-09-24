@@ -192,105 +192,6 @@ Use the strategic-planner subagent to create a comprehensive strategic plan and 
 
 </step>
 
-<step number="3" subagent="mission-document-creator" name="create_mission_md">
-
-### Step 3: Create mission.md
-
-**Uses:** mission-document-creator subagent for comprehensive mission document creation
-
-Use the mission-document-creator subagent to create the comprehensive `.agent-os/product/mission.md` file that establishes product vision, user personas, competitive positioning, and architecture strategy.
-
-<subagent_context>
-  **Context:** User input from Step 1, strategic planning recommendations, product requirements
-  **Output:** Complete mission.md file with all required sections
-  **Next Step:** Tech stack documentation creation
-</subagent_context>
-
-**Mission Foundation:** Product vision, user personas, problems, differentiators, key features, PocketFlow architecture strategy
-
-**Blocking:** Must complete mission document before technical documentation
-
-<instructions>
-  ACTION: Use mission-document-creator subagent for mission document creation
-  REQUEST: "Create comprehensive mission document with context:
-            - Main idea: [MAIN_IDEA_FROM_USER_INPUT]
-            - Key features: [KEY_FEATURES_FROM_USER_INPUT]
-            - Target users: [TARGET_USERS_FROM_USER_INPUT]
-            - Strategic planning: [STRATEGIC_RECOMMENDATIONS_FROM_STEP_1_5]
-            - Product requirements: [ALL_GATHERED_REQUIREMENTS]
-            - PocketFlow integration: [UNIVERSAL_ARCHITECTURE_STRATEGY]"
-  PROCESS: Mission document creation with all required sections
-  APPLY: Complete mission.md file creation in .agent-os/product/
-</instructions>
-
-</step>
-
-<step number="4" subagent="tech-stack-document-creator" name="create_tech_stack_md">
-
-### Step 4: Create tech-stack.md
-
-**Uses:** tech-stack-document-creator subagent for comprehensive tech stack documentation
-
-Use the tech-stack-document-creator subagent to create the comprehensive `.agent-os/product/tech-stack.md` file with modern Python defaults and universal PocketFlow framework integration.
-
-<subagent_context>
-  **Context:** User input, strategic planning, mission requirements, technical preferences
-  **Output:** Complete tech-stack.md file with all required sections and modern defaults
-  **Next Step:** Initial design document generation
-</subagent_context>
-
-**Tech Stack Focus:** Modern Python toolchain, PocketFlow integration, interactive preference gathering, missing items identification
-
-**Blocking:** Must complete tech stack documentation before design document creation
-
-<instructions>
-  ACTION: Use tech-stack-document-creator subagent for tech stack documentation
-  REQUEST: "Create comprehensive tech stack document with context:
-            - User input: [TECH_STACK_PREFERENCES_FROM_USER_INPUT]
-            - Mission context: [PRODUCT_REQUIREMENTS_FROM_MISSION]
-            - Strategic planning: [TECHNICAL_RECOMMENDATIONS_FROM_STEP_1_5]
-            - Modern defaults: [PYTHON_3_12_FASTAPI_PYDANTIC_UV_RUFF_PYTEST]
-            - Universal requirements: [POCKETFLOW_CHROMADB_INTEGRATION]
-            - Missing items handling: [INTERACTIVE_PREFERENCE_GATHERING]"
-  PROCESS: Tech stack documentation with modern Python defaults and PocketFlow integration
-  APPLY: Complete tech-stack.md file creation in .agent-os/product/
-</instructions>
-
-</step>
-
-<step number="4.5" subagent="design-document-creator" name="generate_initial_design_document">
-
-### Step 4.5: Generate Initial Product Design Document
-
-**Uses:** design-document-creator subagent for comprehensive design document creation
-
-Use the design-document-creator subagent to create the initial `docs/design.md` file that establishes the architectural foundation following PocketFlow's design-first methodology.
-
-<subagent_context>
-  **Context:** Mission document, tech stack, strategic planning, pattern validation, product requirements
-  **Output:** Complete docs/design.md file with architectural foundation
-  **Next Step:** Pre-flight checklist generation
-</subagent_context>
-
-**Design Foundation:** PocketFlow architecture, system purpose, pattern selection, data flow, SharedStore schema, utilities identification
-
-**Critical Priority:** Establishes design-first foundation for all future feature development
-
-<instructions>
-  ACTION: Use design-document-creator subagent for initial design document creation
-  REQUEST: "Create comprehensive initial design document with context:
-            - Mission context: [PRODUCT_MISSION_AND_ARCHITECTURE_FROM_MISSION_MD]
-            - Tech stack: [TECHNICAL_STACK_FROM_TECH_STACK_MD]
-            - Strategic planning: [STRATEGIC_RECOMMENDATIONS_FROM_STEP_1_5]
-            - Pattern validation: [PATTERN_RECOMMENDATIONS_FROM_STEP_4_6]
-            - Product requirements: [ALL_GATHERED_REQUIREMENTS]
-            - Design philosophy: [HUMANS_DESIGN_AGENTS_CODE_METHODOLOGY]"
-  PROCESS: Initial design document creation with PocketFlow architectural foundation
-  APPLY: Complete docs/design.md file creation with TODO templates for future expansion
-</instructions>
-
-</step>
-
 <step number="4.6" subagent="pattern-analyzer" name="technical_pattern_validation">
 
 ### Step 4.6: Technical Pattern Validation
@@ -302,7 +203,7 @@ Use the pattern-analyzer subagent to validate the recommended technical patterns
 <subagent_context>
   **Context:** Strategic recommendations, technical architecture, product requirements, pattern options
   **Output:** Pattern validation results and optimization recommendations
-  **Next Step:** Roadmap features with optimal PocketFlow patterns
+  **Next Step:** Coordinated parallel document creation
 </subagent_context>
 
 **Validation Focus:** PocketFlow pattern suitability, technical compatibility, team capability alignment
@@ -324,102 +225,39 @@ Use the pattern-analyzer subagent to validate the recommended technical patterns
 
 </step>
 
-<step number="5.5" subagent="pre-flight-checklist-creator" name="generate_prelight_checklist">
+<step number="3-7" subagent="document-orchestration-coordinator" name="parallel_document_creation">
 
-### Step 5.5: Generate Pre-flight Checklist
+### Steps 3-7: Coordinated Parallel Document Creation
 
-**Uses:** pre-flight-checklist-creator subagent for comprehensive pre-flight checklist creation
+**Uses:** document-orchestration-coordinator subagent for optimized parallel document generation
 
-Use the pre-flight-checklist-creator subagent to create the comprehensive `.agent-os/checklists/pre-flight.md` file based on PocketFlow best practices.
-
-<subagent_context>
-  **Context:** Design document, tech stack, mission requirements, PocketFlow best practices
-  **Output:** Complete pre-flight checklist with 9 critical areas and actionable TODO items
-  **Next Step:** Roadmap document creation
-</subagent_context>
-
-**Checklist Coverage:** Requirements analysis, architecture planning, data flow design, node selection, utility strategy, error handling, testing, performance, deployment
-
-**Validation Focus:** Ensure all critical PocketFlow best practices are covered with actionable guidance
-
-<instructions>
-  ACTION: Use pre-flight-checklist-creator subagent for pre-flight checklist creation
-  REQUEST: "Create comprehensive pre-flight checklist with context:
-            - Design foundation: [ARCHITECTURAL_FOUNDATION_FROM_DESIGN_MD]
-            - Tech stack: [TECHNICAL_REQUIREMENTS_FROM_TECH_STACK_MD]
-            - Mission requirements: [PRODUCT_REQUIREMENTS_FROM_MISSION_MD]
-            - PocketFlow best practices: [REFERENCE_POCKETFLOW_BEST_PRACTICES_MD]
-            - Checklist areas: [9_CRITICAL_AREAS_WITH_ACTIONABLE_TODOS]
-            - Documentation links: [RELEVANT_DOCUMENTATION_REFERENCES]"
-  PROCESS: Pre-flight checklist creation with PocketFlow best practices integration
-  APPLY: Complete pre-flight checklist creation in .agent-os/checklists/
-</instructions>
-
-</step>
-
-<step number="6" subagent="roadmap-document-creator" name="create_roadmap_md">
-
-### Step 6: Create roadmap.md
-
-**Uses:** roadmap-document-creator subagent for comprehensive roadmap document creation
-
-Use the roadmap-document-creator subagent to create the comprehensive `.agent-os/product/roadmap.md` file with 5-phase development roadmap and PocketFlow pattern tagging.
+Use the document-orchestration-coordinator subagent to create all product documents in parallel groups based on dependency analysis, achieving 20%+ performance improvement over sequential execution.
 
 <subagent_context>
-  **Context:** Mission document, design document, tech stack, pattern validation, strategic planning
-  **Output:** Complete roadmap.md file with 5 phases, PocketFlow patterns, and effort estimates
-  **Next Step:** CLAUDE.md project documentation creation
+  **Context:** User input, strategic planning, documentation requirements, parallel execution patterns
+  **Output:** Complete set of product documents with consistency validation
+  **Performance Target:** >20% improvement over sequential execution
 </subagent_context>
 
-**Roadmap Structure:** 5 development phases, 3-7 features per phase, PocketFlow pattern tagging, effort estimates, design-first enforcement
+**Parallel Groups:**
+- **Group A (Independent)**: mission, tech-stack, design, pre-flight checklist
+- **Group B (Dependent)**: roadmap, CLAUDE.md
 
-**Universal Requirements:** Design document prerequisites, PocketFlow pattern compliance, logical phase progression
-
-<instructions>
-  ACTION: Use roadmap-document-creator subagent for roadmap document creation
-  REQUEST: "Create comprehensive development roadmap with context:
-            - Mission features: [KEY_FEATURES_FROM_MISSION_MD]
-            - Design foundation: [ARCHITECTURAL_REQUIREMENTS_FROM_DESIGN_MD]
-            - Tech stack: [IMPLEMENTATION_CONSTRAINTS_FROM_TECH_STACK_MD]
-            - Pattern validation: [RECOMMENDED_PATTERNS_FROM_STEP_4_6]
-            - Strategic priorities: [DEVELOPMENT_PHASES_FROM_STRATEGIC_PLANNING]
-            - Universal requirements: [DESIGN_FIRST_POCKETFLOW_PATTERN_TAGGING]"
-  PROCESS: Roadmap creation with 5 phases, pattern tagging, and effort estimation
-  APPLY: Complete roadmap.md file creation in .agent-os/product/
-</instructions>
-
-</step>
-
-
-<step number="7" subagent="claude-md-manager" name="create_or_update_claude_md">
-
-### Step 7: Create or Update CLAUDE.md
-
-**Uses:** claude-md-manager subagent for CLAUDE.md project documentation management
-
-Use the claude-md-manager subagent to create or update the `CLAUDE.md` file in the project root with Agent OS documentation and workflow references.
-
-<subagent_context>
-  **Context:** All created product documents, Agent OS standards, workflow instructions, project structure
-  **Output:** Complete or updated CLAUDE.md file with Agent OS documentation section
-  **Next Step:** Process completion and validation
-</subagent_context>
-
-**Documentation Scope:** Product context references, development standards, project management workflows, merge strategy handling
-
-**File Management:** Smart merge strategy, preserve existing content, cross-document references
+**Quality Assurance:** Cross-document consistency validation and PocketFlow compliance
 
 <instructions>
-  ACTION: Use claude-md-manager subagent for CLAUDE.md documentation management
-  REQUEST: "Create or update CLAUDE.md file with Agent OS documentation:
-            - Product references: [REFERENCES_TO_MISSION_TECH_STACK_ROADMAP]
-            - Generated documents: [ALL_CREATED_PRODUCT_DOCUMENTATION]
-            - Workflow instructions: [AGENT_OS_WORKFLOW_COMMANDS_AND_REFERENCES]
-            - Development standards: [POCKETFLOW_PRINCIPLES_AND_BEST_PRACTICES]
-            - Merge strategy: [INTELLIGENT_SECTION_REPLACEMENT_OR_APPEND]
-            - Content preservation: [MAINTAIN_ALL_EXISTING_NON_AGENT_OS_CONTENT]"
-  PROCESS: CLAUDE.md creation or update with smart merge strategy
-  APPLY: Complete CLAUDE.md file management in project root
+  ACTION: Use document-orchestration-coordinator subagent for parallel document creation
+  REQUEST: "Coordinate parallel document creation for product planning:
+            - User context: [COMPLETE_USER_INPUT_FROM_STEP_1]
+            - Strategic planning: [STRATEGIC_RECOMMENDATIONS_FROM_STEP_1_5]
+            - Documentation discovery: [EXTERNAL_DOCS_FROM_STEP_1_6]
+            - Pattern validation: [VALIDATED_PATTERNS_FROM_STEP_4_6]
+            - Target documents: [mission.md, tech-stack.md, design.md, pre-flight.md, roadmap.md, CLAUDE.md]
+            - Parallel groups: [GROUP_A_INDEPENDENT, GROUP_B_DEPENDENT]
+            - Quality requirements: [CONSISTENCY_VALIDATION, POCKETFLOW_COMPLIANCE]"
+  PROCESS: Parallel document creation with dependency management
+  VALIDATE: Cross-document consistency and architectural coherence
+  REPORT: Performance metrics and completion status
 </instructions>
 
 </step>
@@ -430,24 +268,28 @@ Use the claude-md-manager subagent to create or update the `CLAUDE.md` file in t
 
 <final_checklist>
   <verify>
-    - [ ] All 3 files created in .agent-os/product/
+    - [ ] All product documents created in .agent-os/product/ (mission.md, tech-stack.md, roadmap.md)
     - [ ] docs/design.md created with architectural foundation
     - [ ] Pre-flight checklist generated in .agent-os/checklists/pre-flight.md
-    - [ ] User inputs incorporated throughout
-    - [ ] Missing tech stack items requested
+    - [ ] User inputs incorporated throughout all documents
+    - [ ] Missing tech stack items requested and resolved
     - [ ] CLAUDE.md created or updated with Agent OS documentation
+    - [ ] Cross-document consistency validation passed
+    - [ ] Performance improvement >20% achieved through parallel execution
   </verify>
 </final_checklist>
 
 <execution_order>
   1. Gather and validate all inputs
-  2. Create directory structure
-  3. Generate each file sequentially
-  4. Generate initial design document (docs/design.md)
-  5. Generate pre-flight checklist (.agent-os/checklists/pre-flight.md)
-  6. Request any missing information
-  7. Create or update project CLAUDE.md file
-  8. Validate complete documentation set
+  2. Execute strategic planning and pattern validation
+  3. Create directory structure
+  4. **Coordinated parallel document creation** using document-orchestration-coordinator
+     - Group A (parallel): mission.md, tech-stack.md, design.md, pre-flight.md
+     - Group B (dependent): roadmap.md, CLAUDE.md
+  5. Cross-document consistency validation
+  6. Performance metrics collection and reporting
+  7. Request any missing information resolution
+  8. Final documentation set validation
 </execution_order>
 
 ## Standard Project Structure
@@ -510,6 +352,6 @@ Use the claude-md-manager subagent to create or update the `CLAUDE.md` file in t
 
 ## Orchestration Integration
 
-@include orchestration/orchestrator-hooks.md
+This instruction integrates with the orchestrator system for coordinated planning and execution. The parallel document creation process is handled by the document-orchestration-coordinator agent as defined in step 3-7 above.
 
-This instruction integrates with the orchestrator system for coordinated planning and execution.
+For additional orchestration details, see: [orchestration/orchestrator-hooks.md](../../orchestration/orchestrator-hooks.md)
