@@ -34,6 +34,19 @@ class AgentMetric:
 
 
 @dataclass
+class ValidationMetric:
+    """Performance metrics for a validation execution"""
+    start_time: float
+    end_time: float
+    duration: float
+    total_documents_validated: int
+    error_count: int
+    warning_count: int
+    info_count: int
+    validation_passed: bool
+
+
+@dataclass
 class OrchestrationMetric:
     """Performance metrics for an orchestration session"""
     session_id: str
@@ -71,6 +84,7 @@ class DocumentCreationMetrics:
         self.current_session_id: Optional[str] = None
         self.session_start_time: Optional[float] = None
         self.current_agent_metrics: List[AgentMetric] = []
+        self.current_validation_metrics: List[ValidationMetric] = []
 
     def _init_database(self) -> None:
         """Initialize SQLite database for metrics storage"""
@@ -120,6 +134,7 @@ class DocumentCreationMetrics:
         self.current_session_id = session_id
         self.session_start_time = time.time()
         self.current_agent_metrics = []
+        self.current_validation_metrics = []
 
         print(f"📊 Started metrics session: {session_id}")
         return session_id
@@ -159,6 +174,35 @@ class DocumentCreationMetrics:
 
         status = "✅" if success else "❌"
         print(f"{status} Completed {agent_name} in {duration:.2f}s")
+
+        return metric
+
+    def record_validation_start(self) -> float:
+        """Record validation execution start"""
+        start_time = time.time()
+        print(f"🔍 Started validation at {datetime.now().strftime('%H:%M:%S')}")
+        return start_time
+
+    def record_validation_completion(self, start_time: float, validation_summary: Dict[str, Any]) -> ValidationMetric:
+        """Record validation execution completion"""
+        end_time = time.time()
+        duration = end_time - start_time
+
+        metric = ValidationMetric(
+            start_time=start_time,
+            end_time=end_time,
+            duration=duration,
+            total_documents_validated=validation_summary.get('total_documents_validated', 0),
+            error_count=validation_summary.get('error_count', 0),
+            warning_count=validation_summary.get('warning_count', 0),
+            info_count=validation_summary.get('info_count', 0),
+            validation_passed=validation_summary.get('validation_passed', False)
+        )
+
+        self.current_validation_metrics.append(metric)
+
+        status = "✅" if metric.validation_passed else "⚠️"
+        print(f"{status} Completed validation in {duration:.2f}s - {metric.total_documents_validated} docs, {metric.error_count} errors")
 
         return metric
 

@@ -346,10 +346,88 @@ Focus Areas: {agent_context.get('_agent_context', {}).get('focus_areas', 'standa
 4. **Proceed to dependent groups** based on completion status (repeat monitoring for each group)
 
 ### Step 3: Validation and Quality Assurance
-1. **Run cross-document consistency validation**
-2. **Check template compliance** for all generated documents
-3. **Validate PocketFlow architecture coherence**
-4. **Generate validation report** with any issues found
+1. **Run comprehensive validation** using DocumentConsistencyValidator:
+   ```python
+   from validation.document_consistency_validator import DocumentConsistencyValidator, WorkflowBlockedException, ValidationLevel
+
+   # Initialize validator with project root
+   validator = DocumentConsistencyValidator(project_root)
+
+   # Run all validation checks
+   print("🔍 Running post-generation validation...")
+   validator.run_all_validations()
+
+   # Generate comprehensive quality report
+   validation_report = validator.generate_report()
+   print("\n📋 DOCUMENT VALIDATION REPORT:")
+   print(validation_report)
+   ```
+
+2. **Apply validation gates** that block workflow progression on critical errors:
+   ```python
+   # Check for ERROR level issues that block workflow progression
+   error_issues = [issue for issue in validator.issues if issue.level == ValidationLevel.ERROR]
+
+   if error_issues:
+       print(f"\n❌ {len(error_issues)} critical validation errors found:")
+       for issue in error_issues:
+           print(f"   • {issue.category}: {issue.issue}")
+           if issue.suggestion:
+               print(f"     Fix: {issue.suggestion}")
+
+       # Block workflow progression on critical errors
+       raise WorkflowBlockedException(
+           f"Critical validation errors must be resolved before workflow can continue. "
+           f"Found {len(error_issues)} ERROR level issues.",
+           critical_issues=error_issues
+       )
+   ```
+
+3. **Present manual fix guidance** for identified issues:
+   ```python
+   # Provide guidance for warnings and info issues
+   warning_issues = [issue for issue in validator.issues if issue.level == ValidationLevel.WARNING]
+   info_issues = [issue for issue in validator.issues if issue.level == ValidationLevel.INFO]
+
+   if warning_issues or info_issues:
+       print(f"\n⚠️  Quality improvement recommendations:")
+
+       if warning_issues:
+           print(f"\n🟡 {len(warning_issues)} Warning(s) - Should be addressed:")
+           for issue in warning_issues:
+               print(f"   • {issue.file_path}: {issue.issue}")
+               if issue.suggestion:
+                   print(f"     Suggestion: {issue.suggestion}")
+
+       if info_issues:
+           print(f"\n🔵 {len(info_issues)} Info - Optional improvements:")
+           for issue in info_issues:
+               print(f"   • {issue.file_path}: {issue.issue}")
+               if issue.suggestion:
+                   print(f"     Suggestion: {issue.suggestion}")
+
+   # Record validation metrics
+   validation_summary = {
+       'total_documents_validated': len(validator.documents),
+       'error_count': len(error_issues),
+       'warning_count': len(warning_issues),
+       'info_count': len(info_issues),
+       'validation_passed': len(error_issues) == 0
+   }
+
+   print(f"\n✅ Validation completed: {validation_summary['total_documents_validated']} documents validated")
+   if validation_summary['validation_passed']:
+       print("✅ All critical validation checks passed!")
+   ```
+
+4. **Track validation performance** in metrics system:
+   ```python
+   # Record validation timing if metrics are available
+   if 'metrics' in locals():
+       validation_start = metrics.record_validation_start()
+       # ... validation code above ...
+       metrics.record_validation_completion(validation_start, validation_summary)
+   ```
 
 ### Step 4: Error Recovery and Session Finalization
 1. **Handle any agent failures** using fallback strategies with monitoring:
@@ -408,10 +486,15 @@ Focus Areas: {agent_context.get('_agent_context', {}).get('focus_areas', 'standa
 - [Additional documents as requested]
 
 ## Validation Results
-- **Cross-Reference Validation**: PASS
-- **Template Compliance**: PASS
-- **Architecture Consistency**: PASS
-- **Quality Score**: [PERCENTAGE]
+- **Documents Validated**: [NUMBER] documents processed
+- **Cross-Reference Validation**: [PASS/FAIL]
+- **Template Compliance**: [PASS/FAIL]
+- **Architecture Consistency**: [PASS/FAIL]
+- **Feature Consistency**: [PASS/FAIL]
+- **Critical Errors**: [NUMBER] (workflow blocking)
+- **Warnings**: [NUMBER] (should be addressed)
+- **Info Issues**: [NUMBER] (optional improvements)
+- **Overall Quality Gate**: [PASS/BLOCKED]
 
 ## Performance Metrics
 - **Sequential Baseline**: [TIME]
@@ -440,18 +523,35 @@ Focus Areas: {agent_context.get('_agent_context', {}).get('focus_areas', 'standa
 - **Successfully Created**: [NUMBER]
 - **Failed Documents**: [LIST]
 
+## Validation Issues
+- **Critical Errors**: [NUMBER] (blocked workflow)
+- **Validation Status**: [BLOCKED/PARTIAL]
+- **Validation Report**: [SUMMARY_OF_ISSUES]
+
 ## Detailed Issues
 [For each failed document:]
 - **Document**: [NAME]
 - **Agent**: [AGENT_NAME]
 - **Error**: [DETAILED_ERROR]
+- **Validation Issues**: [VALIDATION_PROBLEMS]
 - **Fallback Applied**: [YES/NO]
 - **Manual Steps Required**: [DESCRIPTION]
 
+[For each validation issue:]
+- **Issue Type**: [ERROR/WARNING/INFO]
+- **Category**: [VALIDATION_CATEGORY]
+- **File**: [AFFECTED_FILE]
+- **Problem**: [ISSUE_DESCRIPTION]
+- **Fix Guidance**: [SUGGESTED_SOLUTION]
+
 ## Recovery Recommendations
-1. [Specific recovery steps]
-2. [Manual completion guidance]
-3. [Prevention for future runs]
+1. **Fix Critical Validation Errors**: [SPECIFIC_STEPS]
+2. **Address Document Creation Failures**: [RECOVERY_STEPS]
+3. **Manual Completion Guidance**: [MANUAL_STEPS]
+4. **Prevention for Future Runs**: [PREVENTION_STEPS]
+
+## Quality Improvement Suggestions
+[For warnings and info issues that don't block but could improve quality]
 ```
 
 ## Context Requirements

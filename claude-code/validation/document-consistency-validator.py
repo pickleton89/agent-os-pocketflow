@@ -24,6 +24,14 @@ class ValidationLevel(Enum):
     INFO = "INFO"       # Nice to fix
 
 
+class WorkflowBlockedException(Exception):
+    """Exception raised when critical validation errors block workflow progression"""
+
+    def __init__(self, message: str, critical_issues: List = None):
+        super().__init__(message)
+        self.critical_issues = critical_issues or []
+
+
 @dataclass
 class ValidationIssue:
     """Represents a validation issue found in documents"""
