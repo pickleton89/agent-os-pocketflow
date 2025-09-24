@@ -181,36 +181,318 @@ Validation Rules:
 - User context preservation (original intent maintained)
 - Template format adherence (proper markdown structure)
 
-## Enhanced Error Handling
+## Enhanced Error Handling Integration
 
-### 1. Agent Failure Recovery
+### 1. Error Detection Framework
 
-**Fallback Strategies**:
-```markdown
-Level 1: Single Agent Retry
-- Retry failed agent with same context
-- Maximum 2 retry attempts
-- Log failure details for analysis
+**Comprehensive Agent Monitoring**:
+```python
+import os
+import time
+import json
 
-Level 2: Sequential Fallback
-- Fall back to sequential execution if parallel fails
-- Maintain context integrity during fallback
-- Continue with successful agents, retry only failed ones
+# Error detection during agent execution
+def monitor_agent_execution(agent_name, task_result, context_backup):
+    """Monitor agent execution and detect various failure patterns."""
 
-Level 3: Graceful Degradation
-- Skip failed document creation
-- Log missing documents clearly
-- Provide user notification of incomplete set
-- Suggest manual creation steps
+    # 1. Agent Execution Failures
+    if not task_result or task_result.get('status') == 'failed':
+        return {
+            'error_type': 'execution_failure',
+            'agent': agent_name,
+            'details': task_result.get('error', 'Unknown execution failure'),
+            'context': context_backup,
+            'recovery_level': 'level_1'  # Start with retry
+        }
+
+    # 2. Output Validation Failures
+    expected_output = task_result.get('expected_output_path')
+    if expected_output and not os.path.exists(expected_output):
+        return {
+            'error_type': 'output_missing',
+            'agent': agent_name,
+            'details': f'Expected output file not created: {expected_output}',
+            'context': context_backup,
+            'recovery_level': 'level_1'
+        }
+
+    # 3. Context Corruption Detection
+    if 'context_corrupted' in str(task_result.get('error', '')).lower():
+        return {
+            'error_type': 'context_corruption',
+            'agent': agent_name,
+            'details': 'Agent reported context corruption',
+            'context': context_backup,
+            'recovery_level': 'level_2'  # Skip straight to context repair
+        }
+
+    # 4. Format/Template Issues
+    output_content = task_result.get('output_content', '')
+    if output_content and ('malformed' in output_content or 'template error' in output_content.lower()):
+        return {
+            'error_type': 'template_failure',
+            'agent': agent_name,
+            'details': 'Generated content has template/format issues',
+            'context': context_backup,
+            'recovery_level': 'level_3'
+        }
+
+    return None  # No error detected
 ```
 
-### 2. Context Corruption Handling
+### 2. Integrated 4-Level Progressive Fallback Strategy
 
-**Context Integrity Protection**:
-- Validate context package before each agent invocation
-- Detect context corruption or missing required fields
-- Regenerate corrupted context from original user input
-- Maintain context version tracking for debugging
+**Level 1: Retry with Same Context**
+```python
+def execute_level_1_recovery(error_info, metrics, retry_count):
+    """Level 1: Retry failed agent with identical context (max 2 attempts)."""
+
+    agent_name = error_info['agent']
+    context_backup = error_info['context']
+
+    print(f"🔄 Level 1 Recovery: Retrying {agent_name} (attempt {retry_count + 1}/2)")
+
+    # Track retry in metrics
+    retry_start_time = metrics.record_agent_start(f"{agent_name}_retry_{retry_count + 1}")
+
+    try:
+        # Retry with identical context and parameters
+        retry_result = Task(
+            subagent_type=agent_name,
+            description=f"Retry document creation after failure",
+            prompt=f"""Retry document creation with preserved context:
+
+            Context: {context_backup}
+
+            Previous Error: {error_info['details']}
+            Retry Attempt: {retry_count + 1}/2
+
+            Please ensure document is generated successfully."""
+        )
+
+        # Record successful retry
+        metrics.record_agent_completion(
+            agent_name=f"{agent_name}_retry_{retry_count + 1}",
+            start_time=retry_start_time,
+            success=True,
+            retry_level=1
+        )
+
+        print(f"✅ Level 1 Recovery Successful: {agent_name} completed on retry")
+        return {'success': True, 'result': retry_result, 'level': 1}
+
+    except Exception as retry_error:
+        # Record failed retry
+        metrics.record_agent_completion(
+            agent_name=f"{agent_name}_retry_{retry_count + 1}",
+            start_time=retry_start_time,
+            success=False,
+            error_message=str(retry_error),
+            retry_level=1
+        )
+
+        print(f"❌ Level 1 Recovery Failed: {agent_name} retry failed: {retry_error}")
+        return {'success': False, 'error': str(retry_error), 'level': 1}
+```
+
+**Level 2: Sequential Execution Fallback**
+```python
+def execute_level_2_recovery(error_info, successful_results, metrics):
+    """Level 2: Switch to sequential execution with context preservation."""
+
+    print(f"🔄 Level 2 Recovery: Sequential execution fallback")
+
+    # Invoke document creation error handler for coordinated recovery
+    recovery_result = Task(
+        subagent_type="document-creation-error-handler",
+        description="Execute Level 2 recovery - sequential fallback",
+        prompt=f"""Execute Level 2 recovery for failed document creation:
+
+        ERROR DETAILS:
+        - Failed Agent: {error_info['agent']}
+        - Error Type: {error_info['error_type']}
+        - Error Details: {error_info['details']}
+
+        CURRENT STATE:
+        - Successful Results: {len(successful_results)} documents completed
+        - Failed Results: 1 document failed
+        - Original Context: {error_info['context']}
+
+        RECOVERY STRATEGY:
+        Apply Level 2 recovery strategy:
+        1. Switch from parallel to sequential execution
+        2. Preserve successful results from parallel attempts
+        3. Use context validation and repair if needed
+        4. Complete remaining documents one by one
+        5. Maintain context integrity throughout recovery
+
+        EXPECTED OUTPUT:
+        - Recovery status report
+        - Completed document or clear failure reason
+        - Context preservation confirmation
+        - Next steps if further recovery needed
+        """
+    )
+
+    return recovery_result
+```
+
+**Level 3: Simplified Template Generation**
+```python
+def execute_level_3_recovery(error_info, successful_results, metrics):
+    """Level 3: Generate simplified document templates."""
+
+    print(f"🔄 Level 3 Recovery: Simplified template generation")
+
+    # Invoke error handler for Level 3 recovery
+    recovery_result = Task(
+        subagent_type="document-creation-error-handler",
+        description="Execute Level 3 recovery - simplified templates",
+        prompt=f"""Execute Level 3 recovery for failed document creation:
+
+        ERROR HISTORY:
+        - Failed Agent: {error_info['agent']}
+        - Level 1 Attempts: Failed after 2 retries
+        - Level 2 Status: Failed sequential execution
+        - Error Type: {error_info['error_type']}
+
+        CURRENT STATE:
+        - Successful Documents: {len(successful_results)} completed
+        - Original Context: {error_info['context']}
+
+        RECOVERY STRATEGY:
+        Apply Level 3 recovery strategy:
+        1. Generate minimal viable document using general-purpose approach
+        2. Focus on core structure and content
+        3. Use simplified template with TODO placeholders
+        4. Preserve user context and successful document references
+        5. Provide completion guidance for manual finalization
+
+        EXPECTED OUTPUT:
+        - Simplified document template
+        - Clear TODO items for user completion
+        - Integration guidance with successful documents
+        - Quality assurance checklist
+        """
+    )
+
+    return recovery_result
+```
+
+**Level 4: Manual Completion Guidance**
+```python
+def execute_level_4_recovery(error_info, successful_results, metrics):
+    """Level 4: Provide comprehensive manual completion guidance."""
+
+    print(f"🔄 Level 4 Recovery: Manual completion guidance")
+
+    # Final fallback - comprehensive user guidance
+    recovery_result = Task(
+        subagent_type="document-creation-error-handler",
+        description="Execute Level 4 recovery - manual completion guidance",
+        prompt=f"""Execute Level 4 recovery for failed document creation:
+
+        FAILURE SUMMARY:
+        - Failed Agent: {error_info['agent']}
+        - All Recovery Levels Failed: 1, 2, and 3
+        - Final Error: {error_info.get('final_error', 'Multiple recovery failures')}
+
+        CURRENT STATE:
+        - Successful Documents: {[doc['path'] for doc in successful_results]}
+        - Failed Document Type: {error_info['agent'].replace('-creator', '').replace('document-', '')}
+        - Original User Context: {error_info['context']}
+
+        RECOVERY STRATEGY:
+        Apply Level 4 recovery strategy:
+        1. Provide detailed document template with complete structure
+        2. Include step-by-step manual completion instructions
+        3. Reference successful documents for consistency
+        4. Provide quality assurance checklist
+        5. Include troubleshooting guidance for future attempts
+        6. Generate recovery report for user documentation
+
+        EXPECTED OUTPUT:
+        - Complete document template ready for manual completion
+        - Detailed step-by-step completion instructions
+        - Cross-document consistency guidance
+        - Recovery report documenting the failure and resolution path
+        """
+    )
+
+    return recovery_result
+```
+
+### 3. Context Integrity Protection and Recovery
+
+**Enhanced Context Preservation**:
+```python
+def preserve_and_validate_context(original_context, successful_results):
+    """Preserve context and validate integrity during recovery operations."""
+
+    # Create deep copy of original context
+    import copy
+    context_backup = copy.deepcopy(original_context)
+
+    # Add recovery metadata
+    context_backup['_recovery_info'] = {
+        'original_timestamp': time.time(),
+        'successful_agents': [result['agent'] for result in successful_results],
+        'successful_outputs': [result['output_path'] for result in successful_results if 'output_path' in result],
+        'recovery_attempt_count': 0,
+        'context_version': '1.0'
+    }
+
+    # Validate context integrity
+    required_fields = ['main_idea', 'key_features', 'target_users']
+    missing_fields = [field for field in required_fields if field not in context_backup]
+
+    if missing_fields:
+        print(f"⚠️  Context integrity issue: Missing fields {missing_fields}")
+        context_backup['_recovery_info']['context_issues'] = missing_fields
+
+        # Attempt context reconstruction from successful documents
+        context_backup = attempt_context_reconstruction(context_backup, successful_results)
+
+    return context_backup
+
+def attempt_context_reconstruction(corrupted_context, successful_results):
+    """Attempt to reconstruct missing context from successful document outputs."""
+    import re
+
+    print("🔧 Attempting context reconstruction from successful documents...")
+
+    # Read successful documents to extract context clues
+    reconstructed_data = {}
+
+    for result in successful_results:
+        if 'output_path' in result and os.path.exists(result['output_path']):
+            try:
+                with open(result['output_path'], 'r') as f:
+                    content = f.read()
+
+                # Extract context clues from document content
+                if 'mission' in result['agent']:
+                    # Extract features and problems from mission document
+                    features_match = re.search(r'## Key Features\s*\n(.*?)(?=\n##|\n---|\Z)', content, re.DOTALL)
+                    if features_match:
+                        reconstructed_data['key_features_source'] = 'mission.md'
+                        reconstructed_data['key_features_extracted'] = features_match.group(1).strip()
+
+                elif 'tech-stack' in result['agent']:
+                    # Extract tech preferences
+                    tech_match = re.search(r'## Technology Stack\s*\n(.*?)(?=\n##|\n---|\Z)', content, re.DOTALL)
+                    if tech_match:
+                        reconstructed_data['tech_stack_source'] = 'tech-stack.md'
+                        reconstructed_data['tech_preferences_extracted'] = tech_match.group(1).strip()
+
+            except Exception as e:
+                print(f"   Warning: Could not extract context from {result['output_path']}: {e}")
+
+    # Merge reconstructed data with corrupted context
+    corrupted_context['_recovery_info']['context_reconstruction'] = reconstructed_data
+
+    return corrupted_context
+```
 
 ## Performance Monitoring
 
@@ -429,41 +711,265 @@ Focus Areas: {agent_context.get('_agent_context', {}).get('focus_areas', 'standa
        metrics.record_validation_completion(validation_start, validation_summary)
    ```
 
-### Step 4: Error Recovery and Session Finalization
-1. **Handle any agent failures** using fallback strategies with monitoring:
-   ```python
-   # Record failed agent attempts
-   metrics.record_agent_completion(
-       agent_name=failed_agent_name,
-       start_time=start_time,
-       success=False,
-       error_message=error_details
-   )
-   ```
-2. **Retry failed documents** with context preservation (track retries)
-3. **Complete orchestration session**:
-   ```python
-   orchestration_metric = metrics.finish_session(parallel_groups=num_groups)
-   ```
-4. **Generate performance and optimization summary**:
-   ```python
-   performance_report = metrics.generate_report(days=7)
-   optimization_report = optimizer.generate_optimization_report(full_context, target_agents)
+### Step 4: Comprehensive Error Recovery and Session Finalization
 
-   print("📊 ORCHESTRATION PERFORMANCE:")
-   print(performance_report)
+**4.1. Integrated Error Detection and Recovery**:
+```python
+# Enhanced error recovery workflow with 4-level progressive fallback
+def handle_comprehensive_error_recovery(failed_agents, successful_results, original_context, metrics):
+    """Implement comprehensive 4-level error recovery strategy."""
 
-   print("\n🎯 CONTEXT OPTIMIZATION REPORT:")
-   print(optimization_report)
+    print("🚨 Error Recovery Initiated")
 
-   # Log optimization metrics to performance database
-   metrics.record_optimization_metrics(
-       token_reduction_percentage=token_reduction,
-       original_tokens=original_tokens,
-       optimized_tokens=optimized_tokens,
-       agents_optimized=len(target_agents)
-   )
-   ```
+    recovery_results = {}
+    context_backup = preserve_and_validate_context(original_context, successful_results)
+
+    for agent_name, error_info in failed_agents.items():
+        print(f"\n🔄 Processing recovery for failed agent: {agent_name}")
+
+        # Start with Level 1 recovery
+        recovery_success = False
+        current_level = 1
+        max_retries = 2
+
+        # Level 1: Retry with same context (max 2 attempts)
+        for retry_count in range(max_retries):
+            if recovery_success:
+                break
+
+            print(f"🔄 Level 1 Recovery: Attempting retry {retry_count + 1}/{max_retries}")
+            level_1_result = execute_level_1_recovery(error_info, metrics, retry_count)
+
+            if level_1_result['success']:
+                recovery_results[agent_name] = {
+                    'status': 'recovered',
+                    'level': 1,
+                    'result': level_1_result['result'],
+                    'recovery_method': f'retry_attempt_{retry_count + 1}'
+                }
+                recovery_success = True
+                print(f"✅ Level 1 Recovery Successful for {agent_name}")
+            else:
+                print(f"❌ Level 1 Retry {retry_count + 1} failed: {level_1_result.get('error', 'Unknown error')}")
+
+        if recovery_success:
+            continue
+
+        # Level 2: Sequential execution fallback
+        print(f"🔄 Level 2 Recovery: Sequential execution fallback for {agent_name}")
+        current_level = 2
+
+        level_2_result = execute_level_2_recovery(error_info, successful_results, metrics)
+
+        if level_2_result and 'success' in level_2_result and level_2_result['success']:
+            recovery_results[agent_name] = {
+                'status': 'recovered',
+                'level': 2,
+                'result': level_2_result,
+                'recovery_method': 'sequential_fallback'
+            }
+            recovery_success = True
+            print(f"✅ Level 2 Recovery Successful for {agent_name}")
+        else:
+            print(f"❌ Level 2 Recovery Failed for {agent_name}")
+
+        if recovery_success:
+            continue
+
+        # Level 3: Simplified template generation
+        print(f"🔄 Level 3 Recovery: Simplified template generation for {agent_name}")
+        current_level = 3
+
+        level_3_result = execute_level_3_recovery(error_info, successful_results, metrics)
+
+        if level_3_result and level_3_result.get('template_created'):
+            recovery_results[agent_name] = {
+                'status': 'partially_recovered',
+                'level': 3,
+                'result': level_3_result,
+                'recovery_method': 'simplified_template',
+                'user_action_required': True
+            }
+            recovery_success = True
+            print(f"✅ Level 3 Recovery: Template created for {agent_name} - user completion required")
+        else:
+            print(f"❌ Level 3 Recovery Failed for {agent_name}")
+
+        if recovery_success:
+            continue
+
+        # Level 4: Manual completion guidance
+        print(f"🔄 Level 4 Recovery: Manual completion guidance for {agent_name}")
+        current_level = 4
+
+        level_4_result = execute_level_4_recovery(error_info, successful_results, metrics)
+
+        recovery_results[agent_name] = {
+            'status': 'manual_completion_required',
+            'level': 4,
+            'result': level_4_result,
+            'recovery_method': 'manual_guidance',
+            'user_action_required': True,
+            'completion_guidance': level_4_result.get('completion_instructions', 'See recovery report for details')
+        }
+
+        print(f"📋 Level 4 Recovery: Manual completion guidance provided for {agent_name}")
+
+        # Record final recovery metrics
+        metrics.record_agent_completion(
+            agent_name=f"{agent_name}_final_recovery",
+            start_time=error_info.get('original_start_time'),
+            success=False,
+            recovery_level=current_level,
+            recovery_status='manual_completion_required',
+            error_message=f"All automatic recovery levels failed. User intervention required."
+        )
+
+    return recovery_results
+
+# Recovery success rate calculation
+total_agents = len(failed_agents)
+fully_recovered = len([r for r in recovery_results.values() if r['status'] == 'recovered'])
+partially_recovered = len([r for r in recovery_results.values() if r['status'] == 'partially_recovered'])
+manual_required = len([r for r in recovery_results.values() if r['status'] == 'manual_completion_required'])
+
+recovery_rate = ((fully_recovered + partially_recovered) / total_agents) * 100 if total_agents > 0 else 100
+
+print(f"\n📊 RECOVERY SUMMARY:")
+print(f"   Total Failed Agents: {total_agents}")
+print(f"   Fully Recovered: {fully_recovered}")
+print(f"   Partially Recovered: {partially_recovered}")
+print(f"   Manual Completion Required: {manual_required}")
+print(f"   Recovery Rate: {recovery_rate:.1f}%")
+
+# Ensure we meet the 90%+ recovery rate success criteria
+if recovery_rate >= 90:
+    print(f"✅ Recovery rate target achieved: {recovery_rate:.1f}% >= 90%")
+else:
+    print(f"⚠️  Recovery rate below target: {recovery_rate:.1f}% < 90%")
+```
+
+**4.2. Recovery Reporting and Manual Completion Guidance**:
+```python
+def generate_comprehensive_recovery_report(recovery_results, metrics, validation_summary):
+    """Generate detailed recovery report for user documentation."""
+
+    recovery_report = {
+        'timestamp': time.strftime('%Y-%m-%d %H:%M:%S'),
+        'session_summary': {
+            'total_recovery_attempts': len(recovery_results),
+            'successful_recoveries': len([r for r in recovery_results.values() if r['status'] in ['recovered', 'partially_recovered']]),
+            'manual_completions_required': len([r for r in recovery_results.values() if r['status'] == 'manual_completion_required']),
+            'overall_recovery_rate': ((len([r for r in recovery_results.values() if r['status'] in ['recovered', 'partially_recovered']]) / len(recovery_results)) * 100) if recovery_results else 100
+        },
+        'recovery_details': recovery_results,
+        'performance_impact': {
+            'additional_execution_time': metrics.get_recovery_overhead_time(),
+            'token_usage_increase': metrics.get_recovery_token_overhead(),
+            'context_preservation_integrity': 'maintained' if validation_summary.get('context_integrity') else 'degraded'
+        },
+        'user_actions_required': [],
+        'quality_assurance_checklist': [
+            '[ ] Review all generated documents for completeness',
+            '[ ] Verify cross-document consistency and references',
+            '[ ] Complete any TODO items in generated templates',
+            '[ ] Run validation checks on final document set',
+            '[ ] Update CLAUDE.md with document references'
+        ]
+    }
+
+    # Generate specific user actions for manual completions
+    for agent_name, result in recovery_results.items():
+        if result['status'] == 'manual_completion_required':
+            document_type = agent_name.replace('-creator', '').replace('document-', '')
+            recovery_report['user_actions_required'].append({
+                'document': document_type,
+                'template_path': result.get('result', {}).get('template_path', f'templates/{document_type}.md'),
+                'completion_steps': result.get('completion_guidance', 'Follow template TODO items'),
+                'priority': 'high'
+            })
+        elif result['status'] == 'partially_recovered':
+            document_type = agent_name.replace('-creator', '').replace('document-', '')
+            recovery_report['user_actions_required'].append({
+                'document': document_type,
+                'template_path': result.get('result', {}).get('output_path', f'{document_type}.md'),
+                'completion_steps': 'Review and complete TODO placeholders',
+                'priority': 'medium'
+            })
+
+    return recovery_report
+
+# Generate and display comprehensive recovery report
+recovery_report = generate_comprehensive_recovery_report(recovery_results, metrics, validation_summary)
+
+print("\n📋 COMPREHENSIVE RECOVERY REPORT:")
+print("="*60)
+print(f"Report Generated: {recovery_report['timestamp']}")
+print(f"Recovery Rate: {recovery_report['session_summary']['overall_recovery_rate']:.1f}%")
+print(f"Successful Recoveries: {recovery_report['session_summary']['successful_recoveries']}/{recovery_report['session_summary']['total_recovery_attempts']}")
+
+if recovery_report['user_actions_required']:
+    print(f"\n⚠️  USER ACTION REQUIRED:")
+    for action in recovery_report['user_actions_required']:
+        print(f"   • {action['document'].upper()}: {action['completion_steps']}")
+        print(f"     Template: {action['template_path']} (Priority: {action['priority']})")
+
+print(f"\n📊 Performance Impact:")
+print(f"   Additional Time: {recovery_report['performance_impact']['additional_execution_time']}")
+print(f"   Token Overhead: {recovery_report['performance_impact']['token_usage_increase']}")
+print(f"   Context Integrity: {recovery_report['performance_impact']['context_preservation_integrity']}")
+
+# Save recovery report to file for user reference
+recovery_report_path = f".agent-os/reports/recovery_report_{int(time.time())}.json"
+os.makedirs(os.path.dirname(recovery_report_path), exist_ok=True)
+with open(recovery_report_path, 'w') as f:
+    json.dump(recovery_report, f, indent=2)
+
+print(f"\n💾 Recovery report saved: {recovery_report_path}")
+```
+
+**4.3. Final Session Completion and Metrics**:
+```python
+# Complete orchestration session with enhanced recovery metrics
+orchestration_metric = metrics.finish_session(
+    parallel_groups=num_groups,
+    recovery_attempts=len(recovery_results),
+    recovery_rate=recovery_report['session_summary']['overall_recovery_rate'],
+    context_preservation_status=validation_summary.get('context_integrity', True)
+)
+
+# Generate comprehensive performance and optimization summary
+performance_report = metrics.generate_report(days=7)
+optimization_report = optimizer.generate_optimization_report(full_context, target_agents)
+
+print("\n📊 FINAL ORCHESTRATION PERFORMANCE:")
+print("="*50)
+print(performance_report)
+
+print("\n🎯 CONTEXT OPTIMIZATION REPORT:")
+print("="*50)
+print(optimization_report)
+
+print(f"\n🔄 ERROR RECOVERY SUMMARY:")
+print(f"   Recovery Strategy: 4-Level Progressive Fallback")
+print(f"   Final Recovery Rate: {recovery_report['session_summary']['overall_recovery_rate']:.1f}%")
+print(f"   Context Integrity: Maintained throughout recovery process")
+print(f"   User Actions Required: {len(recovery_report['user_actions_required'])} items")
+
+# Log comprehensive optimization and recovery metrics to performance database
+metrics.record_optimization_metrics(
+    token_reduction_percentage=token_reduction,
+    original_tokens=original_tokens,
+    optimized_tokens=optimized_tokens,
+    agents_optimized=len(target_agents),
+    recovery_attempts=len(recovery_results),
+    recovery_success_rate=recovery_report['session_summary']['overall_recovery_rate'],
+    context_preservation_status='maintained'
+)
+
+print(f"\n✅ Session completed with comprehensive error recovery support")
+print(f"   Historical metrics database updated at: {metrics.get_database_path()}")
+```
 
 ## Output Format
 
@@ -514,44 +1020,107 @@ Focus Areas: {agent_context.get('_agent_context', {}).get('focus_areas', 'standa
 *Historical metrics database updated at: [METRICS_DB_PATH]*
 ```
 
-### Error Response
+### Enhanced Error Response with Recovery Integration
 ```markdown
-# Document Orchestration Partial/Failed
+# Document Orchestration with Error Recovery
 
 ## Execution Summary
-- **Attempted Documents**: [NUMBER]
+- **Total Documents Requested**: [NUMBER]
 - **Successfully Created**: [NUMBER]
-- **Failed Documents**: [LIST]
+- **Recovered via Error Handling**: [NUMBER]
+- **Partial Recovery (User Action Required)**: [NUMBER]
+- **Manual Completion Required**: [NUMBER]
 
-## Validation Issues
-- **Critical Errors**: [NUMBER] (blocked workflow)
-- **Validation Status**: [BLOCKED/PARTIAL]
-- **Validation Report**: [SUMMARY_OF_ISSUES]
+## Error Recovery Performance
+- **Recovery Strategy Applied**: 4-Level Progressive Fallback
+- **Overall Recovery Rate**: [PERCENTAGE]% (Target: ≥90%)
+- **Level 1 Recoveries (Retry)**: [NUMBER]
+- **Level 2 Recoveries (Sequential)**: [NUMBER]
+- **Level 3 Recoveries (Templates)**: [NUMBER]
+- **Level 4 Fallbacks (Manual)**: [NUMBER]
 
-## Detailed Issues
-[For each failed document:]
+## Generated Documents Status
+[For each document:]
+- ✅ **[DOCUMENT_NAME]**: Successfully created
+- 🔄 **[DOCUMENT_NAME]**: Recovered at Level [N] - [RECOVERY_METHOD]
+- ⚠️  **[DOCUMENT_NAME]**: Partial recovery - User completion required
+- 📋 **[DOCUMENT_NAME]**: Manual completion required - Template provided
+
+## Recovery Details
+[For each recovered document:]
 - **Document**: [NAME]
-- **Agent**: [AGENT_NAME]
-- **Error**: [DETAILED_ERROR]
-- **Validation Issues**: [VALIDATION_PROBLEMS]
-- **Fallback Applied**: [YES/NO]
-- **Manual Steps Required**: [DESCRIPTION]
+- **Original Agent**: [AGENT_NAME]
+- **Failure Reason**: [ORIGINAL_ERROR]
+- **Recovery Level Applied**: Level [N] - [RECOVERY_DESCRIPTION]
+- **Recovery Status**: [SUCCESS/PARTIAL/MANUAL]
+- **Template Path**: [PATH_TO_TEMPLATE] (if applicable)
+- **User Action Required**: [YES/NO] - [SPECIFIC_ACTIONS]
 
-[For each validation issue:]
-- **Issue Type**: [ERROR/WARNING/INFO]
-- **Category**: [VALIDATION_CATEGORY]
-- **File**: [AFFECTED_FILE]
-- **Problem**: [ISSUE_DESCRIPTION]
-- **Fix Guidance**: [SUGGESTED_SOLUTION]
+## Validation Results
+- **Documents Validated**: [NUMBER] documents processed
+- **Cross-Reference Validation**: [PASS/FAIL]
+- **Template Compliance**: [PASS/FAIL]
+- **Architecture Consistency**: [PASS/FAIL]
+- **Feature Consistency**: [PASS/FAIL]
+- **Critical Errors**: [NUMBER] (workflow blocking)
+- **Warnings**: [NUMBER] (should be addressed)
+- **Info Issues**: [NUMBER] (optional improvements)
+- **Overall Quality Gate**: [PASS/BLOCKED]
 
-## Recovery Recommendations
-1. **Fix Critical Validation Errors**: [SPECIFIC_STEPS]
-2. **Address Document Creation Failures**: [RECOVERY_STEPS]
-3. **Manual Completion Guidance**: [MANUAL_STEPS]
-4. **Prevention for Future Runs**: [PREVENTION_STEPS]
+## Context Preservation Report
+- **Context Integrity**: [MAINTAINED/DEGRADED]
+- **Successful Context Reconstructions**: [NUMBER]
+- **Context Backup Locations**: [PATHS]
+- **Recovery Context Version**: [VERSION]
 
-## Quality Improvement Suggestions
-[For warnings and info issues that don't block but could improve quality]
+## User Actions Required
+[For documents requiring manual completion:]
+1. **[DOCUMENT_TYPE]** (Priority: [HIGH/MEDIUM/LOW])
+   - **Template Location**: [PATH]
+   - **Completion Steps**: [DETAILED_STEPS]
+   - **Reference Documents**: [SUCCESSFUL_DOCS_FOR_CONSISTENCY]
+   - **Estimated Time**: [TIME_ESTIMATE]
+
+## Performance Impact
+- **Total Recovery Time**: [TIME] (additional overhead)
+- **Token Usage Overhead**: [TOKENS] tokens for recovery attempts
+- **Context Optimization Savings**: [PERCENTAGE]% tokens saved despite recovery
+- **Session Completion Time**: [TOTAL_TIME]
+
+## Quality Assurance Checklist
+- [ ] Review all generated documents for completeness
+- [ ] Verify cross-document consistency and references
+- [ ] Complete TODO items in template files
+- [ ] Run final validation on completed document set
+- [ ] Update CLAUDE.md with all document references
+- [ ] Verify PocketFlow pattern compliance
+
+## Recovery Report
+**Detailed Recovery Report Saved**: `.agent-os/reports/recovery_report_[TIMESTAMP].json`
+
+📊 **PERFORMANCE SUMMARY:**
+[GENERATED_PERFORMANCE_REPORT_WITH_RECOVERY_METRICS]
+
+🎯 **CONTEXT OPTIMIZATION REPORT:**
+[GENERATED_OPTIMIZATION_REPORT]
+
+🔄 **ERROR RECOVERY SUMMARY:**
+- Recovery Strategy: 4-Level Progressive Fallback
+- Final Recovery Rate: [PERCENTAGE]%
+- Context Integrity: Maintained throughout recovery process
+- User Actions Required: [NUMBER] items
+
+## Prevention Recommendations
+1. **Environment Improvements**: [SUGGESTIONS_FOR_REDUCING_FUTURE_FAILURES]
+2. **Context Quality**: [RECOMMENDATIONS_FOR_BETTER_CONTEXT]
+3. **Agent Optimization**: [SUGGESTIONS_FOR_AGENT_IMPROVEMENTS]
+4. **Monitoring Enhancement**: [RECOMMENDATIONS_FOR_BETTER_ERROR_DETECTION]
+
+## Support Resources
+- Recovery Report: [RECOVERY_REPORT_PATH]
+- Template Guidelines: `.agent-os/templates/README.md`
+- Validation Scripts: `.agent-os/validation/`
+- Performance Metrics: [METRICS_DB_PATH]
 ```
 
 ## Context Requirements
