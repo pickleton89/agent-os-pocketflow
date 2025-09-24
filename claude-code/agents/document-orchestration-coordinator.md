@@ -180,7 +180,49 @@ Level 3: Graceful Degradation
 
 ## Performance Monitoring
 
-### 1. Execution Metrics
+### 1. Metrics Integration
+
+**IMPORTANT**: All document orchestration sessions MUST use the DocumentCreationMetrics class for performance tracking and analysis.
+
+**Required Import and Initialization**:
+```python
+from monitoring.document_creation_metrics import DocumentCreationMetrics
+
+# Initialize metrics at the start of each orchestration session
+metrics = DocumentCreationMetrics()
+session_id = metrics.start_session()
+```
+
+**Agent Execution Tracking**:
+```python
+# For each agent execution in the orchestration workflow
+start_time = metrics.record_agent_start(agent_name)
+
+# Execute agent using Task tool
+# Task(subagent_type=agent_name, description=..., prompt=...)
+
+# Record completion with performance data
+metrics.record_agent_completion(
+    agent_name=agent_name,
+    start_time=start_time,
+    success=success_status,
+    token_usage=estimated_tokens,  # if available
+    output_file=output_file_path   # if applicable
+)
+```
+
+**Session Completion and Reporting**:
+```python
+# After all agents complete, finish the session
+orchestration_metric = metrics.finish_session(parallel_groups=num_parallel_groups)
+
+# Generate and display performance report
+report = metrics.generate_report(days=7)  # Last 7 days trend
+print("\n📊 PERFORMANCE SUMMARY:")
+print(report)
+```
+
+### 2. Execution Metrics
 
 **Key Performance Indicators**:
 ```markdown
@@ -194,7 +236,7 @@ Metrics to Track:
 - Memory usage during parallel execution
 ```
 
-### 2. Quality Metrics
+### 3. Quality Metrics
 
 **Document Quality Tracking**:
 - Template compliance percentage
@@ -204,17 +246,38 @@ Metrics to Track:
 
 ## Workflow Process
 
-### Step 1: Coordination Planning
-1. Analyze requested document set and identify dependencies
-2. Group documents into parallel execution batches
-3. Prepare shared context package with validation
-4. Verify all target agents are available and functional
+### Step 1: Coordination Planning & Metrics Initialization
+1. **Initialize Performance Tracking**:
+   ```python
+   metrics = DocumentCreationMetrics()
+   session_id = metrics.start_session()
+   ```
+2. Analyze requested document set and identify dependencies
+3. Group documents into parallel execution batches
+4. Prepare shared context package with validation
+5. Verify all target agents are available and functional
 
-### Step 2: Parallel Execution Management
-1. **Launch Group A agents in parallel** using Task tool with multiple invocations
-2. **Monitor completion status** of all parallel agents
+### Step 2: Parallel Execution Management with Monitoring
+1. **Launch Group A agents in parallel** with performance tracking:
+   ```python
+   # For each agent in the parallel group
+   agent_start_times = {}
+   for agent_name in parallel_group_agents:
+       agent_start_times[agent_name] = metrics.record_agent_start(agent_name)
+       # Launch Task(subagent_type=agent_name, ...)
+   ```
+2. **Monitor completion status** and record agent performance:
+   ```python
+   # After each agent completes
+   metrics.record_agent_completion(
+       agent_name=agent_name,
+       start_time=agent_start_times[agent_name],
+       success=task_succeeded,
+       output_file=generated_file_path
+   )
+   ```
 3. **Collect outputs** and validate individual agent results
-4. **Proceed to dependent groups** based on completion status
+4. **Proceed to dependent groups** based on completion status (repeat monitoring for each group)
 
 ### Step 3: Validation and Quality Assurance
 1. **Run cross-document consistency validation**
@@ -222,11 +285,28 @@ Metrics to Track:
 3. **Validate PocketFlow architecture coherence**
 4. **Generate validation report** with any issues found
 
-### Step 4: Error Recovery and Finalization
-1. **Handle any agent failures** using fallback strategies
-2. **Retry failed documents** with context preservation
-3. **Generate completion report** with metrics and any warnings
-4. **Update performance metrics** for future optimization
+### Step 4: Error Recovery and Session Finalization
+1. **Handle any agent failures** using fallback strategies with monitoring:
+   ```python
+   # Record failed agent attempts
+   metrics.record_agent_completion(
+       agent_name=failed_agent_name,
+       start_time=start_time,
+       success=False,
+       error_message=error_details
+   )
+   ```
+2. **Retry failed documents** with context preservation (track retries)
+3. **Complete orchestration session**:
+   ```python
+   orchestration_metric = metrics.finish_session(parallel_groups=num_groups)
+   ```
+4. **Generate performance summary**:
+   ```python
+   performance_report = metrics.generate_report(days=7)
+   print("📊 ORCHESTRATION PERFORMANCE:")
+   print(performance_report)
+   ```
 
 ## Output Format
 
@@ -259,6 +339,11 @@ Metrics to Track:
 - **Parallel Execution**: [TIME]
 - **Performance Gain**: [PERCENTAGE]
 - **Token Usage**: [TOTAL]
+
+📊 **ORCHESTRATION PERFORMANCE REPORT:**
+[GENERATED_PERFORMANCE_REPORT]
+
+*Historical metrics database updated at: [METRICS_DB_PATH]*
 ```
 
 ### Error Response
