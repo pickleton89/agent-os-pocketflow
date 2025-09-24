@@ -64,7 +64,8 @@
       "WebFetch(domain:callmephilip.com)",
       "WebFetch(domain:docs.claude.com)",
       "Bash(./.agent-os/validation/test_pocketflow_integration.sh)",
-      "Bash(git -C /Users/jeffkiefer/Documents/projects/agent-os-pocketflow status)"
+      "Bash(git -C /Users/jeffkiefer/Documents/projects/agent-os-pocketflow status)",
+      "Read(//Users/jeffkiefer/Documents/projects/**)"
     ],
     "deny": [],
     "ask": [],

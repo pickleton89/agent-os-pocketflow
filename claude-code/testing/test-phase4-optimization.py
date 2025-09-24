@@ -17,15 +17,55 @@ from pathlib import Path
 from typing import Dict, Any
 import tempfile
 
-# Add current directory to path for importing our modules
+# Add claude-code directory to path for importing our modules
 sys.path.append(str(Path(__file__).parent.parent))
 
+# Try to import modules using importlib for dynamic loading
+import importlib.util
+import importlib.machinery
+
+def load_module_from_path(name: str, file_path: str):
+    """Dynamically load a module from a file path"""
+    spec = importlib.util.spec_from_file_location(name, file_path)
+    if spec and spec.loader:
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+    return None
+
+# Load modules dynamically
+CLAUDE_CODE_DIR = Path(__file__).parent.parent
+DocumentConsistencyValidator = None
+DocumentCreationMetrics = None
+ContextOptimizer = None
+
 try:
-    from validation.document_consistency_validator import DocumentConsistencyValidator
-    from monitoring.document_creation_metrics import DocumentCreationMetrics
-    from optimization.context_optimization_framework import ContextOptimizer
-except ImportError:
-    print("⚠️  Some optimization modules not available - testing will be limited")
+    # Load validation module
+    val_module = load_module_from_path(
+        "document_consistency_validator",
+        str(CLAUDE_CODE_DIR / "validation" / "document-consistency-validator.py")
+    )
+    if val_module:
+        DocumentConsistencyValidator = val_module.DocumentConsistencyValidator
+
+    # Load monitoring module
+    mon_module = load_module_from_path(
+        "document_creation_metrics",
+        str(CLAUDE_CODE_DIR / "monitoring" / "document_creation_metrics.py")
+    )
+    if mon_module:
+        DocumentCreationMetrics = mon_module.DocumentCreationMetrics
+
+    # Load optimization module
+    opt_module = load_module_from_path(
+        "context_optimization_framework",
+        str(CLAUDE_CODE_DIR / "optimization" / "context-optimization-framework.py")
+    )
+    if opt_module:
+        ContextOptimizer = opt_module.ContextOptimizer
+
+except Exception as e:
+    print(f"⚠️  Some optimization modules not available - testing will be limited: {e}")
 
 
 class Phase4OptimizationTester:
@@ -372,7 +412,7 @@ TestApp is a productivity tool that helps small business owners manage their dai
 
         scripts = [
             "validation/document-consistency-validator.py",
-            "monitoring/document-creation-metrics.py",
+            "monitoring/document_creation_metrics.py",
             "optimization/context-optimization-framework.py"
         ]
 
