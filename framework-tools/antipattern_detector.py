@@ -351,13 +351,13 @@ class PocketFlowASTVisitor(ast.NodeVisitor):
         return count
     
     def _count_if_else_branches(self, node: ast.AST) -> int:
-        """Count if/else branches in a node"""
+        """Count if/else decision points in a node (each if/elif/else chain counts as 1)"""
         count = 0
         for child in ast.walk(node):
             if isinstance(child, ast.If):
                 count += 1
-                if child.orelse:
-                    count += 1
+                # Note: child.orelse contains else/elif but shouldn't be double-counted
+                # Each if/elif/else chain is ONE decision point
         return count
     
     def _has_multiple_verbs(self, class_name: str) -> bool:
