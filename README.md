@@ -6,23 +6,35 @@ THIS IS NOT A FINISHED PRODUCT AND STILL NEEDS WORK AND TESTING
 
 This is Agent OS v1.4.0 enhanced with PocketFlow capabilities. When you use Agent OS commands to develop applications, the framework automatically generates complete PocketFlow templates when needed.
 
-## 🎯 Framework vs Usage Statement
+## 🎯 Understanding This Repository
 
-This repository IS the Agent OS + PocketFlow framework itself — NOT a project using it.
+### This Repository (Framework Development)
+- **Purpose**: Generate PocketFlow templates for OTHER projects
+- **You work here if**: Building the generator, validators, setup scripts
+- **What you test**: Template generation logic, validation scripts, framework tools
+- **Dependencies**: Minimal (PyYAML, dev tools) - we DON'T install PocketFlow here
 
-Framework Repository (this repo):
-- Generates PocketFlow templates for other projects
-- Contains setup scripts, validation tools, and code generators
-- Template placeholders and TODO stubs are intentional design features
-- Dependencies support template generation, not application runtime
+### End-User Projects (Framework Usage)
+- **Purpose**: Build LLM applications using generated templates
+- **You work here if**: Creating RAG systems, AI agents, tools with PocketFlow
+- **What you test**: Your application logic, API endpoints, LLM integrations
+- **Dependencies**: PocketFlow, FastAPI, pattern-specific libraries
 
-Usage Repository (end-user projects):
-- Where PocketFlow gets installed as a dependency
-- Where generated templates become working applications
-- Where the orchestrator agent runs and is useful
-- Where placeholder code gets implemented
+### Common Confusion Points
 
-Key Principle: Missing implementations in generated templates are features, not bugs. This framework creates starting points for developers, not finished applications.
+❌ **"Why don't imports work in generated templates?"**
+→ This repo generates templates; PocketFlow installs in end-user projects
+
+❌ **"Why are there TODOs everywhere?"**
+→ Educational placeholders for developers to customize
+
+❌ **"Why aren't agents working?"**
+→ Agent definitions are OUTPUTS for end-user projects
+
+✅ **"How do I test the generator?"**
+→ `./scripts/run-all-tests.sh`
+
+**Key Principle**: Missing implementations in generated templates are features, not bugs. This framework creates starting points for developers, not finished applications.
 
 ## What This Framework Provides
 
