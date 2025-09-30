@@ -72,11 +72,12 @@ fi
 echo ""
 
 # Check if coverage meets minimum threshold
-if (( $(echo "$COVERAGE >= $MIN_COVERAGE" | bc -l) )); then
+# Using awk for portability (avoids bc dependency)
+if awk -v cov="$COVERAGE" -v min="$MIN_COVERAGE" 'BEGIN { exit (cov >= min) ? 0 : 1 }'; then
     echo -e "${GREEN}✅ Coverage ${COVERAGE}% meets minimum threshold of ${MIN_COVERAGE}%${NC}"
     exit 0
 else
     echo -e "${YELLOW}⚠️  Coverage ${COVERAGE}% is below minimum threshold of ${MIN_COVERAGE}%${NC}"
-    echo -e "${YELLOW}   Target: Phase 1 (60%), Phase 2 (70%), Phase 3 (80%)${NC}"
+    echo -e "${YELLOW}   Goals: Phase 1 (baseline), Phase 2 (60%), Phase 3 (70%), Phase 4 (80%)${NC}"
     exit 1
 fi
