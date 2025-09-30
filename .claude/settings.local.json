@@ -67,7 +67,12 @@
       "Bash(git -C /Users/jeffkiefer/Documents/projects/agent-os-pocketflow status)",
       "Read(//Users/jeffkiefer/Documents/projects/**)",
       "Bash(cat:*)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Bash(while read f)",
+      "Bash(do echo \"$f:\")",
+      "Bash(done)",
+      "Bash(for file in ./claude-code/testing/test-phase4-optimization.py ./framework-tools/test_smart_features.py ./framework-tools/simple_pattern_test.py ./.agent-os/workflows/cli-smoke/customeragent/tests/test_nodes.py ./.agent-os/workflows/cli-smoke/customeragent/tests/test_flow.py ./.agent-os/workflows/cli-smoke/customeragent/tests/test_api.py ./pocketflow_tools/generators/test_generators.py)",
+      "Bash(do echo \"$file:\")"
     ],
     "deny": [],
     "ask": [],
