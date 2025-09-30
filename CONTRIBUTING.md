@@ -277,6 +277,55 @@ python3 test-generator.py
 python3 test_full_generation_with_dependencies.py
 ```
 
+### Code Coverage
+
+**Current Baseline**: 15.60% (as of 2025-09-30)
+
+Measure test coverage for framework code:
+
+```bash
+# Run coverage with default 60% threshold
+./scripts/measure-coverage.sh
+
+# Run without HTML report (faster)
+GENERATE_HTML=false ./scripts/measure-coverage.sh
+
+# Run with custom threshold
+MIN_COVERAGE=70 ./scripts/measure-coverage.sh
+```
+
+**Coverage Configuration**:
+- Configuration in `pyproject.toml` under `[tool.coverage.*]`
+- Excludes: test files, `__init__.py`, templates, educational demos
+- Reports: Terminal output + HTML report in `htmlcov/`
+
+**Coverage Goals**:
+- **Phase 1 (Current)**: 15.60% baseline established
+- **Phase 2 (Month 2)**: 60% coverage baseline
+- **Phase 3 (Month 3)**: 70% coverage for critical paths
+- **Phase 4 (Month 4)**: 80% coverage goal
+
+**Coverage Priorities**:
+1. **High Priority**: Core generators (`pocketflow_tools/generators/`)
+2. **High Priority**: Pattern analysis (`framework-tools/pattern_analysis/`)
+3. **Medium Priority**: Dependency orchestration
+4. **Medium Priority**: Validation scripts
+5. **Lower Priority**: CLI interfaces and educational demos
+
+**HTML Report**:
+```bash
+# Generate and open HTML coverage report
+./scripts/measure-coverage.sh
+open htmlcov/index.html  # macOS
+xdg-open htmlcov/index.html  # Linux
+```
+
+The HTML report shows:
+- Line-by-line coverage highlighting
+- Missing coverage in red
+- Covered lines in green
+- Easy navigation between files
+
 ## Development Workflow
 
 1. **Fork and Clone**: Fork this repository and clone your fork
