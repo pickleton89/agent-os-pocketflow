@@ -6,6 +6,13 @@ A tool to identify common mistakes and antipatterns in PocketFlow implementation
 This detector helps maintain code quality by catching problematic patterns early
 in the development process.
 
+Architecture:
+    - Models: Severity enum and AntipatternViolation dataclass
+    - PocketFlowASTVisitor: AST-based pattern analysis
+    - AntipatternDetector: Detection engine with regex patterns
+    - AntipatternReporter: Report generation (console, JSON, markdown)
+    - CLI: Command-line interface
+
 Usage:
     python antipattern_detector.py [path] [options]
     python antipattern_detector.py --help
@@ -25,6 +32,10 @@ from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass, asdict
 from enum import Enum
 
+
+# ============================================================================
+# MODELS: Data structures for antipattern detection
+# ============================================================================
 
 class Severity(Enum):
     """Severity levels for antipattern violations"""
@@ -48,6 +59,10 @@ class AntipatternViolation:
     context: Optional[Dict[str, Any]] = None
 
 
+# ============================================================================
+# AST VISITOR: Abstract Syntax Tree analysis for pattern detection
+# ============================================================================
+
 class PocketFlowASTVisitor(ast.NodeVisitor):
     """AST visitor to analyze PocketFlow code patterns"""
     
@@ -59,7 +74,11 @@ class PocketFlowASTVisitor(ast.NodeVisitor):
         self.node_classes: List[Dict[str, Any]] = []
         self.utility_functions: List[Dict[str, Any]] = []
         self.is_test_file = self._is_test_or_demo_file(file_path)
-        
+
+    # ------------------------------------------------------------------------
+    # AST Visitor Methods
+    # ------------------------------------------------------------------------
+
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         """Visit class definitions to analyze node patterns"""
         old_class = self.current_class
@@ -106,7 +125,11 @@ class PocketFlowASTVisitor(ast.NodeVisitor):
         
         self.generic_visit(node)
         self.current_method = old_method
-    
+
+    # ------------------------------------------------------------------------
+    # Antipattern Check Methods
+    # ------------------------------------------------------------------------
+
     def _extract_methods(self, class_node: ast.ClassDef) -> Dict[str, Dict[str, Any]]:
         """Extract method information from a class"""
         methods = {}
@@ -271,9 +294,11 @@ class PocketFlowASTVisitor(ast.NodeVisitor):
         """Check for lifecycle method confusion patterns"""
         # Additional checks for method role confusion
         pass
-    
-    # Helper methods for pattern detection
-    
+
+    # ------------------------------------------------------------------------
+    # Helper Methods: Pattern detection utilities
+    # ------------------------------------------------------------------------
+
     def _count_method_lines(self, method_node: ast.FunctionDef) -> int:
         """Count actual lines of code in a method (not AST nodes) - cross-version compatible"""
         # Get the line range of the method
@@ -508,6 +533,10 @@ class PocketFlowASTVisitor(ast.NodeVisitor):
             return "unknown"
 
 
+# ============================================================================
+# DETECTOR: Main antipattern detection engine
+# ============================================================================
+
 class AntipatternDetector:
     """Main antipattern detection engine"""
     
@@ -696,6 +725,10 @@ class AntipatternDetector:
         return all_violations
 
 
+# ============================================================================
+# REPORTER: Report generation for detected antipatterns
+# ============================================================================
+
 class AntipatternReporter:
     """Generate reports for detected antipatterns"""
     
@@ -876,6 +909,10 @@ class AntipatternReporter:
         
         return "\n".join(report_lines)
 
+
+# ============================================================================
+# CLI: Command-line interface
+# ============================================================================
 
 def main():
     """Main CLI entry point"""
