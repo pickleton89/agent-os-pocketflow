@@ -17,9 +17,8 @@ import sys
 import json
 import time
 import psutil
-import tempfile
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 from datetime import datetime
 import statistics
 import threading
@@ -117,7 +116,7 @@ class PerformanceBenchmarker:
 
             # Run optimization
             optimization_start = time.time()
-            analysis = optimizer.analyze_context_usage(large_context, agent_targets)
+            optimizer.analyze_context_usage(large_context, agent_targets)
             optimized_contexts = optimizer.create_parallel_contexts(large_context, agent_targets)
             optimization_duration = time.time() - optimization_start
 
@@ -195,7 +194,7 @@ class PerformanceBenchmarker:
         parallel_start = time.time()
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-            parallel_results = list(executor.map(simulate_agent_work, mock_tasks))
+            list(executor.map(simulate_agent_work, mock_tasks))
 
         parallel_duration = time.time() - parallel_start
         parallel_metrics = self.end_measurement(start_metrics)

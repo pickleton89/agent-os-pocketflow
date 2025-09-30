@@ -14,7 +14,6 @@ Usage:
 """
 
 import argparse
-import sys
 from pathlib import Path
 import json
 
@@ -89,7 +88,7 @@ def main():
     )
 
     # Status command
-    status_parser = subparsers.add_parser(
+    subparsers.add_parser(
         'status',
         help='Show metrics database status'
     )

@@ -296,7 +296,7 @@ class ProgressiveDisclosure:
             # Remove corrupted cache
             try:
                 cache_file.unlink()
-            except:
+            except Exception:
                 pass
             return None
     

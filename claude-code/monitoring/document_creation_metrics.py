@@ -494,7 +494,7 @@ class DocumentCreationMetrics:
                     report.append(f"- High token reduction: {optimization_stats['avg_token_reduction']:.1f}%")
                     report.append("- Verify that document quality is maintained with aggressive optimization")
 
-        except Exception as e:
+        except Exception:
             # Optimization metrics are optional - don't fail the report if they're unavailable
             pass
 

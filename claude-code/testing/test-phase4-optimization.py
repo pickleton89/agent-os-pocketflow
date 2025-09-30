@@ -260,7 +260,7 @@ TestApp is a productivity tool that helps small business owners manage their dai
                 metrics.record_agent_completion("tech-stack-document-creator", start2, success=True, token_usage=1200)
 
                 # Finish session
-                orchestration_metric = metrics.finish_session(parallel_groups=1)
+                metrics.finish_session(parallel_groups=1)
 
                 # Verify metrics were recorded
                 analysis = metrics.analyze_performance(days=1)

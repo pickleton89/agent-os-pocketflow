@@ -15,12 +15,10 @@ Usage:
     python3 generate-quality-report.py [--output-dir DIRECTORY] [--format html|json|both]
 """
 
-import sys
 import json
-import time
 from pathlib import Path
 from typing import Dict, Any, List, Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 import subprocess
 import tempfile
 import os
@@ -376,7 +374,7 @@ class QualityReportGenerator:
                     component_success = tests_run > 0 and (tests_passed / tests_run) >= 0.8
 
                 elif component_name == 'security_scans':
-                    security_results = component_data.get('security_results', {})
+                    component_data.get('security_results', {})
                     # Security passes if no critical issues found
                     component_success = True  # Default to pass if scans run
 
@@ -561,7 +559,7 @@ def main():
 
     # Print summary
     summary = report_data['overall_summary']
-    print(f"\n🎯 Quality Report Generated")
+    print("\n🎯 Quality Report Generated")
     print(f"Health Score: {summary['health_score']:.1f}%")
     print(f"Status: {summary['status']}")
     print(f"Components: {summary['components_passed']}/{summary['components_available']} passed")

@@ -290,7 +290,7 @@ Examples:
     disclosure_parser.add_argument('--cache-dir', default='.agent-os/cache', help='Cache directory')
     
     # Test command
-    test_parser = subparsers.add_parser('test', help='Run test suite')
+    subparsers.add_parser('test', help='Run test suite')
     
     # Parse arguments
     args = parser.parse_args()
