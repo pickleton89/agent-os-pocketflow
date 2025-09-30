@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
+# ruff: noqa: E402, F821
 """
-Demonstration examples for the PocketFlow Antipattern Detector
+EDUCATIONAL DEMONSTRATION FILE - Contains Intentional Antipatterns
 
-This file contains intentional antipatterns to showcase the detector's capabilities.
-It demonstrates both good and bad patterns for educational purposes.
+This file demonstrates BAD practices for the PocketFlow antipattern detector.
+ALL linting errors in this file are EXPECTED and INTENTIONAL.
+
+Purpose:
+- Showcases various PocketFlow antipatterns for educational purposes
+- Provides test cases for the antipattern detector tool
+- Demonstrates both correct and incorrect patterns side-by-side
+
+Linting Suppressions (ALL INTENTIONAL):
+- E402: Module imports not at top (demonstrates bad import practices)
+- F821: Undefined names (mock external dependencies for demonstration)
 
 🎯 FRAMEWORK CONTEXT: This is framework repository code that demonstrates antipatterns
 for educational purposes. In actual end-user projects, these imports would work:
