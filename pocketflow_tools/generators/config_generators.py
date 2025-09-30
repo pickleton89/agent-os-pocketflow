@@ -1,110 +1,112 @@
 from __future__ import annotations
 
+import sys
+from pathlib import Path
 from typing import Any, Dict
+
+# Import dependency orchestrator for pattern-specific dependency generation
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "framework-tools"))
+from dependency_orchestrator import DependencyOrchestrator
 
 
 def generate_dependency_files(spec) -> Dict[str, str]:
-    """Mirror legacy _generate_dependency_files output mapping.
+    """Generate dependency configuration files using pattern-aware orchestration.
 
     Returns a dict of file path -> file content for dependency/config files.
+    Uses the DependencyOrchestrator to generate pattern-specific dependencies.
     """
-    # Defer to basic implementations used in legacy fallback; pattern-specific
-    # orchestration is handled upstream in the legacy path when available.
     files: Dict[str, str] = {}
-    files["pyproject.toml"] = generate_basic_pyproject(spec)
-    files["requirements.txt"] = "\n".join([
-        "pocketflow",
-        "pydantic>=2.0",
-        "fastapi>=0.104.0",
-        "uvicorn[standard]>=0.24.0",
-        "",
-    ])
-    files["requirements-dev.txt"] = "\n".join([
-        "pytest>=7.0.0",
-        "pytest-asyncio>=0.21.0",
-        "ruff>=0.1.0",
-        "ty>=0.5.0",
-        "",
-    ])
+
+    # Initialize orchestrator for pattern-specific dependency generation
+    orchestrator = DependencyOrchestrator()
+
+    # Get pattern from spec (default to WORKFLOW if not specified)
+    pattern = getattr(spec, 'pattern', 'WORKFLOW')
+
+    # Generate dependency configuration for the pattern
+    config = orchestrator.generate_config_for_pattern(pattern)
+
+    # Generate pyproject.toml using orchestrator
+    project_name = getattr(spec, 'name', 'workflow').lower().replace(' ', '-')
+    description = getattr(spec, 'description', f'{pattern} pattern workflow')
+    files["pyproject.toml"] = orchestrator.generate_pyproject_toml(
+        project_name=project_name,
+        pattern=pattern,
+        description=description
+    )
+
+    # Generate requirements.txt with pattern-specific dependencies
+    all_runtime_deps = sorted(set(config.base_dependencies + config.pattern_dependencies))
+    files["requirements.txt"] = "\n".join(all_runtime_deps + [""])
+
+    # Generate requirements-dev.txt with development dependencies
+    files["requirements-dev.txt"] = "\n".join(sorted(config.dev_dependencies) + [""])
+
+    # Generate UV-specific configuration files
+    uv_config_files = orchestrator.generate_uv_config(project_name, pattern)
+    files.update(uv_config_files)
+
+    # Generate .gitignore
     files[".gitignore"] = DEFAULT_GITIGNORE
-    files["README.md"] = generate_readme(spec, config={"python_version": "3.12"})
+
+    # Generate README with enhanced configuration information
+    readme_config = {
+        "python_version": config.python_version.replace(">=", "").replace(",<4.0", ""),
+        "pattern": pattern,
+        "has_pattern_deps": len(config.pattern_dependencies) > 0,
+    }
+    files["README.md"] = generate_readme(spec, config=readme_config)
+
     return files
 
 
-def generate_basic_dependency_config(pattern: str) -> Any:
-    """Return a minimal dependency config matching legacy fallback shape."""
-    return {
-        "base_dependencies": ["pocketflow", "pydantic", "fastapi"],
-        "pattern_dependencies": {
-            "RAG": ["chromadb", "sentence-transformers"],
-            "AGENT": ["openai", "anthropic"],
-            "TOOL": ["requests", "aiohttp"],
-            "WORKFLOW": [],
-            "MAPREDUCE": ["celery", "redis"],
-            "MULTI-AGENT": ["openai", "anthropic"],
-            "STRUCTURED-OUTPUT": ["jsonschema"],
-        }.get(pattern, []),
-        "dev_dependencies": ["pytest", "pytest-asyncio", "ruff", "mypy"],
-        "tool_configs": {
-            "ruff": {"line-length": 88, "target-version": "py312"},
-            "mypy": {"python_version": "3.12", "strict": True},
-        },
-    }
-
-
 def generate_basic_pyproject(spec) -> str:
-    project_name = spec.name.lower().replace(" ", "-")
-    return f'''[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+    """Generate pyproject.toml using dependency orchestrator.
 
-[project]
-name = "{project_name}"
-version = "0.1.0"
-description = "{spec.description}"
-readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-    "pocketflow",
-    "pydantic>=2.0",
-    "fastapi>=0.104.0",
-    "uvicorn[standard]>=0.24.0",
-]
+    This function maintains backward compatibility while using the orchestrator
+    for pattern-specific dependency generation.
+    """
+    orchestrator = DependencyOrchestrator()
 
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.0.0",
-    "pytest-asyncio>=0.21.0",
-    "ruff>=0.1.0",
-    "ty>=0.5.0",
-]
+    project_name = getattr(spec, 'name', 'workflow').lower().replace(" ", "-")
+    pattern = getattr(spec, 'pattern', 'WORKFLOW')
+    description = getattr(spec, 'description', f'{pattern} pattern workflow')
 
-[tool.ruff]
-line-length = 88
-target-version = "py312"
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-'''
+    return orchestrator.generate_pyproject_toml(
+        project_name=project_name,
+        pattern=pattern,
+        description=description
+    )
 
 
 def generate_readme(spec, config: Any) -> str:
-    """Generate README matching legacy content and structure."""
-    project_name = spec.name.lower().replace(" ", "-")
-    return f'''# {spec.name}
+    """Generate README matching legacy content and structure with pattern-aware details."""
+    project_name = getattr(spec, 'name', 'workflow').lower().replace(" ", "-")
+    spec_name = getattr(spec, 'name', 'Workflow')
+    spec_description = getattr(spec, 'description', 'PocketFlow workflow')
+    pattern = getattr(spec, 'pattern', 'WORKFLOW')
 
-{spec.description}
+    # Handle both old dict config and new enhanced config
+    if isinstance(config, dict):
+        python_version = config.get("python_version", "3.12")
+        has_pattern_deps = config.get("has_pattern_deps", False)
+    else:
+        python_version = "3.12"
+        has_pattern_deps = False
+
+    return f'''# {spec_name}
+
+{spec_description}
 
 ## Overview
 
-This is a PocketFlow {spec.pattern} pattern implementation generated by Agent OS + PocketFlow Framework.
+This is a PocketFlow {pattern} pattern implementation generated by Agent OS + PocketFlow Framework.
 
 ## Setup
 
 ### Prerequisites
 
-- Python {config["python_version"]}
+- Python {python_version}
 - UV package manager (recommended) or pip
 
 ### Installation with UV (Recommended)
@@ -164,20 +166,20 @@ uv run ty check
 uv run uvicorn main:app --reload
 
 # Or run the flow directly
-uv run python -c "from flow import {spec.name}Flow; import asyncio; flow = {spec.name}Flow(); asyncio.run(flow.run_async({{}}))"
+uv run python -c "from flow import {spec_name}Flow; import asyncio; flow = {spec_name}Flow(); asyncio.run(flow.run_async({{}}))"
 ```
 
 ## Architecture
 
-### Pattern: {spec.pattern}
+### Pattern: {pattern}
 
-This workflow implements the {spec.pattern} pattern with the following components:
+This workflow implements the {pattern} pattern with the following components:
 
 #### Nodes
-{chr(10).join(f'- **{node["name"]}**: {node["description"]}' for node in spec.nodes)}
+{chr(10).join(f'- **{node["name"]}**: {node["description"]}' for node in getattr(spec, 'nodes', []))}
 
 #### Utilities
-{chr(10).join(f'- **{util["name"]}**: {util["description"]}' for util in spec.utilities)}
+{chr(10).join(f'- **{util["name"]}**: {util["description"]}' for util in getattr(spec, 'utilities', []))}
 
 ### FastAPI Integration
 
@@ -314,8 +316,8 @@ target/
 profile_default/
 ipython_config.py
 
-# pyenv
-.python-version
+# pyenv - Note: .python-version is generated by this framework and should be committed
+# DO NOT add .python-version to .gitignore - it ensures team uses correct Python version
 
 # pipenv
 Pipfile.lock

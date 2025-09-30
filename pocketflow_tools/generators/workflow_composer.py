@@ -26,7 +26,6 @@ from pocketflow_tools.generators.test_generators import (
 )
 from pocketflow_tools.generators.config_generators import (
     generate_dependency_files,
-    generate_basic_pyproject,
 )
 from pocketflow_tools.generators.context import GenerationContext
 
@@ -551,14 +550,14 @@ class PocketFlowGenerator:
             utility_name = utility.get('name', 'utility').lower()
             output_files[f"utils/{utility_name}.py"] = utility_content
         
-        # Generate FastAPI components  
+        # Generate FastAPI components
         output_files["main.py"] = generate_fastapi_main(enriched_spec)
         output_files["router.py"] = generate_fastapi_router(enriched_spec)
-        
-        # Generate configuration files - this returns a Dict[str, str] including README.md
+
+        # Generate configuration files using dependency orchestrator
+        # This returns a Dict[str, str] including pyproject.toml, requirements.txt,
+        # requirements-dev.txt, .gitignore, README.md, uv.toml, .python-version
         output_files.update(generate_dependency_files(enriched_spec))
-        
-        output_files["pyproject.toml"] = generate_basic_pyproject(enriched_spec)
         
         # Generate documentation
         output_files["docs/design.md"] = generate_design_doc(enriched_spec)

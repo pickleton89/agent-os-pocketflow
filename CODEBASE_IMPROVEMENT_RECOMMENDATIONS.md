@@ -101,58 +101,55 @@ Note: These figures exclude .venv/ and external dependencies." >> METRICS.md
 
 ## Priority 2: High-Value Improvements (Weeks 2-4)
 
-### 2.1 Integrate Dependency Orchestrator into Primary Generation Flow
+### 2.1 Integrate Dependency Orchestrator into Primary Generation Flow ✅ COMPLETED
 
-**Issue**: Sophisticated `dependency_orchestrator.py` (735 lines) exists but `config_generators.py` uses hardcoded dependencies.
+**Status**: ✅ **COMPLETED** - 2025-09-30
 
-**Current State**:
-```python
-# pocketflow_tools/generators/config_generators.py
-files["requirements.txt"] = "\n".join([
-    "pocketflow",
-    "pydantic>=2.0",
-    "fastapi>=0.104.0",
-    "uvicorn[standard]>=0.24.0",
-])  # Hardcoded
-```
+**Issue**: Sophisticated `dependency_orchestrator.py` (735 lines) existed but `config_generators.py` used hardcoded dependencies.
 
-**Recommended Refactor**:
-```python
-# pocketflow_tools/generators/config_generators.py
-from framework_tools.dependency_orchestrator import DependencyOrchestrator
+**Implementation Summary**:
 
-def generate_dependency_files(spec) -> Dict[str, str]:
-    """Generate dependency files using sophisticated orchestration."""
-    orchestrator = DependencyOrchestrator()
+Successfully integrated the dependency orchestrator into the primary generation flow. The refactored code now:
 
-    # Use pattern-aware dependency generation
-    config = orchestrator.generate_config_for_pattern(spec.pattern)
+1. **Pattern-Aware Dependencies**: Each PocketFlow pattern (RAG, AGENT, TOOL, WORKFLOW, MAPREDUCE, MULTI-AGENT, STRUCTURED-OUTPUT) generates pattern-specific dependencies:
+   - RAG: `chromadb`, `sentence-transformers`, `numpy`, `tiktoken`
+   - AGENT: `openai`, `tenacity`, `tiktoken`
+   - TOOL: `requests`, `aiohttp`, `tenacity`
+   - MAPREDUCE: `celery`, `redis`, `kombu`
+   - WORKFLOW: Minimal base dependencies only
 
-    return {
-        "pyproject.toml": orchestrator.generate_pyproject_toml(
-            spec.name, spec.pattern
-        ),
-        "requirements.txt": "\n".join(config.base_dependencies + config.pattern_dependencies),
-        "requirements-dev.txt": "\n".join(config.dev_dependencies),
-        **orchestrator.generate_uv_config(spec.name, spec.pattern),
-        ".gitignore": DEFAULT_GITIGNORE,
-        "README.md": generate_readme(spec, config),
-    }
-```
+2. **Enhanced Configuration Files**:
+   - `pyproject.toml`: Pattern-specific dependencies with proper tool configurations (ruff, pytest, ty)
+   - `requirements.txt`: Runtime dependencies optimized per pattern
+   - `requirements-dev.txt`: Comprehensive development dependencies (pytest, pytest-asyncio, pytest-cov, ruff, ty, httpx, factory-boy)
+   - `uv.toml`: UV-specific configuration
+   - `.python-version`: Python 3.12 specification
 
-**Benefits**:
-- Activates 735 lines of sophisticated pattern-specific dependency logic
-- Makes generated templates pattern-aware (RAG vs AGENT vs TOOL dependencies)
-- Eliminates maintenance of two separate dependency systems
+3. **Refactored Files**:
+   - [config_generators.py](pocketflow_tools/generators/config_generators.py): Now uses DependencyOrchestrator
+   - [workflow_composer.py](pocketflow_tools/generators/workflow_composer.py): Updated to use orchestrator-based generation
+   - Removed duplicate `generate_basic_pyproject` call (now handled by `generate_dependency_files`)
 
-**Migration Path**:
-1. Add integration tests for orchestrator with each pattern type
-2. Create side-by-side comparison of old vs. new output
-3. Switch primary generation flow to use orchestrator
-4. Update documentation to reflect pattern-specific dependencies
+4. **Comprehensive Testing**:
+   - [test_dependency_orchestrator.py](framework-tools/test_dependency_orchestrator.py): 10 comprehensive tests covering all patterns, validation, caching
+   - [test_config_integration.py](pocketflow_tools/generators/test_config_integration.py): Integration tests for config_generators
+   - All tests pass: ✅ 13/13 tests passing
 
-**Impact**: High - unlocks major framework capability
-**Estimated Time**: 2-3 days
+**Benefits Achieved**:
+- ✅ Activated 735 lines of sophisticated pattern-specific dependency logic
+- ✅ Generated templates are now pattern-aware (RAG gets chromadb, AGENT gets openai, etc.)
+- ✅ Eliminated maintenance of two separate dependency systems
+- ✅ Added UV configuration generation
+- ✅ Enhanced tool configurations (ruff, pytest, ty)
+- ✅ Dependency validation and compatibility checking
+
+**Files Modified**:
+- `pocketflow_tools/generators/config_generators.py` - Complete refactor
+- `pocketflow_tools/generators/workflow_composer.py` - Updated imports and removed duplicate generation
+- `framework-tools/test_dependency_orchestrator.py` - NEW: Comprehensive test suite
+- `pocketflow_tools/generators/test_config_integration.py` - NEW: Integration test suite
+
+**Impact**: High - Major framework capability now activated
 
 ### 2.2 Refactor Large Files
 

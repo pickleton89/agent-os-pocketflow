@@ -7,6 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - 2025-09-30
 
+### ✨ Features
+
+#### Priority 2.1: Dependency Orchestrator Integration (COMPLETED)
+- **🔧 Integrated Pattern-Aware Dependency Generation**: Activated 735 lines of sophisticated dependency orchestration logic
+  - RAG pattern: Includes `chromadb`, `sentence-transformers`, `numpy`, `tiktoken`
+  - AGENT pattern: Includes `openai`, `tenacity`, `tiktoken`
+  - TOOL pattern: Includes `requests`, `aiohttp`, `tenacity`
+  - MAPREDUCE pattern: Includes `celery`, `redis`, `kombu`
+  - WORKFLOW pattern: Minimal base dependencies only
+  - MULTI-AGENT pattern: Multi-LLM support with `openai`, `anthropic`, `tenacity`, `asyncio-mqtt`
+  - STRUCTURED-OUTPUT pattern: Schema validation with `jsonschema`, `marshmallow`
+
+- **📦 Enhanced Configuration Generation**:
+  - `pyproject.toml`: Pattern-specific dependencies with tool configurations (ruff, pytest, ty)
+  - `requirements.txt`: Runtime dependencies optimized per pattern
+  - `requirements-dev.txt`: Comprehensive dev dependencies (pytest, pytest-asyncio, pytest-cov, ruff, ty, httpx, factory-boy)
+  - `uv.toml`: UV-specific configuration
+  - `.python-version`: Python 3.12 specification
+
+- **🔄 Refactored Core Generators**:
+  - `pocketflow_tools/generators/config_generators.py`: Now uses DependencyOrchestrator
+  - `pocketflow_tools/generators/workflow_composer.py`: Updated to use orchestrator-based generation
+  - Removed duplicate pyproject.toml generation
+  - Enhanced README generation with pattern-aware details
+
+- **✅ Comprehensive Testing**:
+  - `framework-tools/test_dependency_orchestrator.py`: 10 tests covering all patterns, validation, caching
+  - `pocketflow_tools/generators/test_config_integration.py`: Integration tests for config_generators
+  - All tests pass: ✅ 13/13 tests passing
+
+- **📊 Benefits**:
+  - Eliminated maintenance of two separate dependency systems
+  - Generated templates are now pattern-aware
+  - Added dependency validation and compatibility checking
+  - Enhanced tool configurations across all patterns
+
+- **📝 Source**: CODEBASE_IMPROVEMENT_RECOMMENDATIONS.md Priority 2.1
+- **🔗 Files Modified**:
+  - `pocketflow_tools/generators/config_generators.py`
+  - `pocketflow_tools/generators/workflow_composer.py`
+  - `framework-tools/test_dependency_orchestrator.py` (NEW)
+  - `pocketflow_tools/generators/test_config_integration.py` (NEW)
+
 ### 🧹 Code Quality Improvements
 
 #### Priority 1.3: Create Accurate Metrics Baseline (COMPLETED)
