@@ -326,6 +326,92 @@ The HTML report shows:
 - Covered lines in green
 - Easy navigation between files
 
+## TODO Management Workflow
+
+### Understanding TODO Categories
+
+The framework contains many TODO comments that serve different purposes. Use the TODO analysis script to categorize and manage them effectively:
+
+```bash
+# Generate comprehensive TODO analysis report
+python3 scripts/analyze-todos.py > TODO_ANALYSIS.md
+```
+
+### TODO Categories
+
+**TEMPLATE_PLACEHOLDER** (Keep as Features)
+- Location: `templates/`, generated examples, placeholder code
+- Purpose: Educational markers showing where end-users customize
+- Action: **Keep these** - they're intentional framework features
+- Examples: "TODO: Implement business logic", "TODO: Customize this prep logic"
+
+**INTEGRATION** (Convert to Issues)
+- Purpose: Integration tasks needing implementation
+- Action: Create GitHub issues with `integration` label
+- Examples: "TODO: Integrate with ToolCoordinator", "TODO: Connect to external API"
+
+**ENHANCEMENT** (Convert to Issues)
+- Purpose: Optional improvements and future features
+- Action: Create GitHub issues with `enhancement` label
+- Examples: "TODO: Consider optimization", "TODO: Future feature idea"
+
+**BUG_FIX** (Prioritize & Create Issues)
+- Purpose: Known bugs or error handling gaps
+- Action: Create GitHub issues with `bug` label, **prioritize these**
+- Examples: "TODO: Fix error handling", "FIXME: Debug this logic"
+
+**DOCUMENTATION** (Convert to Issues)
+- Purpose: Missing or incomplete documentation
+- Action: Create GitHub issues with `documentation` label
+- Examples: "TODO: Document API contract", "TODO: Add docstring"
+
+**TESTING** (Convert to Issues)
+- Purpose: Missing test coverage or test improvements
+- Action: Create GitHub issues with `testing` label
+- Examples: "TODO: Add test coverage", "TODO: Write integration test"
+
+**UNCATEGORIZED** (Review & Categorize)
+- Purpose: TODOs not matching standard patterns
+- Action: Review manually, categorize, and handle appropriately
+
+### TODO Workflow Best Practices
+
+1. **Before Adding New TODOs**:
+   - Consider if it should be a GitHub issue instead
+   - For template code: Use descriptive TODOs that guide implementation
+   - For framework code: Prefer GitHub issues for tracking
+
+2. **Periodic TODO Review** (Quarterly):
+   ```bash
+   # Generate fresh analysis
+   python3 scripts/analyze-todos.py > TODO_ANALYSIS.md
+
+   # Review categorization
+   # Create GitHub issues for actionable items
+   # Update template TODO quality if needed
+   ```
+
+3. **Converting TODOs to Issues**:
+   - Extract context and requirements from TODO comment
+   - Create detailed GitHub issue with appropriate label
+   - Reference file location and line number
+   - Link related TODOs if applicable
+   - Remove TODO once issue is created (or add issue reference)
+
+4. **Template TODO Quality Standards**:
+   - Be specific: "TODO: Implement user authentication via OAuth2" vs "TODO: implement"
+   - Provide context: "TODO: Add rate limiting (5 req/sec per IP)" vs "TODO: add rate limiting"
+   - Include guidance: "TODO: Fetch from vector DB, rank by relevance" vs "TODO: fetch data"
+
+### Current TODO Status
+
+**Latest Analysis**: See [TODO_ANALYSIS.md](TODO_ANALYSIS.md)
+
+**Targets**:
+- Template Placeholders: Maintain high quality, keep as educational features
+- Actionable TODOs: Convert to GitHub issues, reduce code TODOs to <100
+- Bug Fix TODOs: Immediate priority for issue creation
+
 ## Development Workflow
 
 1. **Fork and Clone**: Fork this repository and clone your fork
