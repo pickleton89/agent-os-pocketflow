@@ -87,7 +87,8 @@
       "Bash(else echo \"No config found\")",
       "Bash(fi)",
       "Bash(do echo \"$dir:\")",
-      "Bash(du:*)"
+      "Bash(du:*)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "ask": [],
