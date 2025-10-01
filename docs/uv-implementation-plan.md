@@ -18,8 +18,8 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 
 | Phase | Step | Task | Status | Owner | Status / Notes |
 |-------|------|------|--------|-------|----------------|
-| 0. Preparation | 0.1 | Capture repo root (`REPO_ROOT=$(git rev-parse --show-toplevel)`) for reuse | - [ ] | | |
-| | 0.2 | Verify environment (`uv --version`, `python --version`, `git status`; run `uv run pytest -q framework-tools`) | - [ ] | | |
+| 0. Preparation | 0.1 | Capture repo root (`REPO_ROOT=$(git rev-parse --show-toplevel)`) for reuse | - [x] | | 2025-10-01 Captured repo root `/Users/jeffkiefer/Documents/projects/agent-os-pocketflow` via git |
+| | 0.2 | Verify environment (`uv --version`, `python --version`, `git status`; run `uv run pytest -q framework-tools`) | - [x] | | 2025-10-01 `uv 0.8.8`, `python 2.7.18`, clean git status, `uv run pytest -q framework-tools` passed (warnings only) |
 | 1. Package Structure | 1.1 | Add dependencies `click`, `rich` via `uv add` | - [ ] | | |
 | | 1.2 | Update `pyproject.toml` metadata (version 2.0.0, classifiers, URLs, dependencies, scripts) and validate TOML | - [ ] | | |
 | | 1.3 | Copy repository data into `pocketflow_tools/data/` (keep root copies), update packaging config, append `.gitignore` note with leading newline | - [ ] | | |
