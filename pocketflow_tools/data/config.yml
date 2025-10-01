@@ -1,0 +1,61 @@
+# Agent OS + PocketFlow Enhanced Configuration
+# This configuration template will be copied to the user's base installation
+
+version: "2.0.0"              # Our enhanced version
+base_agent_os_version: "1.4.0" # Underlying Agent OS compatibility
+created: "2025-08-19"
+updated: "2025-08-19"
+
+# Tool configuration
+tools:
+  claude_code: true
+  pocketflow: true            # Our enhancement
+
+# PocketFlow-specific configuration
+pocketflow:
+  generator_cli: "python -m pocketflow_tools.cli"
+  templates_path: "~/.agent-os/templates/"
+  orchestrator_enabled: true
+  pattern_analyzer_enabled: true
+  dependency_orchestrator_enabled: true
+  template_validator_enabled: true
+
+# Project type configuration
+project_types:
+  default: "pocketflow-enhanced"
+  available:
+    - pocketflow-enhanced      # Our default project type with full PocketFlow integration
+    - standard-agent-os        # Standard Agent OS projects without PocketFlow
+    - python-pocketflow        # Python-specific PocketFlow patterns
+    - fastapi-pocketflow       # FastAPI + PocketFlow integration
+
+# Installation paths (will be set during base installation)
+paths:
+  base_installation: ""        # Set during installation (e.g., ~/.agent-os)
+  instructions: ""             # Base + /instructions
+  standards: ""                # Base + /standards  
+  pocketflow_tools: ""         # Base + /framework-tools
+  templates: ""                # Base + /templates
+  commands: ""                 # Base + /commands
+  claude_code_agents: ""       # Base + /claude-code/agents
+
+# Framework identification
+framework:
+  name: "Agent OS + PocketFlow"
+  description: "Enhanced Agent OS with PocketFlow LLM workflow capabilities"
+  repository: "https://github.com/pickleton89/agent-os-pocketflow"
+  documentation: "https://github.com/pickleton89/agent-os-pocketflow/docs"
+  
+# Compatibility and feature flags
+compatibility:
+  agent_os_v1_4: true
+  backward_compatible: true
+  self_contained_projects: true
+  
+features:
+  enhanced_instructions: true
+  pocketflow_generators: true  
+  pattern_analysis: true
+  template_validation: true
+  dependency_orchestration: true
+  claude_code_integration: true

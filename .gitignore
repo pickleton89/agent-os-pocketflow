@@ -98,4 +98,6 @@ test-user-experience/
 # Local agent run artifacts
 .code/
 
-# Framework packaging note: data is also bundled via pocketflow_tools/data/
+# Framework packaging note:
+#   Core resources (instructions, standards, templates, claude-code, shared, setup, config.yml)
+#   are mirrored under pocketflow_tools/data/ for packaging. Keep root and data copies in sync.

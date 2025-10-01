@@ -48,6 +48,9 @@ Changelog = "https://github.com/pickleton89/agent-os-pocketflow/blob/main/CHANGE
 agent-os = "pocketflow_tools.installer_cli:main"
 pocketflow-generate = "pocketflow_tools.cli:main"
 
+[tool.setuptools]
+include-package-data = true
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["pocketflow_tools*"]
@@ -55,6 +58,7 @@ exclude = ["setup*", "shared*", "templates*", "standards*", "instructions*", "fr
 
 [tool.setuptools.package-data]
 "pocketflow_tools" = [
+    "data/*",
     "data/**/*",
 ]
 
