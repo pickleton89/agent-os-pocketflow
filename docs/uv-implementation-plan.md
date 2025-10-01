@@ -24,7 +24,8 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | | 1.2 | Update `pyproject.toml` metadata (version 2.0.0, classifiers, URLs, dependencies, scripts) and validate TOML | - [x] | | 2025-10-01 Updated metadata, added classifiers/URLs/scripts, refreshed uv.lock, validated TOML with uv |
 | | 1.3 | Copy repository data into `pocketflow_tools/data/` (keep root copies), update packaging config, append `.gitignore` note with leading newline | - [x] | | 2025-10-01 Mirrored instructions/standards/templates/claude-code/shared/setup/config.yml into package data; updated pyproject + .gitignore note · 2025-10-06 Marked complete in plan |
 | | 1.4 | Implement `pocketflow_tools/data/__init__.py` exposing data directory constants | - [x] | | 2025-10-06 Added resource helpers + constants for packaged data |
-| | 1.5 | Develop `pocketflow_tools/installer.py` with safe force install (pre-remove targets via `shutil.rmtree`) + toolkit logic | - [ ] | | |
+| | 1.5 | Develop `pocketflow_tools/installer.py` with safe force install (pre-remove targets via `shutil.rmtree`) + toolkit logic | - [x] | | 2025-10-07 Implemented AgentOsInstaller module with force-safe copy helpers |
+| | 1.5.2 | Package PocketFlow toolkit resources so installer deployments include framework tools | - [ ] | | |
 | | 1.6 | Develop `pocketflow_tools/installer_cli.py` (Click-based) sourcing version from package metadata | - [ ] | | |
 | | 1.7 | Run smoke import tests for installer module and CLI (`uv run python -c ...`) | - [ ] | | |
 | 2. Testing & QA | 2.1 | Install package in editable mode (`uv pip install -e .`), verify `agent-os` and `pocketflow-generate` commands | - [ ] | | |
