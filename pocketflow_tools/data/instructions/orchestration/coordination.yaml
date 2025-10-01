@@ -1,0 +1,37 @@
+# Agent OS + PocketFlow Coordination Configuration
+coordination_map:
+  plan-product:
+    triggers_orchestrator: true
+    orchestrator_scope: "full_product_planning"
+    outputs: [".agent-os/product/", ".agent-os/workflows/"]
+    next_files: ["create-spec"]
+    
+  create-spec:
+    depends_on: ["plan-product"]
+    checks_for_orchestrator: true
+    fallback_to_orchestrator: true
+    coordination_points:
+      - step_4_5: "design_document_creation"
+      - step_12: "task_decomposition"
+    outputs: [".agent-os/specs/", ".agent-os/workflows/[feature].py"]
+    next_files: ["execute-tasks"]
+    
+  execute-tasks:
+    depends_on: ["create-spec"]
+    requires_orchestrator_plan: true
+    validation_gates:
+      - "orchestrated_workflow_exists"
+      - "design_document_complete"
+      - "pydantic_models_defined"
+    blocks_without: ["workflow_implementation"]
+
+hooks:
+  design_document_validation:
+    file: "orchestration/orchestrator-hooks.md"
+    section: "validate_design_document"
+    required_for: ["create-spec", "execute-tasks"]
+    
+  validate_orchestrated_plan:
+    file: "orchestration/orchestrator-hooks.md"
+    section: "validate_workflow_implementation"  
+    required_for: ["execute-tasks"]

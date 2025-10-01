@@ -53,6 +53,11 @@ where = ["."]
 include = ["pocketflow_tools*"]
 exclude = ["setup*", "shared*", "templates*", "standards*", "instructions*", "framework-tools*"]
 
+[tool.setuptools.package-data]
+"pocketflow_tools" = [
+    "data/**/*",
+]
+
 [tool.coverage.run]
 source = ["pocketflow_tools", "framework-tools"]
 omit = [

@@ -97,3 +97,5 @@ test-user-experience/
 
 # Local agent run artifacts
 .code/
+
+# Framework packaging note: data is also bundled via pocketflow_tools/data/

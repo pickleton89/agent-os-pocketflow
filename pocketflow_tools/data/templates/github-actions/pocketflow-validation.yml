@@ -1,0 +1,306 @@
+# PocketFlow Application Validation Workflow
+# 
+# This workflow validates your PocketFlow application implementation.
+# Note: This is for END-USER projects that USE PocketFlow, not the framework itself.
+#
+# Setup Instructions:
+# 1. Copy this file to .github/workflows/pocketflow-validation.yml in your project
+# 2. Ensure PocketFlow is installed as a dependency in your project
+# 3. Customize validation paths for your specific application structure
+# 4. This workflow validates your application code, not framework templates
+
+name: PocketFlow Application Validation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'           # Your application source code
+      - 'workflows/**'     # Your implemented workflows  
+      - '**/*.py'
+      - 'pyproject.toml'
+      - 'requirements.txt'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'workflows/**'
+      - '**/*.py'
+      - 'pyproject.toml'
+      - 'requirements.txt'
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  application-validation:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+      
+      - name: Install project dependencies
+        run: |
+          # Install your application dependencies including PocketFlow
+          uv sync --dev
+          
+          # Verify PocketFlow is available as dependency
+          uv run python -c "import pocketflow; print(f'PocketFlow version: {pocketflow.__version__}')" || echo "PocketFlow not found - ensure it's in dependencies"
+      
+      - name: Validate Application Structure
+        run: |
+          echo "🔍 Validating PocketFlow application structure..."
+          
+          # Check for common application directories
+          if [ -d "src/" ] || [ -d "workflows/" ] || [ -d "app/" ]; then
+            echo "✅ Application source directory found"
+          else
+            echo "⚠️ Warning: No standard source directory found (src/, workflows/, or app/)"
+          fi
+          
+          # Count Python workflow files in application
+          workflow_count=$(find . -name "*.py" -path "*/workflows/*" -o -name "*workflow*.py" -o -name "*node*.py" | wc -l)
+          echo "Found $workflow_count Python workflow-related files"
+          
+          if [ $workflow_count -eq 0 ]; then
+            echo "⚠️ Warning: No workflow files found in application"
+          else
+            echo "✅ Workflow files detected in application"
+          fi
+      
+      - name: Test PocketFlow Integration
+        run: |
+          echo "🔗 Testing PocketFlow integration..."
+          
+          # Basic import test
+          uv run python -c "
+          try:
+              from pocketflow import Node, BatchNode, call_llm
+              print('✅ Core PocketFlow imports successful')
+          except ImportError as e:
+              print(f'❌ PocketFlow import failed: {e}')
+              exit(1)
+          "
+          
+          # Look for implemented nodes
+          node_files=$(find . -name "*.py" -exec grep -l "class.*Node" {} \; | wc -l)
+          echo "Found $node_files files with Node classes"
+      
+      - name: Run Application Tests
+        run: |
+          echo "🧪 Running application tests..."
+          
+          # Look for test files in the application
+          if find . -name "*test*.py" -o -name "test_*" | head -1 | grep -q .; then
+            echo "Found test files, running pytest..."
+            uv run python -m pytest -v || echo "Some tests failed"
+          else
+            echo "No test files found in application"
+          fi
+        continue-on-error: true
+      
+      - name: Generate Application Quality Report
+        if: always()
+        run: |
+          echo "📊 Generating PocketFlow application quality report..."
+          
+          # Create quality report
+          cat << 'EOF' > pocketflow-application-report.md
+          # PocketFlow Application Quality Report
+          
+          This report validates your PocketFlow application implementation.
+          
+          ## Summary
+          
+          EOF
+          
+          echo "**Validation Date:** $(date)" >> pocketflow-application-report.md
+          echo "**Branch:** ${{ github.ref_name }}" >> pocketflow-application-report.md
+          echo "**Commit:** ${{ github.sha }}" >> pocketflow-application-report.md
+          echo "" >> pocketflow-application-report.md
+          
+          # Add application structure analysis
+          echo "## Application Structure Analysis" >> pocketflow-application-report.md
+          echo "" >> pocketflow-application-report.md
+          echo '```' >> pocketflow-application-report.md
+          
+          echo "Source directories:" >> pocketflow-application-report.md
+          find . -type d -name "src" -o -name "workflows" -o -name "app" | head -10 >> pocketflow-application-report.md
+          
+          echo "" >> pocketflow-application-report.md
+          echo "Python files with Node classes:" >> pocketflow-application-report.md
+          find . -name "*.py" -exec grep -l "class.*Node" {} \; | head -10 >> pocketflow-application-report.md || echo "No Node classes found" >> pocketflow-application-report.md
+          
+          echo "" >> pocketflow-application-report.md
+          echo "Test files found:" >> pocketflow-application-report.md
+          find . -name "*test*.py" -o -name "test_*" | head -10 >> pocketflow-application-report.md || echo "No test files found" >> pocketflow-application-report.md
+          
+          echo '```' >> pocketflow-application-report.md
+          echo "" >> pocketflow-application-report.md
+          
+          # Add PocketFlow integration status
+          echo "## PocketFlow Integration Status" >> pocketflow-application-report.md
+          echo "" >> pocketflow-application-report.md
+          echo '```' >> pocketflow-application-report.md
+          
+          uv run python -c "
+          try:
+              import pocketflow
+              print('✅ PocketFlow successfully imported')
+              print(f'Version: {pocketflow.__version__}')
+          except Exception as e:
+              print(f'❌ PocketFlow import failed: {e}')
+          " >> pocketflow-application-report.md 2>&1
+          
+          echo '```' >> pocketflow-application-report.md
+      
+      - name: Upload Application Quality Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pocketflow-application-report
+          path: pocketflow-application-report.md
+          retention-days: 30
+      
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            try {
+              const report = fs.readFileSync('pocketflow-application-report.md', 'utf8');
+              
+              // Truncate report if too long for GitHub comment
+              const maxLength = 60000; // GitHub comment limit is ~65k chars
+              const truncatedReport = report.length > maxLength 
+                ? report.substring(0, maxLength) + '\n\n... (report truncated, see artifacts for full report)'
+                : report;
+              
+              const body = `## 🔗 PocketFlow Application Validation Results\n\n${truncatedReport}`;
+              
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+              
+              console.log('Application validation report posted to PR');
+            } catch (error) {
+              console.log('Could not post application report to PR:', error.message);
+              // Don't fail the workflow if we can't comment
+            }
+
+  lint-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+      
+      - name: Install dependencies
+        run: |
+          uv sync --dev
+      
+      - name: Run code formatting check
+        run: |
+          echo "📝 Checking application code formatting..."
+          # Check common application directories
+          for dir in src workflows app; do
+            if [ -d "$dir" ]; then
+              echo "Checking $dir/ directory..."
+              uv run ruff check "$dir/" || echo "Linting issues found in $dir/"
+              uv run ruff format --check "$dir/" || echo "Formatting issues found in $dir/"
+            fi
+          done
+        continue-on-error: true
+      
+      - name: Run Python syntax check
+        run: |
+          echo "🐍 Checking Python syntax..."
+          # Check syntax for all Python files in application directories
+          find . -name "*.py" -not -path "./.venv/*" -not -path "./.git/*" -exec python -m py_compile {} \; || echo "Syntax issues found"
+        continue-on-error: true
+
+  application-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+      
+      - name: Install dependencies
+        run: |
+          uv sync --dev
+      
+      - name: Run application tests
+        run: |
+          echo "🧪 Running application tests..."
+          
+          # Run pytest on the entire application
+          if find . -name "*test*.py" -o -name "test_*" | head -1 | grep -q .; then
+            echo "Found test files, running pytest..."
+            uv run python -m pytest -v --tb=short || echo "Some tests failed"
+          else
+            echo "No test files found - consider adding tests for your PocketFlow application"
+          fi
+        continue-on-error: true
+      
+      - name: Test PocketFlow workflows
+        run: |
+          echo "🔄 Testing PocketFlow workflow execution..."
+          
+          # Look for workflow runner scripts
+          if [ -f "main.py" ] || [ -f "run.py" ] || [ -f "app.py" ]; then
+            echo "Found potential application entry point, testing basic imports..."
+            uv run python -c "
+            import sys
+            import importlib.util
+            
+            for entry in ['main.py', 'run.py', 'app.py']:
+                if importlib.util.find_spec(entry.replace('.py', '')) or __file__.find(entry) != -1:
+                    print(f'✅ Found entry point: {entry}')
+                    try:
+                        # Test basic import without execution
+                        spec = importlib.util.spec_from_file_location('app_module', entry)
+                        if spec:
+                            print(f'✅ {entry} can be imported')
+                        else:
+                            print(f'⚠️ {entry} import spec could not be created')
+                    except Exception as e:
+                        print(f'⚠️ {entry} import test failed: {e}')
+                    break
+            else:
+                print('No standard entry point found (main.py, run.py, or app.py)')
+            "
+          else
+            echo "No standard application entry point found"
+          fi
+        continue-on-error: true

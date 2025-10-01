@@ -1,0 +1,216 @@
+# Agent OS Documentation Registry Template
+# Auto-populated from user responses during Phase 2 documentation discovery
+version: 1.0.0
+last_updated: YYYY-MM-DD
+
+# Technical stack documentation
+tech_stack: {}
+  # To add entries: remove the {} above and uncomment/customize examples below:
+  # fastapi:
+  #   type: "framework|library|tool"
+  #   source: "https://fastapi.tiangolo.com/"
+  #   last_fetched: "YYYY-MM-DD"
+  #   relevance: ["api_patterns", "async_support", "dependency_injection"]
+  #   version: "0.104.1"
+  #   extracted_patterns:
+  #     - "API endpoint definition patterns"
+  #     - "Pydantic model integration"
+  #     - "Dependency injection for utilities"
+  #   cache_ttl: 24  # hours
+  #   status: "active|stale|error"
+  
+  # react:
+  #   type: "framework"
+  #   source: "https://reactjs.org/docs"
+  #   last_fetched: "YYYY-MM-DD"
+  #   relevance: ["components", "hooks", "state-management"]
+  #   version: "18.x"
+  #   extracted_patterns:
+  #     - "Component composition patterns"
+  #     - "State management with hooks"
+  #     - "Event handling conventions"
+
+# External API documentation
+external_apis: {}
+  # To add entries: remove the {} above and uncomment/customize examples below:
+  # stripe:
+  #   type: "rest|graphql|websocket|custom"
+  #   source: "https://stripe.com/docs/api"
+  #   spec_format: "openapi|swagger|custom"
+  #   last_fetched: "YYYY-MM-DD"
+  #   relevance: ["payment_processing", "webhook_handling", "subscription_management"]
+  #   version: "2023-10-16"
+  #   extracted_patterns:
+  #     - "Payment intent workflow patterns"
+  #     - "Webhook signature verification"
+  #     - "Error handling and retry logic"
+  #   endpoints_count: 150
+  #   auth_method: "bearer_token|api_key|oauth"
+  #   rate_limits:
+  #     requests_per_second: 25
+  #     burst_limit: 100
+
+# Internal standards and architecture
+internal_standards: {}
+  # To add entries: remove the {} above and uncomment/customize examples below:
+  # coding_standards:
+  #   type: "architecture|style|security|compliance"
+  #   source: "docs/coding-standards.md"
+  #   last_fetched: "YYYY-MM-DD"
+  #   relevance: ["code_formatting", "naming_conventions", "best_practices"]
+  #   extracted_patterns:
+  #     - "Function naming conventions"
+  #     - "Code organization patterns"
+  #     - "Documentation requirements"
+  
+  # architecture_decisions:
+  #   type: "architecture"
+  #   source: "docs/architecture-decisions.md"
+  #   last_fetched: "YYYY-MM-DD"
+  #   relevance: ["system_design", "pattern_selection", "trade_offs"]
+  #   extracted_patterns:
+  #     - "Microservices vs monolith guidelines"
+  #     - "Database selection criteria"
+  #     - "Technology evaluation framework"
+
+# Compliance and security requirements
+compliance: {}
+  # To add entries: remove the {} above and uncomment/customize examples below:
+  # hipaa:
+  #   type: "regulatory|security|industry"
+  #   source: "docs/hipaa-compliance.md"
+  #   last_fetched: "YYYY-MM-DD"
+  #   requirements:
+  #     - "Data encryption at rest and in transit"
+  #     - "Access logging and audit trails"
+  #     - "User consent and data retention policies"
+  #   technical_controls:
+  #     - "Database encryption implementation"
+  #     - "API authentication and authorization"
+  #     - "Audit logging middleware"
+  #   validation_frequency: "quarterly"
+  
+  # gdpr:
+  #   type: "regulatory"
+  #   source: "docs/gdpr-compliance.md"
+  #   last_fetched: "YYYY-MM-DD"
+  #   requirements:
+  #     - "Data subject rights implementation"
+  #     - "Privacy by design principles"
+  #     - "Data breach notification procedures"
+
+# PocketFlow-specific patterns and conventions
+pocketflow_patterns: {}
+  # To add entries: remove the {} above and uncomment/customize examples below:
+  # data_flow:
+  #   type: "architecture"
+  #   source: "docs/pocketflow-data-flow.md"
+  #   relevance: ["node-communication", "state-management"]
+  
+  # error_handling:
+  #   type: "architecture"
+  #   source: "docs/pocketflow-error-handling.md"
+  #   relevance: ["fault-tolerance", "recovery-strategies"]
+
+# Auto-discovery settings
+discovery_settings:
+  # Enable automatic documentation discovery
+  auto_discover: true
+  
+  # Paths to scan for documentation references
+  scan_paths:
+    - "docs/"
+    - "README.md"
+    - "*.md"
+    - ".agent-os/"
+  
+  # File patterns to include
+  include_patterns:
+    - "*.md"
+    - "*.yaml"
+    - "*.yml"
+    - "*.json"
+  
+  # File patterns to exclude
+  exclude_patterns:
+    - "node_modules/"
+    - ".git/"
+    - ".venv/"
+    - "dist/"
+    - "build/"
+
+# Documentation processing metadata
+processing_metadata:
+  total_sources: 0
+  last_discovery: "YYYY-MM-DD"
+  auto_refresh_enabled: true
+  cache_size_mb: 0
+  
+# Source accessibility tracking
+source_health: {}
+  # Automatically populated during processing
+  # example_source:
+  #   status: "accessible|error|timeout"
+  #   last_check: "YYYY-MM-DD HH:MM:SS"
+  #   error_count: 0
+  #   response_time_ms: 1200
+
+# Documentation usage analytics
+usage_analytics:
+  # Tracks which documentation is most referenced
+  most_referenced: []
+  least_used: []
+  workflow_usage:
+    plan_product: 0
+    create_spec: 0
+    execute_tasks: 0
+
+# Smart features configuration
+smart_features:
+  # Pattern detection settings
+  pattern_detection:
+    enabled: true
+    confidence_threshold: 0.3  # minimum confidence for suggestions
+    max_suggestions: 10  # maximum suggestions per analysis
+    context_weights:
+      plan_product: 0.8
+      create_spec: 1.2
+      execute_tasks: 1.0
+  
+  # Progressive disclosure settings  
+  progressive_disclosure:
+    enabled: true
+    cache_enabled: true
+    cache_ttl_hours:
+      overview: 24
+      planning: 12
+      implementation: 6
+      optimization: 24
+    auto_level_detection: true
+  
+  # Version management settings
+  version_management:
+    enabled: true
+    compatibility_warnings: true
+    auto_version_detection: true
+    version_check_frequency: "weekly"
+    stale_threshold_days: 30
+  
+  # Intelligent suggestion settings
+  intelligent_suggestions:
+    enabled: true
+    priority_threshold: "medium"  # minimum priority for display
+    max_recommendations: 5
+    learning_enabled: false  # user history learning
+
+# Registry metadata
+metadata:
+  created_by: "Agent OS Framework"
+  framework_version: "1.4.0"
+  registry_format_version: "1.0.0"
+  
+  # Tracking for updates and maintenance
+  maintenance:
+    check_frequency: "weekly"
+    auto_update: false
+    notification_threshold: 30  # days before staleness warning
