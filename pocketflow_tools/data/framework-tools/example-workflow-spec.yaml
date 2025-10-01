@@ -1,0 +1,66 @@
+name: "ContentAnalyzer"
+pattern: "RAG"
+description: "Analyze content using document retrieval and LLM processing"
+fast_api_integration: true
+
+nodes:
+  - name: "DocumentRetrieverNode"
+    type: "AsyncNode"
+    description: "Retrieve relevant documents based on input query"
+  - name: "ContextBuilderNode"
+    type: "Node"
+    description: "Build context from retrieved documents"
+  - name: "LLMAnalyzerNode"
+    type: "AsyncNode"
+    description: "Analyze content using LLM with built context"
+  - name: "ResponseFormatterNode"
+    type: "Node"
+    description: "Format analysis results for API response"
+
+utilities:
+  - name: "retrieve_documents"
+    description: "Retrieve documents from vector database"
+    parameters:
+      - name: "query"
+        type: "str"
+        optional: false
+      - name: "limit"
+        type: "int"
+        optional: true
+    return_type: "List[Dict[str, Any]]"
+  - name: "call_llm"
+    description: "Make LLM API call for content analysis"
+    parameters:
+      - name: "context"
+        type: "str"
+        optional: false
+      - name: "query"
+        type: "str"
+        optional: false
+    return_type: "str"
+
+shared_store_schema:
+  input_query: "str"
+  retrieved_docs: "List[Dict[str, Any]]"
+  context: "str"
+  llm_response: "str"
+  analysis_result: "Dict[str, Any]"
+  timestamp: "datetime"
+
+api_endpoints:
+  - name: "Analyze"
+    method: "post"
+    path: "/analyze"
+    description: "Analyze content using RAG pattern"
+    request_fields:
+      - name: "query"
+        type: "str"
+      - name: "options"
+        type: "Optional[Dict[str, Any]]"
+    response_fields:
+      - name: "analysis"
+        type: "Dict[str, Any]"
+      - name: "confidence"
+        type: "float"
+      - name: "sources"
+        type: "List[str]"

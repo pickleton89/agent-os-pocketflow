@@ -1,0 +1,89 @@
+name: "CustomerAgent"
+pattern: "AGENT"
+description: "Autonomous customer service agent with decision-making capabilities"
+fast_api_integration: true
+
+nodes:
+  - name: "IntentClassifierNode"
+    type: "AsyncNode"
+    description: "Classify customer intent from input message"
+  - name: "ContextRetrieverNode"
+    type: "AsyncNode"
+    description: "Retrieve relevant context and customer history"
+  - name: "DecisionMakerNode"
+    type: "AsyncNode"
+    description: "Make autonomous decisions based on intent and context"
+  - name: "ActionExecutorNode"
+    type: "AsyncNode"
+    description: "Execute the decided action (escalate, resolve, request info)"
+  - name: "ResponseGeneratorNode"
+    type: "AsyncNode"
+    description: "Generate appropriate response for customer"
+
+utilities:
+  - name: "classify_intent"
+    description: "Classify customer intent using ML model"
+    parameters:
+      - name: "message"
+        type: "str"
+        optional: false
+    return_type: "Dict[str, Any]"
+  - name: "get_customer_history"
+    description: "Retrieve customer interaction history"
+    parameters:
+      - name: "customer_id"
+        type: "str"
+        optional: false
+    return_type: "List[Dict[str, Any]]"
+  - name: "execute_action"
+    description: "Execute agent decision action"
+    parameters:
+      - name: "action"
+        type: "str"
+        optional: false
+      - name: "parameters"
+        type: "Dict[str, Any]"
+        optional: false
+    return_type: "Dict[str, Any]"
+  - name: "generate_response"
+    description: "Generate customer response using LLM"
+    parameters:
+      - name: "context"
+        type: "str"
+        optional: false
+      - name: "intent"
+        type: "str"
+        optional: false
+    return_type: "str"
+
+shared_store_schema:
+  customer_message: "str"
+  customer_id: "str"
+  classified_intent: "Dict[str, Any]"
+  customer_context: "List[Dict[str, Any]]"
+  agent_decision: "Dict[str, Any]"
+  action_result: "Dict[str, Any]"
+  response_message: "str"
+  confidence_score: "float"
+
+api_endpoints:
+  - name: "ProcessCustomerMessage"
+    method: "post"
+    path: "/customer/message"
+    description: "Process customer message through autonomous agent"
+    request_fields:
+      - name: "message"
+        type: "str"
+      - name: "customer_id"
+        type: "str"
+      - name: "session_id"
+        type: "Optional[str]"
+    response_fields:
+      - name: "response"
+        type: "str"
+      - name: "action_taken"
+        type: "str"
+      - name: "confidence"
+        type: "float"
+      - name: "requires_human"
+        type: "bool"

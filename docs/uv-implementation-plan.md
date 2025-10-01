@@ -25,7 +25,7 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | | 1.3 | Copy repository data into `pocketflow_tools/data/` (keep root copies), update packaging config, append `.gitignore` note with leading newline | - [x] | | 2025-10-01 Mirrored instructions/standards/templates/claude-code/shared/setup/config.yml into package data; updated pyproject + .gitignore note · 2025-10-06 Marked complete in plan |
 | | 1.4 | Implement `pocketflow_tools/data/__init__.py` exposing data directory constants | - [x] | | 2025-10-06 Added resource helpers + constants for packaged data |
 | | 1.5 | Develop `pocketflow_tools/installer.py` with safe force install (pre-remove targets via `shutil.rmtree`) + toolkit logic | - [x] | | 2025-10-07 Implemented AgentOsInstaller module with force-safe copy helpers |
-| | 1.5.2 | Package PocketFlow toolkit resources so installer deployments include framework tools | - [ ] | | |
+| | 1.5.2 | Package PocketFlow toolkit resources so installer deployments include framework tools | - [x] | | 2025-10-01 Mirrored framework-tools into packaged data + added lookup helper |
 | | 1.6 | Develop `pocketflow_tools/installer_cli.py` (Click-based) sourcing version from package metadata | - [ ] | | |
 | | 1.7 | Run smoke import tests for installer module and CLI (`uv run python -c ...`) | - [ ] | | |
 | 2. Testing & QA | 2.1 | Install package in editable mode (`uv pip install -e .`), verify `agent-os` and `pocketflow-generate` commands | - [ ] | | |

@@ -64,6 +64,7 @@ INSTRUCTIONS_DIR = data_resource("instructions")
 STANDARDS_DIR = data_resource("standards")
 TEMPLATES_DIR = data_resource("templates")
 CLAUDE_CODE_DIR = data_resource("claude-code")
+FRAMEWORK_TOOLS_DIR = data_resource("framework-tools")
 SHARED_DIR = data_resource("shared")
 SETUP_DIR = data_resource("setup")
 SETUP_SCRIPT = data_resource("setup.sh")
@@ -75,6 +76,7 @@ __all__ = [
     "CONFIG_FILE",
     "DATA_PACKAGE",
     "DATA_ROOT",
+    "FRAMEWORK_TOOLS_DIR",
     "INSTRUCTIONS_DIR",
     "SHARED_DIR",
     "SETUP_DIR",
