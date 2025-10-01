@@ -27,7 +27,7 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | | 1.5 | Develop `pocketflow_tools/installer.py` with safe force install (pre-remove targets via `shutil.rmtree`) + toolkit logic | - [x] | | 2025-10-07 Implemented AgentOsInstaller module with force-safe copy helpers |
 | | 1.5.2 | Package PocketFlow toolkit resources so installer deployments include framework tools | - [x] | | 2025-10-01 Mirrored framework-tools into packaged data + added lookup helper |
 | | 1.6 | Develop `pocketflow_tools/installer_cli.py` (Click-based) sourcing version from package metadata | - [x] | | 2025-10-01 Implemented Click CLI with init command sourcing package version via importlib.metadata |
-| | 1.7 | Run smoke import tests for installer module and CLI (`uv run python -c ...`) | - [ ] | | |
+| | 1.7 | Run smoke import tests for installer module and CLI (`uv run python -c ...`) | - [x] | | 2025-10-07 `uv run python -c "import pocketflow_tools.installer"` + CLI import succeeded |
 | 2. Testing & QA | 2.1 | Install package in editable mode (`uv pip install -e .`), verify `agent-os` and `pocketflow-generate` commands | - [ ] | | |
 | | 2.2 | Add automated tests for installer + toolkit modules; achieve >80% coverage | - [ ] | | |
 | | 2.3 | Execute mock project install (base, `--claude-code`, `--force`); confirm configs, directories, `.gitignore` | - [ ] | | |
