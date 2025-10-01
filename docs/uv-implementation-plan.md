@@ -22,8 +22,8 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | | 0.2 | Verify environment (`uv --version`, `python --version`, `git status`; run `uv run pytest -q framework-tools`) | - [x] | | 2025-10-01 `uv 0.8.8`, `python 2.7.18`, clean git status, `uv run pytest -q framework-tools` passed (warnings only) |
 | 1. Package Structure | 1.1 | Add dependencies `click`, `rich` via `uv add` | - [x] | | 2025-10-01 Added `click`, `rich` with `uv add`; pyproject and uv.lock updated |
 | | 1.2 | Update `pyproject.toml` metadata (version 2.0.0, classifiers, URLs, dependencies, scripts) and validate TOML | - [x] | | 2025-10-01 Updated metadata, added classifiers/URLs/scripts, refreshed uv.lock, validated TOML with uv |
-| | 1.3 | Copy repository data into `pocketflow_tools/data/` (keep root copies), update packaging config, append `.gitignore` note with leading newline | - [x] | | 2025-10-01 Mirrored instructions/standards/templates/claude-code/shared/setup/config.yml into package data; updated pyproject + .gitignore note |
-| | 1.4 | Implement `pocketflow_tools/data/__init__.py` exposing data directory constants | - [ ] | | |
+| | 1.3 | Copy repository data into `pocketflow_tools/data/` (keep root copies), update packaging config, append `.gitignore` note with leading newline | - [x] | | 2025-10-01 Mirrored instructions/standards/templates/claude-code/shared/setup/config.yml into package data; updated pyproject + .gitignore note · 2025-10-06 Marked complete in plan |
+| | 1.4 | Implement `pocketflow_tools/data/__init__.py` exposing data directory constants | - [x] | | 2025-10-06 Added resource helpers + constants for packaged data |
 | | 1.5 | Develop `pocketflow_tools/installer.py` with safe force install (pre-remove targets via `shutil.rmtree`) + toolkit logic | - [ ] | | |
 | | 1.6 | Develop `pocketflow_tools/installer_cli.py` (Click-based) sourcing version from package metadata | - [ ] | | |
 | | 1.7 | Run smoke import tests for installer module and CLI (`uv run python -c ...`) | - [ ] | | |
