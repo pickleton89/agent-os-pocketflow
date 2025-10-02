@@ -92,3 +92,31 @@ skip_covered = false
 
 [tool.coverage.html]
 directory = "htmlcov"
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+    "framework-tools",
+]
+norecursedirs = [
+    "pocketflow_tools/data",
+    "templates",
+    "docs",
+    "build",
+    "dist",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+src = [
+    "pocketflow_tools",
+    "framework-tools",
+    "tests",
+]
+extend-exclude = [
+    "templates/examples/bad",
+    "templates/examples/bad/*",
+    "pocketflow_tools/data",
+    "pocketflow_tools/data/*",
+]

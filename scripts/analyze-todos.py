@@ -171,7 +171,7 @@ def generate_report(categorized_todos: Dict[str, List[Tuple[Path, int, str]]]) -
 
     # Summary statistics
     total_todos = sum(len(todos) for todos in categorized_todos.values())
-    print(f"## Summary")
+    print("## Summary")
     print()
     print(f"**Total TODOs**: {total_todos}")
     print()

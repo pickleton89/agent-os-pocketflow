@@ -33,7 +33,7 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | | 2.3 | Execute mock project install (base, `--claude-code`, `--force`); confirm configs, directories, `.gitignore` | - [x] | | 2025-10-01 Mock base install via `agent-os init` + project setup from packaged script; verified config, directories, `.gitignore` in temp workspace |
 | | 2.4 | Validate toolkit install and atomic overwrite behaviour (temp directory + atomic rename) | - [x] | | 2025-10-01 Verified atomic toolkit install uses temp dir + rename via pytest (test_install_toolkit_atomic_overwrite_uses_temp_directory) |
 | | 2.5 | Exercise error handling (non-project directory, invalid path, pre-existing toolkit) | - [x] | | 2025-10-01 CLI tests cover root/home safeguards, invalid toolkit path, existing install guard via pytest |
-| | 2.6 | Re-run regression tests and linting (`uv run pytest`, `uv run ruff check`) | - [x] | | 2025-10-02 `uv run pytest` errored on duplicated data copies; `uv run pytest tests` → 13 passed · `uv run ruff check` reported 80 issues (framework-tools/pattern_analyzer E402/F401 re-export shim; templates/examples/bad expected F821 placeholders) |
+| | 2.6 | Re-run regression tests and linting (`uv run pytest`, `uv run ruff check`) | - [x] | | 2025-10-02 `uv run pytest` → 30 passed (legacy CLI suites emit return-value warnings); `uv run ruff check` now clean after adding pytest/ruff config and fixing stray lint hits |
 | | 2.7 | Confirm backward compatibility for legacy scripts and root directories | - [ ] | | |
 | 3. Distribution Scenarios | 3.1 | `uvx --from "$REPO_ROOT" agent-os init` smoke test | - [ ] | | |
 | | 3.2 | Test `uv tool install --from "$REPO_ROOT" agent-os-pocketflow`, `uv tool install .`, and uninstall | - [ ] | | |

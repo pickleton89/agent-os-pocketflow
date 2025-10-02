@@ -89,10 +89,8 @@ def generate_readme(spec, config: Any) -> str:
     # Handle both old dict config and new enhanced config
     if isinstance(config, dict):
         python_version = config.get("python_version", "3.12")
-        has_pattern_deps = config.get("has_pattern_deps", False)
     else:
         python_version = "3.12"
-        has_pattern_deps = False
 
     return f'''# {spec_name}
 
