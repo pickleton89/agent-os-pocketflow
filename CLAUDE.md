@@ -1,5 +1,7 @@
 # Agent OS + PocketFlow Framework Repository
 
+> **This IS the Framework** — these instructions describe how to maintain the generator itself, not an end-user project.
+
 ## ⚠️ Critical Concept: Framework vs End-User Projects
 
 **This repository IS the Agent OS + PocketFlow framework itself - NOT a project using it.**

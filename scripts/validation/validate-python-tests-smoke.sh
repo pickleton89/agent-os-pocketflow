@@ -2,6 +2,9 @@
 # Python Test Smoke Suite (Framework repo)
 set -e
 
+CACHE_DIR="${UV_CACHE_DIR:-.uv-cache}"
+UV_RUN=("env" "UV_CACHE_DIR=${CACHE_DIR}" "UV_NO_SYNC=1" "uv" "run" "--no-sync")
+
 # Resolve repo root to allow direct execution
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../" && pwd)"
@@ -34,10 +37,10 @@ main() {
   log_info "Starting Python smoke tests (framework)"
 
   # Run generator smoke
-  run_py "generator smoke" uv run python framework-tools/test-generator.py
+  run_py "generator smoke" "${UV_RUN[@]}" python pocketflow_tools/generators/test_config_integration.py
 
   # Run dependency orchestrator smoke
-  run_py "dependency orchestrator smoke" uv run python framework-tools/test_dependency_orchestrator_simple.py
+  run_py "dependency orchestrator smoke" "${UV_RUN[@]}" python framework-tools/test_dependency_orchestrator.py
 
   log_success "All smoke tests passed"
 }

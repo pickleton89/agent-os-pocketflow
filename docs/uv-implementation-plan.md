@@ -48,7 +48,7 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | | 4.2 | Author `docs/MIGRATION_GUIDE.md` | - [x] | | 2025-10-09 Migration guide drafted with uv CLI workflow, project update steps, and rollback instructions |
 | | 4.3 | Update CHANGELOG with 2.0.0 entry | - [x] | | 2025-10-09 Added 2.0.0 release notes summarizing uv CLI packaging and docs updates |
 | | 4.4 | Crosslink plan + docs; ensure commands accurate | - [x] | | 2025-10-09 Linked README + migration guide references in plan and README; corrected migration command block |
-| Wrap-up | W.1 | Final validation pass (spot-check commands, re-run key tests) | - [ ] | | |
+| Wrap-up | W.1 | Final validation pass (spot-check commands, re-run key tests) | - [x] | | 2025-10-02 `uv run --no-sync agent-os --help` + `pocketflow-generate --help` succeeded; quick `scripts/run-all-tests.sh -q` passes after restoring CLAUDE framework marker and updating CLI/python smoke scripts for offline execution |
 | | W.2 | Review against success criteria; capture lessons learned | - [ ] | | |
 
 ## Status Log

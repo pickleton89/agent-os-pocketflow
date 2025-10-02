@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+CACHE_DIR="${UV_CACHE_DIR:-.uv-cache}"
+UV_CMD=("env" "UV_CACHE_DIR=${CACHE_DIR}" "UV_NO_SYNC=1" "uv" "run" "--no-sync")
+
 # Phase 1 CLI smoke tests for pocketflow_tools.cli
 # - Validates error messages/exit codes for missing/invalid YAML
 # - Validates successful generation on example spec
@@ -29,38 +32,38 @@ echo "[cli-smoke] PyYAML detected. Running tests..."
 
 # 0) Help command
 set +e
-out=$(uv run python -m pocketflow_tools.cli --help 2>&1)
+cli_out="$(${UV_CMD[@]} python -m pocketflow_tools.cli --help 2>&1)"
 code=$?
 set -e
-echo "$out" | rg -n "Generate PocketFlow workflows from specifications" >/dev/null || {
-  echo "[cli-smoke] FAIL: Help message mismatch"; echo "$out"; exit 1; }
+echo "$cli_out" | rg -n "Generate PocketFlow workflows from specifications" >/dev/null || {
+  echo "[cli-smoke] FAIL: Help message mismatch"; echo "$cli_out"; exit 1; }
 test "$code" -eq 0 || { echo "[cli-smoke] FAIL: Help should return zero"; exit 1; }
 
 # 1) Missing file
 set +e
-out=$(uv run python -m pocketflow_tools.cli --spec does-not-exist.yaml 2>&1)
+cli_out="$(${UV_CMD[@]} python -m pocketflow_tools.cli --spec does-not-exist.yaml 2>&1)"
 code=$?
 set -e
-echo "$out" | rg -n "Error: Specification file not found" >/dev/null || {
-  echo "[cli-smoke] FAIL: Missing file message mismatch"; echo "$out"; exit 1; }
+echo "$cli_out" | rg -n "Error: Specification file not found" >/dev/null || {
+  echo "[cli-smoke] FAIL: Missing file message mismatch"; echo "$cli_out"; exit 1; }
 test "$code" -ne 0 || { echo "[cli-smoke] FAIL: Missing file should return non-zero"; exit 1; }
 
 # 2) Invalid YAML
 tmp_yaml="$(mktemp -t invalid-spec.XXXXXX.yaml)"
 printf 'name: "BadSpec"\npattern: [unterminated\n' > "$tmp_yaml"
 set +e
-out=$(uv run python -m pocketflow_tools.cli --spec "$tmp_yaml" 2>&1)
+cli_out="$(${UV_CMD[@]} python -m pocketflow_tools.cli --spec "$tmp_yaml" 2>&1)"
 code=$?
 set -e
 rm -f "$tmp_yaml"
-echo "$out" | rg -n "Error: Invalid YAML" >/dev/null || {
-  echo "[cli-smoke] FAIL: Invalid YAML message mismatch"; echo "$out"; exit 1; }
+echo "$cli_out" | rg -n "Error: Invalid YAML" >/dev/null || {
+  echo "[cli-smoke] FAIL: Invalid YAML message mismatch"; echo "$cli_out"; exit 1; }
 test "$code" -ne 0 || { echo "[cli-smoke] FAIL: Invalid YAML should return non-zero"; exit 1; }
 
 # 3) Valid generation (agent example)
 outdir=".agent-os/workflows/cli-smoke"
 rm -rf "$outdir" || true
-uv run python -m pocketflow_tools.cli \
+"${UV_CMD[@]}" python -m pocketflow_tools.cli \
   --spec framework-tools/examples/agent-workflow-spec.yaml \
   --output "$outdir"
 
