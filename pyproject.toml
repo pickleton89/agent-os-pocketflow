@@ -38,6 +38,14 @@ dev = [
     "ruff>=0.1.0",
 ]
 
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.4.1",
+    "pytest-cov>=6.0.0",
+    "coverage[toml]>=7.6.0",
+    "ruff>=0.1.0",
+]
+
 [project.urls]
 Homepage = "https://github.com/pickleton89/agent-os-pocketflow"
 Repository = "https://github.com/pickleton89/agent-os-pocketflow.git"
@@ -119,4 +127,6 @@ extend-exclude = [
     "templates/examples/bad/*",
     "pocketflow_tools/data",
     "pocketflow_tools/data/*",
+    ".agent-os",
+    ".agent-os/*",
 ]
