@@ -38,9 +38,9 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | 3. Distribution Scenarios | 3.1 | `uvx --from "$REPO_ROOT" agent-os init` smoke test | - [x] | | 2025-10-02 Ran `uvx` smoke install into temp dir with `--yes` + custom install path; report showed 19 created items, no warnings |
 | | 3.2 | Test `uv tool install --from "$REPO_ROOT" agent-os-pocketflow`, `uv tool install .`, and uninstall | - [x] | | 2025-10-02 Verified `uv tool install --from "$PWD"` + `uv tool install .` with local XDG dirs; executables linked; `uv tool uninstall agent-os-pocketflow` leaves `uv tool list` empty |
 | | 3.3 | Validate project-local install via `uv add agent-os-pocketflow` + `uv run agent-os init` | - [x] | | 2025-10-02 uv add agent-os-pocketflow in temp workspace + agent-os init --install-path .agent-os created 19 paths |
-| | 3.4 | Run Docker-based CI simulation (build + run) | - [~] | | 2025-10-02 Added Dockerfile + runner script; blocked from executing due to Docker daemon access in current env |
+| | 3.4 | Run Docker-based CI simulation (build + run) | - [~] | | 2025-10-02 Added Dockerfile + runner script; blocked from executing due to Docker daemon access in current env · 2025-10-02 Reran via `./scripts/ci/run-docker-ci.sh` with Docker Desktop — image builds and ruff lint now runs, but pipeline stops at `uv run ruff format --check .` reporting 60 files needing formatting (see container log) |
 | | 3.5 | Perform Windows (native or WSL) install check; note any platform-specific guidance | - [ ] | | |
-| 4. Documentation & Release | 4.1 | Update README installation instructions | - [ ] | | |
+| 4. Documentation & Release | 4.1 | Update README installation instructions | - [x] | | 2025-10-02 README install section converted to uv tool + agent-os CLI workflow; updated troubleshooting and migration commands |
 | | 4.2 | Author `docs/MIGRATION_GUIDE.md` | - [ ] | | |
 | | 4.3 | Update CHANGELOG with 2.0.0 entry | - [ ] | | |
 | | 4.4 | Crosslink plan + docs; ensure commands accurate | - [ ] | | |
