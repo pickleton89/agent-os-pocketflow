@@ -41,7 +41,7 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | | 3.4 | Run Docker-based CI simulation (build + run) | - [~] | | 2025-10-02 Added Dockerfile + runner script; blocked from executing due to Docker daemon access in current env · 2025-10-02 Reran via `./scripts/ci/run-docker-ci.sh` with Docker Desktop — image builds and ruff lint now runs, but pipeline stops at `uv run ruff format --check .` reporting 60 files needing formatting (see container log) |
 | | 3.5 | Perform Windows (native or WSL) install check; note any platform-specific guidance | - [ ] | | |
 | 4. Documentation & Release | 4.1 | Update README installation instructions | - [x] | | 2025-10-02 README install section converted to uv tool + agent-os CLI workflow; updated troubleshooting and migration commands |
-| | 4.2 | Author `docs/MIGRATION_GUIDE.md` | - [ ] | | |
+| | 4.2 | Author `docs/MIGRATION_GUIDE.md` | - [x] | | 2025-10-09 Migration guide drafted with uv CLI workflow, project update steps, and rollback instructions |
 | | 4.3 | Update CHANGELOG with 2.0.0 entry | - [ ] | | |
 | | 4.4 | Crosslink plan + docs; ensure commands accurate | - [ ] | | |
 | Wrap-up | W.1 | Final validation pass (spot-check commands, re-run key tests) | - [ ] | | |
