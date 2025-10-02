@@ -27,7 +27,7 @@ and ran `setup.sh`, `setup/base.sh`, or `setup/project.sh` manually.
   payload now comes from the Python package.
 
 ## Quick Migration Checklist
-1. Confirm prerequisites (`uv --version`, Python 3.12+, clean git status in the
+1. Confirm prerequisites (`uv --version`, `python3 --version`, clean git status in the
    clone you are upgrading).
 2. Back up the current base installation.
 3. Install the new CLI (`uv tool install` or editable `uv pip install -e .`).
@@ -41,7 +41,10 @@ and ran `setup.sh`, `setup/base.sh`, or `setup/project.sh` manually.
 ```bash
 # Check uv and python
 uv --version
-uv python --version  # Optional: shows the runtime uv will use
+python3 --version
+
+# Optional: list uv-managed runtimes
+# uv python list
 
 # Confirm where your existing base install lives
 ls ~/.agent-os

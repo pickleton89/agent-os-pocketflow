@@ -11,6 +11,10 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
   - Backward compatibility validated (`pocketflow-generate`, legacy bash scripts, existing projects).
   - Automated tests cover installer logic (>80% module coverage).
   - Documentation updated (README, migration guide, changelog) with accurate commands.
+- **Related Docs**:
+  - `README.md` — Updated installation commands (see the "Installation" section).
+  - `docs/MIGRATION_GUIDE.md` — Step-by-step instructions for upgrading legacy installs.
+
 
 ## Tracking Legend
 - `- [ ]` Not started · `- [~]` In progress · `- [x]` Complete
@@ -43,7 +47,7 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | 4. Documentation & Release | 4.1 | Update README installation instructions | - [x] | | 2025-10-02 README install section converted to uv tool + agent-os CLI workflow; updated troubleshooting and migration commands |
 | | 4.2 | Author `docs/MIGRATION_GUIDE.md` | - [x] | | 2025-10-09 Migration guide drafted with uv CLI workflow, project update steps, and rollback instructions |
 | | 4.3 | Update CHANGELOG with 2.0.0 entry | - [x] | | 2025-10-09 Added 2.0.0 release notes summarizing uv CLI packaging and docs updates |
-| | 4.4 | Crosslink plan + docs; ensure commands accurate | - [ ] | | |
+| | 4.4 | Crosslink plan + docs; ensure commands accurate | - [x] | | 2025-10-09 Linked README + migration guide references in plan and README; corrected migration command block |
 | Wrap-up | W.1 | Final validation pass (spot-check commands, re-run key tests) | - [ ] | | |
 | | W.2 | Review against success criteria; capture lessons learned | - [ ] | | |
 

@@ -75,6 +75,8 @@ agent-os init --yes
 
 > Working from a local clone? Replace the `--from` URL with `"$PWD"`.
 
+> Upgrading from the legacy bash installers? Follow `docs/MIGRATION_GUIDE.md`. Contributors coordinating the uv rollout can track progress in `docs/uv-implementation-plan.md`.
+
 ### ⚡ Run Without Installing
 
 For CI jobs or one-off machines you can execute the installer without registering the tool:
