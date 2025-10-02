@@ -114,6 +114,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   
 - **📚 Documentation**: Created `POCKETFLOW_TOOLS_IMPLEMENTATION_PLAN.md`
 
+## [2.0.0] - 2025-10-09
+
+### Added
+- `agent-os` CLI packaged with Click and Rich for base installations, confirmations, and verbose reporting.
+- uv distribution support (`uv tool install`, `uvx`, editable installs) with packaged instructions, standards, templates, and framework tools.
+- Automated installer test suite with 80%+ coverage validating force installs, toolkit overwrites, and error handling.
+- `docs/MIGRATION_GUIDE.md` documenting the upgrade path from legacy bash scripts.
+
+### Changed
+- Base installation now copies resources from the Python package via `AgentOsInstaller`, preserving `--force`, `--no-pocketflow`, and toolkit override flags.
+- Distribution scenarios verified for `uv tool install`, `uvx`, and project-local `uv add` workflows to ensure parity with legacy scripts.
+- README installation section rewritten around uv commands and the new CLI flow.
+
+### Notes
+- Legacy `setup/` scripts remain bundled for project installs and continue to work with the packaged assets.
+
 ## [3.0.0-ALPHA1] - 2025-08-26
 
 ### 🎯 MILESTONE: Universal PocketFlow Framework Complete - Task 5 End-to-End Testing & Validation

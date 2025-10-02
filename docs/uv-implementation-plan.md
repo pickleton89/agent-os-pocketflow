@@ -42,7 +42,7 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | | 3.5 | Perform Windows (native or WSL) install check; note any platform-specific guidance | - [ ] | | |
 | 4. Documentation & Release | 4.1 | Update README installation instructions | - [x] | | 2025-10-02 README install section converted to uv tool + agent-os CLI workflow; updated troubleshooting and migration commands |
 | | 4.2 | Author `docs/MIGRATION_GUIDE.md` | - [x] | | 2025-10-09 Migration guide drafted with uv CLI workflow, project update steps, and rollback instructions |
-| | 4.3 | Update CHANGELOG with 2.0.0 entry | - [ ] | | |
+| | 4.3 | Update CHANGELOG with 2.0.0 entry | - [x] | | 2025-10-09 Added 2.0.0 release notes summarizing uv CLI packaging and docs updates |
 | | 4.4 | Crosslink plan + docs; ensure commands accurate | - [ ] | | |
 | Wrap-up | W.1 | Final validation pass (spot-check commands, re-run key tests) | - [ ] | | |
 | | W.2 | Review against success criteria; capture lessons learned | - [ ] | | |
