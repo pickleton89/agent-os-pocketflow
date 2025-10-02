@@ -30,7 +30,7 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | | 1.7 | Run smoke import tests for installer module and CLI (`uv run python -c ...`) | - [x] | | 2025-10-07 `uv run python -c "import pocketflow_tools.installer"` + CLI import succeeded |
 | 2. Testing & QA | 2.1 | Install package in editable mode (`uv pip install -e .`), verify `agent-os` and `pocketflow-generate` commands | - [x] | | 2025-10-01 `uv pip install -e .`; `uv run agent-os --help`; `uv run pocketflow-generate --help` |
 | | 2.2 | Add automated tests for installer + toolkit modules; achieve >80% coverage | - [x] | | 2025-10-08 Added tests/test_installer.py covering installer + toolkit flows; coverage 87% via `UV_CACHE_DIR=.uv-cache uv run pytest --cov=pocketflow_tools.installer tests/test_installer.py` |
-| | 2.3 | Execute mock project install (base, `--claude-code`, `--force`); confirm configs, directories, `.gitignore` | - [ ] | | |
+| | 2.3 | Execute mock project install (base, `--claude-code`, `--force`); confirm configs, directories, `.gitignore` | - [x] | | 2025-10-01 Mock base install via `agent-os init` + project setup from packaged script; verified config, directories, `.gitignore` in temp workspace |
 | | 2.4 | Validate toolkit install and atomic overwrite behaviour (temp directory + atomic rename) | - [ ] | | |
 | | 2.5 | Exercise error handling (non-project directory, invalid path, pre-existing toolkit) | - [ ] | | |
 | | 2.6 | Re-run regression tests and linting (`uv run pytest`, `uv run ruff check`) | - [ ] | | |
