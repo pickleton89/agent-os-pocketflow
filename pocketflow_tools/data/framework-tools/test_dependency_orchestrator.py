@@ -372,7 +372,7 @@ def test_pyproject_validation():
         f"Generated pyproject.toml should be valid, got errors: {issues['errors']}"
     )
 
-    print(f"  ✓ Generated pyproject.toml is valid")
+    print("  ✓ Generated pyproject.toml is valid")
     print(
         f"  ✓ Validation found {len(issues['warnings'])} warnings, {len(issues['errors'])} errors"
     )
