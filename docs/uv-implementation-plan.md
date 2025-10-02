@@ -36,7 +36,7 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | | 2.6 | Re-run regression tests and linting (`uv run pytest`, `uv run ruff check`) | - [x] | | 2025-10-02 `uv run pytest` → 30 passed (legacy CLI suites emit return-value warnings); `uv run ruff check` now clean after adding pytest/ruff config and fixing stray lint hits |
 | | 2.7 | Confirm backward compatibility for legacy scripts and root directories | - [x] | | 2025-10-02 Synced framework-tools duplicates with packaged data; diff parity confirmed; setup scripts smoke checks passed |
 | 3. Distribution Scenarios | 3.1 | `uvx --from "$REPO_ROOT" agent-os init` smoke test | - [x] | | 2025-10-02 Ran `uvx` smoke install into temp dir with `--yes` + custom install path; report showed 19 created items, no warnings |
-| | 3.2 | Test `uv tool install --from "$REPO_ROOT" agent-os-pocketflow`, `uv tool install .`, and uninstall | - [ ] | | |
+| | 3.2 | Test `uv tool install --from "$REPO_ROOT" agent-os-pocketflow`, `uv tool install .`, and uninstall | - [x] | | 2025-10-02 Verified `uv tool install --from "$PWD"` + `uv tool install .` with local XDG dirs; executables linked; `uv tool uninstall agent-os-pocketflow` leaves `uv tool list` empty |
 | | 3.3 | Validate project-local install via `uv add agent-os-pocketflow` + `uv run agent-os init` | - [ ] | | |
 | | 3.4 | Run Docker-based CI simulation (build + run) | - [ ] | | |
 | | 3.5 | Perform Windows (native or WSL) install check; note any platform-specific guidance | - [ ] | | |
