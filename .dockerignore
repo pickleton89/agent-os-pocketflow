@@ -1,0 +1,32 @@
+# Versioned to keep docker build contexts slim
+.git
+.gitmodules
+.gitignore
+.env
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+*.log
+*.tmp
+
+# Build artefacts
+build
+dist
+*.egg-info
+ci-artifacts
+htmlcov
+.coverage
+
+# Local tooling
+.tmp
+.DS_Store
+.idea
+.vscode
+
+# Existing virtualenvs and caches
+.uv-cache
+node_modules
