@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pytest
@@ -101,6 +102,42 @@ def test_install_toolkit_missing_source_raises(tmp_path):
 
     with pytest.raises(ToolkitNotFoundError):
         installer.install_toolkit(tmp_path / "dest", force=True)
+
+
+def test_install_toolkit_atomic_overwrite_uses_temp_directory(tmp_path, monkeypatch):
+    source = tmp_path / "toolkit-src"
+    source.mkdir()
+    (source / "payload.txt").write_text("new toolkit payload")
+
+    destination = tmp_path / "framework-tools"
+    destination.mkdir()
+    (destination / "payload.txt").write_text("old payload")
+
+    installer = AgentOsInstaller(toolkit_source=source)
+
+    replace_calls: list[tuple[Path, Path]] = []
+    original_replace = os.replace
+
+    def tracking_replace(src, dst):
+        replace_calls.append((Path(src), Path(dst)))
+        return original_replace(src, dst)
+
+    monkeypatch.setattr(os, "replace", tracking_replace)
+
+    result = installer.install_toolkit(destination, force=True, atomic=True)
+
+    assert (destination / "payload.txt").read_text() == "new toolkit payload"
+    assert replace_calls, "Expected os.replace to be used for atomic toolkit install"
+
+    temp_path, final_destination = replace_calls[0]
+    assert final_destination == destination.resolve()
+    assert temp_path.parent == destination.parent
+    assert temp_path.name.startswith(f".{destination.name}.tmp-")
+    assert not temp_path.exists(), "Temporary directory should be removed after atomic rename"
+
+    leftovers = list(destination.parent.glob(f".{destination.name}.tmp-*"))
+    assert leftovers == []
+    assert destination in result.created
 
 
 def test_install_base_rejects_root_installation():
