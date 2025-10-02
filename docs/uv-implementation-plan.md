@@ -32,7 +32,7 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | | 2.2 | Add automated tests for installer + toolkit modules; achieve >80% coverage | - [x] | | 2025-10-08 Added tests/test_installer.py covering installer + toolkit flows; coverage 87% via `UV_CACHE_DIR=.uv-cache uv run pytest --cov=pocketflow_tools.installer tests/test_installer.py` |
 | | 2.3 | Execute mock project install (base, `--claude-code`, `--force`); confirm configs, directories, `.gitignore` | - [x] | | 2025-10-01 Mock base install via `agent-os init` + project setup from packaged script; verified config, directories, `.gitignore` in temp workspace |
 | | 2.4 | Validate toolkit install and atomic overwrite behaviour (temp directory + atomic rename) | - [x] | | 2025-10-01 Verified atomic toolkit install uses temp dir + rename via pytest (test_install_toolkit_atomic_overwrite_uses_temp_directory) |
-| | 2.5 | Exercise error handling (non-project directory, invalid path, pre-existing toolkit) | - [ ] | | |
+| | 2.5 | Exercise error handling (non-project directory, invalid path, pre-existing toolkit) | - [x] | | 2025-10-01 CLI tests cover root/home safeguards, invalid toolkit path, existing install guard via pytest |
 | | 2.6 | Re-run regression tests and linting (`uv run pytest`, `uv run ruff check`) | - [ ] | | |
 | | 2.7 | Confirm backward compatibility for legacy scripts and root directories | - [ ] | | |
 | 3. Distribution Scenarios | 3.1 | `uvx --from "$REPO_ROOT" agent-os init` smoke test | - [ ] | | |
