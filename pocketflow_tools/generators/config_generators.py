@@ -21,22 +21,22 @@ def generate_dependency_files(spec) -> Dict[str, str]:
     orchestrator = DependencyOrchestrator()
 
     # Get pattern from spec (default to WORKFLOW if not specified)
-    pattern = getattr(spec, 'pattern', 'WORKFLOW')
+    pattern = getattr(spec, "pattern", "WORKFLOW")
 
     # Generate dependency configuration for the pattern
     config = orchestrator.generate_config_for_pattern(pattern)
 
     # Generate pyproject.toml using orchestrator
-    project_name = getattr(spec, 'name', 'workflow').lower().replace(' ', '-')
-    description = getattr(spec, 'description', f'{pattern} pattern workflow')
+    project_name = getattr(spec, "name", "workflow").lower().replace(" ", "-")
+    description = getattr(spec, "description", f"{pattern} pattern workflow")
     files["pyproject.toml"] = orchestrator.generate_pyproject_toml(
-        project_name=project_name,
-        pattern=pattern,
-        description=description
+        project_name=project_name, pattern=pattern, description=description
     )
 
     # Generate requirements.txt with pattern-specific dependencies
-    all_runtime_deps = sorted(set(config.base_dependencies + config.pattern_dependencies))
+    all_runtime_deps = sorted(
+        set(config.base_dependencies + config.pattern_dependencies)
+    )
     files["requirements.txt"] = "\n".join(all_runtime_deps + [""])
 
     # Generate requirements-dev.txt with development dependencies
@@ -68,23 +68,21 @@ def generate_basic_pyproject(spec) -> str:
     """
     orchestrator = DependencyOrchestrator()
 
-    project_name = getattr(spec, 'name', 'workflow').lower().replace(" ", "-")
-    pattern = getattr(spec, 'pattern', 'WORKFLOW')
-    description = getattr(spec, 'description', f'{pattern} pattern workflow')
+    project_name = getattr(spec, "name", "workflow").lower().replace(" ", "-")
+    pattern = getattr(spec, "pattern", "WORKFLOW")
+    description = getattr(spec, "description", f"{pattern} pattern workflow")
 
     return orchestrator.generate_pyproject_toml(
-        project_name=project_name,
-        pattern=pattern,
-        description=description
+        project_name=project_name, pattern=pattern, description=description
     )
 
 
 def generate_readme(spec, config: Any) -> str:
     """Generate README matching legacy content and structure with pattern-aware details."""
-    project_name = getattr(spec, 'name', 'workflow').lower().replace(" ", "-")
-    spec_name = getattr(spec, 'name', 'Workflow')
-    spec_description = getattr(spec, 'description', 'PocketFlow workflow')
-    pattern = getattr(spec, 'pattern', 'WORKFLOW')
+    project_name = getattr(spec, "name", "workflow").lower().replace(" ", "-")
+    spec_name = getattr(spec, "name", "Workflow")
+    spec_description = getattr(spec, "description", "PocketFlow workflow")
+    pattern = getattr(spec, "pattern", "WORKFLOW")
 
     # Handle both old dict config and new enhanced config
     if isinstance(config, dict):
@@ -92,7 +90,7 @@ def generate_readme(spec, config: Any) -> str:
     else:
         python_version = "3.12"
 
-    return f'''# {spec_name}
+    return f"""# {spec_name}
 
 {spec_description}
 
@@ -174,10 +172,10 @@ uv run python -c "from flow import {spec_name}Flow; import asyncio; flow = {spec
 This workflow implements the {pattern} pattern with the following components:
 
 #### Nodes
-{chr(10).join(f'- **{node["name"]}**: {node["description"]}' for node in getattr(spec, 'nodes', []))}
+{chr(10).join(f"- **{node['name']}**: {node['description']}" for node in getattr(spec, "nodes", []))}
 
 #### Utilities
-{chr(10).join(f'- **{util["name"]}**: {util["description"]}' for util in getattr(spec, 'utilities', []))}
+{chr(10).join(f"- **{util['name']}**: {util['description']}" for util in getattr(spec, "utilities", []))}
 
 ### FastAPI Integration
 
@@ -228,10 +226,10 @@ For questions about PocketFlow patterns and implementation:
 - Check Agent OS documentation
 
 Generated on: TODO-SET-DATE
-'''
+"""
 
 
-DEFAULT_GITIGNORE = '''# Byte-compiled / optimized / DLL files
+DEFAULT_GITIGNORE = """# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
@@ -388,4 +386,4 @@ Thumbs.db
 *.log
 temp/
 tmp/
-'''
+"""

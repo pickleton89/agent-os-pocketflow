@@ -19,8 +19,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Generate PocketFlow workflows from specifications"
     )
-    parser.add_argument("--spec", required=True, help="Path to workflow specification YAML file")
-    parser.add_argument("--output", help="Output directory (default: .agent-os/workflows)")
+    parser.add_argument(
+        "--spec", required=True, help="Path to workflow specification YAML file"
+    )
+    parser.add_argument(
+        "--output", help="Output directory (default: .agent-os/workflows)"
+    )
 
     args = parser.parse_args()
 
@@ -28,7 +32,9 @@ def main() -> int:
     try:
         import yaml  # type: ignore
     except ImportError:
-        print("Error: PyYAML is required for CLI usage. Install with: uv pip install pyyaml")
+        print(
+            "Error: PyYAML is required for CLI usage. Install with: uv pip install pyyaml"
+        )
         return 1
 
     # Load specification
@@ -69,4 +75,3 @@ if __name__ == "__main__":
     import sys
 
     sys.exit(main())
-

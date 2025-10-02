@@ -11,7 +11,11 @@ Key Components:
 - OrchestrationMetric: Session-level orchestration performance tracking
 """
 
-from .document_creation_metrics import DocumentCreationMetrics, AgentMetric, OrchestrationMetric
+from .document_creation_metrics import (
+    DocumentCreationMetrics,
+    AgentMetric,
+    OrchestrationMetric,
+)
 
-__all__ = ['DocumentCreationMetrics', 'AgentMetric', 'OrchestrationMetric']
-__version__ = '1.0.0'
+__all__ = ["DocumentCreationMetrics", "AgentMetric", "OrchestrationMetric"]
+__version__ = "1.0.0"

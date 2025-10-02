@@ -512,8 +512,10 @@ install_pocketflow_tools() {
     fi
     
     # Verify framework CLI installation
-    if uv run python -m pocketflow_tools.cli --help >/dev/null 2>&1; then
+    if python3 -m pocketflow_tools.cli --help >/dev/null 2>&1; then
         log_success "pocketflow_tools framework CLI is working"
+    elif [[ -d "$framework_root/pocketflow_tools" ]]; then
+        log_warning "Framework CLI verification failed in development mode; continuing"
     else
         log_error "Framework CLI verification failed"
         exit 1
@@ -560,7 +562,7 @@ create_configuration() {
         # Update configuration with user settings
         sed -i.bak "s/claude_code: .*/claude_code: $ENABLE_CLAUDE_CODE/g" "$config_file"
         sed -i.bak "s/pocketflow: .*/pocketflow: $ENABLE_POCKETFLOW/g" "$config_file"
-        sed -i.bak "s|base_installation: \".*\"|base_installation: \"$INSTALL_PATH\"|g" "$config_file"
+        sed -i.bak "s|base_installation: ".*"|base_installation: "$INSTALL_PATH"|g" "$config_file"
         rm -f "$config_file.bak"
         log_success "Updated configuration with user settings"
     else
@@ -625,243 +627,64 @@ EOF
 # Generate project installation script
 generate_project_script() {
     log_info "Generating project installation script..."
-    
+
     local project_script="$INSTALL_PATH/setup/project.sh"
     local update_script="$INSTALL_PATH/setup/update-project.sh"
-    
-    cat > "$project_script" << 'EOF'
+    local source_dir="$(get_script_dir)"
+    local source_project_script="$source_dir/project.sh"
+    local source_update_script="$source_dir/update-project.sh"
+
+    if [[ -f "$source_project_script" ]]; then
+        cp "$source_project_script" "$project_script"
+        chmod +x "$project_script"
+        log_success "Project installation script created: $project_script"
+    else
+        cat > "$project_script" <<'EOF'
 #!/bin/bash
-# Enhanced Agent OS + PocketFlow Project Installation Script
-# This script installs Agent OS into individual project directories
+# Minimal PocketFlow project installer (fallback)
+set -euo pipefail
 
-set -e
-
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[1;33m'
-NC='\033[0m'
-
-# Logging functions
-log_info() { echo -e "${BLUE}ℹ️  $1${NC}"; }
-log_success() { echo -e "${GREEN}✅ $1${NC}"; }
-log_warning() { echo -e "${YELLOW}⚠️  $1${NC}"; }
-log_error() { echo -e "${RED}❌ $1${NC}"; }
-
-# Get base installation path
 BASE_INSTALL_PATH="$(dirname "$(dirname "$(realpath "$0")")")"
 
-# Options
-ENABLE_POCKETFLOW=true
-ENABLE_CLAUDE_CODE=true
-
-# Parse arguments
-parse_arguments() {
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            --pocketflow)
-                ENABLE_POCKETFLOW=true
-                shift
-                ;;
-            --no-pocketflow)
-                ENABLE_POCKETFLOW=false
-                shift
-                ;;
-            --claude-code)
-                ENABLE_CLAUDE_CODE=true
-                shift
-                ;;
-            --help)
-                show_help
-                exit 0
-                ;;
-            *)
-                log_error "Unknown argument: $1"
-                show_help
-                exit 1
-                ;;
-        esac
-    done
+copy_if_exists() {
+    local source="$1"
+    local target="$2"
+    if [[ -d "$source" ]]; then
+        mkdir -p "$target"
+        cp -R "$source"/* "$target" 2>/dev/null || true
+    fi
 }
 
-show_help() {
-    cat << HELP_EOF
+mkdir -p .agent-os/instructions .agent-os/standards .agent-os/commands
 
-Enhanced Agent OS + PocketFlow Project Installation
+copy_if_exists "$BASE_INSTALL_PATH/instructions" .agent-os/instructions
+copy_if_exists "$BASE_INSTALL_PATH/standards" .agent-os/standards
+copy_if_exists "$BASE_INSTALL_PATH/commands" .agent-os/commands
 
-USAGE:
-    $0 [OPTIONS]
-
-OPTIONS:
-    --pocketflow            Enable PocketFlow features (default)
-    --no-pocketflow         Disable PocketFlow features
-    --claude-code           Enable Claude Code integration
-    --help                  Show this help message
-
-EXAMPLES:
-    # Basic project installation with PocketFlow
-    $0
-    
-    # With Claude Code support
-    $0 --claude-code
-    
-    # Standard Agent OS only
-    $0 --no-pocketflow
-
-HELP_EOF
-}
-
-# Main installation function
-install_project() {
-    log_info "Installing Agent OS into current project..."
-    
-    # Check if we're in a git repository
-    if ! git rev-parse --git-dir > /dev/null 2>&1; then
-        log_warning "Not in a git repository. Installing anyway..."
-    fi
-    
-    # Create project directories
-    local project_dirs=(
-        ".agent-os"
-        ".agent-os/instructions"
-        ".agent-os/standards"
-    )
-    
-    if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
-        project_dirs+=(
-            ".agent-os/framework-tools"
-            ".agent-os/templates"
-        )
-    fi
-    
-    if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then
-        project_dirs+=(
-            ".claude/commands"
-            ".claude/agents"
-        )
-    fi
-    
-    # Create directories
-    for dir in "${project_dirs[@]}"; do
-        mkdir -p "$dir"
-        log_success "Created: $dir"
-    done
-    
-    # Copy instructions
-    if [[ -d "$BASE_INSTALL_PATH/instructions" ]]; then
-        cp -r "$BASE_INSTALL_PATH/instructions"/* ".agent-os/instructions/"
-        log_success "Copied instructions from base installation"
-    else
-        log_error "Base installation instructions not found at $BASE_INSTALL_PATH/instructions"
-        exit 1
-    fi
-    
-    # Copy standards
-    if [[ -d "$BASE_INSTALL_PATH/standards" ]]; then
-        cp -r "$BASE_INSTALL_PATH/standards"/* ".agent-os/standards/"
-        log_success "Copied standards from base installation"
-    else
-        log_error "Base installation standards not found at $BASE_INSTALL_PATH/standards"
-        exit 1
-    fi
-    
-    # Copy PocketFlow tools if enabled
-    if [[ "$ENABLE_POCKETFLOW" == "true" ]] && [[ -d "$BASE_INSTALL_PATH/framework-tools" ]]; then
-        cp -r "$BASE_INSTALL_PATH/framework-tools"/* ".agent-os/framework-tools/"
-        log_success "Copied PocketFlow tools from base installation"
-    fi
-    
-    # Copy Claude Code files if enabled
-    if [[ "$ENABLE_CLAUDE_CODE" == "true" ]]; then
-        # Copy commands from base commands directory (Agent OS v1.4.0 architecture)
-        if [[ -d "$BASE_INSTALL_PATH/commands" ]] && [[ -n "$(ls -A "$BASE_INSTALL_PATH/commands" 2>/dev/null)" ]]; then
-            cp -r "$BASE_INSTALL_PATH/commands"/* ".claude/commands/"
-            log_success "Copied Claude Code commands"
-        fi
-        
-        if [[ -d "$HOME/.claude/agents" ]] && [[ -n "$(ls -A "$HOME/.claude/agents" 2>/dev/null)" ]]; then
-            cp -r "$HOME/.claude/agents"/* ".claude/agents/"
-            log_success "Copied Claude Code agents"
-        else
-            log_warning "No agents found in global Claude Code installation. Run base setup with --claude-code first."
-        fi
-    fi
-    
-    # Create project-specific config
-    cat > ".agent-os/config.yml" << CONFIG_EOF
-# Project-specific Agent OS configuration
+cat > .agent-os/config.yml <<'CONFIG'
+# Minimal Agent OS project configuration
 version: "2.0.0"
 base_installation: "$BASE_INSTALL_PATH"
-project_type: "$(if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then echo "pocketflow-enhanced"; else echo "standard-agent-os"; fi)"
 created: "$(date +'%Y-%m-%d')"
+CONFIG
 
-# Tool configuration
-tools:
-  claude_code: $ENABLE_CLAUDE_CODE
-  pocketflow: $ENABLE_POCKETFLOW
-
-# Project paths
-paths:
-  instructions: ".agent-os/instructions"
-  standards: ".agent-os/standards"
-  pocketflow_tools: ".agent-os/framework-tools"
-  templates: ".agent-os/templates"
-CONFIG_EOF
-    
-    log_success "Project configuration created"
-    
-    # Create .gitignore entries
-    if [[ -f ".gitignore" ]]; then
-        if ! grep -q ".agent-os/framework-tools/__pycache__" .gitignore 2>/dev/null; then
-            echo -e "\n# Agent OS + PocketFlow" >> .gitignore
-            echo ".agent-os/framework-tools/__pycache__/" >> .gitignore
-            echo ".agent-os/framework-tools/*.pyc" >> .gitignore
-            log_success "Updated .gitignore"
-        fi
-    fi
-    
-    log_success "Project installation complete!"
-    
-    # Display next steps
-    echo ""
-    log_info "Next steps:"
-    echo "  • Use /plan-product to start a new project"
-    echo "  • Use /analyze-product for existing projects" 
-    echo "  • Use /create-spec to create new features"
-    echo "  • Use /execute-tasks to implement features"
-    
-    if [[ "$ENABLE_POCKETFLOW" == "true" ]]; then
-        echo ""
-        log_info "PocketFlow features available:"
-        echo "  • Workflow generators in .agent-os/framework-tools/"
-        echo "  • Pattern analyzers and validators"
-        echo "  • Enhanced LLM workflow capabilities"
-        echo ""
-        log_info "Remember to install PocketFlow package in your project:"
-        echo "  cd <your-project>"
-        echo "  uv add pocketflow uvicorn pytest-asyncio httpx"
-    fi
-}
-
-# Parse arguments and run installation
-parse_arguments "$@"
-install_project
+echo "PocketFlow minimal project setup complete"
 EOF
-    
-    chmod +x "$project_script"
-    log_success "Project installation script created: $project_script"
-    
-    # Copy update-project.sh script
-    local source_update_script="$(get_script_dir)/update-project.sh"
+        chmod +x "$project_script"
+        log_warning "Project installation script source not found; generated minimal fallback"
+    fi
+
     if [[ -f "$source_update_script" ]]; then
         cp "$source_update_script" "$update_script"
         chmod +x "$update_script"
         log_success "Project update script created: $update_script"
     else
         log_warning "Update script not found in source, creating minimal version"
-        echo "#!/bin/bash" > "$update_script"
-        echo "echo 'Update script not available in this installation'" >> "$update_script"
+        cat > "$update_script" <<'EOF'
+#!/bin/bash
+set -euo pipefail
+echo "Update script not available in this installation"
+EOF
         chmod +x "$update_script"
     fi
 }

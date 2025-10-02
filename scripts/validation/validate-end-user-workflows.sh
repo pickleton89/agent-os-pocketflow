@@ -72,7 +72,7 @@ test_framework_installation() {
     cd "$TEST_PROJECT_NAME"
 
     # Test base installation
-    if ! "$FRAMEWORK_ROOT/setup.sh" --non-interactive; then
+    if ! "$FRAMEWORK_ROOT/setup.sh" base-then-project --non-interactive --force; then
         log_error "Framework installation failed"
         return 1
     fi
@@ -290,8 +290,11 @@ task_schema = {
 EOF
 
     # Create API spec
-    cat > docs/specs/task-api-spec.md << 'EOF'
+cat > docs/specs/task-api-spec.md << 'EOF'
 # Task Management API Specification
+
+## Overview
+Defines FastAPI surface area, schemas, and validation required to execute the Task Management workflow end-to-end.
 
 ## FastAPI Endpoints
 
@@ -440,7 +443,7 @@ EOF
     )
 
     for pattern in "${required_patterns[@]}"; do
-        if ! grep -q "$pattern" "docs/tasks/task-management-tasks.md"; then
+        if ! grep -q -- "$pattern" "docs/tasks/task-management-tasks.md"; then
             log_error "Task file missing required pattern: $pattern"
             return 1
         fi

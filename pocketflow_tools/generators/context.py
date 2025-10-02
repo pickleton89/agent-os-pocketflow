@@ -15,4 +15,3 @@ class GenerationContext:
     templates: Dict[str, str]
     extensions: Dict[str, Any]
     enable_hybrid_promotion: bool = False
-

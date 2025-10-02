@@ -7,40 +7,52 @@ def _get_utility_guidance_comments(utility: Dict[str, Any]) -> List[str]:
     """Generate specific guidance comments based on utility type."""
     name = utility.get("name", "").lower()
     description = utility.get("description", "").lower()
-    
+
     # Detect utility patterns and provide specific guidance
-    if any(keyword in name or keyword in description for keyword in ["llm", "ai", "chat", "completion"]):
+    if any(
+        keyword in name or keyword in description
+        for keyword in ["llm", "ai", "chat", "completion"]
+    ):
         return [
             "GUIDANCE: For LLM utilities, keep prompts simple and transparent.",
             "- Pass prompts as clear parameters, don't construct them internally",
             "- Avoid complex reasoning chains or decision logic",
             "- Let nodes handle prompt construction and result processing",
         ]
-    
-    if any(keyword in name or keyword in description for keyword in ["file", "read", "write", "load", "save"]):
+
+    if any(
+        keyword in name or keyword in description
+        for keyword in ["file", "read", "write", "load", "save"]
+    ):
         return [
             "GUIDANCE: For file utilities, focus on simple I/O operations.",
             "- Handle basic file reading/writing/parsing",
             "- Keep error handling simple (let exceptions bubble up)",
             "- Avoid complex file processing logic",
         ]
-    
-    if any(keyword in name or keyword in description for keyword in ["api", "http", "request", "fetch", "client"]):
+
+    if any(
+        keyword in name or keyword in description
+        for keyword in ["api", "http", "request", "fetch", "client"]
+    ):
         return [
             "GUIDANCE: For API utilities, provide clean service interfaces.",
             "- Focus on request/response handling",
             "- Keep authentication and retry logic simple",
             "- Avoid business logic or complex response processing",
         ]
-    
-    if any(keyword in name or keyword in description for keyword in ["parse", "format", "convert", "transform"]):
+
+    if any(
+        keyword in name or keyword in description
+        for keyword in ["parse", "format", "convert", "transform"]
+    ):
         return [
             "GUIDANCE: For data utilities, focus on simple transformations.",
             "- Handle straightforward data format conversions",
             "- Avoid complex data validation or business rules",
             "- Keep transformations stateless and predictable",
         ]
-    
+
     # Generic guidance
     return [
         "GUIDANCE: Keep this utility simple and focused.",
@@ -50,82 +62,107 @@ def _get_utility_guidance_comments(utility: Dict[str, Any]) -> List[str]:
     ]
 
 
-def _get_utility_implementation_guidance(utility: Dict[str, Any], is_async: bool) -> List[str]:
+def _get_utility_implementation_guidance(
+    utility: Dict[str, Any], is_async: bool
+) -> List[str]:
     """Generate implementation guidance comments based on utility characteristics."""
     name = utility.get("name", "").lower()
     description = utility.get("description", "").lower()
     guidance = []
-    
+
     # LLM-specific guidance
-    if any(keyword in name or keyword in description for keyword in ["llm", "ai", "chat", "completion"]):
+    if any(
+        keyword in name or keyword in description
+        for keyword in ["llm", "ai", "chat", "completion"]
+    ):
         if is_async:
-            guidance.extend([
-                "    # EXAMPLE: Simple async LLM call pattern",
-                "    # from openai import AsyncOpenAI",
-                "    # client = AsyncOpenAI()",
-                "    # response = await client.chat.completions.create(",
-                "    #     model='gpt-4',",
-                "    #     messages=[{'role': 'user', 'content': prompt}]",
-                "    # )",
-                "    # return response.choices[0].message.content",
-            ])
+            guidance.extend(
+                [
+                    "    # EXAMPLE: Simple async LLM call pattern",
+                    "    # from openai import AsyncOpenAI",
+                    "    # client = AsyncOpenAI()",
+                    "    # response = await client.chat.completions.create(",
+                    "    #     model='gpt-4',",
+                    "    #     messages=[{'role': 'user', 'content': prompt}]",
+                    "    # )",
+                    "    # return response.choices[0].message.content",
+                ]
+            )
         else:
-            guidance.extend([
-                "    # EXAMPLE: Simple sync LLM call pattern", 
-                "    # from openai import OpenAI",
-                "    # client = OpenAI()",
-                "    # response = client.chat.completions.create(",
-                "    #     model='gpt-4',",
-                "    #     messages=[{'role': 'user', 'content': prompt}]",
-                "    # )",
-                "    # return response.choices[0].message.content",
-            ])
-    
+            guidance.extend(
+                [
+                    "    # EXAMPLE: Simple sync LLM call pattern",
+                    "    # from openai import OpenAI",
+                    "    # client = OpenAI()",
+                    "    # response = client.chat.completions.create(",
+                    "    #     model='gpt-4',",
+                    "    #     messages=[{'role': 'user', 'content': prompt}]",
+                    "    # )",
+                    "    # return response.choices[0].message.content",
+                ]
+            )
+
     # File I/O guidance
-    elif any(keyword in name or keyword in description for keyword in ["file", "read", "write", "load", "save"]):
+    elif any(
+        keyword in name or keyword in description
+        for keyword in ["file", "read", "write", "load", "save"]
+    ):
         if is_async:
-            guidance.extend([
-                "    # EXAMPLE: Simple async file operations",
-                "    # import aiofiles",
-                "    # async with aiofiles.open(file_path, 'r') as f:",
-                "    #     content = await f.read()",
-                "    # return content",
-            ])
+            guidance.extend(
+                [
+                    "    # EXAMPLE: Simple async file operations",
+                    "    # import aiofiles",
+                    "    # async with aiofiles.open(file_path, 'r') as f:",
+                    "    #     content = await f.read()",
+                    "    # return content",
+                ]
+            )
         else:
-            guidance.extend([
-                "    # EXAMPLE: Simple sync file operations",
-                "    # with open(file_path, 'r') as f:",
-                "    #     content = f.read()",
-                "    # return content",
-            ])
-    
+            guidance.extend(
+                [
+                    "    # EXAMPLE: Simple sync file operations",
+                    "    # with open(file_path, 'r') as f:",
+                    "    #     content = f.read()",
+                    "    # return content",
+                ]
+            )
+
     # API guidance
-    elif any(keyword in name or keyword in description for keyword in ["api", "http", "request", "fetch"]):
+    elif any(
+        keyword in name or keyword in description
+        for keyword in ["api", "http", "request", "fetch"]
+    ):
         if is_async:
-            guidance.extend([
-                "    # EXAMPLE: Simple async HTTP request",
-                "    # import httpx",
-                "    # async with httpx.AsyncClient() as client:",
-                "    #     response = await client.get(url)",
-                "    #     return response.json()",
-            ])
+            guidance.extend(
+                [
+                    "    # EXAMPLE: Simple async HTTP request",
+                    "    # import httpx",
+                    "    # async with httpx.AsyncClient() as client:",
+                    "    #     response = await client.get(url)",
+                    "    #     return response.json()",
+                ]
+            )
         else:
-            guidance.extend([
-                "    # EXAMPLE: Simple sync HTTP request",
-                "    # import requests",
-                "    # response = requests.get(url)",
-                "    # return response.json()",
-            ])
-    
+            guidance.extend(
+                [
+                    "    # EXAMPLE: Simple sync HTTP request",
+                    "    # import requests",
+                    "    # response = requests.get(url)",
+                    "    # return response.json()",
+                ]
+            )
+
     # Generic implementation guidance
     else:
-        guidance.extend([
-            "    # IMPLEMENTATION GUIDANCE:",
-            "    # - Keep the logic simple and focused on one task",
-            "    # - Use clear variable names and minimal complexity",
-            "    # - Let exceptions bubble up for retry handling",
-        ])
-    
+        guidance.extend(
+            [
+                "    # IMPLEMENTATION GUIDANCE:",
+                "    # - Keep the logic simple and focused on one task",
+                "    # - Use clear variable names and minimal complexity",
+                "    # - Let exceptions bubble up for retry handling",
+            ]
+        )
+
     return guidance
 
 
@@ -204,7 +241,9 @@ def generate_utility(utility: Dict[str, Any]) -> str:
             '    """',
             f"    {utility['description']}",
             "",
-        ] + guidance_comments + [
+        ]
+        + guidance_comments
+        + [
             '    """',
             "",
             "    # Framework guidance: Keep this function focused and transparent",
@@ -300,72 +339,74 @@ def generate_fastapi_router(spec) -> str:
         endpoint_name = endpoint["name"]
         default_desc = f"Execute {endpoint_name} workflow"
 
-        router_code.extend([
-            f'@router.{method}("{path}", response_model={endpoint_name}Response)',
-            f"async def {endpoint_name.lower()}_endpoint(request: {endpoint_name}Request):",
-            '    """',
-            f"    {endpoint.get('description', default_desc)}",
-            '    """',
-            "    # TODO: Add authentication and authorization logic here",
-            "    # ",
-            "    # FRAMEWORK GUIDANCE: This TODO is intentional. The Agent OS + PocketFlow",
-            "    # framework provides templates and structure, but YOU implement the specific",
-            "    # business logic for your use case.",
-            "    #",
-            "    # Why? This ensures maximum flexibility and prevents vendor lock-in.",
-            "    # ",
-            "    # Next Steps:",
-            "    # 1. Review docs/design.md for your specific requirements",
-            "    # 2. Implement auth strategy (JWT, OAuth, API keys, etc.)",
-            "    # 3. See ~/.agent-os/standards/best-practices.md for patterns",
-            "    ",
-            "    # TODO: Add input validation and sanitization",
-            "    # ",
-            "    # FRAMEWORK GUIDANCE: This TODO is intentional. The Agent OS + PocketFlow",
-            "    # framework provides templates and structure, but YOU implement the specific",
-            "    # business logic for your use case.",
-            "    #",
-            "    # Why? This ensures maximum flexibility and prevents vendor lock-in.",
-            "    # ",
-            "    # Next Steps:",
-            "    # 1. Review docs/design.md for your specific requirements",
-            "    # 2. Add Pydantic validators or custom validation logic",
-            "    # 3. See ~/.agent-os/standards/best-practices.md for patterns",
-            "    ",
-            "    # Initialize SharedStore",
-            "    shared = {",
-            '        "request_data": request.dict(),',
-            '        "timestamp": datetime.utcnow().isoformat()',
-            "    }",
-            "",
-            "    # Execute workflow - let PocketFlow handle retries and errors",
-            f"    flow = {spec.name}Flow()",
-            "    await flow.run_async(shared)",
-            "",
-            "    # TODO: Customize error handling and response codes",
-            "    # ",
-            "    # FRAMEWORK GUIDANCE: This TODO is intentional. The Agent OS + PocketFlow",
-            "    # framework provides templates and structure, but YOU implement the specific",
-            "    # business logic for your use case.",
-            "    #",
-            "    # Why? This ensures maximum flexibility and prevents vendor lock-in.",
-            "    # ",
-            "    # Next Steps:",
-            "    # 1. Review docs/design.md for your specific requirements",
-            "    # 2. Follow FastAPI error handling patterns",
-            "    # 3. See ~/.agent-os/standards/best-practices.md for patterns",
-            "    # Check for flow-level errors",
-            '    if "error" in shared:',
-            "        raise HTTPException(",
-            "            status_code=422,",
-            '            detail=shared.get("error_message", "Workflow execution failed")',
-            "        )",
-            "",
-            "    # Return response",
-            f'    return {endpoint["name"]}Response(**shared.get("result", {{}}))',
-            "",
-            "",
-        ])
+        router_code.extend(
+            [
+                f'@router.{method}("{path}", response_model={endpoint_name}Response)',
+                f"async def {endpoint_name.lower()}_endpoint(request: {endpoint_name}Request):",
+                '    """',
+                f"    {endpoint.get('description', default_desc)}",
+                '    """',
+                "    # TODO: Add authentication and authorization logic here",
+                "    # ",
+                "    # FRAMEWORK GUIDANCE: This TODO is intentional. The Agent OS + PocketFlow",
+                "    # framework provides templates and structure, but YOU implement the specific",
+                "    # business logic for your use case.",
+                "    #",
+                "    # Why? This ensures maximum flexibility and prevents vendor lock-in.",
+                "    # ",
+                "    # Next Steps:",
+                "    # 1. Review docs/design.md for your specific requirements",
+                "    # 2. Implement auth strategy (JWT, OAuth, API keys, etc.)",
+                "    # 3. See ~/.agent-os/standards/best-practices.md for patterns",
+                "    ",
+                "    # TODO: Add input validation and sanitization",
+                "    # ",
+                "    # FRAMEWORK GUIDANCE: This TODO is intentional. The Agent OS + PocketFlow",
+                "    # framework provides templates and structure, but YOU implement the specific",
+                "    # business logic for your use case.",
+                "    #",
+                "    # Why? This ensures maximum flexibility and prevents vendor lock-in.",
+                "    # ",
+                "    # Next Steps:",
+                "    # 1. Review docs/design.md for your specific requirements",
+                "    # 2. Add Pydantic validators or custom validation logic",
+                "    # 3. See ~/.agent-os/standards/best-practices.md for patterns",
+                "    ",
+                "    # Initialize SharedStore",
+                "    shared = {",
+                '        "request_data": request.dict(),',
+                '        "timestamp": datetime.utcnow().isoformat()',
+                "    }",
+                "",
+                "    # Execute workflow - let PocketFlow handle retries and errors",
+                f"    flow = {spec.name}Flow()",
+                "    await flow.run_async(shared)",
+                "",
+                "    # TODO: Customize error handling and response codes",
+                "    # ",
+                "    # FRAMEWORK GUIDANCE: This TODO is intentional. The Agent OS + PocketFlow",
+                "    # framework provides templates and structure, but YOU implement the specific",
+                "    # business logic for your use case.",
+                "    #",
+                "    # Why? This ensures maximum flexibility and prevents vendor lock-in.",
+                "    # ",
+                "    # Next Steps:",
+                "    # 1. Review docs/design.md for your specific requirements",
+                "    # 2. Follow FastAPI error handling patterns",
+                "    # 3. See ~/.agent-os/standards/best-practices.md for patterns",
+                "    # Check for flow-level errors",
+                '    if "error" in shared:',
+                "        raise HTTPException(",
+                "            status_code=422,",
+                '            detail=shared.get("error_message", "Workflow execution failed")',
+                "        )",
+                "",
+                "    # Return response",
+                f'    return {endpoint["name"]}Response(**shared.get("result", {{}}))',
+                "",
+                "",
+            ]
+        )
 
     return "\n".join(router_code)
 
@@ -373,6 +414,7 @@ def generate_fastapi_router(spec) -> str:
 # -----------------------------
 # Phase 1: Extracted generators
 # -----------------------------
+
 
 def generate_pydantic_models(spec) -> str:
     """Generate Pydantic models from shared store schema (legacy parity)."""
@@ -385,11 +427,13 @@ def generate_pydantic_models(spec) -> str:
     ]
 
     # SharedStore model
-    models.extend([
-        "class SharedStoreModel(BaseModel):",
-        '    """Pydantic model for SharedStore validation."""',
-        "",
-    ])
+    models.extend(
+        [
+            "class SharedStoreModel(BaseModel):",
+            '    """Pydantic model for SharedStore validation."""',
+            "",
+        ]
+    )
 
     for key, value_type in spec.shared_store_schema.items():
         models.append(f"    {key}: {value_type}")
@@ -399,21 +443,25 @@ def generate_pydantic_models(spec) -> str:
     # API models (universal architecture)
     for endpoint in spec.api_endpoints:
         # Request model
-        models.extend([
-            f"class {endpoint['name']}Request(BaseModel):",
-            f'    """Request model for {endpoint["name"]} endpoint."""',
-            "",
-        ])
+        models.extend(
+            [
+                f"class {endpoint['name']}Request(BaseModel):",
+                f'    """Request model for {endpoint["name"]} endpoint."""',
+                "",
+            ]
+        )
         for field in endpoint.get("request_fields", []):
             models.append(f"    {field['name']}: {field['type']}")
         models.extend(["", ""])
 
         # Response model
-        models.extend([
-            f"class {endpoint['name']}Response(BaseModel):",
-            f'    """Response model for {endpoint["name"]} endpoint."""',
-            "",
-        ])
+        models.extend(
+            [
+                f"class {endpoint['name']}Response(BaseModel):",
+                f'    """Response model for {endpoint["name"]} endpoint."""',
+                "",
+            ]
+        )
         for field in endpoint.get("response_fields", []):
             models.append(f"    {field['name']}: {field['type']}")
         models.extend(["", ""])
@@ -421,7 +469,9 @@ def generate_pydantic_models(spec) -> str:
     return "\n".join(models)
 
 
-def _get_smart_node_defaults(node: Dict[str, Any], is_async: bool = False) -> Dict[str, str]:
+def _get_smart_node_defaults(
+    node: Dict[str, Any], is_async: bool = False
+) -> Dict[str, str]:
     """Generate smart defaults based on node name and description (legacy parity)."""
     name = str(node.get("name", "")).lower()
     description = str(node.get("description", "")).lower()
@@ -434,7 +484,7 @@ def _get_smart_node_defaults(node: Dict[str, Any], is_async: bool = False) -> Di
         "formatter": 'return shared.get("raw_data", "")',
         "validator": 'return shared.get("input_data", "")',
         "transformer": 'return shared.get("input_data", "")',
-        "llm": 'prompt = f"Process this: {shared.get(\"content\", \"\")}"\n        return prompt',
+        "llm": 'prompt = f"Process this: {shared.get("content", "")}"\n        return prompt',
         "embedding": 'return shared.get("text", "")',
         "search": 'return shared.get("query", "")',
         "filter": 'return shared.get("items", [])',
@@ -442,30 +492,30 @@ def _get_smart_node_defaults(node: Dict[str, Any], is_async: bool = False) -> Di
 
     # Async exec examples
     exec_examples_async = {
-        "retriever": 'search_results = await search_documents(prep_result)\n        return search_results',
+        "retriever": "search_results = await search_documents(prep_result)\n        return search_results",
         "loader": 'async with aiofiles.open(prep_result, "r") as f:\n            content = await f.read()\n        return content',
-        "analyzer": 'analysis = await analyze_content(prep_result)\n        return analysis',
-        "formatter": 'formatted_data = await format_response_async(prep_result)\n        return formatted_data',
+        "analyzer": "analysis = await analyze_content(prep_result)\n        return analysis",
+        "formatter": "formatted_data = await format_response_async(prep_result)\n        return formatted_data",
         "validator": 'is_valid = await validate_input_async(prep_result)\n        return {"valid": is_valid, "data": prep_result}',
-        "transformer": 'transformed = await transform_data_async(prep_result)\n        return transformed',
-        "llm": 'response = await call_llm(prep_result)\n        return response',
-        "embedding": 'embedding = await get_embedding(prep_result)\n        return embedding',
-        "search": 'results = await search_vector_db(prep_result)\n        return results',
-        "filter": 'filtered = await filter_async(prep_result)\n        return filtered',
+        "transformer": "transformed = await transform_data_async(prep_result)\n        return transformed",
+        "llm": "response = await call_llm(prep_result)\n        return response",
+        "embedding": "embedding = await get_embedding(prep_result)\n        return embedding",
+        "search": "results = await search_vector_db(prep_result)\n        return results",
+        "filter": "filtered = await filter_async(prep_result)\n        return filtered",
     }
 
     # Sync exec examples
     exec_examples_sync = {
-        "retriever": 'search_results = search_documents(prep_result)\n        return search_results',
+        "retriever": "search_results = search_documents(prep_result)\n        return search_results",
         "loader": 'with open(prep_result, "r") as f:\n            content = f.read()\n        return content',
-        "analyzer": 'analysis = analyze_content(prep_result)\n        return analysis',
-        "formatter": 'formatted_data = format_response(prep_result)\n        return formatted_data',
+        "analyzer": "analysis = analyze_content(prep_result)\n        return analysis",
+        "formatter": "formatted_data = format_response(prep_result)\n        return formatted_data",
         "validator": 'is_valid = validate_input(prep_result)\n        return {"valid": is_valid, "data": prep_result}',
-        "transformer": 'transformed = transform_data(prep_result)\n        return transformed',
-        "llm": 'response = call_llm_sync(prep_result)\n        return response',
-        "embedding": 'embedding = get_embedding_sync(prep_result)\n        return embedding',
-        "search": 'results = search_vector_db_sync(prep_result)\n        return results',
-        "filter": 'filtered = [item for item in prep_result if meets_criteria(item)]\n        return filtered',
+        "transformer": "transformed = transform_data(prep_result)\n        return transformed",
+        "llm": "response = call_llm_sync(prep_result)\n        return response",
+        "embedding": "embedding = get_embedding_sync(prep_result)\n        return embedding",
+        "search": "results = search_vector_db_sync(prep_result)\n        return results",
+        "filter": "filtered = [item for item in prep_result if meets_criteria(item)]\n        return filtered",
     }
 
     exec_examples = exec_examples_async if is_async else exec_examples_sync
@@ -541,7 +591,9 @@ def generate_nodes(spec) -> str:
 
         batch_comment = ""
         if node_type == "BatchNode":
-            batch_comment = "\n    # NOTE: BatchNode used for processing multiple items in parallel"
+            batch_comment = (
+                "\n    # NOTE: BatchNode used for processing multiple items in parallel"
+            )
 
         is_async_node = node_type in [
             "AsyncNode",
@@ -556,13 +608,15 @@ def generate_nodes(spec) -> str:
         orchestrator_guidance = _get_orchestrator_guidance_for_node(node)
         framework_reminders = _get_framework_reminders_for_node(node)
 
-        nodes_code.extend([
-            f"class {node['name']}({node_type}):",
-            '    """',
-            f"    {node['description']}",
-            f'    """{batch_comment}',
-            "",
-        ])
+        nodes_code.extend(
+            [
+                f"class {node['name']}({node_type}):",
+                '    """',
+                f"    {node['description']}",
+                f'    """{batch_comment}',
+                "",
+            ]
+        )
 
         # Framework reminders
         if framework_reminders:
@@ -576,22 +630,24 @@ def generate_nodes(spec) -> str:
                 nodes_code.append(f"    {guidance}")
             nodes_code.append("")
 
-        nodes_code.extend([
-            "    def prep(self, shared: Dict[str, Any]) -> Any:",
-            '        """',
-            '        Data preparation and validation.',
-            '        ',
-            '        BEST PRACTICE: Only read from shared store here.',
-            '        DO NOT: Perform computation or external calls.',
-            '        DO NOT: Access databases, APIs, or call LLMs.',
-            '        ',
-            '        This method should be fast, synchronous, and focused on',
-            '        extracting the exact data needed for exec().',
-            '        """',
-            f'        logger.info(f"Preparing data for {node["name"]}")',
-            "",
-            "        # Framework guidance: Read only what exec() needs from shared store",
-        ])
+        nodes_code.extend(
+            [
+                "    def prep(self, shared: Dict[str, Any]) -> Any:",
+                '        """',
+                "        Data preparation and validation.",
+                "        ",
+                "        BEST PRACTICE: Only read from shared store here.",
+                "        DO NOT: Perform computation or external calls.",
+                "        DO NOT: Access databases, APIs, or call LLMs.",
+                "        ",
+                "        This method should be fast, synchronous, and focused on",
+                "        extracting the exact data needed for exec().",
+                '        """',
+                f'        logger.info(f"Preparing data for {node["name"]}")',
+                "",
+                "        # Framework guidance: Read only what exec() needs from shared store",
+            ]
+        )
 
         # Enhanced TODOs for prep with framework guidance
         base_prep_todos = [
@@ -611,30 +667,34 @@ def generate_nodes(spec) -> str:
             "# 2. Follow PocketFlow node lifecycle: prep() → exec() → post()",
             "# 3. See ~/.agent-os/standards/best-practices.md for patterns",
         ]
-        
+
         # Always include framework guidance, with optional enhanced todos first
-        prep_todos = (enhanced_todos[:2] if enhanced_todos else base_prep_todos) + framework_guidance
+        prep_todos = (
+            enhanced_todos[:2] if enhanced_todos else base_prep_todos
+        ) + framework_guidance
         for todo in prep_todos:
             nodes_code.append(f"        {todo}")
 
-        nodes_code.extend([
-            f"        {smart_defaults['prep']}",
-            "",
-            exec_signature,
-            '        """',
-            '        Core processing logic.',
-            '        ',
-            '        BEST PRACTICE: Use only prep_result as input.',
-            '        DO NOT: Access shared store directly.',
-            '        DO NOT: Use try/except for flow control.',
-            '        ',
-            '        Let exceptions bubble up for PocketFlow retry handling.',
-            '        Use return values and post() for business logic branching.',
-            '        """',
-            f'        logger.info(f"Executing {node["name"]}")',
-            "",
-            "        # Framework guidance: Process prep_result, avoid shared store access",
-        ])
+        nodes_code.extend(
+            [
+                f"        {smart_defaults['prep']}",
+                "",
+                exec_signature,
+                '        """',
+                "        Core processing logic.",
+                "        ",
+                "        BEST PRACTICE: Use only prep_result as input.",
+                "        DO NOT: Access shared store directly.",
+                "        DO NOT: Use try/except for flow control.",
+                "        ",
+                "        Let exceptions bubble up for PocketFlow retry handling.",
+                "        Use return values and post() for business logic branching.",
+                '        """',
+                f'        logger.info(f"Executing {node["name"]}")',
+                "",
+                "        # Framework guidance: Process prep_result, avoid shared store access",
+            ]
+        )
 
         # Enhanced TODOs for exec with framework guidance
         base_exec_todos = [
@@ -642,30 +702,34 @@ def generate_nodes(spec) -> str:
             "# TODO: Return the processed result (avoid side effects here)",
         ]
         # Reuse framework guidance (same for all sections)
-        
+
         # Always include framework guidance, with optional enhanced todos first
-        exec_todos = (enhanced_todos[2:4] if len(enhanced_todos) > 2 else base_exec_todos) + framework_guidance
+        exec_todos = (
+            enhanced_todos[2:4] if len(enhanced_todos) > 2 else base_exec_todos
+        ) + framework_guidance
         for todo in exec_todos:
             nodes_code.append(f"        {todo}")
 
-        nodes_code.extend([
-            f"        {smart_defaults['exec']}",
-            "",
-            "    def post(self, shared: Dict[str, Any], prep_result: Any, exec_result: Any) -> Optional[str]:",
-            '        """',
-            '        Post-processing and result storage.',
-            '        ',
-            '        BEST PRACTICE: Store results in shared store and return flow signals.',
-            '        DO NOT: Perform heavy computation here.',
-            '        DO NOT: Call external APIs or services.',
-            '        ',
-            '        Use return values to signal flow branching (e.g., "success", "retry", "error").',
-            '        Keep this method fast and focused on data storage and routing.',
-            '        """',
-            f'        logger.info(f"Post-processing for {node["name"]}")',
-            "",
-            "        # Framework guidance: Store exec_result in shared store, return flow signal",
-        ])
+        nodes_code.extend(
+            [
+                f"        {smart_defaults['exec']}",
+                "",
+                "    def post(self, shared: Dict[str, Any], prep_result: Any, exec_result: Any) -> Optional[str]:",
+                '        """',
+                "        Post-processing and result storage.",
+                "        ",
+                "        BEST PRACTICE: Store results in shared store and return flow signals.",
+                "        DO NOT: Perform heavy computation here.",
+                "        DO NOT: Call external APIs or services.",
+                "        ",
+                '        Use return values to signal flow branching (e.g., "success", "retry", "error").',
+                "        Keep this method fast and focused on data storage and routing.",
+                '        """',
+                f'        logger.info(f"Post-processing for {node["name"]}")',
+                "",
+                "        # Framework guidance: Store exec_result in shared store, return flow signal",
+            ]
+        )
 
         # Enhanced TODOs for post with framework guidance
         base_post_todos = [
@@ -673,17 +737,21 @@ def generate_nodes(spec) -> str:
             "# TODO: Return flow signal for branching ('success', 'error', specific state)",
         ]
         # Reuse framework guidance (same for all sections)
-        
+
         # Always include framework guidance, with optional enhanced todos first
-        post_todos = (enhanced_todos[4:] if len(enhanced_todos) > 4 else base_post_todos) + framework_guidance
+        post_todos = (
+            enhanced_todos[4:] if len(enhanced_todos) > 4 else base_post_todos
+        ) + framework_guidance
         for todo in post_todos:
             nodes_code.append(f"        {todo}")
 
-        nodes_code.extend([
-            f"        {smart_defaults['post']}",
-            "",
-            "",
-        ])
+        nodes_code.extend(
+            [
+                f"        {smart_defaults['post']}",
+                "",
+                "",
+            ]
+        )
 
     return "\n".join(nodes_code)
 
@@ -700,48 +768,52 @@ def generate_flow(spec) -> str:
         "",
     ]
 
-    flow_code.extend([
-        f"class {spec.name}Flow(Flow):",
-        '    """',
-        f"    {spec.description}",
-        '    """',
-        "",
-        "    def __init__(self):",
-        "        # TODO: Customize node instances and their configurations",
-        "        # ",
-        "        # FRAMEWORK GUIDANCE: This TODO is intentional. The Agent OS + PocketFlow",
-        "        # framework provides templates and structure, but YOU implement the specific",
-        "        # business logic for your use case.",
-        "        #",
-        "        # Why? This ensures maximum flexibility and prevents vendor lock-in.",
-        "        # ",
-        "        # Next Steps:",
-        "        # 1. Review docs/design.md for your specific requirements",
-        "        # 2. Configure node parameters based on your domain needs",
-        "        # 3. See ~/.agent-os/standards/best-practices.md for patterns",
-        "        nodes = {",
-    ])
+    flow_code.extend(
+        [
+            f"class {spec.name}Flow(Flow):",
+            '    """',
+            f"    {spec.description}",
+            '    """',
+            "",
+            "    def __init__(self):",
+            "        # TODO: Customize node instances and their configurations",
+            "        # ",
+            "        # FRAMEWORK GUIDANCE: This TODO is intentional. The Agent OS + PocketFlow",
+            "        # framework provides templates and structure, but YOU implement the specific",
+            "        # business logic for your use case.",
+            "        #",
+            "        # Why? This ensures maximum flexibility and prevents vendor lock-in.",
+            "        # ",
+            "        # Next Steps:",
+            "        # 1. Review docs/design.md for your specific requirements",
+            "        # 2. Configure node parameters based on your domain needs",
+            "        # 3. See ~/.agent-os/standards/best-practices.md for patterns",
+            "        nodes = {",
+        ]
+    )
 
     for node in spec.nodes:
         flow_code.append(f'            "{node["name"].lower()}": {node["name"]}(),')
 
-    flow_code.extend([
-        "        }",
-        "",
-        "        # TODO: Customize workflow connections and error handling",
-        "        # ",
-        "        # FRAMEWORK GUIDANCE: This TODO is intentional. The Agent OS + PocketFlow",
-        "        # framework provides templates and structure, but YOU implement the specific",
-        "        # business logic for your use case.",
-        "        #",
-        "        # Why? This ensures maximum flexibility and prevents vendor lock-in.",
-        "        # ",
-        "        # Next Steps:",
-        "        # 1. Review docs/design.md for your specific requirements",
-        "        # 2. Follow PocketFlow flow lifecycle: init() → run_async() → cleanup()",
-        "        # 3. See ~/.agent-os/standards/best-practices.md for patterns",
-        "        edges = {",
-    ])
+    flow_code.extend(
+        [
+            "        }",
+            "",
+            "        # TODO: Customize workflow connections and error handling",
+            "        # ",
+            "        # FRAMEWORK GUIDANCE: This TODO is intentional. The Agent OS + PocketFlow",
+            "        # framework provides templates and structure, but YOU implement the specific",
+            "        # business logic for your use case.",
+            "        #",
+            "        # Why? This ensures maximum flexibility and prevents vendor lock-in.",
+            "        # ",
+            "        # Next Steps:",
+            "        # 1. Review docs/design.md for your specific requirements",
+            "        # 2. Follow PocketFlow flow lifecycle: init() → run_async() → cleanup()",
+            "        # 3. See ~/.agent-os/standards/best-practices.md for patterns",
+            "        edges = {",
+        ]
+    )
 
     for i, node in enumerate(spec.nodes):
         node_name = node["name"].lower()
@@ -755,13 +827,15 @@ def generate_flow(spec) -> str:
                 f'            "{node_name}": {{"success": None, "error": "error_handler"}},'
             )
 
-    flow_code.extend([
-        "        }",
-        "",
-        "        super().__init__(nodes=nodes, edges=edges)",
-        "",
-        "",
-    ])
+    flow_code.extend(
+        [
+            "        }",
+            "",
+            "        super().__init__(nodes=nodes, edges=edges)",
+            "",
+            "",
+        ]
+    )
 
     return "\n".join(flow_code)
 

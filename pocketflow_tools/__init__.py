@@ -10,4 +10,3 @@ from .spec import WorkflowSpec  # re-export for convenience
 __all__ = [
     "WorkflowSpec",
 ]
-

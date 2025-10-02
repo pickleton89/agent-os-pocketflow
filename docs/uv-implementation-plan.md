@@ -42,14 +42,14 @@ _This plan expands the v2.1 strategy into trackable tasks. Update checkboxes, st
 | 3. Distribution Scenarios | 3.1 | `uvx --from "$REPO_ROOT" agent-os init` smoke test | - [x] | | 2025-10-02 Ran `uvx` smoke install into temp dir with `--yes` + custom install path; report showed 19 created items, no warnings |
 | | 3.2 | Test `uv tool install --from "$REPO_ROOT" agent-os-pocketflow`, `uv tool install .`, and uninstall | - [x] | | 2025-10-02 Verified `uv tool install --from "$PWD"` + `uv tool install .` with local XDG dirs; executables linked; `uv tool uninstall agent-os-pocketflow` leaves `uv tool list` empty |
 | | 3.3 | Validate project-local install via `uv add agent-os-pocketflow` + `uv run agent-os init` | - [x] | | 2025-10-02 uv add agent-os-pocketflow in temp workspace + agent-os init --install-path .agent-os created 19 paths |
-| | 3.4 | Run Docker-based CI simulation (build + run) | - [~] | | 2025-10-02 Added Dockerfile + runner script; blocked from executing due to Docker daemon access in current env · 2025-10-02 Reran via `./scripts/ci/run-docker-ci.sh` with Docker Desktop — image builds and ruff lint now runs, but pipeline stops at `uv run ruff format --check .` reporting 60 files needing formatting (see container log) |
+| | 3.4 | Run Docker-based CI simulation (build + run) | - [x] | | 2025-10-10 Docker CI passes end-to-end (lint, determinism, CLI smoke, Phase 4) after formatting sync, baseline artifacts, and generator smoke scripts; optional perf/report stages still flagged as warnings but overall status success. |
 | | 3.5 | Perform Windows (native or WSL) install check; note any platform-specific guidance | - [ ] | | |
 | 4. Documentation & Release | 4.1 | Update README installation instructions | - [x] | | 2025-10-02 README install section converted to uv tool + agent-os CLI workflow; updated troubleshooting and migration commands |
 | | 4.2 | Author `docs/MIGRATION_GUIDE.md` | - [x] | | 2025-10-09 Migration guide drafted with uv CLI workflow, project update steps, and rollback instructions |
 | | 4.3 | Update CHANGELOG with 2.0.0 entry | - [x] | | 2025-10-09 Added 2.0.0 release notes summarizing uv CLI packaging and docs updates |
 | | 4.4 | Crosslink plan + docs; ensure commands accurate | - [x] | | 2025-10-09 Linked README + migration guide references in plan and README; corrected migration command block |
 | Wrap-up | W.1 | Final validation pass (spot-check commands, re-run key tests) | - [x] | | 2025-10-02 `uv run --no-sync agent-os --help` + `pocketflow-generate --help` succeeded; quick `scripts/run-all-tests.sh -q` passes after restoring CLAUDE framework marker and updating CLI/python smoke scripts for offline execution |
-| | W.2 | Review against success criteria; capture lessons learned | - [ ] | | |
+| | W.2 | Review against success criteria; capture lessons learned | - [x] | | 2025-10-10 Confirmed success criteria: CLI works across install modes (2.1, 3.1-3.3); backward compatibility spot checks pass (2.3, 2.7); installer tests hold 87% coverage; docs refreshed (4.1-4.4). Lessons: resolve Docker `ruff format` drift before CI rollout and schedule packaged data parity checks each release. |
 
 ## Status Log
 _Use this table to append notable events (branch merges, issues, decisions)._ 

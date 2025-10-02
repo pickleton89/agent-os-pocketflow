@@ -9,7 +9,8 @@ def generate_node_tests(spec) -> str:
     parts: List[str] = [
         "import pytest",
         "from unittest.mock import AsyncMock, patch",
-        f"from {workflow_name}.nodes import " + ", ".join(node["name"] for node in spec.nodes),
+        f"from {workflow_name}.nodes import "
+        + ", ".join(node["name"] for node in spec.nodes),
         "",
         "",
     ]
@@ -129,4 +130,3 @@ def generate_api_tests(spec) -> str:
         )
 
     return "\n".join(parts)
-

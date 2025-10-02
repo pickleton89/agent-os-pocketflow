@@ -122,7 +122,10 @@ class AgentOsInstaller:
 
         # Copy core resources
         instructions_dir = self._copy_resource_tree(
-            ("instructions",), install_path / "instructions", report, force=options.force
+            ("instructions",),
+            install_path / "instructions",
+            report,
+            force=options.force,
         )
         self._copy_resource_tree(
             ("standards",), install_path / "standards", report, force=options.force
@@ -346,7 +349,9 @@ class AgentOsInstaller:
         destination.parent.mkdir(parents=True, exist_ok=True)
 
         if atomic:
-            temp_destination = destination.parent / f".{destination.name}.tmp-{uuid4().hex}"
+            temp_destination = (
+                destination.parent / f".{destination.name}.tmp-{uuid4().hex}"
+            )
             shutil.copytree(source, temp_destination)
             os.replace(temp_destination, destination)
         else:

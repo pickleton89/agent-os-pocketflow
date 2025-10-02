@@ -43,20 +43,20 @@ class OrchestrationValidator:
         agents = [
             ("template-validator.md", "template-validator"),
             ("pattern-analyzer.md", "pattern-analyzer"),
-            ("dependency-orchestrator.md", "dependency-orchestrator")
+            ("dependency-orchestrator.md", "dependency-orchestrator"),
         ]
-        
+
         all_agents_valid = True
         missing_agents = []
-        
+
         for agent_filename, agent_name in agents:
             agent_path = self.claude_path / "agents" / agent_filename
-            
+
             if not agent_path.exists():
                 missing_agents.append(f"{agent_filename} not found")
                 all_agents_valid = False
                 continue
-                
+
             # Check agent content
             content = agent_path.read_text()
             required_sections = [
@@ -64,15 +64,15 @@ class OrchestrationValidator:
                 "description:",
                 "tools:",
             ]
-            
+
             missing_sections = [
                 section for section in required_sections if section not in content
             ]
-            
+
             if missing_sections:
                 missing_agents.append(f"{agent_filename} missing: {missing_sections}")
                 all_agents_valid = False
-        
+
         if all_agents_valid:
             self.add_result("Sub-Agents", True)
         else:

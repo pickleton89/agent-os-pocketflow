@@ -20,6 +20,7 @@ from enum import Enum
 
 class ValidationLevel(Enum):
     """Validation severity levels."""
+
     ERROR = "error"
     WARNING = "warning"
     INFO = "info"
@@ -28,6 +29,7 @@ class ValidationLevel(Enum):
 @dataclass
 class ValidationIssue:
     """Represents a single validation issue."""
+
     level: ValidationLevel
     category: str
     file_path: str
@@ -39,152 +41,159 @@ class ValidationIssue:
 @dataclass
 class ValidationResult:
     """Result of template validation."""
+
     is_valid: bool
     issues: List[ValidationIssue] = field(default_factory=list)
     file_path: str = ""
-    
+
     @property
     def errors(self) -> List[ValidationIssue]:
         """Get only error-level issues."""
         return [issue for issue in self.issues if issue.level == ValidationLevel.ERROR]
-    
+
     @property
     def warnings(self) -> List[ValidationIssue]:
         """Get only warning-level issues."""
-        return [issue for issue in self.issues if issue.level == ValidationLevel.WARNING]
+        return [
+            issue for issue in self.issues if issue.level == ValidationLevel.WARNING
+        ]
 
 
 class PocketFlowValidator:
     """
     Core validator for PocketFlow templates.
-    
+
     This class implements all validation logic for generated templates,
     ensuring they follow framework patterns and maintain educational value.
     """
-    
+
     def __init__(self):
         self.issues: List[ValidationIssue] = []
-        
+
     def validate_directory(self, template_dir: Path) -> ValidationResult:
         """
         Validate an entire template directory.
-        
+
         Args:
             template_dir: Path to the generated template directory
-            
+
         Returns:
             ValidationResult with aggregated issues from all files
         """
         self.issues.clear()
-        
+
         if not template_dir.exists():
-            self.issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="structure",
-                file_path=str(template_dir),
-                line_number=None,
-                message=f"Template directory does not exist: {template_dir}"
-            ))
+            self.issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="structure",
+                    file_path=str(template_dir),
+                    line_number=None,
+                    message=f"Template directory does not exist: {template_dir}",
+                )
+            )
             return ValidationResult(is_valid=False, issues=self.issues)
-        
+
         # Find all Python files
         python_files = list(template_dir.rglob("*.py"))
-        
+
         if not python_files:
-            self.issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="structure",
-                file_path=str(template_dir),
-                line_number=None,
-                message="No Python files found in template directory"
-            ))
+            self.issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="structure",
+                    file_path=str(template_dir),
+                    line_number=None,
+                    message="No Python files found in template directory",
+                )
+            )
             return ValidationResult(is_valid=False, issues=self.issues)
-        
+
         # Validate each Python file
         for py_file in python_files:
             try:
                 file_result = self.validate_file(py_file)
                 self.issues.extend(file_result.issues)
             except Exception as e:
-                self.issues.append(ValidationIssue(
-                    level=ValidationLevel.ERROR,
-                    category="system",
-                    file_path=str(py_file),
-                    line_number=None,
-                    message=f"Validation failed: {str(e)}"
-                ))
-        
+                self.issues.append(
+                    ValidationIssue(
+                        level=ValidationLevel.ERROR,
+                        category="system",
+                        file_path=str(py_file),
+                        line_number=None,
+                        message=f"Validation failed: {str(e)}",
+                    )
+                )
+
         # Validate template structure
         self._validate_template_structure(template_dir)
-        
+
         # Check for errors
         has_errors = any(issue.level == ValidationLevel.ERROR for issue in self.issues)
-        
+
         return ValidationResult(
-            is_valid=not has_errors,
-            issues=self.issues,
-            file_path=str(template_dir)
+            is_valid=not has_errors, issues=self.issues, file_path=str(template_dir)
         )
-    
+
     def validate_file(self, file_path: Path) -> ValidationResult:
         """
         Validate a single Python file.
-        
+
         Args:
             file_path: Path to the Python file to validate
-            
+
         Returns:
             ValidationResult for this specific file
         """
         file_issues = []
-        
+
         try:
             content = file_path.read_text()
         except Exception as e:
             return ValidationResult(
                 is_valid=False,
-                issues=[ValidationIssue(
-                    level=ValidationLevel.ERROR,
-                    category="system",
-                    file_path=str(file_path),
-                    line_number=None,
-                    message=f"Could not read file: {str(e)}"
-                )],
-                file_path=str(file_path)
+                issues=[
+                    ValidationIssue(
+                        level=ValidationLevel.ERROR,
+                        category="system",
+                        file_path=str(file_path),
+                        line_number=None,
+                        message=f"Could not read file: {str(e)}",
+                    )
+                ],
+                file_path=str(file_path),
             )
-        
+
         # 1. Validate Python syntax
         syntax_issues = self._validate_python_syntax(file_path, content)
         file_issues.extend(syntax_issues)
-        
+
         # If syntax is invalid, skip further validation
         if any(issue.level == ValidationLevel.ERROR for issue in syntax_issues):
             return ValidationResult(
-                is_valid=False,
-                issues=file_issues,
-                file_path=str(file_path)
+                is_valid=False, issues=file_issues, file_path=str(file_path)
             )
-        
+
         # 2. Parse AST for deeper validation
         try:
             tree = ast.parse(content, filename=str(file_path))
         except Exception as e:
-            file_issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="syntax",
-                file_path=str(file_path),
-                line_number=None,
-                message=f"AST parsing failed: {str(e)}"
-            ))
-            return ValidationResult(
-                is_valid=False,
-                issues=file_issues,
-                file_path=str(file_path)
+            file_issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="syntax",
+                    file_path=str(file_path),
+                    line_number=None,
+                    message=f"AST parsing failed: {str(e)}",
+                )
             )
-        
+            return ValidationResult(
+                is_valid=False, issues=file_issues, file_path=str(file_path)
+            )
+
         # 3. Validate based on file type
         file_name = file_path.name
-        
+
         if file_name == "nodes.py":
             file_issues.extend(self._validate_nodes_file(file_path, tree, content))
         elif file_name == "flow.py":
@@ -195,59 +204,67 @@ class PocketFlowValidator:
             file_issues.extend(self._validate_utility_file(file_path, tree, content))
         elif file_path.parent.name == "tests":
             file_issues.extend(self._validate_test_file(file_path, tree, content))
-        
+
         # 4. General quality checks
         file_issues.extend(self._validate_placeholder_quality(file_path, tree, content))
-        file_issues.extend(self._validate_framework_distinction(file_path, tree, content))
-        
-        has_errors = any(issue.level == ValidationLevel.ERROR for issue in file_issues)
-        
-        return ValidationResult(
-            is_valid=not has_errors,
-            issues=file_issues,
-            file_path=str(file_path)
+        file_issues.extend(
+            self._validate_framework_distinction(file_path, tree, content)
         )
-    
-    def _validate_python_syntax(self, file_path: Path, content: str) -> List[ValidationIssue]:
+
+        has_errors = any(issue.level == ValidationLevel.ERROR for issue in file_issues)
+
+        return ValidationResult(
+            is_valid=not has_errors, issues=file_issues, file_path=str(file_path)
+        )
+
+    def _validate_python_syntax(
+        self, file_path: Path, content: str
+    ) -> List[ValidationIssue]:
         """Validate Python syntax using AST parsing."""
         issues = []
-        
+
         try:
             ast.parse(content, filename=str(file_path))
         except SyntaxError as e:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="syntax",
-                file_path=str(file_path),
-                line_number=e.lineno,
-                message=f"Syntax error: {e.msg}",
-                suggestion="Fix Python syntax error"
-            ))
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="syntax",
+                    file_path=str(file_path),
+                    line_number=e.lineno,
+                    message=f"Syntax error: {e.msg}",
+                    suggestion="Fix Python syntax error",
+                )
+            )
         except Exception as e:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="syntax",
-                file_path=str(file_path),
-                line_number=None,
-                message=f"Parse error: {str(e)}"
-            ))
-        
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="syntax",
+                    file_path=str(file_path),
+                    line_number=None,
+                    message=f"Parse error: {str(e)}",
+                )
+            )
+
         return issues
-    
-    def _validate_nodes_file(self, file_path: Path, tree: ast.AST, content: str) -> List[ValidationIssue]:
+
+    def _validate_nodes_file(
+        self, file_path: Path, tree: ast.AST, content: str
+    ) -> List[ValidationIssue]:
         """Validate nodes.py file for PocketFlow patterns."""
         issues = []
-        
+
         class NodeVisitor(ast.NodeVisitor):
             def __init__(self):
                 self.node_classes = []
                 self.imports = []
-            
+
             def visit_ImportFrom(self, node):
                 if node.module == "pocketflow":
                     self.imports.extend([alias.name for alias in node.names])
                 self.generic_visit(node)
-            
+
             def visit_ClassDef(self, node):
                 # Check for PocketFlow node classes
                 base_names = []
@@ -256,418 +273,488 @@ class PocketFlowValidator:
                         base_names.append(base.id)
                     elif isinstance(base, ast.Attribute):
                         base_names.append(base.attr)
-                
-                if any(base in ['Node', 'AsyncNode', 'BatchNode'] for base in base_names):
+
+                if any(
+                    base in ["Node", "AsyncNode", "BatchNode"] for base in base_names
+                ):
                     methods = {}
                     for item in node.body:
                         if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
                             methods[item.name] = {
-                                'lineno': item.lineno,
-                                'args': [arg.arg for arg in item.args.args],
-                                'returns': item.returns,
-                                'is_async': isinstance(item, ast.AsyncFunctionDef)
+                                "lineno": item.lineno,
+                                "args": [arg.arg for arg in item.args.args],
+                                "returns": item.returns,
+                                "is_async": isinstance(item, ast.AsyncFunctionDef),
                             }
-                    
-                    self.node_classes.append({
-                        'name': node.name,
-                        'lineno': node.lineno,
-                        'bases': base_names,
-                        'methods': methods
-                    })
-                
+
+                    self.node_classes.append(
+                        {
+                            "name": node.name,
+                            "lineno": node.lineno,
+                            "bases": base_names,
+                            "methods": methods,
+                        }
+                    )
+
                 self.generic_visit(node)
-        
+
         visitor = NodeVisitor()
         visitor.visit(tree)
-        
+
         # Check imports
-        required_imports = {'Node', 'AsyncNode', 'BatchNode'}
+        required_imports = {"Node", "AsyncNode", "BatchNode"}
         if not any(imp in required_imports for imp in visitor.imports):
-            issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="imports",
-                file_path=str(file_path),
-                line_number=1,
-                message="Missing PocketFlow imports (Node, AsyncNode, or BatchNode)",
-                suggestion="Add: from pocketflow import Node, AsyncNode, BatchNode"
-            ))
-        
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="imports",
+                    file_path=str(file_path),
+                    line_number=1,
+                    message="Missing PocketFlow imports (Node, AsyncNode, or BatchNode)",
+                    suggestion="Add: from pocketflow import Node, AsyncNode, BatchNode",
+                )
+            )
+
         # Validate each node class
         for node_class in visitor.node_classes:
             issues.extend(self._validate_node_class(file_path, node_class))
-        
+
         if not visitor.node_classes:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.WARNING,
-                category="structure",
-                file_path=str(file_path),
-                line_number=None,
-                message="No PocketFlow node classes found in nodes.py"
-            ))
-        
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.WARNING,
+                    category="structure",
+                    file_path=str(file_path),
+                    line_number=None,
+                    message="No PocketFlow node classes found in nodes.py",
+                )
+            )
+
         return issues
-    
-    def _validate_node_class(self, file_path: Path, node_info: Dict[str, Any]) -> List[ValidationIssue]:
+
+    def _validate_node_class(
+        self, file_path: Path, node_info: Dict[str, Any]
+    ) -> List[ValidationIssue]:
         """Validate a single PocketFlow node class."""
         issues = []
-        methods = node_info['methods']
-        name = node_info['name']
-        bases = node_info['bases']
-        lineno = node_info['lineno']
-        
+        methods = node_info["methods"]
+        name = node_info["name"]
+        bases = node_info["bases"]
+        lineno = node_info["lineno"]
+
         # Check required methods
-        if 'prep' not in methods:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="patterns",
-                file_path=str(file_path),
-                line_number=lineno,
-                message=f"{name}: Missing required prep() method",
-                suggestion="Add prep(self, shared: Dict[str, Any]) -> Any method"
-            ))
-        
-        if 'post' not in methods:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="patterns",
-                file_path=str(file_path),
-                line_number=lineno,
-                message=f"{name}: Missing required post() method",
-                suggestion="Add post(self, shared: Dict[str, Any], prep_result: Any, exec_result: Any) -> None method"
-            ))
-        
+        if "prep" not in methods:
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="patterns",
+                    file_path=str(file_path),
+                    line_number=lineno,
+                    message=f"{name}: Missing required prep() method",
+                    suggestion="Add prep(self, shared: Dict[str, Any]) -> Any method",
+                )
+            )
+
+        if "post" not in methods:
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="patterns",
+                    file_path=str(file_path),
+                    line_number=lineno,
+                    message=f"{name}: Missing required post() method",
+                    suggestion="Add post(self, shared: Dict[str, Any], prep_result: Any, exec_result: Any) -> None method",
+                )
+            )
+
         # Check exec method based on base class
-        is_async = any(base in ['AsyncNode', 'BatchNode', 'AsyncBatchNode'] for base in bases)
-        
+        is_async = any(
+            base in ["AsyncNode", "BatchNode", "AsyncBatchNode"] for base in bases
+        )
+
         if is_async:
-            if 'exec_async' not in methods:
-                issues.append(ValidationIssue(
-                    level=ValidationLevel.ERROR,
-                    category="patterns",
-                    file_path=str(file_path),
-                    line_number=lineno,
-                    message=f"{name}: Missing required exec_async() method for async node",
-                    suggestion="Add async def exec_async(self, prep_result: Any) -> Any method"
-                ))
+            if "exec_async" not in methods:
+                issues.append(
+                    ValidationIssue(
+                        level=ValidationLevel.ERROR,
+                        category="patterns",
+                        file_path=str(file_path),
+                        line_number=lineno,
+                        message=f"{name}: Missing required exec_async() method for async node",
+                        suggestion="Add async def exec_async(self, prep_result: Any) -> Any method",
+                    )
+                )
         else:
-            if 'exec' not in methods:
-                issues.append(ValidationIssue(
-                    level=ValidationLevel.ERROR,
-                    category="patterns",
-                    file_path=str(file_path),
-                    line_number=lineno,
-                    message=f"{name}: Missing required exec() method",
-                    suggestion="Add def exec(self, prep_result: Any) -> Any method"
-                ))
-        
+            if "exec" not in methods:
+                issues.append(
+                    ValidationIssue(
+                        level=ValidationLevel.ERROR,
+                        category="patterns",
+                        file_path=str(file_path),
+                        line_number=lineno,
+                        message=f"{name}: Missing required exec() method",
+                        suggestion="Add def exec(self, prep_result: Any) -> Any method",
+                    )
+                )
+
         # Validate method signatures
-        if 'prep' in methods:
-            prep_args = methods['prep']['args']
-            if len(prep_args) != 2 or prep_args[1] != 'shared':
-                issues.append(ValidationIssue(
-                    level=ValidationLevel.WARNING,
-                    category="patterns",
-                    file_path=str(file_path),
-                    line_number=methods['prep']['lineno'],
-                    message=f"{name}.prep(): Expected signature prep(self, shared)",
-                    suggestion="Change to: def prep(self, shared: Dict[str, Any]) -> Any"
-                ))
-        
+        if "prep" in methods:
+            prep_args = methods["prep"]["args"]
+            if len(prep_args) != 2 or prep_args[1] != "shared":
+                issues.append(
+                    ValidationIssue(
+                        level=ValidationLevel.WARNING,
+                        category="patterns",
+                        file_path=str(file_path),
+                        line_number=methods["prep"]["lineno"],
+                        message=f"{name}.prep(): Expected signature prep(self, shared)",
+                        suggestion="Change to: def prep(self, shared: Dict[str, Any]) -> Any",
+                    )
+                )
+
         return issues
-    
-    def _validate_flow_file(self, file_path: Path, tree: ast.AST, content: str) -> List[ValidationIssue]:
+
+    def _validate_flow_file(
+        self, file_path: Path, tree: ast.AST, content: str
+    ) -> List[ValidationIssue]:
         """Validate flow.py file for proper flow structure."""
         issues = []
-        
+
         class FlowVisitor(ast.NodeVisitor):
             def __init__(self):
                 self.flow_classes = []
                 self.imports = []
-            
+
             def visit_ImportFrom(self, node):
                 if node.module == "pocketflow":
                     self.imports.extend([alias.name for alias in node.names])
                 self.generic_visit(node)
-            
+
             def visit_ClassDef(self, node):
                 base_names = []
                 for base in node.bases:
                     if isinstance(base, ast.Name):
                         base_names.append(base.id)
-                
-                if 'Flow' in base_names:
-                    self.flow_classes.append({
-                        'name': node.name,
-                        'lineno': node.lineno,
-                        'has_init': any(isinstance(item, ast.FunctionDef) and item.name == '__init__' 
-                                      for item in node.body)
-                    })
-                
+
+                if "Flow" in base_names:
+                    self.flow_classes.append(
+                        {
+                            "name": node.name,
+                            "lineno": node.lineno,
+                            "has_init": any(
+                                isinstance(item, ast.FunctionDef)
+                                and item.name == "__init__"
+                                for item in node.body
+                            ),
+                        }
+                    )
+
                 self.generic_visit(node)
-        
+
         visitor = FlowVisitor()
         visitor.visit(tree)
-        
+
         # Check for Flow import
-        if 'Flow' not in visitor.imports:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="imports",
-                file_path=str(file_path),
-                line_number=1,
-                message="Missing Flow import from pocketflow",
-                suggestion="Add: from pocketflow import Flow"
-            ))
-        
+        if "Flow" not in visitor.imports:
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="imports",
+                    file_path=str(file_path),
+                    line_number=1,
+                    message="Missing Flow import from pocketflow",
+                    suggestion="Add: from pocketflow import Flow",
+                )
+            )
+
         # Check for flow classes
         if not visitor.flow_classes:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="structure",
-                file_path=str(file_path),
-                line_number=None,
-                message="No Flow classes found",
-                suggestion="Create a class that inherits from Flow"
-            ))
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="structure",
+                    file_path=str(file_path),
+                    line_number=None,
+                    message="No Flow classes found",
+                    suggestion="Create a class that inherits from Flow",
+                )
+            )
         else:
             for flow_class in visitor.flow_classes:
-                if not flow_class['has_init']:
-                    issues.append(ValidationIssue(
-                        level=ValidationLevel.ERROR,
-                        category="patterns",
-                        file_path=str(file_path),
-                        line_number=flow_class['lineno'],
-                        message=f"{flow_class['name']}: Missing __init__ method",
-                        suggestion="Add __init__ method with nodes and edges configuration"
-                    ))
-        
+                if not flow_class["has_init"]:
+                    issues.append(
+                        ValidationIssue(
+                            level=ValidationLevel.ERROR,
+                            category="patterns",
+                            file_path=str(file_path),
+                            line_number=flow_class["lineno"],
+                            message=f"{flow_class['name']}: Missing __init__ method",
+                            suggestion="Add __init__ method with nodes and edges configuration",
+                        )
+                    )
+
         # Check for nodes and edges configuration
-        if 'nodes = {' not in content:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.WARNING,
-                category="patterns",
-                file_path=str(file_path),
-                line_number=None,
-                message="No nodes dictionary found in flow",
-                suggestion="Define nodes = {...} in __init__ method"
-            ))
-        
-        if 'edges = {' not in content:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.WARNING,
-                category="patterns",
-                file_path=str(file_path),
-                line_number=None,
-                message="No edges dictionary found in flow",
-                suggestion="Define edges = {...} in __init__ method"
-            ))
-        
+        if "nodes = {" not in content:
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.WARNING,
+                    category="patterns",
+                    file_path=str(file_path),
+                    line_number=None,
+                    message="No nodes dictionary found in flow",
+                    suggestion="Define nodes = {...} in __init__ method",
+                )
+            )
+
+        if "edges = {" not in content:
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.WARNING,
+                    category="patterns",
+                    file_path=str(file_path),
+                    line_number=None,
+                    message="No edges dictionary found in flow",
+                    suggestion="Define edges = {...} in __init__ method",
+                )
+            )
+
         return issues
-    
-    def _validate_pydantic_models(self, file_path: Path, tree: ast.AST, content: str) -> List[ValidationIssue]:
+
+    def _validate_pydantic_models(
+        self, file_path: Path, tree: ast.AST, content: str
+    ) -> List[ValidationIssue]:
         """Validate Pydantic models for proper structure."""
         issues = []
-        
+
         class ModelVisitor(ast.NodeVisitor):
             def __init__(self):
                 self.model_classes = []
                 self.has_basemodel_import = False
-            
+
             def visit_ImportFrom(self, node):
-                if node.module == "pydantic" and any(alias.name == "BaseModel" for alias in node.names):
+                if node.module == "pydantic" and any(
+                    alias.name == "BaseModel" for alias in node.names
+                ):
                     self.has_basemodel_import = True
                 self.generic_visit(node)
-            
+
             def visit_ClassDef(self, node):
                 base_names = []
                 for base in node.bases:
                     if isinstance(base, ast.Name):
                         base_names.append(base.id)
-                
-                if 'BaseModel' in base_names:
+
+                if "BaseModel" in base_names:
                     fields = []
                     for item in node.body:
-                        if isinstance(item, ast.AnnAssign) and isinstance(item.target, ast.Name):
+                        if isinstance(item, ast.AnnAssign) and isinstance(
+                            item.target, ast.Name
+                        ):
                             fields.append(item.target.id)
-                    
-                    self.model_classes.append({
-                        'name': node.name,
-                        'lineno': node.lineno,
-                        'fields': fields
-                    })
-                
+
+                    self.model_classes.append(
+                        {"name": node.name, "lineno": node.lineno, "fields": fields}
+                    )
+
                 self.generic_visit(node)
-        
+
         visitor = ModelVisitor()
         visitor.visit(tree)
-        
+
         if visitor.model_classes and not visitor.has_basemodel_import:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="imports",
-                file_path=str(file_path),
-                line_number=1,
-                message="BaseModel used but not imported from pydantic",
-                suggestion="Add: from pydantic import BaseModel"
-            ))
-        
-        for model in visitor.model_classes:
-            if not model['fields']:
-                issues.append(ValidationIssue(
-                    level=ValidationLevel.WARNING,
-                    category="structure",
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="imports",
                     file_path=str(file_path),
-                    line_number=model['lineno'],
-                    message=f"{model['name']}: Model has no fields defined",
-                    suggestion="Add typed fields to the model"
-                ))
-        
+                    line_number=1,
+                    message="BaseModel used but not imported from pydantic",
+                    suggestion="Add: from pydantic import BaseModel",
+                )
+            )
+
+        for model in visitor.model_classes:
+            if not model["fields"]:
+                issues.append(
+                    ValidationIssue(
+                        level=ValidationLevel.WARNING,
+                        category="structure",
+                        file_path=str(file_path),
+                        line_number=model["lineno"],
+                        message=f"{model['name']}: Model has no fields defined",
+                        suggestion="Add typed fields to the model",
+                    )
+                )
+
         return issues
-    
-    def _validate_utility_file(self, file_path: Path, tree: ast.AST, content: str) -> List[ValidationIssue]:
+
+    def _validate_utility_file(
+        self, file_path: Path, tree: ast.AST, content: str
+    ) -> List[ValidationIssue]:
         """Validate utility files for proper structure."""
         issues = []
-        
+
         # Check for NotImplementedError in utility functions
         if "NotImplementedError" not in content:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.WARNING,
-                category="framework",
-                file_path=str(file_path),
-                line_number=None,
-                message="Utility file should raise NotImplementedError for unimplemented functions",
-                suggestion="Add NotImplementedError with descriptive message"
-            ))
-        
-        return issues
-    
-    def _validate_test_file(self, file_path: Path, tree: ast.AST, content: str) -> List[ValidationIssue]:
-        """Validate test files for proper structure."""
-        issues = []
-        
-        # Check for pytest import
-        if "import pytest" not in content:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.WARNING,
-                category="testing",
-                file_path=str(file_path),
-                line_number=1,
-                message="Test file should import pytest",
-                suggestion="Add: import pytest"
-            ))
-        
-        return issues
-    
-    def _validate_placeholder_quality(self, file_path: Path, tree: ast.AST, content: str) -> List[ValidationIssue]:
-        """Validate the quality of educational placeholders."""
-        issues = []
-        
-        # Check for TODO comments
-        todo_count = content.count("TODO:")
-        if todo_count == 0:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.INFO,
-                category="quality",
-                file_path=str(file_path),
-                line_number=None,
-                message="No TODO comments found - consider adding educational placeholders"
-            ))
-        
-        # Check for generic/poor TODO messages
-        poor_todos = re.findall(r'TODO: (implement|fix|add|update|change)', content, re.IGNORECASE)
-        if poor_todos:
-            issues.append(ValidationIssue(
-                level=ValidationLevel.WARNING,
-                category="quality",
-                file_path=str(file_path),
-                line_number=None,
-                message=f"Found {len(poor_todos)} generic TODO comments",
-                suggestion="Make TODO comments more specific and educational"
-            ))
-        
-        return issues
-    
-    def _validate_framework_distinction(self, file_path: Path, tree: ast.AST, content: str) -> List[ValidationIssue]:
-        """Validate framework vs usage distinction is maintained."""
-        issues = []
-        
-        # Check for completed business logic (potential violation)
-        # This is a heuristic check - look for complex return statements without TODO markers
-        lines = content.split('\n')
-        for i, line in enumerate(lines, 1):
-            if (re.search(r'return\s+[^"\']*\w+\([^)]*\)', line) and 
-                'TODO' not in line and 
-                'NotImplementedError' not in line and
-                'logging' not in line):
-                
-                issues.append(ValidationIssue(
+            issues.append(
+                ValidationIssue(
                     level=ValidationLevel.WARNING,
                     category="framework",
                     file_path=str(file_path),
-                    line_number=i,
-                    message="Potential completed implementation without TODO marker",
-                    suggestion="Add TODO comment or ensure this is appropriate placeholder code"
-                ))
-        
+                    line_number=None,
+                    message="Utility file should raise NotImplementedError for unimplemented functions",
+                    suggestion="Add NotImplementedError with descriptive message",
+                )
+            )
+
         return issues
-    
+
+    def _validate_test_file(
+        self, file_path: Path, tree: ast.AST, content: str
+    ) -> List[ValidationIssue]:
+        """Validate test files for proper structure."""
+        issues = []
+
+        # Check for pytest import
+        if "import pytest" not in content:
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.WARNING,
+                    category="testing",
+                    file_path=str(file_path),
+                    line_number=1,
+                    message="Test file should import pytest",
+                    suggestion="Add: import pytest",
+                )
+            )
+
+        return issues
+
+    def _validate_placeholder_quality(
+        self, file_path: Path, tree: ast.AST, content: str
+    ) -> List[ValidationIssue]:
+        """Validate the quality of educational placeholders."""
+        issues = []
+
+        # Check for TODO comments
+        todo_count = content.count("TODO:")
+        if todo_count == 0:
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.INFO,
+                    category="quality",
+                    file_path=str(file_path),
+                    line_number=None,
+                    message="No TODO comments found - consider adding educational placeholders",
+                )
+            )
+
+        # Check for generic/poor TODO messages
+        poor_todos = re.findall(
+            r"TODO: (implement|fix|add|update|change)", content, re.IGNORECASE
+        )
+        if poor_todos:
+            issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.WARNING,
+                    category="quality",
+                    file_path=str(file_path),
+                    line_number=None,
+                    message=f"Found {len(poor_todos)} generic TODO comments",
+                    suggestion="Make TODO comments more specific and educational",
+                )
+            )
+
+        return issues
+
+    def _validate_framework_distinction(
+        self, file_path: Path, tree: ast.AST, content: str
+    ) -> List[ValidationIssue]:
+        """Validate framework vs usage distinction is maintained."""
+        issues = []
+
+        # Check for completed business logic (potential violation)
+        # This is a heuristic check - look for complex return statements without TODO markers
+        lines = content.split("\n")
+        for i, line in enumerate(lines, 1):
+            if (
+                re.search(r'return\s+[^"\']*\w+\([^)]*\)', line)
+                and "TODO" not in line
+                and "NotImplementedError" not in line
+                and "logging" not in line
+            ):
+                issues.append(
+                    ValidationIssue(
+                        level=ValidationLevel.WARNING,
+                        category="framework",
+                        file_path=str(file_path),
+                        line_number=i,
+                        message="Potential completed implementation without TODO marker",
+                        suggestion="Add TODO comment or ensure this is appropriate placeholder code",
+                    )
+                )
+
+        return issues
+
     def _validate_template_structure(self, template_dir: Path) -> None:
         """Validate overall template directory structure."""
-        required_files = [
-            "nodes.py",
-            "flow.py", 
-            "schemas/models.py"
-        ]
-        
+        required_files = ["nodes.py", "flow.py", "schemas/models.py"]
+
         missing_files = []
         for req_file in required_files:
             if not (template_dir / req_file).exists():
                 missing_files.append(req_file)
-        
+
         if missing_files:
-            self.issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="structure",
-                file_path=str(template_dir),
-                line_number=None,
-                message=f"Missing required files: {', '.join(missing_files)}",
-                suggestion="Ensure generator creates all required template files"
-            ))
-        
+            self.issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="structure",
+                    file_path=str(template_dir),
+                    line_number=None,
+                    message=f"Missing required files: {', '.join(missing_files)}",
+                    suggestion="Ensure generator creates all required template files",
+                )
+            )
+
         # Validate design documentation
         self._validate_design_doc(template_dir)
-    
+
     def _validate_design_doc(self, template_dir: Path) -> None:
         """Validate design documentation presence and structure."""
         design_doc_path = template_dir / "docs" / "design.md"
-        
+
         # Check if design doc exists
         if not design_doc_path.exists():
-            self.issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="documentation",
-                file_path=str(template_dir),
-                line_number=None,
-                message="Missing required design documentation (docs/design.md)",
-                suggestion="Run generator with design-first approach to create docs/design.md"
-            ))
+            self.issues.append(
+                ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    category="documentation",
+                    file_path=str(template_dir),
+                    line_number=None,
+                    message="Missing required design documentation (docs/design.md)",
+                    suggestion="Run generator with design-first approach to create docs/design.md",
+                )
+            )
             return
-        
+
         # Read and validate design doc content
         try:
             content = design_doc_path.read_text()
-            
+
             # Check for Mermaid diagram
             if "```mermaid" not in content:
-                self.issues.append(ValidationIssue(
-                    level=ValidationLevel.ERROR,
-                    category="documentation",
-                    file_path=str(design_doc_path),
-                    line_number=None,
-                    message="Design document missing Mermaid flow diagram",
-                    suggestion="Add at least one Mermaid diagram showing the workflow flow"
-                ))
-            
+                self.issues.append(
+                    ValidationIssue(
+                        level=ValidationLevel.ERROR,
+                        category="documentation",
+                        file_path=str(design_doc_path),
+                        line_number=None,
+                        message="Design document missing Mermaid flow diagram",
+                        suggestion="Add at least one Mermaid diagram showing the workflow flow",
+                    )
+                )
+
             # Check for required sections
             base_required_sections = [
                 "## Requirements",
@@ -688,22 +775,26 @@ class PocketFlowValidator:
                 missing_sections.append("## Node Design or ## Node Specifications")
 
             if missing_sections:
-                self.issues.append(ValidationIssue(
+                self.issues.append(
+                    ValidationIssue(
+                        level=ValidationLevel.ERROR,
+                        category="documentation",
+                        file_path=str(design_doc_path),
+                        line_number=None,
+                        message=f"Design document missing required sections: {', '.join(missing_sections)}",
+                        suggestion="Add all required sections, including a node section (Node Design or Node Specifications)",
+                    )
+                )
+        except Exception as e:
+            self.issues.append(
+                ValidationIssue(
                     level=ValidationLevel.ERROR,
                     category="documentation",
                     file_path=str(design_doc_path),
                     line_number=None,
-                    message=f"Design document missing required sections: {', '.join(missing_sections)}",
-                    suggestion="Add all required sections, including a node section (Node Design or Node Specifications)"
-                ))
-        except Exception as e:
-            self.issues.append(ValidationIssue(
-                level=ValidationLevel.ERROR,
-                category="documentation",
-                file_path=str(design_doc_path),
-                line_number=None,
-                message=f"Failed to read design document: {str(e)}"
-            ))
+                    message=f"Failed to read design document: {str(e)}",
+                )
+            )
 
 
 def generate_validation_report(results: List[ValidationResult]) -> str:
@@ -711,46 +802,50 @@ def generate_validation_report(results: List[ValidationResult]) -> str:
     all_issues = []
     for result in results:
         all_issues.extend(result.issues)
-    
+
     if not all_issues:
         return "✅ All templates passed validation!"
-    
+
     # Group issues by category and level
     error_count = sum(1 for issue in all_issues if issue.level == ValidationLevel.ERROR)
-    warning_count = sum(1 for issue in all_issues if issue.level == ValidationLevel.WARNING)
+    warning_count = sum(
+        1 for issue in all_issues if issue.level == ValidationLevel.WARNING
+    )
     info_count = sum(1 for issue in all_issues if issue.level == ValidationLevel.INFO)
-    
+
     report = []
     report.append("📋 Template Validation Report")
     report.append("=" * 40)
-    report.append(f"Errors: {error_count} | Warnings: {warning_count} | Info: {info_count}")
+    report.append(
+        f"Errors: {error_count} | Warnings: {warning_count} | Info: {info_count}"
+    )
     report.append("")
-    
+
     # Group by category
     categories = {}
     for issue in all_issues:
         if issue.category not in categories:
             categories[issue.category] = []
         categories[issue.category].append(issue)
-    
+
     for category, issues in categories.items():
         report.append(f"## {category.title()} Issues ({len(issues)})")
         report.append("")
-        
+
         for issue in issues:
             level_icon = {"error": "❌", "warning": "⚠️", "info": "ℹ️"}
             icon = level_icon.get(issue.level.value, "•")
-            
+
             line_info = f":{issue.line_number}" if issue.line_number else ""
             report.append(f"{icon} {Path(issue.file_path).name}{line_info}")
             report.append(f"   {issue.message}")
-            
+
             if issue.suggestion:
                 report.append(f"   💡 {issue.suggestion}")
             report.append("")
-        
+
         report.append("")
-    
+
     return "\n".join(report)
 
 
@@ -760,16 +855,16 @@ def main():
         print("Usage: python template_validator.py <template_directory>")
         print("Example: python template_validator.py .agent-os/workflows/my_workflow")
         sys.exit(1)
-    
+
     template_dir = Path(sys.argv[1])
     validator = PocketFlowValidator()
-    
+
     print(f"🔍 Validating template directory: {template_dir}")
     result = validator.validate_directory(template_dir)
-    
+
     report = generate_validation_report([result])
     print(report)
-    
+
     if result.is_valid:
         print("✅ Validation passed!")
         sys.exit(0)

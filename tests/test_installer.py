@@ -133,7 +133,9 @@ def test_install_toolkit_atomic_overwrite_uses_temp_directory(tmp_path, monkeypa
     assert final_destination == destination.resolve()
     assert temp_path.parent == destination.parent
     assert temp_path.name.startswith(f".{destination.name}.tmp-")
-    assert not temp_path.exists(), "Temporary directory should be removed after atomic rename"
+    assert not temp_path.exists(), (
+        "Temporary directory should be removed after atomic rename"
+    )
 
     leftovers = list(destination.parent.glob(f".{destination.name}.tmp-*"))
     assert leftovers == []
@@ -165,7 +167,10 @@ def test_install_base_warnings_capture_when_toolkit_absent(tmp_path, monkeypatch
 
     report = installer.install_base(InstallationOptions(install_path=install_path))
 
-    assert any("PocketFlow toolkit could not be located" in warning for warning in report.warnings)
+    assert any(
+        "PocketFlow toolkit could not be located" in warning
+        for warning in report.warnings
+    )
     assert not (install_path / "framework-tools").exists()
 
 

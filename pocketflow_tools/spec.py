@@ -18,4 +18,3 @@ class WorkflowSpec:
     shared_store_schema: Dict[str, Any] = field(default_factory=dict)
     api_endpoints: List[Dict[str, Any]] = field(default_factory=list)
     fast_api_integration: bool = True
-

@@ -176,7 +176,9 @@ This document outlines the tasks required to complete the implementation of the 
 """
 
     for node in spec.nodes:
-        tasks += f"\n- [ ] 4.2.{node['name']}: Complete implementation of {node['name']}"
+        tasks += (
+            f"\n- [ ] 4.2.{node['name']}: Complete implementation of {node['name']}"
+        )
 
     tasks += """
 - [ ] 4.3 Create prep() methods for data access and validation
@@ -259,4 +261,3 @@ FastAPI Integration: Enabled (Universal)
 """
 
     return tasks
-

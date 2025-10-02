@@ -18,6 +18,9 @@ NC='\033[0m' # No Color
 SCRIPT_VERSION="1.0.0"
 AGENT_OS_COMPATIBILITY="1.4.0"
 REPO_URL="https://raw.githubusercontent.com/pickleton89/agent-os-pocketflow/main"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOCAL_SETUP_DIR="${SCRIPT_DIR}/setup"
+NON_INTERACTIVE=false
 
 # Logging functions
 log_info() { echo -e "${BLUE}ℹ️  $1${NC}"; }
@@ -37,6 +40,7 @@ show_help() {
     echo "INSTALLATION MODES:"
     echo "  base              Install Agent OS + PocketFlow to ~/.agent-os/"
     echo "  project           Install Agent OS into current project directory"
+    echo "  base-then-project Install base installation first, then project setup"
     echo "  auto              Auto-detect context and choose appropriate mode"
     echo ""
     echo "BASE INSTALLATION OPTIONS:"
@@ -175,12 +179,18 @@ route_installation() {
     local mode="$1"
     shift
     local args="$@"
-    
+    local base_script="${LOCAL_SETUP_DIR}/base.sh"
+    local project_script="${LOCAL_SETUP_DIR}/project.sh"
+
     case "$mode" in
         "base")
             log_step "Routing to base installation..."
             local base_args=$(translate_base_args $args)
-            curl -sSL "${REPO_URL}/setup/base.sh" | bash -s -- $base_args
+            if [[ -f "$base_script" ]]; then
+                bash "$base_script" $base_args
+            else
+                curl -sSL "${REPO_URL}/setup/base.sh" | bash -s -- $base_args
+            fi
             ;;
         "project")
             log_step "Routing to project installation..."
@@ -190,18 +200,40 @@ route_installation() {
             else
                 log_warning "Base installation not found. Installing base first..."
                 local base_args=$(translate_base_args $args)
-                curl -sSL "${REPO_URL}/setup/base.sh" | bash -s -- $base_args
+                if [[ -f "$base_script" ]]; then
+                    bash "$base_script" $base_args
+                else
+                    curl -sSL "${REPO_URL}/setup/base.sh" | bash -s -- $base_args
+                fi
                 log_step "Now installing project components..."
-                "$HOME/.agent-os/setup/project.sh" $project_args
+                if [ -f "$HOME/.agent-os/setup/project.sh" ]; then
+                    "$HOME/.agent-os/setup/project.sh" $project_args
+                elif [[ -f "$project_script" ]]; then
+                    bash "$project_script" $project_args
+                else
+                    log_error "Project installation script not found after base install"
+                    exit 1
+                fi
             fi
             ;;
         "base-then-project")
             log_step "Installing base installation first..."
             local base_args=$(translate_base_args $args)
-            curl -sSL "${REPO_URL}/setup/base.sh" | bash -s -- $base_args
+            if [[ -f "$base_script" ]]; then
+                bash "$base_script" $base_args
+            else
+                curl -sSL "${REPO_URL}/setup/base.sh" | bash -s -- $base_args
+            fi
             log_step "Now installing project components..."
             local project_args=$(translate_project_args $args)
-            "$HOME/.agent-os/setup/project.sh" $project_args
+            if [ -f "$HOME/.agent-os/setup/project.sh" ]; then
+                "$HOME/.agent-os/setup/project.sh" $project_args
+            elif [[ -f "$project_script" ]]; then
+                bash "$project_script" $project_args
+            else
+                log_error "Project installation script not found after base install"
+                exit 1
+            fi
             ;;
         *)
             log_error "Unknown installation mode: $mode"
@@ -226,13 +258,18 @@ auto_detect_and_install() {
             echo "   • Existing installation: $installation"
             echo "   • Recommended action: Base installation"
             echo ""
-            read -p "Install Agent OS + PocketFlow to ~/.agent-os/? [Y/n]: " -n 1 -r
-            echo
-            if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
+            if [[ "$NON_INTERACTIVE" == true ]]; then
+                log_info "Non-interactive mode enabled; proceeding with base installation."
                 route_installation "base" "$@"
             else
-                log_info "Installation cancelled by user"
-                exit 0
+                read -p "Install Agent OS + PocketFlow to ~/.agent-os/? [Y/n]: " -n 1 -r
+                echo
+                if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
+                    route_installation "base" "$@"
+                else
+                    log_info "Installation cancelled by user"
+                    exit 0
+                fi
             fi
             ;;
         "project")
@@ -242,13 +279,18 @@ auto_detect_and_install() {
             echo "   • Project files detected: ✓"
             echo "   • Recommended action: Project installation"
             echo ""
-            read -p "Install Agent OS into this project? [Y/n]: " -n 1 -r
-            echo
-            if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
+            if [[ "$NON_INTERACTIVE" == true ]]; then
+                log_info "Non-interactive mode enabled; proceeding with project installation."
                 route_installation "project" "$@"
             else
-                log_info "Installation cancelled by user"
-                exit 0
+                read -p "Install Agent OS into this project? [Y/n]: " -n 1 -r
+                echo
+                if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
+                    route_installation "project" "$@"
+                else
+                    log_info "Installation cancelled by user"
+                    exit 0
+                fi
             fi
             ;;
         "base-then-project")
@@ -258,13 +300,18 @@ auto_detect_and_install() {
             echo "   • Project files detected: ✓"
             echo "   • Recommended action: Base + Project installation"
             echo ""
-            read -p "Install Agent OS base and project components? [Y/n]: " -n 1 -r
-            echo
-            if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
+            if [[ "$NON_INTERACTIVE" == true ]]; then
+                log_info "Non-interactive mode enabled; installing base then project components."
                 route_installation "base-then-project" "$@"
             else
-                log_info "Installation cancelled by user"
-                exit 0
+                read -p "Install Agent OS base and project components? [Y/n]: " -n 1 -r
+                echo
+                if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
+                    route_installation "base-then-project" "$@"
+                else
+                    log_info "Installation cancelled by user"
+                    exit 0
+                fi
             fi
             ;;
         *)
@@ -280,17 +327,35 @@ auto_detect_and_install() {
 
 # Main execution
 main() {
+    local cleaned_args=()
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --non-interactive|--yes|-y)
+                NON_INTERACTIVE=true
+                shift
+                ;;
+            *)
+                cleaned_args+=("$1")
+                shift
+                ;;
+        esac
+    done
+
+    set -- "${cleaned_args[@]}"
+
     # Handle version and help first
-    case "$1" in
-        --version|-v)
-            show_version
-            exit 0
-            ;;
-        --help|-h|help)
-            show_help
-            exit 0
-            ;;
-    esac
+    if [[ $# -gt 0 ]]; then
+        case "$1" in
+            --version|-v)
+                show_version
+                exit 0
+                ;;
+            --help|-h|help)
+                show_help
+                exit 0
+                ;;
+        esac
+    fi
     
     echo -e "${BLUE}🚀 Agent OS + PocketFlow Setup v${SCRIPT_VERSION}${NC}"
     echo -e "${BLUE}================================${NC}"
@@ -308,7 +373,7 @@ main() {
         "auto")
             auto_detect_and_install "$@"
             ;;
-        "base"|"project")
+        "base"|"project"|"base-then-project")
             route_installation "$mode" "$@"
             ;;
         *)

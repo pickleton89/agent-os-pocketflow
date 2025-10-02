@@ -30,12 +30,18 @@ fi
 
 echo "[cli-smoke] PyYAML detected. Running tests..."
 
+if command -v rg >/dev/null 2>&1; then
+  SEARCH_CMD=(rg -n)
+else
+  SEARCH_CMD=(grep -nE)
+fi
+
 # 0) Help command
 set +e
 cli_out="$(${UV_CMD[@]} python -m pocketflow_tools.cli --help 2>&1)"
 code=$?
 set -e
-echo "$cli_out" | rg -n "Generate PocketFlow workflows from specifications" >/dev/null || {
+echo "$cli_out" | "${SEARCH_CMD[@]}" "Generate PocketFlow workflows from specifications" >/dev/null || {
   echo "[cli-smoke] FAIL: Help message mismatch"; echo "$cli_out"; exit 1; }
 test "$code" -eq 0 || { echo "[cli-smoke] FAIL: Help should return zero"; exit 1; }
 
@@ -44,7 +50,7 @@ set +e
 cli_out="$(${UV_CMD[@]} python -m pocketflow_tools.cli --spec does-not-exist.yaml 2>&1)"
 code=$?
 set -e
-echo "$cli_out" | rg -n "Error: Specification file not found" >/dev/null || {
+echo "$cli_out" | "${SEARCH_CMD[@]}" "Error: Specification file not found" >/dev/null || {
   echo "[cli-smoke] FAIL: Missing file message mismatch"; echo "$cli_out"; exit 1; }
 test "$code" -ne 0 || { echo "[cli-smoke] FAIL: Missing file should return non-zero"; exit 1; }
 
@@ -56,7 +62,7 @@ cli_out="$(${UV_CMD[@]} python -m pocketflow_tools.cli --spec "$tmp_yaml" 2>&1)"
 code=$?
 set -e
 rm -f "$tmp_yaml"
-echo "$cli_out" | rg -n "Error: Invalid YAML" >/dev/null || {
+echo "$cli_out" | "${SEARCH_CMD[@]}" "Error: Invalid YAML" >/dev/null || {
   echo "[cli-smoke] FAIL: Invalid YAML message mismatch"; echo "$cli_out"; exit 1; }
 test "$code" -ne 0 || { echo "[cli-smoke] FAIL: Invalid YAML should return non-zero"; exit 1; }
 

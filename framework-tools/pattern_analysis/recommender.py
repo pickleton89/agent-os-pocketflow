@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class PatternRecommendation:
     """Complete pattern recommendation."""
+
     primary_pattern: PatternType
     confidence_score: float
     secondary_patterns: List[PatternType] = field(default_factory=list)
@@ -30,7 +31,9 @@ class PatternRecommendation:
     workflow_suggestions: Dict[str, Any] = field(default_factory=dict)
 
 
-def generate_detailed_justification(pattern_scores: List[PatternScore], analysis: RequirementAnalysis) -> str:
+def generate_detailed_justification(
+    pattern_scores: List[PatternScore], analysis: RequirementAnalysis
+) -> str:
     """Generate detailed justification for pattern selection."""
 
     if not pattern_scores:
@@ -41,14 +44,20 @@ def generate_detailed_justification(pattern_scores: List[PatternScore], analysis
     justification_parts = []
 
     # Primary pattern justification
-    justification_parts.append(f"**Primary Pattern Selection: {primary_score.pattern.value}**")
-    justification_parts.append(f"Selected with confidence score of {primary_score.total_score:.2f}")
+    justification_parts.append(
+        f"**Primary Pattern Selection: {primary_score.pattern.value}**"
+    )
+    justification_parts.append(
+        f"Selected with confidence score of {primary_score.total_score:.2f}"
+    )
     justification_parts.append("")
 
     # Detailed indicator analysis
     justification_parts.append("**Key Indicators Found:**")
     for indicator in primary_score.matched_indicators[:5]:  # Top 5
-        justification_parts.append(f"- '{indicator}' - Strong indicator for {primary_score.pattern.value} pattern")
+        justification_parts.append(
+            f"- '{indicator}' - Strong indicator for {primary_score.pattern.value} pattern"
+        )
     justification_parts.append("")
 
     # Context factors
@@ -78,7 +87,9 @@ def generate_detailed_justification(pattern_scores: List[PatternScore], analysis
     if analysis.technical_requirements:
         justification_parts.append("**Technical Requirements Alignment:**")
         for tech_req in analysis.technical_requirements[:3]:
-            justification_parts.append(f"- {tech_req} - Compatible with {primary_score.pattern.value} pattern")
+            justification_parts.append(
+                f"- {tech_req} - Compatible with {primary_score.pattern.value} pattern"
+            )
         justification_parts.append("")
 
     # Pattern-specific recommendations
@@ -92,77 +103,111 @@ def generate_detailed_justification(pattern_scores: List[PatternScore], analysis
     return "\n".join(justification_parts)
 
 
-def get_pattern_specific_recommendations(pattern: PatternType, analysis: RequirementAnalysis) -> List[str]:
+def get_pattern_specific_recommendations(
+    pattern: PatternType, analysis: RequirementAnalysis
+) -> List[str]:
     """Get pattern-specific implementation recommendations."""
 
     recommendations = []
 
     if pattern == PatternType.RAG:
-        recommendations.extend([
-            "Consider using chromadb or pinecone for vector storage",
-            "Implement chunking strategy for large documents",
-            "Add semantic similarity scoring for retrieved content"
-        ])
+        recommendations.extend(
+            [
+                "Consider using chromadb or pinecone for vector storage",
+                "Implement chunking strategy for large documents",
+                "Add semantic similarity scoring for retrieved content",
+            ]
+        )
         if "real-time" in analysis.raw_text.lower():
             recommendations.append("Implement caching for frequently queried content")
 
     elif pattern == PatternType.AGENT:
-        recommendations.extend([
-            "Implement structured reasoning with chain-of-thought prompting",
-            "Add memory management for context persistence",
-            "Consider tool integration for external actions"
-        ])
+        recommendations.extend(
+            [
+                "Implement structured reasoning with chain-of-thought prompting",
+                "Add memory management for context persistence",
+                "Consider tool integration for external actions",
+            ]
+        )
         if "planning" in analysis.raw_text.lower():
             recommendations.append("Implement multi-step planning with backtracking")
 
     elif pattern == PatternType.TOOL:
-        recommendations.extend([
-            "Implement robust error handling for external API failures",
-            "Add rate limiting and retry mechanisms",
-            "Consider webhook integration for async operations"
-        ])
+        recommendations.extend(
+            [
+                "Implement robust error handling for external API failures",
+                "Add rate limiting and retry mechanisms",
+                "Consider webhook integration for async operations",
+            ]
+        )
         if len(analysis.integration_needs) > 2:
             recommendations.append("Consider implementing circuit breaker pattern")
 
     elif pattern == PatternType.WORKFLOW:
-        recommendations.extend([
-            "Add workflow state persistence for long-running processes",
-            "Implement checkpoint and resume functionality",
-            "Consider adding approval gates for critical steps"
-        ])
+        recommendations.extend(
+            [
+                "Add workflow state persistence for long-running processes",
+                "Implement checkpoint and resume functionality",
+                "Consider adding approval gates for critical steps",
+            ]
+        )
 
     return recommendations
 
 
-def generate_template_customizations(pattern: PatternType, analysis: RequirementAnalysis) -> Dict[str, Any]:
+def generate_template_customizations(
+    pattern: PatternType, analysis: RequirementAnalysis
+) -> Dict[str, Any]:
     """Generate template customization suggestions based on pattern and requirements."""
     customizations = {}
 
     # Pattern-specific customizations
     if pattern == PatternType.RAG:
-        customizations.update({
-            "vector_database": "chromadb" if "chroma" in analysis.raw_text.lower() else "default",
-            "embedding_model": "sentence-transformers" if "embedding" in analysis.raw_text.lower() else "default",
-            "retrieval_strategy": "semantic" if "semantic" in analysis.raw_text.lower() else "keyword",
-            "chunk_size": 1000,
-            "similarity_threshold": 0.7
-        })
+        customizations.update(
+            {
+                "vector_database": "chromadb"
+                if "chroma" in analysis.raw_text.lower()
+                else "default",
+                "embedding_model": "sentence-transformers"
+                if "embedding" in analysis.raw_text.lower()
+                else "default",
+                "retrieval_strategy": "semantic"
+                if "semantic" in analysis.raw_text.lower()
+                else "keyword",
+                "chunk_size": 1000,
+                "similarity_threshold": 0.7,
+            }
+        )
 
     elif pattern == PatternType.AGENT:
-        customizations.update({
-            "llm_provider": "openai" if "openai" in analysis.raw_text.lower() else "anthropic",
-            "reasoning_type": "chain-of-thought" if "reasoning" in analysis.raw_text.lower() else "direct",
-            "memory_enabled": "conversation" in analysis.raw_text.lower(),
-            "tool_calling": len(analysis.integration_needs) > 0
-        })
+        customizations.update(
+            {
+                "llm_provider": "openai"
+                if "openai" in analysis.raw_text.lower()
+                else "anthropic",
+                "reasoning_type": "chain-of-thought"
+                if "reasoning" in analysis.raw_text.lower()
+                else "direct",
+                "memory_enabled": "conversation" in analysis.raw_text.lower(),
+                "tool_calling": len(analysis.integration_needs) > 0,
+            }
+        )
 
     elif pattern == PatternType.TOOL:
-        customizations.update({
-            "integration_type": "rest" if "rest" in analysis.raw_text.lower() else "webhook",
-            "authentication": "oauth" if "oauth" in analysis.raw_text.lower() else "api_key",
-            "rate_limiting": "performance" in analysis.complexity_indicators,
-            "error_handling": "retry" if "reliable" in analysis.raw_text.lower() else "fail_fast"
-        })
+        customizations.update(
+            {
+                "integration_type": "rest"
+                if "rest" in analysis.raw_text.lower()
+                else "webhook",
+                "authentication": "oauth"
+                if "oauth" in analysis.raw_text.lower()
+                else "api_key",
+                "rate_limiting": "performance" in analysis.complexity_indicators,
+                "error_handling": "retry"
+                if "reliable" in analysis.raw_text.lower()
+                else "fail_fast",
+            }
+        )
 
     # Add common customizations based on complexity
     if "enterprise" in analysis.complexity_indicators:
@@ -173,39 +218,59 @@ def generate_template_customizations(pattern: PatternType, analysis: Requirement
     return customizations
 
 
-def generate_workflow_suggestions(pattern: PatternType, analysis: RequirementAnalysis) -> Dict[str, Any]:
+def generate_workflow_suggestions(
+    pattern: PatternType, analysis: RequirementAnalysis
+) -> Dict[str, Any]:
     """Generate workflow structure suggestions."""
     suggestions = {
         "estimated_nodes": estimate_node_count(analysis),
         "suggested_utilities": suggest_utilities(pattern, analysis),
-        "error_handling": "comprehensive" if "enterprise" in analysis.complexity_indicators else "basic",
+        "error_handling": "comprehensive"
+        if "enterprise" in analysis.complexity_indicators
+        else "basic",
         "async_processing": any(
             async_indicator in analysis.raw_text.lower()
-            for async_indicator in ["async", "concurrent", "parallel", "api", "external"]
-        )
+            for async_indicator in [
+                "async",
+                "concurrent",
+                "parallel",
+                "api",
+                "external",
+            ]
+        ),
     }
 
     # Pattern-specific suggestions
     if pattern == PatternType.RAG:
-        suggestions.update({
-            "preprocessing_nodes": ["document_loader", "chunker", "embedder"],
-            "retrieval_nodes": ["query_processor", "retriever", "ranker"],
-            "generation_nodes": ["context_formatter", "llm_generator"]
-        })
+        suggestions.update(
+            {
+                "preprocessing_nodes": ["document_loader", "chunker", "embedder"],
+                "retrieval_nodes": ["query_processor", "retriever", "ranker"],
+                "generation_nodes": ["context_formatter", "llm_generator"],
+            }
+        )
 
     elif pattern == PatternType.AGENT:
-        suggestions.update({
-            "planning_nodes": ["task_analyzer", "planner"],
-            "execution_nodes": ["reasoning_engine", "action_executor"],
-            "reflection_nodes": ["result_evaluator", "memory_updater"]
-        })
+        suggestions.update(
+            {
+                "planning_nodes": ["task_analyzer", "planner"],
+                "execution_nodes": ["reasoning_engine", "action_executor"],
+                "reflection_nodes": ["result_evaluator", "memory_updater"],
+            }
+        )
 
     elif pattern == PatternType.TOOL:
-        suggestions.update({
-            "integration_nodes": ["auth_handler", "api_client", "response_processor"],
-            "transformation_nodes": ["input_formatter", "output_parser"],
-            "validation_nodes": ["request_validator", "response_validator"]
-        })
+        suggestions.update(
+            {
+                "integration_nodes": [
+                    "auth_handler",
+                    "api_client",
+                    "response_processor",
+                ],
+                "transformation_nodes": ["input_formatter", "output_parser"],
+                "validation_nodes": ["request_validator", "response_validator"],
+            }
+        )
 
     return suggestions
 
@@ -213,7 +278,7 @@ def generate_workflow_suggestions(pattern: PatternType, analysis: RequirementAna
 def generate_recommendation(
     pattern_scores: List[PatternScore],
     analysis: RequirementAnalysis,
-    detect_combinations_func
+    detect_combinations_func,
 ) -> PatternRecommendation:
     """Generate final pattern recommendation from scores."""
     logger.info("Generating pattern recommendation")
@@ -222,7 +287,7 @@ def generate_recommendation(
         return PatternRecommendation(
             primary_pattern=PatternType.WORKFLOW,
             confidence_score=0.5,
-            rationale="No clear pattern indicators found. Defaulting to basic WORKFLOW pattern."
+            rationale="No clear pattern indicators found. Defaulting to basic WORKFLOW pattern.",
         )
 
     # Get primary pattern (highest score)
@@ -231,7 +296,11 @@ def generate_recommendation(
 
     # Calculate confidence based on score separation and absolute score
     max_possible_score = len(analysis.extracted_keywords) * 2.0  # Rough estimate
-    confidence_score = min(primary_score.total_score / max_possible_score, 1.0) if max_possible_score > 0 else 0.5
+    confidence_score = (
+        min(primary_score.total_score / max_possible_score, 1.0)
+        if max_possible_score > 0
+        else 0.5
+    )
 
     # Boost confidence if there's a clear winner
     if len(pattern_scores) > 1:
@@ -242,7 +311,8 @@ def generate_recommendation(
     # Determine secondary patterns (scores within 70% of primary)
     threshold = primary_score.total_score * 0.7
     secondary_patterns = [
-        score.pattern for score in pattern_scores[1:6]  # Top 5 alternatives
+        score.pattern
+        for score in pattern_scores[1:6]  # Top 5 alternatives
         if score.total_score >= threshold and score.total_score > 0
     ]
 
@@ -255,18 +325,26 @@ def generate_recommendation(
     ]
 
     if primary_score.matched_indicators:
-        rationale_parts.append(f"Key indicators: {', '.join(primary_score.matched_indicators[:3])}")
+        rationale_parts.append(
+            f"Key indicators: {', '.join(primary_score.matched_indicators[:3])}"
+        )
 
     if primary_score.confidence_factors:
-        rationale_parts.append(f"Supporting factors: {', '.join(primary_score.confidence_factors[:2])}")
+        rationale_parts.append(
+            f"Supporting factors: {', '.join(primary_score.confidence_factors[:2])}"
+        )
 
     if secondary_patterns:
-        rationale_parts.append(f"Alternative patterns considered: {', '.join([p.value for p in secondary_patterns[:2]])}")
+        rationale_parts.append(
+            f"Alternative patterns considered: {', '.join([p.value for p in secondary_patterns[:2]])}"
+        )
 
     rationale = ". ".join(rationale_parts) + "."
 
     # Generate template customizations based on pattern and analysis
-    template_customizations = generate_template_customizations(primary_pattern, analysis)
+    template_customizations = generate_template_customizations(
+        primary_pattern, analysis
+    )
 
     # Phase 1/4: Detect normalized combinations (HYBRID as metadata only) and
     # augment rationale + confidence for robust combos.
@@ -281,10 +359,16 @@ def generate_recommendation(
 
         # Compute normalized scores by pattern for the current run
         max_score = max((s.total_score for s in pattern_scores), default=0.0) or 1.0
-        norm_map: Dict[PatternType, float] = {s.pattern: (s.total_score / max_score) for s in pattern_scores}
+        norm_map: Dict[PatternType, float] = {
+            s.pattern: (s.total_score / max_score) for s in pattern_scores
+        }
 
         # Choose the strongest detected combination to summarize
-        best_key = max(combinations, key=lambda k: float(combinations[k].get("combined_score", 0)), default=None)
+        best_key = max(
+            combinations,
+            key=lambda k: float(combinations[k].get("combined_score", 0)),
+            default=None,
+        )
         combo_summary = None
         if best_key:
             try:
@@ -297,7 +381,9 @@ def generate_recommendation(
         # Prepare top-2 normalized pattern summary
         top_two = pattern_scores[:2]
         top_two_str = ", ".join(
-            f"{ps.pattern.value} ({(ps.total_score / max_score):.2f})" for ps in top_two if max_score > 0
+            f"{ps.pattern.value} ({(ps.total_score / max_score):.2f})"
+            for ps in top_two
+            if max_score > 0
         )
 
         combo_prefix = None
@@ -316,7 +402,7 @@ def generate_recommendation(
             robust = False
             for info in combinations.values():
                 member_norms = []
-                for p_str in (info.get("patterns") or []):
+                for p_str in info.get("patterns") or []:
                     try:
                         p_enum = PatternType(p_str)
                     except Exception:
@@ -337,17 +423,23 @@ def generate_recommendation(
     complexity_mapping = get_graduated_complexity_mapping(analysis, primary_pattern)
 
     # Enhance template customizations with complexity info
-    template_customizations.update({
-        "complexity_mapping": complexity_mapping,
-        "graduated_structure": complexity_mapping.get("recommended_structure", "DEFAULT")
-    })
+    template_customizations.update(
+        {
+            "complexity_mapping": complexity_mapping,
+            "graduated_structure": complexity_mapping.get(
+                "recommended_structure", "DEFAULT"
+            ),
+        }
+    )
 
     # Add complexity info to workflow suggestions
-    workflow_suggestions.update({
-        "complexity_level": complexity_mapping["complexity_level"],
-        "recommended_node_count": complexity_mapping["node_count"],
-        "template_type": complexity_mapping["template_complexity"]
-    })
+    workflow_suggestions.update(
+        {
+            "complexity_level": complexity_mapping["complexity_level"],
+            "recommended_node_count": complexity_mapping["node_count"],
+            "template_type": complexity_mapping["template_complexity"],
+        }
+    )
 
     return PatternRecommendation(
         primary_pattern=primary_pattern,
@@ -356,5 +448,5 @@ def generate_recommendation(
         rationale=rationale,
         detailed_justification=detailed_rationale,
         template_customizations=template_customizations,
-        workflow_suggestions=workflow_suggestions
+        workflow_suggestions=workflow_suggestions,
     )

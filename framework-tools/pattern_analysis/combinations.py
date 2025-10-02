@@ -33,7 +33,7 @@ DEFAULT_COMBINATION_RULES = {
 def detect_combinations(
     pattern_scores: List[PatternScore],
     combination_rules: Dict[str, Dict[str, Any]],
-    top_n: int = 4
+    top_n: int = 4,
 ) -> Dict[str, Any]:
     """Detect meaningful pattern combinations using normalized scores.
 

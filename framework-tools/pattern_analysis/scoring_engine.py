@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class PatternScore:
     """Pattern scoring result."""
+
     pattern: PatternType
     base_score: float
     context_score: float
@@ -30,7 +31,7 @@ class PatternScore:
 def score_patterns(
     analysis: RequirementAnalysis,
     pattern_indicators: List[PatternIndicator],
-    context_rules: Dict[str, float]
+    context_rules: Dict[str, float],
 ) -> List[PatternScore]:
     """Score all patterns based on requirement analysis."""
     logger.info("Scoring patterns against requirements")
@@ -43,7 +44,10 @@ def score_patterns(
         matched_keywords = []
 
         for keyword in indicator.keywords:
-            if any(keyword.lower() in req_keyword.lower() for req_keyword in analysis.extracted_keywords):
+            if any(
+                keyword.lower() in req_keyword.lower()
+                for req_keyword in analysis.extracted_keywords
+            ):
                 base_score += indicator.weight
                 matched_keywords.append(keyword)
 
@@ -58,26 +62,34 @@ def score_patterns(
         confidence_factors = []
 
         for context_key, multiplier in indicator.context_multipliers.items():
-            if any(context_key.lower() in keyword.lower() for keyword in analysis.extracted_keywords):
+            if any(
+                context_key.lower() in keyword.lower()
+                for keyword in analysis.extracted_keywords
+            ):
                 context_score += base_score * (multiplier - 1.0)
                 confidence_factors.append(f"Context: {context_key}")
 
         # Apply global context rules
         for rule_key, rule_multiplier in context_rules.items():
-            if any(rule_key.lower() in keyword.lower() for keyword in analysis.extracted_keywords):
+            if any(
+                rule_key.lower() in keyword.lower()
+                for keyword in analysis.extracted_keywords
+            ):
                 context_score += base_score * (rule_multiplier - 1.0)
                 confidence_factors.append(f"Rule: {rule_key}")
 
         total_score = base_score + context_score
 
-        pattern_scores.append(PatternScore(
-            pattern=indicator.pattern,
-            base_score=base_score,
-            context_score=context_score,
-            total_score=total_score,
-            matched_indicators=matched_keywords,
-            confidence_factors=confidence_factors
-        ))
+        pattern_scores.append(
+            PatternScore(
+                pattern=indicator.pattern,
+                base_score=base_score,
+                context_score=context_score,
+                total_score=total_score,
+                matched_indicators=matched_keywords,
+                confidence_factors=confidence_factors,
+            )
+        )
 
     # Sort by total score descending
     pattern_scores.sort(key=lambda x: x.total_score, reverse=True)
@@ -113,7 +125,7 @@ def suggest_utilities(pattern: PatternType, analysis: RequirementAnalysis) -> Li
         PatternType.WORKFLOW: ["flow_controller", "state_manager"],
         PatternType.MAPREDUCE: ["task_distributor", "result_aggregator"],
         PatternType.MULTI_AGENT: ["agent_coordinator", "consensus_manager"],
-        PatternType.STRUCTURED_OUTPUT: ["schema_validator", "output_formatter"]
+        PatternType.STRUCTURED_OUTPUT: ["schema_validator", "output_formatter"],
     }
 
     utilities.extend(pattern_utilities.get(pattern, []))

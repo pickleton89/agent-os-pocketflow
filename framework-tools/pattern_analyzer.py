@@ -18,17 +18,14 @@ import warnings
 from pattern_analysis import (
     # Main class
     PatternAnalyzer,
-
     # Types and Enums
     PatternType,
     PatternIndicator,
     RequirementAnalysis,
     PatternScore,
     PatternRecommendation,
-
     # Constants
     DEFAULT_COMBINATION_RULES,
-
     # Functions
     load_pattern_indicators,
     load_context_rules,

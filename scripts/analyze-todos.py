@@ -19,9 +19,16 @@ REPO_ROOT = Path(__file__).parent.parent
 
 # Directories to exclude from analysis
 EXCLUDE_DIRS = {
-    ".git", ".venv", "__pycache__", "node_modules",
-    ".pytest_cache", ".mypy_cache", ".ruff_cache",
-    "dist", "build", "*.egg-info"
+    ".git",
+    ".venv",
+    "__pycache__",
+    "node_modules",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    "dist",
+    "build",
+    "*.egg-info",
 }
 
 # Files to exclude from analysis
@@ -30,9 +37,7 @@ EXCLUDE_FILES = {
 }
 
 # File extensions to search
-INCLUDE_EXTENSIONS = {
-    ".py", ".md", ".sh", ".yml", ".yaml", ".txt", ".json"
-}
+INCLUDE_EXTENSIONS = {".py", ".md", ".sh", ".yml", ".yaml", ".txt", ".json"}
 
 # TODO categorization patterns
 TODO_CATEGORIES = {
@@ -99,10 +104,10 @@ def find_todos(file_path: Path) -> List[Tuple[int, str]]:
     """
     todos = []
     try:
-        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             for line_num, line in enumerate(f, 1):
                 # Match TODO, FIXME, XXX patterns
-                if re.search(r'\b(TODO|FIXME|XXX)\b', line, re.IGNORECASE):
+                if re.search(r"\b(TODO|FIXME|XXX)\b", line, re.IGNORECASE):
                     todos.append((line_num, line.strip()))
     except Exception as e:
         print(f"Error reading {file_path}: {e}", file=sys.stderr)
@@ -190,27 +195,37 @@ def generate_report(categorized_todos: Dict[str, List[Tuple[Path, int, str]]]) -
     print()
     print("### Template Placeholders")
     template_count = len(categorized_todos.get("TEMPLATE_PLACEHOLDER", []))
-    print(f"**{template_count} TODOs** - These are intentional features. Keep as educational markers.")
+    print(
+        f"**{template_count} TODOs** - These are intentional features. Keep as educational markers."
+    )
     print()
 
     print("### Integration TODOs")
     integration_count = len(categorized_todos.get("INTEGRATION", []))
-    print(f"**{integration_count} TODOs** - Convert to GitHub issues with `integration` label.")
+    print(
+        f"**{integration_count} TODOs** - Convert to GitHub issues with `integration` label."
+    )
     print()
 
     print("### Enhancement TODOs")
     enhancement_count = len(categorized_todos.get("ENHANCEMENT", []))
-    print(f"**{enhancement_count} TODOs** - Convert to GitHub issues with `enhancement` label.")
+    print(
+        f"**{enhancement_count} TODOs** - Convert to GitHub issues with `enhancement` label."
+    )
     print()
 
     print("### Bug Fix TODOs")
     bugfix_count = len(categorized_todos.get("BUG_FIX", []))
-    print(f"**{bugfix_count} TODOs** - Convert to GitHub issues with `bug` label. **Prioritize these!**")
+    print(
+        f"**{bugfix_count} TODOs** - Convert to GitHub issues with `bug` label. **Prioritize these!**"
+    )
     print()
 
     print("### Documentation TODOs")
     doc_count = len(categorized_todos.get("DOCUMENTATION", []))
-    print(f"**{doc_count} TODOs** - Convert to GitHub issues with `documentation` label.")
+    print(
+        f"**{doc_count} TODOs** - Convert to GitHub issues with `documentation` label."
+    )
     print()
 
     print("### Testing TODOs")
@@ -250,7 +265,10 @@ def main():
     """Main entry point."""
     print("Analyzing TODOs...", file=sys.stderr)
     categorized_todos = analyze_todos()
-    print(f"Found {sum(len(t) for t in categorized_todos.values())} TODOs", file=sys.stderr)
+    print(
+        f"Found {sum(len(t) for t in categorized_todos.values())} TODOs",
+        file=sys.stderr,
+    )
     print("Generating report...", file=sys.stderr)
     generate_report(categorized_todos)
 

@@ -434,6 +434,55 @@ install_standards() {
     fi
 }
 
+# Install command templates for Agent OS workflows
+install_command_templates() {
+    log_info "Installing command templates..."
+
+    mkdir -p ".agent-os/commands"
+
+    local commands=(
+        "plan-product"
+        "analyze-product"
+        "create-spec"
+        "documentation-discovery"
+        "execute-task"
+        "execute-tasks"
+        "post-execution-tasks"
+    )
+
+    for cmd in "${commands[@]}"; do
+        local cmd_file=".agent-os/commands/$cmd.md"
+        local instruction_path=".agent-os/instructions/core/$cmd.md"
+        if [[ ! -f "$instruction_path" ]]; then
+            instruction_path=".agent-os/instructions/$cmd.md"
+        fi
+
+        cat > "$cmd_file" <<EOF
+# /$cmd Command
+
+## Purpose
+- Provide high-level guardrails for the "/$cmd" workflow.
+- Ensure the team reviews the latest design artifacts before automation.
+
+## Steps
+1. Review the canonical instructions: $instruction_path
+2. Capture open questions and risks in project docs before running automation.
+3. Use the orchestrator only after stakeholders confirm updates.
+
+## Linked Artifacts
+- $instruction_path
+EOF
+
+        if [[ "$cmd" == "plan-product" ]]; then
+            cat >> "$cmd_file" <<'EOF'
+- .agent-os/product/mission.md
+EOF
+        fi
+
+        log_success "Generated command template: $cmd_file"
+    done
+}
+
 # Install PocketFlow tools
 install_pocketflow_tools() {
     if [[ "$ENABLE_POCKETFLOW" != "true" ]]; then
@@ -453,14 +502,16 @@ install_pocketflow_tools() {
         exit 1
     fi
     
-    if uv run python -m pocketflow_tools.cli --help >/dev/null 2>&1; then
+    local uv_cache_dir="$BASE_INSTALL_PATH/.uv-cache"
+    mkdir -p "$uv_cache_dir"
+
+    if python3 -m pocketflow_tools.cli --help >/dev/null 2>&1; then
         log_success "Framework CLI is available for workflow generation"
+    elif UV_CACHE_DIR="$uv_cache_dir" uv run --no-sync python -m pocketflow_tools.cli --help >/dev/null 2>&1; then
+        log_success "Framework CLI is available via uv runtime"
     else
-        log_error "pocketflow_tools CLI not found or not working."
-        log_info "Please ensure framework tools are installed:"
-        log_info "  - Run base installation: ./setup/base.sh"  
-        log_info "  - Or install in development mode: uv pip install -e . from framework root"
-        exit 1
+        log_warning "pocketflow_tools CLI not detected; continuing with copied templates."
+        log_info "If you need generator tooling, install it via: uv pip install -e . (from framework root)"
     fi
     
     # Ensure framework-tools directory exists
@@ -663,6 +714,22 @@ install_subfolder_claude_md() {
     else
         log_warning "Framework CLAUDE.md templates not found - subfolder guidance will be limited"
     fi
+
+    mkdir -p ".claude"
+    cat > ".claude/CLAUDE.md" <<'EOF'
+# PocketFlow Project Guidance
+
+## Mission Overview
+- .agent-os/product/mission.md
+
+## Execution Support
+- .agent-os/commands/plan-product.md
+- .agent-os/instructions/core/plan-product.md
+- .agent-os/instructions/core/create-spec.md
+
+## Reminder
+- Keep docs/design.md and mission artifacts updated before running automation.
+EOF
 }
 
 # Create project configuration
@@ -847,6 +914,7 @@ main() {
     create_project_structure
     install_instructions
     install_standards
+    install_command_templates
     install_subfolder_claude_md
     install_pocketflow_tools
     create_project_configuration

@@ -27,51 +27,183 @@ except Exception:  # pragma: no cover - standalone fallback
 # Canonical node templates for enum-based patterns
 CORE_PATTERN_NODE_TEMPLATES: Dict[PatternType, List[Dict[str, str]]] = {
     PatternType.RAG: [
-        {"name": "DocumentLoader", "description": "Load and preprocess documents for retrieval", "type": "Node"},
-        {"name": "EmbeddingGenerator", "description": "Generate embeddings for document chunks", "type": "AsyncNode"},
-        {"name": "QueryProcessor", "description": "Process and enhance user queries", "type": "Node"},
-        {"name": "Retriever", "description": "Retrieve relevant documents based on query", "type": "AsyncNode"},
-        {"name": "ContextFormatter", "description": "Format retrieved documents for generation", "type": "Node"},
-        {"name": "LLMGenerator", "description": "Generate response using LLM with context", "type": "AsyncNode"},
+        {
+            "name": "DocumentLoader",
+            "description": "Load and preprocess documents for retrieval",
+            "type": "Node",
+        },
+        {
+            "name": "EmbeddingGenerator",
+            "description": "Generate embeddings for document chunks",
+            "type": "AsyncNode",
+        },
+        {
+            "name": "QueryProcessor",
+            "description": "Process and enhance user queries",
+            "type": "Node",
+        },
+        {
+            "name": "Retriever",
+            "description": "Retrieve relevant documents based on query",
+            "type": "AsyncNode",
+        },
+        {
+            "name": "ContextFormatter",
+            "description": "Format retrieved documents for generation",
+            "type": "Node",
+        },
+        {
+            "name": "LLMGenerator",
+            "description": "Generate response using LLM with context",
+            "type": "AsyncNode",
+        },
     ],
     PatternType.AGENT: [
-        {"name": "TaskAnalyzer", "description": "Analyze and understand the given task", "type": "Node"},
-        {"name": "PlanningEngine", "description": "Create execution plan for the task", "type": "AsyncNode"},
-        {"name": "ReasoningNode", "description": "Apply reasoning to make decisions", "type": "AsyncNode"},
-        {"name": "ActionExecutor", "description": "Execute planned actions", "type": "AsyncNode"},
-        {"name": "ResultEvaluator", "description": "Evaluate and validate results", "type": "Node"},
+        {
+            "name": "TaskAnalyzer",
+            "description": "Analyze and understand the given task",
+            "type": "Node",
+        },
+        {
+            "name": "PlanningEngine",
+            "description": "Create execution plan for the task",
+            "type": "AsyncNode",
+        },
+        {
+            "name": "ReasoningNode",
+            "description": "Apply reasoning to make decisions",
+            "type": "AsyncNode",
+        },
+        {
+            "name": "ActionExecutor",
+            "description": "Execute planned actions",
+            "type": "AsyncNode",
+        },
+        {
+            "name": "ResultEvaluator",
+            "description": "Evaluate and validate results",
+            "type": "Node",
+        },
     ],
     PatternType.TOOL: [
-        {"name": "InputValidator", "description": "Validate and sanitize input data", "type": "Node"},
-        {"name": "AuthHandler", "description": "Handle authentication for external services", "type": "AsyncNode"},
-        {"name": "APIClient", "description": "Make requests to external APIs", "type": "AsyncNode"},
-        {"name": "DataTransformer", "description": "Transform data between formats", "type": "Node"},
-        {"name": "ResponseProcessor", "description": "Process and format API responses", "type": "Node"},
+        {
+            "name": "InputValidator",
+            "description": "Validate and sanitize input data",
+            "type": "Node",
+        },
+        {
+            "name": "AuthHandler",
+            "description": "Handle authentication for external services",
+            "type": "AsyncNode",
+        },
+        {
+            "name": "APIClient",
+            "description": "Make requests to external APIs",
+            "type": "AsyncNode",
+        },
+        {
+            "name": "DataTransformer",
+            "description": "Transform data between formats",
+            "type": "Node",
+        },
+        {
+            "name": "ResponseProcessor",
+            "description": "Process and format API responses",
+            "type": "Node",
+        },
     ],
     PatternType.WORKFLOW: [
-        {"name": "InputProcessor", "description": "Process and validate workflow input", "type": "Node"},
-        {"name": "BusinessLogic", "description": "Execute core business logic", "type": "Node"},
-        {"name": "DataProcessor", "description": "Process and transform data", "type": "Node"},
-        {"name": "OutputFormatter", "description": "Format and prepare output", "type": "Node"},
+        {
+            "name": "InputProcessor",
+            "description": "Process and validate workflow input",
+            "type": "Node",
+        },
+        {
+            "name": "BusinessLogic",
+            "description": "Execute core business logic",
+            "type": "Node",
+        },
+        {
+            "name": "DataProcessor",
+            "description": "Process and transform data",
+            "type": "Node",
+        },
+        {
+            "name": "OutputFormatter",
+            "description": "Format and prepare output",
+            "type": "Node",
+        },
     ],
     PatternType.MAPREDUCE: [
-        {"name": "TaskDistributor", "description": "Distribute tasks across workers", "type": "BatchNode"},
-        {"name": "MapProcessor", "description": "Process individual data chunks", "type": "AsyncBatchNode"},
-        {"name": "IntermediateAggregator", "description": "Aggregate intermediate results", "type": "BatchNode"},
-        {"name": "ReduceProcessor", "description": "Reduce results to final output", "type": "AsyncBatchNode"},
-        {"name": "ResultCollector", "description": "Collect and format final results", "type": "Node"},
+        {
+            "name": "TaskDistributor",
+            "description": "Distribute tasks across workers",
+            "type": "BatchNode",
+        },
+        {
+            "name": "MapProcessor",
+            "description": "Process individual data chunks",
+            "type": "AsyncBatchNode",
+        },
+        {
+            "name": "IntermediateAggregator",
+            "description": "Aggregate intermediate results",
+            "type": "BatchNode",
+        },
+        {
+            "name": "ReduceProcessor",
+            "description": "Reduce results to final output",
+            "type": "AsyncBatchNode",
+        },
+        {
+            "name": "ResultCollector",
+            "description": "Collect and format final results",
+            "type": "Node",
+        },
     ],
     PatternType.MULTI_AGENT: [
-        {"name": "TaskCoordinator", "description": "Coordinate tasks among multiple agents", "type": "Node"},
-        {"name": "SpecialistAgent", "description": "Execute specialized tasks", "type": "AsyncNode"},
-        {"name": "ConsensusManager", "description": "Manage consensus between agents", "type": "Node"},
-        {"name": "ResultIntegrator", "description": "Integrate results from multiple agents", "type": "Node"},
+        {
+            "name": "TaskCoordinator",
+            "description": "Coordinate tasks among multiple agents",
+            "type": "Node",
+        },
+        {
+            "name": "SpecialistAgent",
+            "description": "Execute specialized tasks",
+            "type": "AsyncNode",
+        },
+        {
+            "name": "ConsensusManager",
+            "description": "Manage consensus between agents",
+            "type": "Node",
+        },
+        {
+            "name": "ResultIntegrator",
+            "description": "Integrate results from multiple agents",
+            "type": "Node",
+        },
     ],
     PatternType.STRUCTURED_OUTPUT: [
-        {"name": "SchemaValidator", "description": "Validate input against schema", "type": "Node"},
-        {"name": "DataProcessor", "description": "Process data according to schema", "type": "Node"},
-        {"name": "OutputStructurer", "description": "Structure output according to schema", "type": "Node"},
-        {"name": "FormatValidator", "description": "Validate final output format", "type": "Node"},
+        {
+            "name": "SchemaValidator",
+            "description": "Validate input against schema",
+            "type": "Node",
+        },
+        {
+            "name": "DataProcessor",
+            "description": "Process data according to schema",
+            "type": "Node",
+        },
+        {
+            "name": "OutputStructurer",
+            "description": "Structure output according to schema",
+            "type": "Node",
+        },
+        {
+            "name": "FormatValidator",
+            "description": "Validate final output format",
+            "type": "Node",
+        },
     ],
 }
 
@@ -79,19 +211,55 @@ CORE_PATTERN_NODE_TEMPLATES: Dict[PatternType, List[Dict[str, str]]] = {
 # Auxiliary simple patterns used only by the generator (not enum-based)
 SIMPLE_PATTERN_NODE_TEMPLATES: Dict[str, List[Dict[str, str]]] = {
     "SIMPLE_WORKFLOW": [
-        {"name": "InputProcessor", "description": "Process and validate input data", "type": "Node"},
-        {"name": "BusinessLogic", "description": "Execute core business operations", "type": "Node"},
-        {"name": "OutputFormatter", "description": "Format and prepare output data", "type": "Node"},
+        {
+            "name": "InputProcessor",
+            "description": "Process and validate input data",
+            "type": "Node",
+        },
+        {
+            "name": "BusinessLogic",
+            "description": "Execute core business operations",
+            "type": "Node",
+        },
+        {
+            "name": "OutputFormatter",
+            "description": "Format and prepare output data",
+            "type": "Node",
+        },
     ],
     "BASIC_API": [
-        {"name": "RequestValidator", "description": "Validate API request data", "type": "Node"},
-        {"name": "DataProcessor", "description": "Process business logic", "type": "Node"},
-        {"name": "ResponseBuilder", "description": "Build API response", "type": "Node"},
+        {
+            "name": "RequestValidator",
+            "description": "Validate API request data",
+            "type": "Node",
+        },
+        {
+            "name": "DataProcessor",
+            "description": "Process business logic",
+            "type": "Node",
+        },
+        {
+            "name": "ResponseBuilder",
+            "description": "Build API response",
+            "type": "Node",
+        },
     ],
     "SIMPLE_ETL": [
-        {"name": "DataExtractor", "description": "Extract data from source", "type": "Node"},
-        {"name": "DataTransformer", "description": "Transform data according to business rules", "type": "Node"},
-        {"name": "DataLoader", "description": "Load data to destination", "type": "Node"},
+        {
+            "name": "DataExtractor",
+            "description": "Extract data from source",
+            "type": "Node",
+        },
+        {
+            "name": "DataTransformer",
+            "description": "Transform data according to business rules",
+            "type": "Node",
+        },
+        {
+            "name": "DataLoader",
+            "description": "Load data to destination",
+            "type": "Node",
+        },
     ],
 }
 
@@ -142,7 +310,9 @@ __all__ = [
 ]
 
 
-def compose_hybrid_node_templates(base_patterns: List[Union[str, PatternType]]) -> List[Dict[str, Any]]:
+def compose_hybrid_node_templates(
+    base_patterns: List[Union[str, PatternType]],
+) -> List[Dict[str, Any]]:
     """Compose hybrid node templates from multiple base patterns.
 
     - Accepts a list of `PatternType` or string values convertible to `PatternType`.

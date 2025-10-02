@@ -17,11 +17,13 @@ from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from enum import Enum
 
+
 class ValidationLevel(Enum):
     """Validation severity levels"""
-    ERROR = "ERROR"      # Must be fixed
+
+    ERROR = "ERROR"  # Must be fixed
     WARNING = "WARNING"  # Should be fixed
-    INFO = "INFO"       # Nice to fix
+    INFO = "INFO"  # Nice to fix
 
 
 class WorkflowBlockedException(Exception):
@@ -35,6 +37,7 @@ class WorkflowBlockedException(Exception):
 @dataclass
 class ValidationIssue:
     """Represents a validation issue found in documents"""
+
     level: ValidationLevel
     category: str
     file_path: str
@@ -46,6 +49,7 @@ class ValidationIssue:
 @dataclass
 class DocumentContent:
     """Container for document content and metadata"""
+
     file_path: Path
     content: str
     yaml_frontmatter: Optional[Dict[str, Any]] = None
@@ -62,12 +66,15 @@ class DocumentConsistencyValidator:
 
         # Define expected document locations
         self.document_paths = {
-            'mission': self.project_root / '.agent-os' / 'product' / 'mission.md',
-            'tech_stack': self.project_root / '.agent-os' / 'product' / 'tech-stack.md',
-            'roadmap': self.project_root / '.agent-os' / 'product' / 'roadmap.md',
-            'pre_flight': self.project_root / '.agent-os' / 'checklists' / 'pre-flight.md',
-            'design': self.project_root / 'docs' / 'design.md',
-            'claude_md': self.project_root / 'CLAUDE.md'
+            "mission": self.project_root / ".agent-os" / "product" / "mission.md",
+            "tech_stack": self.project_root / ".agent-os" / "product" / "tech-stack.md",
+            "roadmap": self.project_root / ".agent-os" / "product" / "roadmap.md",
+            "pre_flight": self.project_root
+            / ".agent-os"
+            / "checklists"
+            / "pre-flight.md",
+            "design": self.project_root / "docs" / "design.md",
+            "claude_md": self.project_root / "CLAUDE.md",
         }
 
     def load_documents(self) -> None:
@@ -75,30 +82,39 @@ class DocumentConsistencyValidator:
         for doc_type, doc_path in self.document_paths.items():
             if doc_path.exists():
                 try:
-                    content = doc_path.read_text(encoding='utf-8')
-                    doc_content = DocumentContent(
-                        file_path=doc_path,
-                        content=content
-                    )
+                    content = doc_path.read_text(encoding="utf-8")
+                    doc_content = DocumentContent(file_path=doc_path, content=content)
 
                     # Parse YAML frontmatter if present
-                    if content.startswith('---\n'):
+                    if content.startswith("---\n"):
                         try:
-                            end_idx = content.find('\n---\n', 4)
+                            end_idx = content.find("\n---\n", 4)
                             if end_idx != -1:
                                 yaml_content = content[4:end_idx]
-                                doc_content.yaml_frontmatter = yaml.safe_load(yaml_content)
+                                doc_content.yaml_frontmatter = yaml.safe_load(
+                                    yaml_content
+                                )
                         except yaml.YAMLError as e:
-                            self.add_issue(ValidationLevel.ERROR, "YAML", str(doc_path),
-                                         f"Invalid YAML frontmatter: {e}")
+                            self.add_issue(
+                                ValidationLevel.ERROR,
+                                "YAML",
+                                str(doc_path),
+                                f"Invalid YAML frontmatter: {e}",
+                            )
 
                     # Parse markdown sections
-                    doc_content.markdown_sections = self._parse_markdown_sections(content)
+                    doc_content.markdown_sections = self._parse_markdown_sections(
+                        content
+                    )
                     self.documents[doc_type] = doc_content
 
                 except Exception as e:
-                    self.add_issue(ValidationLevel.ERROR, "FILE_READ", str(doc_path),
-                                 f"Failed to read document: {e}")
+                    self.add_issue(
+                        ValidationLevel.ERROR,
+                        "FILE_READ",
+                        str(doc_path),
+                        f"Failed to read document: {e}",
+                    )
 
     def _parse_markdown_sections(self, content: str) -> Dict[str, str]:
         """Parse markdown content into sections based on headers"""
@@ -106,40 +122,48 @@ class DocumentConsistencyValidator:
         current_section = ""
         current_content = []
 
-        for line in content.split('\n'):
-            if line.startswith('#'):
+        for line in content.split("\n"):
+            if line.startswith("#"):
                 if current_section:
-                    sections[current_section] = '\n'.join(current_content).strip()
-                current_section = line.strip('#').strip().lower().replace(' ', '_')
+                    sections[current_section] = "\n".join(current_content).strip()
+                current_section = line.strip("#").strip().lower().replace(" ", "_")
                 current_content = []
             else:
                 current_content.append(line)
 
         if current_section:
-            sections[current_section] = '\n'.join(current_content).strip()
+            sections[current_section] = "\n".join(current_content).strip()
 
         return sections
 
-    def add_issue(self, level: ValidationLevel, category: str, file_path: str,
-                  issue: str, suggestion: Optional[str] = None,
-                  line_number: Optional[int] = None) -> None:
+    def add_issue(
+        self,
+        level: ValidationLevel,
+        category: str,
+        file_path: str,
+        issue: str,
+        suggestion: Optional[str] = None,
+        line_number: Optional[int] = None,
+    ) -> None:
         """Add a validation issue to the results"""
-        self.issues.append(ValidationIssue(
-            level=level,
-            category=category,
-            file_path=file_path,
-            issue=issue,
-            suggestion=suggestion,
-            line_number=line_number
-        ))
+        self.issues.append(
+            ValidationIssue(
+                level=level,
+                category=category,
+                file_path=file_path,
+                issue=issue,
+                suggestion=suggestion,
+                line_number=line_number,
+            )
+        )
 
     def validate_feature_consistency(self) -> None:
         """Validate that features are consistent across mission and roadmap documents"""
-        if 'mission' not in self.documents or 'roadmap' not in self.documents:
+        if "mission" not in self.documents or "roadmap" not in self.documents:
             return
 
-        mission_doc = self.documents['mission']
-        roadmap_doc = self.documents['roadmap']
+        mission_doc = self.documents["mission"]
+        roadmap_doc = self.documents["roadmap"]
 
         # Extract features from mission document
         mission_features = self._extract_features_from_mission(mission_doc.content)
@@ -160,7 +184,7 @@ class DocumentConsistencyValidator:
                 "FEATURE_CONSISTENCY",
                 str(roadmap_doc.file_path),
                 f"Feature '{feature}' present in mission but missing from roadmap",
-                "Add feature to appropriate roadmap phase"
+                "Add feature to appropriate roadmap phase",
             )
 
         for feature in missing_in_mission:
@@ -169,7 +193,7 @@ class DocumentConsistencyValidator:
                 "FEATURE_CONSISTENCY",
                 str(mission_doc.file_path),
                 f"Feature '{feature}' present in roadmap but missing from mission",
-                "Add feature to mission document or remove from roadmap"
+                "Add feature to mission document or remove from roadmap",
             )
 
     def _extract_features_from_mission(self, content: str) -> List[str]:
@@ -177,15 +201,16 @@ class DocumentConsistencyValidator:
         features = []
         in_features_section = False
 
-        for line in content.split('\n'):
-            if line.strip().lower().startswith('## key features') or \
-               line.strip().lower().startswith('## features'):
+        for line in content.split("\n"):
+            if line.strip().lower().startswith(
+                "## key features"
+            ) or line.strip().lower().startswith("## features"):
                 in_features_section = True
                 continue
-            elif line.startswith('##') and in_features_section:
+            elif line.startswith("##") and in_features_section:
                 break
-            elif in_features_section and line.strip().startswith('-'):
-                feature_match = re.match(r'-\s*\*\*([^*]+)\*\*', line.strip())
+            elif in_features_section and line.strip().startswith("-"):
+                feature_match = re.match(r"-\s*\*\*([^*]+)\*\*", line.strip())
                 if feature_match:
                     features.append(feature_match.group(1).strip())
 
@@ -196,22 +221,22 @@ class DocumentConsistencyValidator:
         features = []
 
         # Look for features in phase sections
-        phase_pattern = r'###\s*Phase\s*\d+[^#]*?\n(.*?)(?=###|\Z)'
+        phase_pattern = r"###\s*Phase\s*\d+[^#]*?\n(.*?)(?=###|\Z)"
         matches = re.findall(phase_pattern, content, re.DOTALL | re.IGNORECASE)
 
         for phase_content in matches:
-            feature_matches = re.findall(r'-\s*\*\*([^*]+)\*\*', phase_content)
+            feature_matches = re.findall(r"-\s*\*\*([^*]+)\*\*", phase_content)
             features.extend(match.strip() for match in feature_matches)
 
         return features
 
     def validate_tech_stack_alignment(self) -> None:
         """Validate tech stack choices are consistent across documents"""
-        if 'tech_stack' not in self.documents or 'design' not in self.documents:
+        if "tech_stack" not in self.documents or "design" not in self.documents:
             return
 
-        tech_doc = self.documents['tech_stack']
-        design_doc = self.documents['design']
+        tech_doc = self.documents["tech_stack"]
+        design_doc = self.documents["design"]
 
         # Extract tech choices from tech-stack document
         tech_choices = self._extract_tech_choices(tech_doc.content)
@@ -226,24 +251,24 @@ class DocumentConsistencyValidator:
                     "TECH_ALIGNMENT",
                     str(design_doc.file_path),
                     f"Tech stack choice '{chosen_tech}' for {tech_type} not mentioned in design document",
-                    f"Consider adding {chosen_tech} to technical architecture section"
+                    f"Consider adding {chosen_tech} to technical architecture section",
                 )
 
     def _extract_tech_choices(self, content: str) -> Dict[str, Optional[str]]:
         """Extract technology choices from tech-stack document"""
         choices = {
-            'database': None,
-            'frontend': None,
-            'backend': None,
-            'deployment': None
+            "database": None,
+            "frontend": None,
+            "backend": None,
+            "deployment": None,
         }
 
         # Look for technology choice patterns
         patterns = {
-            'database': r'database[^:]*:\s*([^\n]+)',
-            'frontend': r'frontend[^:]*:\s*([^\n]+)',
-            'backend': r'backend[^:]*:\s*([^\n]+)',
-            'deployment': r'deployment[^:]*:\s*([^\n]+)'
+            "database": r"database[^:]*:\s*([^\n]+)",
+            "frontend": r"frontend[^:]*:\s*([^\n]+)",
+            "backend": r"backend[^:]*:\s*([^\n]+)",
+            "deployment": r"deployment[^:]*:\s*([^\n]+)",
         }
 
         content_lower = content.lower()
@@ -259,7 +284,7 @@ class DocumentConsistencyValidator:
         pattern_mentions = {}
 
         # Look for PocketFlow patterns mentioned in each document
-        pocketflow_patterns = ['WORKFLOW', 'TOOL', 'AGENT', 'RAG', 'MAPREDUCE']
+        pocketflow_patterns = ["WORKFLOW", "TOOL", "AGENT", "RAG", "MAPREDUCE"]
 
         for doc_type, doc_content in self.documents.items():
             patterns_found = []
@@ -269,32 +294,32 @@ class DocumentConsistencyValidator:
             pattern_mentions[doc_type] = patterns_found
 
         # Check for consistency between mission and design documents
-        if 'mission' in pattern_mentions and 'design' in pattern_mentions:
-            mission_patterns = set(pattern_mentions['mission'])
-            design_patterns = set(pattern_mentions['design'])
+        if "mission" in pattern_mentions and "design" in pattern_mentions:
+            mission_patterns = set(pattern_mentions["mission"])
+            design_patterns = set(pattern_mentions["design"])
 
             if mission_patterns != design_patterns:
                 self.add_issue(
                     ValidationLevel.WARNING,
                     "POCKETFLOW_CONSISTENCY",
-                    str(self.documents['design'].file_path),
+                    str(self.documents["design"].file_path),
                     f"PocketFlow patterns mismatch: mission has {mission_patterns}, design has {design_patterns}",
-                    "Ensure consistent pattern selection across documents"
+                    "Ensure consistent pattern selection across documents",
                 )
 
     def validate_claude_md_references(self) -> None:
         """Validate CLAUDE.md contains references to all generated documents"""
-        if 'claude_md' not in self.documents:
+        if "claude_md" not in self.documents:
             return
 
-        claude_content = self.documents['claude_md'].content
+        claude_content = self.documents["claude_md"].content
 
         # Check for references to key documents
         expected_references = [
-            ('.agent-os/product/mission.md', 'mission'),
-            ('.agent-os/product/tech-stack.md', 'tech_stack'),
-            ('.agent-os/product/roadmap.md', 'roadmap'),
-            ('docs/design.md', 'design')
+            (".agent-os/product/mission.md", "mission"),
+            (".agent-os/product/tech-stack.md", "tech_stack"),
+            (".agent-os/product/roadmap.md", "roadmap"),
+            ("docs/design.md", "design"),
         ]
 
         for file_path, doc_type in expected_references:
@@ -302,33 +327,29 @@ class DocumentConsistencyValidator:
                 self.add_issue(
                     ValidationLevel.INFO,
                     "CLAUDE_MD_REFERENCES",
-                    str(self.documents['claude_md'].file_path),
+                    str(self.documents["claude_md"].file_path),
                     f"Missing reference to {file_path}",
-                    f"Add reference to {file_path} in relevant workflow section"
+                    f"Add reference to {file_path} in relevant workflow section",
                 )
 
     def validate_template_compliance(self) -> None:
         """Validate documents follow expected template structures"""
         template_requirements = {
-            'mission': [
-                'pitch',
-                'users',
-                'problems',
-                'differentiators',
-                'key_features',
-                'architecture_strategy'
+            "mission": [
+                "pitch",
+                "users",
+                "problems",
+                "differentiators",
+                "key_features",
+                "architecture_strategy",
             ],
-            'tech_stack': [
-                'programming_language',
-                'framework',
-                'database',
-                'deployment'
+            "tech_stack": [
+                "programming_language",
+                "framework",
+                "database",
+                "deployment",
             ],
-            'roadmap': [
-                'phase_1',
-                'phase_2',
-                'phase_3'
-            ]
+            "roadmap": ["phase_1", "phase_2", "phase_3"],
         }
 
         for doc_type, required_sections in template_requirements.items():
@@ -339,14 +360,16 @@ class DocumentConsistencyValidator:
             content_lower = doc_content.content.lower()
 
             for section in required_sections:
-                if section.replace('_', ' ') not in content_lower and \
-                   section.replace('_', '') not in content_lower:
+                if (
+                    section.replace("_", " ") not in content_lower
+                    and section.replace("_", "") not in content_lower
+                ):
                     self.add_issue(
                         ValidationLevel.WARNING,
                         "TEMPLATE_COMPLIANCE",
                         str(doc_content.file_path),
                         f"Missing required section: {section}",
-                        f"Add {section} section to match expected template structure"
+                        f"Add {section} section to match expected template structure",
                     )
 
     def run_all_validations(self) -> None:
@@ -390,7 +413,11 @@ class DocumentConsistencyValidator:
         report.append("")
 
         # Detailed issues
-        for level_name, issues in [("Errors", errors), ("Warnings", warnings), ("Info", infos)]:
+        for level_name, issues in [
+            ("Errors", errors),
+            ("Warnings", warnings),
+            ("Info", infos),
+        ]:
             if not issues:
                 continue
 
@@ -411,9 +438,15 @@ class DocumentConsistencyValidator:
 def main():
     import argparse
 
-    parser = argparse.ArgumentParser(description="Validate document consistency for Agent OS + PocketFlow projects")
-    parser.add_argument("project_root", nargs="?", default=".",
-                       help="Project root directory (default: current directory)")
+    parser = argparse.ArgumentParser(
+        description="Validate document consistency for Agent OS + PocketFlow projects"
+    )
+    parser.add_argument(
+        "project_root",
+        nargs="?",
+        default=".",
+        help="Project root directory (default: current directory)",
+    )
     parser.add_argument("--output", "-o", help="Output report to file")
     parser.add_argument("--json", action="store_true", help="Output JSON format")
 
@@ -431,9 +464,15 @@ def main():
         # JSON output for programmatic consumption
         issues_dict = {
             "summary": {
-                "errors": len([i for i in validator.issues if i.level == ValidationLevel.ERROR]),
-                "warnings": len([i for i in validator.issues if i.level == ValidationLevel.WARNING]),
-                "info": len([i for i in validator.issues if i.level == ValidationLevel.INFO])
+                "errors": len(
+                    [i for i in validator.issues if i.level == ValidationLevel.ERROR]
+                ),
+                "warnings": len(
+                    [i for i in validator.issues if i.level == ValidationLevel.WARNING]
+                ),
+                "info": len(
+                    [i for i in validator.issues if i.level == ValidationLevel.INFO]
+                ),
             },
             "issues": [
                 {
@@ -442,10 +481,10 @@ def main():
                     "file": issue.file_path,
                     "issue": issue.issue,
                     "suggestion": issue.suggestion,
-                    "line": issue.line_number
+                    "line": issue.line_number,
                 }
                 for issue in validator.issues
-            ]
+            ],
         }
         output = json.dumps(issues_dict, indent=2)
     else:

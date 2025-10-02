@@ -129,4 +129,6 @@ extend-exclude = [
     "pocketflow_tools/data/*",
     ".agent-os",
     ".agent-os/*",
+    "baseline_out",
+    "baseline_out/*",
 ]

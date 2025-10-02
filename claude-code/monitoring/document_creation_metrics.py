@@ -22,6 +22,7 @@ import sqlite3
 @dataclass
 class AgentMetric:
     """Performance metrics for a single agent execution"""
+
     agent_name: str
     start_time: float
     end_time: float
@@ -36,6 +37,7 @@ class AgentMetric:
 @dataclass
 class ValidationMetric:
     """Performance metrics for a validation execution"""
+
     start_time: float
     end_time: float
     duration: float
@@ -49,6 +51,7 @@ class ValidationMetric:
 @dataclass
 class OrchestrationMetric:
     """Performance metrics for an orchestration session"""
+
     session_id: str
     start_time: float
     end_time: float
@@ -72,7 +75,9 @@ class DocumentCreationMetrics:
         if metrics_db_path:
             self.metrics_db = metrics_db_path
         else:
-            self.metrics_db = self.project_root / '.agent-os' / 'metrics' / 'document_creation.db'
+            self.metrics_db = (
+                self.project_root / ".agent-os" / "metrics" / "document_creation.db"
+            )
 
         # Ensure metrics directory exists
         self.metrics_db.parent.mkdir(parents=True, exist_ok=True)
@@ -145,10 +150,15 @@ class DocumentCreationMetrics:
         print(f"⏱️  Started {agent_name} at {datetime.now().strftime('%H:%M:%S')}")
         return start_time
 
-    def record_agent_completion(self, agent_name: str, start_time: float,
-                              success: bool = True, error_message: Optional[str] = None,
-                              token_usage: Optional[int] = None,
-                              output_file: Optional[str] = None) -> AgentMetric:
+    def record_agent_completion(
+        self,
+        agent_name: str,
+        start_time: float,
+        success: bool = True,
+        error_message: Optional[str] = None,
+        token_usage: Optional[int] = None,
+        output_file: Optional[str] = None,
+    ) -> AgentMetric:
         """Record agent execution completion"""
         end_time = time.time()
         duration = end_time - start_time
@@ -167,7 +177,7 @@ class DocumentCreationMetrics:
             success=success,
             error_message=error_message,
             output_file=output_file,
-            file_size_bytes=file_size_bytes
+            file_size_bytes=file_size_bytes,
         )
 
         self.current_agent_metrics.append(metric)
@@ -183,7 +193,9 @@ class DocumentCreationMetrics:
         print(f"🔍 Started validation at {datetime.now().strftime('%H:%M:%S')}")
         return start_time
 
-    def record_validation_completion(self, start_time: float, validation_summary: Dict[str, Any]) -> ValidationMetric:
+    def record_validation_completion(
+        self, start_time: float, validation_summary: Dict[str, Any]
+    ) -> ValidationMetric:
         """Record validation execution completion"""
         end_time = time.time()
         duration = end_time - start_time
@@ -192,17 +204,21 @@ class DocumentCreationMetrics:
             start_time=start_time,
             end_time=end_time,
             duration=duration,
-            total_documents_validated=validation_summary.get('total_documents_validated', 0),
-            error_count=validation_summary.get('error_count', 0),
-            warning_count=validation_summary.get('warning_count', 0),
-            info_count=validation_summary.get('info_count', 0),
-            validation_passed=validation_summary.get('validation_passed', False)
+            total_documents_validated=validation_summary.get(
+                "total_documents_validated", 0
+            ),
+            error_count=validation_summary.get("error_count", 0),
+            warning_count=validation_summary.get("warning_count", 0),
+            info_count=validation_summary.get("info_count", 0),
+            validation_passed=validation_summary.get("validation_passed", False),
         )
 
         self.current_validation_metrics.append(metric)
 
         status = "✅" if metric.validation_passed else "⚠️"
-        print(f"{status} Completed validation in {duration:.2f}s - {metric.total_documents_validated} docs, {metric.error_count} errors")
+        print(
+            f"{status} Completed validation in {duration:.2f}s - {metric.total_documents_validated} docs, {metric.error_count} errors"
+        )
 
         return metric
 
@@ -217,7 +233,9 @@ class DocumentCreationMetrics:
         # Calculate metrics
         successful_agents = len([m for m in self.current_agent_metrics if m.success])
         failed_agents = len([m for m in self.current_agent_metrics if not m.success])
-        total_tokens = sum(m.token_usage for m in self.current_agent_metrics if m.token_usage)
+        total_tokens = sum(
+            m.token_usage for m in self.current_agent_metrics if m.token_usage
+        )
 
         # Estimate sequential baseline (sum of all agent durations)
         sequential_baseline = sum(m.duration for m in self.current_agent_metrics)
@@ -225,7 +243,9 @@ class DocumentCreationMetrics:
         # Calculate performance improvement
         performance_improvement = None
         if sequential_baseline > 0:
-            performance_improvement = ((sequential_baseline - total_duration) / sequential_baseline) * 100
+            performance_improvement = (
+                (sequential_baseline - total_duration) / sequential_baseline
+            ) * 100
 
         orchestration_metric = OrchestrationMetric(
             session_id=self.current_session_id,
@@ -238,7 +258,7 @@ class DocumentCreationMetrics:
             failed_agents=failed_agents,
             total_tokens=total_tokens if total_tokens > 0 else None,
             sequential_baseline_estimate=sequential_baseline,
-            performance_improvement=performance_improvement
+            performance_improvement=performance_improvement,
         )
 
         # Store in database
@@ -250,7 +270,9 @@ class DocumentCreationMetrics:
         print(f"   Sequential baseline: {sequential_baseline:.2f}s")
         if performance_improvement:
             print(f"   Performance improvement: {performance_improvement:.1f}%")
-        print(f"   Success rate: {successful_agents}/{len(self.current_agent_metrics)} agents")
+        print(
+            f"   Success rate: {successful_agents}/{len(self.current_agent_metrics)} agents"
+        )
 
         # Reset session
         self.current_session_id = None
@@ -263,48 +285,54 @@ class DocumentCreationMetrics:
         """Store orchestration session metrics in database"""
         with sqlite3.connect(self.metrics_db) as conn:
             # Store orchestration session
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO orchestration_sessions
                 (session_id, start_time, end_time, total_duration, parallel_groups,
                  total_agents, successful_agents, failed_agents, total_tokens,
                  sequential_baseline_estimate, performance_improvement, created_date)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                orchestration_metric.session_id,
-                orchestration_metric.start_time,
-                orchestration_metric.end_time,
-                orchestration_metric.total_duration,
-                orchestration_metric.parallel_groups,
-                orchestration_metric.total_agents,
-                orchestration_metric.successful_agents,
-                orchestration_metric.failed_agents,
-                orchestration_metric.total_tokens,
-                orchestration_metric.sequential_baseline_estimate,
-                orchestration_metric.performance_improvement,
-                datetime.now().isoformat()
-            ))
+            """,
+                (
+                    orchestration_metric.session_id,
+                    orchestration_metric.start_time,
+                    orchestration_metric.end_time,
+                    orchestration_metric.total_duration,
+                    orchestration_metric.parallel_groups,
+                    orchestration_metric.total_agents,
+                    orchestration_metric.successful_agents,
+                    orchestration_metric.failed_agents,
+                    orchestration_metric.total_tokens,
+                    orchestration_metric.sequential_baseline_estimate,
+                    orchestration_metric.performance_improvement,
+                    datetime.now().isoformat(),
+                ),
+            )
 
             # Store individual agent metrics
             for agent_metric in self.current_agent_metrics:
-                conn.execute("""
+                conn.execute(
+                    """
                     INSERT INTO agent_executions
                     (session_id, agent_name, start_time, end_time, duration,
                      token_usage, success, error_message, output_file,
                      file_size_bytes, created_date)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    orchestration_metric.session_id,
-                    agent_metric.agent_name,
-                    agent_metric.start_time,
-                    agent_metric.end_time,
-                    agent_metric.duration,
-                    agent_metric.token_usage,
-                    agent_metric.success,
-                    agent_metric.error_message,
-                    agent_metric.output_file,
-                    agent_metric.file_size_bytes,
-                    datetime.now().isoformat()
-                ))
+                """,
+                    (
+                        orchestration_metric.session_id,
+                        agent_metric.agent_name,
+                        agent_metric.start_time,
+                        agent_metric.end_time,
+                        agent_metric.duration,
+                        agent_metric.token_usage,
+                        agent_metric.success,
+                        agent_metric.error_message,
+                        agent_metric.output_file,
+                        agent_metric.file_size_bytes,
+                        datetime.now().isoformat(),
+                    ),
+                )
 
             conn.commit()
 
@@ -314,18 +342,24 @@ class DocumentCreationMetrics:
 
         with sqlite3.connect(self.metrics_db) as conn:
             # Get orchestration sessions
-            sessions = conn.execute("""
+            sessions = conn.execute(
+                """
                 SELECT * FROM orchestration_sessions
                 WHERE start_time > ?
                 ORDER BY start_time DESC
-            """, (cutoff_time,)).fetchall()
+            """,
+                (cutoff_time,),
+            ).fetchall()
 
             # Get agent executions
-            agents = conn.execute("""
+            agents = conn.execute(
+                """
                 SELECT * FROM agent_executions
                 WHERE start_time > ?
                 ORDER BY start_time DESC
-            """, (cutoff_time,)).fetchall()
+            """,
+                (cutoff_time,),
+            ).fetchall()
 
         if not sessions:
             return {"error": "No sessions found in specified time period"}
@@ -333,7 +367,9 @@ class DocumentCreationMetrics:
         # Analyze orchestration performance
         total_durations = [row[3] for row in sessions]  # total_duration
         performance_improvements = [row[10] for row in sessions if row[10] is not None]
-        success_rates = [row[6] / row[5] if row[5] > 0 else 0 for row in sessions]  # successful/total
+        success_rates = [
+            row[6] / row[5] if row[5] > 0 else 0 for row in sessions
+        ]  # successful/total
 
         # Analyze agent performance
         agent_stats = {}
@@ -341,18 +377,18 @@ class DocumentCreationMetrics:
             agent_name = agent_row[2]
             if agent_name not in agent_stats:
                 agent_stats[agent_name] = {
-                    'executions': 0,
-                    'successes': 0,
-                    'durations': [],
-                    'token_usage': []
+                    "executions": 0,
+                    "successes": 0,
+                    "durations": [],
+                    "token_usage": [],
                 }
 
-            agent_stats[agent_name]['executions'] += 1
+            agent_stats[agent_name]["executions"] += 1
             if agent_row[6]:  # success
-                agent_stats[agent_name]['successes'] += 1
-            agent_stats[agent_name]['durations'].append(agent_row[5])  # duration
+                agent_stats[agent_name]["successes"] += 1
+            agent_stats[agent_name]["durations"].append(agent_row[5])  # duration
             if agent_row[7]:  # token_usage
-                agent_stats[agent_name]['token_usage'].append(agent_row[7])
+                agent_stats[agent_name]["token_usage"].append(agent_row[7])
 
         # Calculate statistics
         analysis = {
@@ -362,24 +398,34 @@ class DocumentCreationMetrics:
                 "avg_duration": statistics.mean(total_durations),
                 "min_duration": min(total_durations),
                 "max_duration": max(total_durations),
-                "std_duration": statistics.stdev(total_durations) if len(total_durations) > 1 else 0,
-                "avg_performance_improvement": statistics.mean(performance_improvements) if performance_improvements else None,
-                "avg_success_rate": statistics.mean(success_rates)
+                "std_duration": statistics.stdev(total_durations)
+                if len(total_durations) > 1
+                else 0,
+                "avg_performance_improvement": statistics.mean(performance_improvements)
+                if performance_improvements
+                else None,
+                "avg_success_rate": statistics.mean(success_rates),
             },
-            "agent_performance": {}
+            "agent_performance": {},
         }
 
         # Agent-specific analysis
         for agent_name, stats in agent_stats.items():
-            durations = stats['durations']
+            durations = stats["durations"]
             analysis["agent_performance"][agent_name] = {
-                "total_executions": stats['executions'],
-                "success_rate": stats['successes'] / stats['executions'] if stats['executions'] > 0 else 0,
+                "total_executions": stats["executions"],
+                "success_rate": stats["successes"] / stats["executions"]
+                if stats["executions"] > 0
+                else 0,
                 "avg_duration": statistics.mean(durations),
                 "min_duration": min(durations),
                 "max_duration": max(durations),
-                "std_duration": statistics.stdev(durations) if len(durations) > 1 else 0,
-                "avg_tokens": statistics.mean(stats['token_usage']) if stats['token_usage'] else None
+                "std_duration": statistics.stdev(durations)
+                if len(durations) > 1
+                else 0,
+                "avg_tokens": statistics.mean(stats["token_usage"])
+                if stats["token_usage"]
+                else None,
             }
 
         return analysis
@@ -400,11 +446,17 @@ class DocumentCreationMetrics:
         report.append("## Overall Performance")
         report.append(f"- **Total Sessions**: {analysis['total_sessions']}")
         report.append(f"- **Average Duration**: {orchestration['avg_duration']:.2f}s")
-        report.append(f"- **Duration Range**: {orchestration['min_duration']:.2f}s - {orchestration['max_duration']:.2f}s")
-        report.append(f"- **Average Success Rate**: {orchestration['avg_success_rate']:.1%}")
+        report.append(
+            f"- **Duration Range**: {orchestration['min_duration']:.2f}s - {orchestration['max_duration']:.2f}s"
+        )
+        report.append(
+            f"- **Average Success Rate**: {orchestration['avg_success_rate']:.1%}"
+        )
 
-        if orchestration['avg_performance_improvement']:
-            report.append(f"- **Average Performance Improvement**: {orchestration['avg_performance_improvement']:.1f}%")
+        if orchestration["avg_performance_improvement"]:
+            report.append(
+                f"- **Average Performance Improvement**: {orchestration['avg_performance_improvement']:.1f}%"
+            )
 
         report.append("")
 
@@ -416,10 +468,14 @@ class DocumentCreationMetrics:
             report.append(f"- **Executions**: {stats['total_executions']}")
             report.append(f"- **Success Rate**: {stats['success_rate']:.1%}")
             report.append(f"- **Average Duration**: {stats['avg_duration']:.2f}s")
-            report.append(f"- **Duration Range**: {stats['min_duration']:.2f}s - {stats['max_duration']:.2f}s")
+            report.append(
+                f"- **Duration Range**: {stats['min_duration']:.2f}s - {stats['max_duration']:.2f}s"
+            )
 
-            if stats['avg_tokens']:
-                report.append(f"- **Average Token Usage**: {stats['avg_tokens']:.0f} tokens")
+            if stats["avg_tokens"]:
+                report.append(
+                    f"- **Average Token Usage**: {stats['avg_tokens']:.0f} tokens"
+                )
 
             report.append("")
 
@@ -431,68 +487,116 @@ class DocumentCreationMetrics:
         fast_agents = []
 
         for agent_name, stats in analysis["agent_performance"].items():
-            if stats['avg_duration'] > 30:  # Threshold: 30 seconds
-                slow_agents.append((agent_name, stats['avg_duration']))
-            elif stats['avg_duration'] < 5:  # Threshold: 5 seconds
-                fast_agents.append((agent_name, stats['avg_duration']))
+            if stats["avg_duration"] > 30:  # Threshold: 30 seconds
+                slow_agents.append((agent_name, stats["avg_duration"]))
+            elif stats["avg_duration"] < 5:  # Threshold: 5 seconds
+                fast_agents.append((agent_name, stats["avg_duration"]))
 
         if slow_agents:
             report.append("### Slow Agents (>30s average)")
-            for agent, duration in sorted(slow_agents, key=lambda x: x[1], reverse=True):
-                report.append(f"- **{agent}**: {duration:.1f}s average - consider optimization")
+            for agent, duration in sorted(
+                slow_agents, key=lambda x: x[1], reverse=True
+            ):
+                report.append(
+                    f"- **{agent}**: {duration:.1f}s average - consider optimization"
+                )
 
         if fast_agents:
             report.append("### Fast Agents (<5s average)")
             for agent, duration in sorted(fast_agents, key=lambda x: x[1]):
-                report.append(f"- **{agent}**: {duration:.1f}s average - good performance")
+                report.append(
+                    f"- **{agent}**: {duration:.1f}s average - good performance"
+                )
 
         # Performance improvement opportunities
-        if orchestration['avg_performance_improvement'] and orchestration['avg_performance_improvement'] < 20:
+        if (
+            orchestration["avg_performance_improvement"]
+            and orchestration["avg_performance_improvement"] < 20
+        ):
             report.append("### Parallelization Opportunity")
-            report.append(f"- Current improvement: {orchestration['avg_performance_improvement']:.1f}%")
-            report.append("- Consider reviewing agent dependencies for better parallel execution")
+            report.append(
+                f"- Current improvement: {orchestration['avg_performance_improvement']:.1f}%"
+            )
+            report.append(
+                "- Consider reviewing agent dependencies for better parallel execution"
+            )
 
         # Context optimization statistics
         try:
             optimization_stats = self.get_optimization_statistics(days)
-            if optimization_stats['total_sessions'] > 0:
+            if optimization_stats["total_sessions"] > 0:
                 report.append("")
                 report.append("## Context Optimization Performance")
-                report.append(f"- **Optimization Sessions**: {optimization_stats['total_sessions']}")
-                report.append(f"- **Average Token Reduction**: {optimization_stats['avg_token_reduction']:.1f}%")
-                report.append(f"- **Token Reduction Range**: {optimization_stats['min_token_reduction']:.1f}% - {optimization_stats['max_token_reduction']:.1f}%")
-                report.append(f"- **Total Token Savings**: {optimization_stats['total_token_savings']:,} tokens")
-                report.append(f"- **Average Token Savings per Session**: {optimization_stats['avg_token_savings']:,.0f} tokens")
-                report.append(f"- **Average Agents Optimized per Session**: {optimization_stats['avg_agents_optimized']:.1f}")
+                report.append(
+                    f"- **Optimization Sessions**: {optimization_stats['total_sessions']}"
+                )
+                report.append(
+                    f"- **Average Token Reduction**: {optimization_stats['avg_token_reduction']:.1f}%"
+                )
+                report.append(
+                    f"- **Token Reduction Range**: {optimization_stats['min_token_reduction']:.1f}% - {optimization_stats['max_token_reduction']:.1f}%"
+                )
+                report.append(
+                    f"- **Total Token Savings**: {optimization_stats['total_token_savings']:,} tokens"
+                )
+                report.append(
+                    f"- **Average Token Savings per Session**: {optimization_stats['avg_token_savings']:,.0f} tokens"
+                )
+                report.append(
+                    f"- **Average Agents Optimized per Session**: {optimization_stats['avg_agents_optimized']:.1f}"
+                )
 
                 # Optimization trend
-                trend_emoji = {"improving": "📈", "declining": "📉", "stable": "📊", "insufficient_data": "❓", "no_data": "❌"}
+                trend_emoji = {
+                    "improving": "📈",
+                    "declining": "📉",
+                    "stable": "📊",
+                    "insufficient_data": "❓",
+                    "no_data": "❌",
+                }
                 trend_text = {
                     "improving": "Optimization effectiveness is improving",
                     "declining": "Optimization effectiveness is declining",
                     "stable": "Optimization effectiveness is stable",
                     "insufficient_data": "Insufficient data to determine trend",
-                    "no_data": "No optimization data available"
+                    "no_data": "No optimization data available",
                 }
 
-                report.append(f"- **Optimization Trend**: {trend_emoji[optimization_stats['optimization_trend']]} {trend_text[optimization_stats['optimization_trend']]}")
+                report.append(
+                    f"- **Optimization Trend**: {trend_emoji[optimization_stats['optimization_trend']]} {trend_text[optimization_stats['optimization_trend']]}"
+                )
 
-                if optimization_stats['total_fields_excluded'] > 0 or optimization_stats['total_fields_compressed'] > 0:
-                    report.append(f"- **Context Fields Excluded**: {optimization_stats['total_fields_excluded']} across all sessions")
-                    report.append(f"- **Context Fields Compressed**: {optimization_stats['total_fields_compressed']} across all sessions")
+                if (
+                    optimization_stats["total_fields_excluded"] > 0
+                    or optimization_stats["total_fields_compressed"] > 0
+                ):
+                    report.append(
+                        f"- **Context Fields Excluded**: {optimization_stats['total_fields_excluded']} across all sessions"
+                    )
+                    report.append(
+                        f"- **Context Fields Compressed**: {optimization_stats['total_fields_compressed']} across all sessions"
+                    )
 
                 # Optimization recommendations
-                if optimization_stats['avg_token_reduction'] < 20:
+                if optimization_stats["avg_token_reduction"] < 20:
                     report.append("")
                     report.append("### Optimization Opportunities")
-                    report.append(f"- Current token reduction: {optimization_stats['avg_token_reduction']:.1f}%")
+                    report.append(
+                        f"- Current token reduction: {optimization_stats['avg_token_reduction']:.1f}%"
+                    )
                     report.append("- Target: 30-50% token reduction")
-                    report.append("- Consider reviewing agent context requirements and field priorities")
-                elif optimization_stats['avg_token_reduction'] > 60:
+                    report.append(
+                        "- Consider reviewing agent context requirements and field priorities"
+                    )
+                elif optimization_stats["avg_token_reduction"] > 60:
                     report.append("")
                     report.append("### Optimization Quality Check")
-                    report.append(f"- High token reduction: {optimization_stats['avg_token_reduction']:.1f}%")
-                    report.append("- Verify that document quality is maintained with aggressive optimization")
+                    report.append(
+                        f"- High token reduction: {optimization_stats['avg_token_reduction']:.1f}%"
+                    )
+                    report.append(
+                        "- Verify that document quality is maintained with aggressive optimization"
+                    )
 
         except Exception:
             # Optimization metrics are optional - don't fail the report if they're unavailable
@@ -505,25 +609,39 @@ class DocumentCreationMetrics:
         analysis = self.analyze_performance(days=365)  # Export all data
 
         if format == "json":
-            with open(output_path, 'w') as f:
+            with open(output_path, "w") as f:
                 json.dump(analysis, f, indent=2)
         elif format == "csv":
             import csv
 
-            with open(output_path, 'w', newline='') as f:
+            with open(output_path, "w", newline="") as f:
                 writer = csv.writer(f)
-                writer.writerow(['Agent', 'Executions', 'Success Rate', 'Avg Duration', 'Min Duration', 'Max Duration', 'Avg Tokens'])
+                writer.writerow(
+                    [
+                        "Agent",
+                        "Executions",
+                        "Success Rate",
+                        "Avg Duration",
+                        "Min Duration",
+                        "Max Duration",
+                        "Avg Tokens",
+                    ]
+                )
 
                 for agent_name, stats in analysis["agent_performance"].items():
-                    writer.writerow([
-                        agent_name,
-                        stats['total_executions'],
-                        f"{stats['success_rate']:.1%}",
-                        f"{stats['avg_duration']:.2f}",
-                        f"{stats['min_duration']:.2f}",
-                        f"{stats['max_duration']:.2f}",
-                        f"{stats['avg_tokens']:.0f}" if stats['avg_tokens'] else "N/A"
-                    ])
+                    writer.writerow(
+                        [
+                            agent_name,
+                            stats["total_executions"],
+                            f"{stats['success_rate']:.1%}",
+                            f"{stats['avg_duration']:.2f}",
+                            f"{stats['min_duration']:.2f}",
+                            f"{stats['max_duration']:.2f}",
+                            f"{stats['avg_tokens']:.0f}"
+                            if stats["avg_tokens"]
+                            else "N/A",
+                        ]
+                    )
 
         print(f"📊 Metrics exported to: {output_path}")
 
@@ -533,36 +651,47 @@ class DocumentCreationMetrics:
 
         with sqlite3.connect(self.metrics_db) as conn:
             # Count records to be deleted
-            count_result = conn.execute("""
+            count_result = conn.execute(
+                """
                 SELECT COUNT(*) FROM orchestration_sessions WHERE start_time < ?
-            """, (cutoff_time,)).fetchone()
+            """,
+                (cutoff_time,),
+            ).fetchone()
 
             sessions_to_delete = count_result[0] if count_result else 0
 
             # Delete old records
-            conn.execute("""
+            conn.execute(
+                """
                 DELETE FROM agent_executions
                 WHERE session_id IN (
                     SELECT session_id FROM orchestration_sessions WHERE start_time < ?
                 )
-            """, (cutoff_time,))
+            """,
+                (cutoff_time,),
+            )
 
-            conn.execute("""
+            conn.execute(
+                """
                 DELETE FROM orchestration_sessions WHERE start_time < ?
-            """, (cutoff_time,))
+            """,
+                (cutoff_time,),
+            )
 
             conn.commit()
 
         print(f"🧹 Cleared {sessions_to_delete} old sessions (older than {days} days)")
         return sessions_to_delete
 
-    def record_optimization_metrics(self,
-                                   token_reduction_percentage: float,
-                                   original_tokens: int,
-                                   optimized_tokens: int,
-                                   agents_optimized: int,
-                                   context_fields_excluded: int = 0,
-                                   context_fields_compressed: int = 0) -> None:
+    def record_optimization_metrics(
+        self,
+        token_reduction_percentage: float,
+        original_tokens: int,
+        optimized_tokens: int,
+        agents_optimized: int,
+        context_fields_excluded: int = 0,
+        context_fields_compressed: int = 0,
+    ) -> None:
         """Record context optimization metrics for the current session"""
         if not self.current_session_id:
             print("⚠️  No active session for optimization metrics")
@@ -588,29 +717,38 @@ class DocumentCreationMetrics:
             """)
 
             # Insert optimization metrics
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO optimization_metrics (
                     session_id, token_reduction_percentage, original_tokens, optimized_tokens,
                     token_savings, agents_optimized, context_fields_excluded,
                     context_fields_compressed, created_date
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                self.current_session_id,
-                token_reduction_percentage,
-                original_tokens,
-                optimized_tokens,
-                original_tokens - optimized_tokens,  # token_savings
-                agents_optimized,
-                context_fields_excluded,
-                context_fields_compressed,
-                datetime.now().isoformat()
-            ))
+            """,
+                (
+                    self.current_session_id,
+                    token_reduction_percentage,
+                    original_tokens,
+                    optimized_tokens,
+                    original_tokens - optimized_tokens,  # token_savings
+                    agents_optimized,
+                    context_fields_excluded,
+                    context_fields_compressed,
+                    datetime.now().isoformat(),
+                ),
+            )
 
             conn.commit()
 
-        print(f"🎯 Optimization metrics recorded: {token_reduction_percentage:.1f}% token reduction")
-        print(f"   Original: {original_tokens:,} tokens → Optimized: {optimized_tokens:,} tokens")
-        print(f"   Savings: {original_tokens - optimized_tokens:,} tokens across {agents_optimized} agents")
+        print(
+            f"🎯 Optimization metrics recorded: {token_reduction_percentage:.1f}% token reduction"
+        )
+        print(
+            f"   Original: {original_tokens:,} tokens → Optimized: {optimized_tokens:,} tokens"
+        )
+        print(
+            f"   Savings: {original_tokens - optimized_tokens:,} tokens across {agents_optimized} agents"
+        )
 
     def get_optimization_statistics(self, days: int = 30) -> Dict[str, Any]:
         """Get context optimization statistics for the last N days"""
@@ -618,7 +756,8 @@ class DocumentCreationMetrics:
 
         with sqlite3.connect(self.metrics_db) as conn:
             # Get optimization metrics
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT
                     token_reduction_percentage,
                     original_tokens,
@@ -632,7 +771,9 @@ class DocumentCreationMetrics:
                 JOIN orchestration_sessions os ON om.session_id = os.session_id
                 WHERE os.start_time >= ?
                 ORDER BY os.start_time DESC
-            """, (cutoff_time,))
+            """,
+                (cutoff_time,),
+            )
 
             metrics = cursor.fetchall()
 
@@ -642,7 +783,7 @@ class DocumentCreationMetrics:
                 "avg_token_reduction": 0,
                 "total_token_savings": 0,
                 "avg_agents_optimized": 0,
-                "optimization_trend": "no_data"
+                "optimization_trend": "no_data",
             }
 
         # Calculate statistics
@@ -660,13 +801,17 @@ class DocumentCreationMetrics:
             "avg_agents_optimized": statistics.mean(agents_counts),
             "total_fields_excluded": sum(m[5] for m in metrics),
             "total_fields_compressed": sum(m[6] for m in metrics),
-            "recent_sessions": metrics[:5]  # Last 5 sessions
+            "recent_sessions": metrics[:5],  # Last 5 sessions
         }
 
         # Determine optimization trend
         if len(reductions) >= 5:
             recent_avg = statistics.mean(reductions[-3:])
-            earlier_avg = statistics.mean(reductions[-6:-3]) if len(reductions) >= 6 else statistics.mean(reductions[:-3])
+            earlier_avg = (
+                statistics.mean(reductions[-6:-3])
+                if len(reductions) >= 6
+                else statistics.mean(reductions[:-3])
+            )
 
             if recent_avg > earlier_avg * 1.05:
                 stats["optimization_trend"] = "improving"
@@ -683,11 +828,19 @@ class DocumentCreationMetrics:
 def main():
     import argparse
 
-    parser = argparse.ArgumentParser(description="Document creation performance metrics")
-    parser.add_argument("--analyze", action="store_true", help="Analyze recent performance")
+    parser = argparse.ArgumentParser(
+        description="Document creation performance metrics"
+    )
+    parser.add_argument(
+        "--analyze", action="store_true", help="Analyze recent performance"
+    )
     parser.add_argument("--export", help="Export metrics to file (JSON or CSV)")
-    parser.add_argument("--format", choices=["json", "csv"], default="json", help="Export format")
-    parser.add_argument("--days", type=int, default=30, help="Days to analyze (default: 30)")
+    parser.add_argument(
+        "--format", choices=["json", "csv"], default="json", help="Export format"
+    )
+    parser.add_argument(
+        "--days", type=int, default=30, help="Days to analyze (default: 30)"
+    )
     parser.add_argument("--clear", type=int, help="Clear metrics older than N days")
     parser.add_argument("--project-root", default=".", help="Project root directory")
 
