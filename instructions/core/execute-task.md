@@ -29,7 +29,8 @@ Execute a specific task along with its sub-tasks systematically following a TDD 
 </invocation_modes>
 
 <pre_flight_check>
-  EXECUTE: @~/.agent-os/instructions/meta/pre-flight.md
+  EXECUTE: @.agent-os/instructions/meta/pre-flight.md
+  # Note: prefer project-local pre-flight; base install may be used as fallback by the orchestrator
 </pre_flight_check>
 
 

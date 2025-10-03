@@ -1058,14 +1058,14 @@ Use the task-breakdown-creator subagent to create the comprehensive `tasks.md` f
   **Task 1:** [FIRST_TASK_TITLE]
   [BRIEF_DESCRIPTION_OF_TASK_1_AND_SUBTASKS]
 
-  Would you like me to proceed with implementing Task 1? I will follow the execution guidelines in @~/.agent-os/instructions/execute-tasks.md and focus only on this first task and its subtasks unless you specify otherwise.
+  Would you like me to proceed with implementing Task 1? I will follow the execution guidelines in @.agent-os/instructions/core/execute-tasks.md and focus only on this first task and its subtasks unless you specify otherwise.
 
   Type 'yes' to proceed with Task 1, or let me know if you'd like to review or modify the plan first."
 </execution_prompt>
 
 <execution_flow>
   IF user_confirms_yes:
-    REFERENCE: @~/.agent-os/instructions/execute-tasks.md
+    REFERENCE: @.agent-os/instructions/core/execute-tasks.md
     FOCUS: Only Task 1 and its subtasks
     CONSTRAINT: Do not proceed to additional tasks without explicit user request
   ELSE:

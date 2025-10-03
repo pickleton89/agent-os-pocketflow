@@ -719,6 +719,10 @@ install_subfolder_claude_md() {
     cat > ".claude/CLAUDE.md" <<'EOF'
 # PocketFlow Project Guidance
 
+## Platform & Language Scope
+- Supported OS: macOS only (current focus)
+- Language: Python 3.12 (managed with `uv`)
+
 ## Mission Overview
 - .agent-os/product/mission.md
 
@@ -727,8 +731,17 @@ install_subfolder_claude_md() {
 - .agent-os/instructions/core/plan-product.md
 - .agent-os/instructions/core/create-spec.md
 
+## Instruction Resolution Order
+When invoking instructions, resolution occurs in this order:
+1) `.agent-os/instructions/core`
+2) `.agent-os/instructions`
+3) `~/.agent-os/instructions/core`
+4) `~/.agent-os/instructions`
+
+Project‑local instructions take precedence over the base installation.
+
 ## Reminder
-- Keep docs/design.md and mission artifacts updated before running automation.
+- Keep `docs/design.md` and mission artifacts updated before running automation.
 EOF
 }
 

@@ -15,6 +15,11 @@
 
 **Key Principle**: Template generators create meaningful placeholder code showing intent and guiding implementation, not working implementations. "Missing" dependencies and undefined functions in generated templates are features, not bugs.
 
+### Platform & Language Scope
+- Supported OS: macOS only (current focus)
+- Language: Python 3.12 (managed with `uv`)
+- Some agent workflows intentionally use macOS tooling (e.g., `afplay` in post‑execution tasks). Broader OS support may be added later.
+
 ### v1.4.0 Architecture (Base + Project Installations)
 - **Base Installation** (`~/.agent-os/`): Customizable standards, reusable across projects
 - **Project Installation** (`.agent-os/` in each project): Self-contained, committable to git
@@ -25,6 +30,15 @@
 - Generator creates templates with intentional placeholder code
 - TODO stubs in generated files are starting points, not bugs to fix
 - `setup.sh` routes to `setup/base.sh` and `setup/project.sh` based on context
+
+### Instruction Resolution Order (End‑User Projects)
+When instruction files are referenced, resolution occurs in this order:
+1) `.agent-os/instructions/core`
+2) `.agent-os/instructions`
+3) `~/.agent-os/instructions/core`
+4) `~/.agent-os/instructions`
+
+Project‑local instructions take precedence over the base installation.
 
 ## Development Guidelines
 

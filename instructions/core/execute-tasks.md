@@ -45,7 +45,8 @@ encoding: UTF-8
 </prerequisites>
 
 <pre_flight_check>
-  EXECUTE: @~/.agent-os/instructions/meta/pre-flight.md
+  EXECUTE: @.agent-os/instructions/meta/pre-flight.md
+  # Note: prefer project-local pre-flight; base install may be used as fallback by the orchestrator
 </pre_flight_check>
 
 <process_flow>
@@ -416,9 +417,9 @@ Use the context-fetcher subagent to retrieve relevant code style rules from @~/.
 
 </step>
 
-<step number="2.7" name="documentation_registry_validation">
+<step number="2.9" name="documentation_registry_validation">
 
-### Step 2.7: Documentation Registry Validation
+### Step 2.9: Documentation Registry Validation
 
 <step_metadata>
   <validates>external documentation registry exists and is accessible</validates>

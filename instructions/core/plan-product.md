@@ -166,16 +166,19 @@ Use the strategic-planner subagent to create a comprehensive strategic plan and 
 <step_metadata>
   <creates>
     - directory: .agent-os/product/
+    - directory: .agent-os/checklists/
     - files: 4
   </creates>
 </step_metadata>
 
 <file_structure>
   .agent-os/
-  └── product/
-      ├── mission.md          # Product vision and purpose
-      ├── tech-stack.md       # Technical architecture
-      └── roadmap.md          # Development phases
+  ├── product/
+  │   ├── mission.md          # Product vision and purpose
+  │   ├── tech-stack.md       # Technical architecture
+  │   └── roadmap.md          # Development phases
+  └── checklists/
+      └── pre-flight.md       # Development readiness checklist
 </file_structure>
 
 <git_config>

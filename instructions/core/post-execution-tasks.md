@@ -13,7 +13,8 @@ encoding: UTF-8
 Follow these steps to validate implementation, mark progress updates, create a recap, and deliver the final report to the user. Enhanced with Universal PocketFlow validation capabilities and integrated with the project-manager subagent.
 
 <pre_flight_check>
-  EXECUTE: @~/.agent-os/instructions/meta/pre-flight.md
+  EXECUTE: @.agent-os/instructions/meta/pre-flight.md
+  # Note: prefer project-local pre-flight; base install may be used as fallback by the orchestrator
 </pre_flight_check>
 
 <process_flow>
