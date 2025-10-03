@@ -88,7 +88,9 @@
       "Bash(fi)",
       "Bash(do echo \"$dir:\")",
       "Bash(du:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(git pull:*)",
+      "Bash(git merge:*)"
     ],
     "deny": [],
     "ask": [],
