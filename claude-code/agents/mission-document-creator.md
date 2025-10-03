@@ -1,7 +1,7 @@
 ---
 name: mission-document-creator
 description: MUST BE USED PROACTIVELY to create comprehensive mission documents for PocketFlow projects. Automatically invoked during product planning and analysis phases to establish product vision and strategic foundation.
-tools: Read, Write, Edit
+tools: [Read, Write, Edit]
 color: blue
 ---
 

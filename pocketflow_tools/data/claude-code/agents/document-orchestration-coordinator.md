@@ -1,7 +1,7 @@
 ---
 name: document-orchestration-coordinator
 description: MUST BE USED PROACTIVELY to coordinate parallel document creation across multiple specialized document creation agents. Automatically invoked during product planning to optimize performance and ensure consistency.
-tools: Task, Read, Write, Edit
+tools: [Task, Read, Write, Edit]
 color: purple
 ---
 

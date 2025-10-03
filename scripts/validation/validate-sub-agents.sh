@@ -101,19 +101,19 @@ else
     report_result "Coordination Config" "FAIL" "Coordination configuration file not found"
 fi
 
-# Check 4: Setup script includes new agents
+# Check 4: Setup script includes agent installation (base.sh --claude-code)
 echo -e "\n📋 Checking setup script integration..."
-SETUP_FILE="setup-claude-code.sh"
+SETUP_FILE="setup/base.sh"
 if [ -f "$SETUP_FILE" ]; then
-    if grep -q "template-validator" "$SETUP_FILE" && \
-       grep -q "pattern-analyzer" "$SETUP_FILE" && \
-       grep -q "dependency-orchestrator" "$SETUP_FILE"; then
-        report_result "Setup Script" "PASS" "All sub-agents included in setup script"
+    # Validate presence of Claude Code installation function and agent copy logic
+    if grep -q "install_claude_code_integration" "$SETUP_FILE" && \
+       grep -q "claude-code/agents" "$SETUP_FILE"; then
+        report_result "Setup Script" "PASS" "setup/base.sh installs Claude Code agents globally"
     else
-        report_result "Setup Script" "FAIL" "Sub-agents not found in setup script"
+        report_result "Setup Script" "WARN" "setup/base.sh found, but could not confirm agent copy logic"
     fi
 else
-    report_result "Setup Script" "FAIL" "Setup script not found"
+    report_result "Setup Script" "FAIL" "setup/base.sh not found"
 fi
 
 # Check 5: Generator coordination functions

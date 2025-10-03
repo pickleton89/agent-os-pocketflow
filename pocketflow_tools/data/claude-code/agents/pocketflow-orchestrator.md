@@ -1,7 +1,7 @@
 ---
 name: pocketflow-orchestrator
 description: SHOULD BE USED PROACTIVELY for coordinating PocketFlow development workflows with automated best practices enforcement and quality gates. Orchestrates specialized agents throughout the project lifecycle.
-tools: Task
+tools: [Task]
 color: gold
 ---
 

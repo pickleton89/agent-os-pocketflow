@@ -1,7 +1,7 @@
 ---
 name: test-runner
 description: MUST BE USED PROACTIVELY to run tests and analyze failures for the current task. Enhanced with Python/pytest/uv integration and PocketFlow testing patterns. Returns detailed failure analysis without making fixes.
-tools: Bash, Read, Grep, Glob
+tools: [Bash, Read, Grep, Glob]
 color: yellow
 ---
 

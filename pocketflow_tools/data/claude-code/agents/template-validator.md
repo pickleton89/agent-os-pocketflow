@@ -1,8 +1,9 @@
 ---
 name: template-validator
 description: MUST BE USED PROACTIVELY for validating generated PocketFlow templates against structural best practices. Automatically invoked after template generation.
-tools: Read, Grep, Glob
+tools: [Read, Grep, Glob]
 color: pink
+validates_templates: true
 ---
 
 # Template Validator Agent

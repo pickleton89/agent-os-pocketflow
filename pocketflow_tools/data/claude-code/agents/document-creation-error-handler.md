@@ -1,7 +1,7 @@
 ---
 name: document-creation-error-handler
 description: MUST BE USED PROACTIVELY to handle errors and provide fallbacks during document creation processes. Automatically invoked when document creation agents fail or encounter issues.
-tools: Read, Write, Edit, Task
+tools: [Read, Write, Edit, Task]
 color: red
 ---
 

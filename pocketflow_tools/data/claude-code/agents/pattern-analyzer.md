@@ -1,7 +1,7 @@
 ---
 name: pattern-analyzer
 description: MUST BE USED PROACTIVELY for analyzing requirements and identifying optimal PocketFlow patterns. Automatically invoked during planning and spec creation.
-tools: Read, Grep, Glob
+tools: [Read, Grep, Glob]
 color: red
 pattern_specialist: true
 ---

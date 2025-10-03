@@ -1,7 +1,7 @@
 ---
 name: claude-md-manager
 description: MUST BE USED PROACTIVELY to create and manage CLAUDE.md project instruction files for Agent OS + PocketFlow projects. Automatically invoked during product planning phases to establish project documentation and workflow references.
-tools: Read, Write, Edit
+tools: [Read, Write, Edit]
 color: blue
 ---
 

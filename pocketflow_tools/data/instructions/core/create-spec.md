@@ -93,7 +93,7 @@ This instruction file uses modular templates from:
 
 </step>
 
-<step number="2" subagent="context-manager" name="context_gathering">
+<step number="2" subagent="context-fetcher" name="context_gathering">
 
 ### Step 2: Context Gathering
 
@@ -104,7 +104,7 @@ This instruction file uses modular templates from:
     - @.agent-os/product/tech-stack.md
   </reads>
   <purpose>understand spec alignment</purpose>
-  <uses>context-manager subagent</uses>
+  <uses>context-fetcher subagent</uses>
 </step_metadata>
 
 <subagent_context>
@@ -121,7 +121,7 @@ This instruction file uses modular templates from:
 </context_analysis>
 
 <instructions>
-  ACTION: Use context-manager subagent for product document analysis
+  ACTION: Use context-fetcher subagent for product document analysis
   REQUEST: "Analyze product documentation for spec alignment:
             - Mission: @.agent-os/product/mission.md
             - Roadmap: @.agent-os/product/roadmap.md  

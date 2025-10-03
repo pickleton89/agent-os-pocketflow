@@ -1,7 +1,7 @@
 ---
 name: roadmap-document-creator
 description: MUST BE USED PROACTIVELY to create comprehensive roadmap documents for PocketFlow projects. Automatically invoked during product planning and analysis phases to establish 5-phase development roadmaps with PocketFlow pattern tagging and design-first methodology.
-tools: Read, Write, Edit
+tools: [Read, Write, Edit]
 color: green
 ---
 

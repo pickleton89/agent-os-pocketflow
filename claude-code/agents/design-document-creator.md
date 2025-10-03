@@ -1,7 +1,7 @@
 ---
 name: design-document-creator
 description: MUST BE USED PROACTIVELY to create comprehensive design documents for PocketFlow projects. Automatically invoked when LLM/AI features require design documentation.
-tools: Read, Write, Edit, Grep, Glob
+tools: [Read, Write, Edit, Grep, Glob]
 color: magenta
 ---
 

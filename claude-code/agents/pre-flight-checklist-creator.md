@@ -1,7 +1,7 @@
 ---
 name: pre-flight-checklist-creator
 description: MUST BE USED PROACTIVELY to create comprehensive pre-flight checklists for PocketFlow projects. Automatically invoked during product planning phases to establish development readiness validation based on PocketFlow best practices.
-tools: Read, Write, Edit
+tools: [Read, Write, Edit]
 color: orange
 ---
 
