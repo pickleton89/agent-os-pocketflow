@@ -98,6 +98,21 @@ test-user-experience/
 # Local agent run artifacts
 .code/
 
+# UV cache and virtual environments
+.uv-cache/
+.venv/
+venv/
+*.egg-info/
+
+# Build artifacts and temporary directories
+build/
+dist/
+baseline_out/
+bin/
+tmp/
+.xdg-cache/
+.xdg-data/
+
 # Framework packaging note:
 #   Core resources (instructions, standards, templates, claude-code, shared, setup, config.yml)
 #   are mirrored under pocketflow_tools/data/ for packaging. Keep root and data copies in sync.
