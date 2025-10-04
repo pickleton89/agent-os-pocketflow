@@ -7,28 +7,36 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 **CRITICAL**: This IS the Agent OS + PocketFlow framework itself — NOT a project using it.
 
 This repository:
-- Generates PocketFlow templates for other projects
-- Contains setup scripts, validation tools, and code generators  
-- Template placeholders and TODO stubs are intentional design features
-- Dependencies support template generation, not application runtime
+- **Comprehensive LLM Development Framework**: Combines Agent OS workflow structure with PocketFlow technical patterns
+- **Intelligent Pattern Detection**: Automatically detects RAG, Agent, Workflow, Multi-Agent, and MapReduce patterns from requirements
+- **Complete Project Generation**: Creates entire PocketFlow applications (12+ files) with proper Node-Flow architecture
+- **Design-First Enforcement**: Blocks implementation until `docs/design.md` is complete with Mermaid diagrams and Pydantic models
+- **Educational Template Philosophy**: TODO placeholders guide customization (features, not bugs)
+- **25 Specialized Agents**: Orchestrated workflow with sophisticated handoffs between specialized AI agents
 
-**Key Principle**: Missing implementations in generated templates are features, not bugs. This framework creates starting points for developers, not finished applications.
+**Key Principle**: This framework implements PocketFlow's "Humans Design, Agents Code" methodology within Agent OS's structured workflow system. Missing implementations in generated templates are educational features that guide developers through the 8-step Agentic Coding process.
 
 ### Platform & Language Scope
-- Supported OS: macOS only (current focus)
-- Language: Python 3.12 (managed with `uv`)
+- **Supported OS**: macOS only (current focus)
+- **Language**: Python 3.13 (managed with `uv` - following user preferences)
+- **Core Dependencies**: pandas, seaborn, matplotlib, numpy, jupyter (user's preferred data science stack)
+- **Development Tools**: ruff (linting), pytest (testing), pyyaml (configuration)
 
 ## Quick Development Setup
 
 ### Environment Setup
 ```bash
-# Initialize a dev environment (Python 3.12)
-uv init --python 3.12
-uv add --dev pytest ruff
-uv add pyyaml
+# Initialize development environment (Python 3.13 - user preference)
+uv init --python 3.13
+uv add pandas seaborn matplotlib numpy jupyter
+uv add --dev pytest ruff pyyaml
 
-# Or using existing pyproject.toml
+# Or using existing pyproject.toml (recommended for framework development)
 uv sync --dev
+
+# Verify environment
+uv run python --version  # Should show Python 3.13.x
+uv run python -c "import pandas, seaborn, matplotlib, numpy; print('Data science stack ready')"
 ```
 
 ### Framework Development Verification
@@ -95,10 +103,12 @@ your-project/                   # Project Installation (Self-contained)
 - `.claude/agents/` - AI agents for end-user projects
 
 #### Key Generator Files
-- `framework-tools/pattern_analyzer.py` - PocketFlow pattern detection
-- `framework-tools/template_validator.py` - Generated code validation
-- `framework-tools/dependency_orchestrator.py` - Dependency management
-- `framework-tools/smart_cli.py` - CLI interface for generators
+- `framework-tools/pattern_analyzer.py` - Intelligent PocketFlow pattern detection (RAG/Agent/Workflow/Multi-Agent/MapReduce)
+- `framework-tools/workflow_graph_generator.py` - Automatic Mermaid diagram generation for design documents
+- `framework-tools/template_validator.py` - Educational template validation with AST parsing
+- `framework-tools/dependency_orchestrator.py` - Pattern-specific dependency management and orchestration
+- `pocketflow_tools/cli.py` - Complete PocketFlow project generation CLI (`python -m pocketflow_tools.cli`)
+- `framework-tools/agent_coordination.py` - Sophisticated handoffs between 25 specialized AI agents
 
 ## Common Development Tasks
 
@@ -181,6 +191,42 @@ cd your-project
 
 ## PocketFlow Integration
 
+### 8-Step Agentic Coding Methodology
+This framework implements PocketFlow's "Humans Design, Agents Code" methodology:
+
+1. **Requirements** (Human High, AI Low) - Humans understand requirements and context
+2. **Flow Design** (Human Medium, AI Medium) - Humans specify high-level design, AI fills details
+3. **Utilities** (Human Medium, AI Medium) - Humans provide APIs, AI implements wrappers
+4. **Node Design** (Human Low, AI High) - AI designs PocketFlow nodes based on flow
+5. **Implementation** (Human Low, AI High) - AI implements based on design
+6. **Optimization** (Human Medium, AI Medium) - Humans evaluate, AI optimizes
+7. **Reliability** (Human Low, AI High) - AI writes tests and handles edge cases
+
+**Framework Integration**: Agent OS commands map perfectly to this methodology:
+- `/plan-product` → Steps 1-2 (Requirements + Flow Design)
+- `/create-spec` → Steps 3-4 (Utilities + Node Design)
+- `/execute-tasks` → Steps 5-7 (Implementation + Optimization + Reliability)
+
+### Design-First Enforcement
+The framework enforces PocketFlow's design-first methodology:
+
+```bash
+# Generated design document structure for end-user projects
+docs/design.md:
+  • Requirements section
+  • Flow Design with Mermaid diagrams
+  • Data Design (SharedStore schema)
+  • Node Design (prep/exec/post specifications)
+  • Utilities Design (external API integrations)
+```
+
+**Validation Gates**: The framework blocks `/execute-tasks` until:
+- `docs/design.md` exists and is complete
+- All required sections are filled out
+- Mermaid diagram is present
+- PocketFlow pattern is identified
+- Pydantic models are specified
+
 ### Supported Patterns
 The framework automatically generates templates for:
 - **Agent Pattern** - Single LLM agent for conversational interfaces
@@ -202,22 +248,39 @@ python3 end_to_end_test_scenarios.py
 
 ### Template Generation
 ```bash
-# Generate complete PocketFlow application (12+ files)
+# Generate complete PocketFlow application using the framework CLI
+python -m pocketflow_tools.cli --spec requirements.yaml --output your-project
+
+# Or use framework tools directly for testing
 cd framework-tools
-# Use smart CLI for generation
-python3 smart_cli.py generate --pattern workflow --name your-app
-
-# Run comprehensive tests
 python3 run_end_to_end_tests.py
+python3 simple_pattern_test.py
+python3 complex_scenario_tests.py
 
-# What gets generated:
-# - main.py (FastAPI application)
-# - nodes.py (PocketFlow nodes with TODO placeholders)
-# - flow.py (Orchestration logic)  
-# - router.py (API endpoints)
-# - schemas/models.py (Pydantic models)
-# - tests/ (Comprehensive test suite)
-# - docs/design.md (Architecture documentation)
+# Complete generated project structure:
+generated-project/
+├── main.py                     # FastAPI application entry point
+├── nodes.py                    # PocketFlow nodes (prep/exec/post pattern)
+├── flow.py                     # Flow orchestration and connections
+├── router.py                   # API endpoints and FastAPI integration
+├── utils/                      # External API wrappers
+│   ├── __init__.py
+│   └── [pattern-specific utilities]
+├── schemas/
+│   ├── __init__.py
+│   └── models.py              # Pydantic models (generated from design)
+├── tests/
+│   ├── __init__.py
+│   ├── test_nodes.py          # Node unit tests
+│   ├── test_flow.py           # Flow integration tests
+│   └── test_api.py            # API endpoint tests
+├── docs/
+│   └── design.md              # Complete design document with Mermaid diagrams
+├── requirements.txt           # Pattern-specific dependencies
+├── pyproject.toml             # uv + FastAPI + PocketFlow configuration
+└── README.md                  # Generated project documentation
+
+# All files contain educational TODO placeholders for customization
 ```
 
 ## Claude Code Integration
@@ -312,16 +375,24 @@ REPO_TYPE=project ./scripts/run-all-tests.sh
 ### Framework Development Issues
 
 **Import errors in generated code**
-- This is expected! Generated templates have placeholder imports for PocketFlow
-- These are resolved when templates are deployed to end-user projects
+- Expected behavior! Generated templates use placeholder imports for PocketFlow
+- Templates are educational - imports resolve when deployed to real projects
+- Don't attempt to "fix" these in the framework itself
 
 **"TODO placeholders should be implemented"**
-- TODOs in generated templates are intentional design features
-- They guide developers on what to customize in their projects
+- TODOs are intentional educational features, not bugs
+- They guide developers through the 8-step Agentic Coding process
+- Framework validates generation process, not placeholder completion
 
 **Tests failing for generated applications**
-- Framework tests validate the generation process, not the generated applications
-- Generated apps are templates with intentional placeholders
+- Framework mode tests the generation machinery (pattern detection, template creation)
+- Generated applications are templates with intentional placeholders
+- End-user projects will have working implementations after customization
+
+**Pattern detection not working**
+- Check `framework-tools/pattern_analyzer.py` for supported patterns
+- Use `python3 pattern_analyzer.py analyze "your requirements"` to debug
+- Verify requirements contain enough context for pattern classification
 
 ### Installation Issues
 ```bash
