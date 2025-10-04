@@ -8,7 +8,7 @@
 
 This document outlines the comprehensive strategy for migrating the Agent OS + PocketFlow framework from Claude Code to WARP-based implementation. The migration preserves all existing functionality while leveraging WARP's modern task orchestration, AI integration, and workflow management capabilities.
 
-**Migration Scope**: Convert 7 core instruction workflows, 25+ Claude Code agents, sophisticated pattern analysis system, and two-phase installation architecture to WARP-native implementation. This will be done on a duplicated copy of the project with no backward compatibility requirements.
+**Migration Scope**: Convert comprehensive Agent OS + PocketFlow integration including: 7 core instruction workflows with intelligent PocketFlow pattern detection, 25+ Claude Code agents, sophisticated automatic template generation system, design-first enforcement mechanisms, two-phase installation architecture, and complete PocketFlow project generation capabilities to WARP-native implementation. This will be done on a duplicated copy of the project with no backward compatibility requirements.
 
 **Strategic Goals**:
 - ✅ Maintain framework vs usage distinction
@@ -21,35 +21,80 @@ This document outlines the comprehensive strategy for migrating the Agent OS + P
 
 ## 📊 Current State Analysis
 
-### Core Instructions (7 instruction files)
-- **`plan-product.md`** (v4.1): Product planning and roadmap creation
-- **`analyze-product.md`** (v1.1): Current product analysis and Agent OS installation 
-- **`create-spec.md`** (v2.0): Specification creation and requirements documentation
-- **`execute-tasks.md`** (v2.1): Multi-task execution with 3-phase execution model
-- **`execute-task.md`** (v1.0): Single task execution and sub-task management
-- **`post-execution-tasks.md`** (v2.1): Post-execution workflow and delivery
-- **`documentation-discovery.md`** (v1.0): Documentation analysis and discovery
+### Core Instructions (7 instruction files - VERIFIED)
+- **`analyze-product.md`**: Current product analysis and Agent OS installation 
+- **`create-spec.md`**: Specification creation and requirements documentation
+- **`documentation-discovery.md`**: Documentation analysis and discovery
+- **`execute-task.md`**: Single task execution and sub-task management
+- **`execute-tasks.md`**: Multi-task execution with 3-phase execution model
+- **`plan-product.md`**: Product planning and roadmap creation
+- **`post-execution-tasks.md`**: Post-execution workflow and delivery
 
-### Claude Code Integration Points
-- **Sub-Agents**: 25+ specialized agents (`pocketflow-orchestrator.md`, `pattern-analyzer.md`, etc.)
+### Claude Code Integration Points (25 agents - VERIFIED)
+- **Core PocketFlow Agents**: `pocketflow-orchestrator.md`, `pattern-analyzer.md`, `template-validator.md`, `design-document-creator.md`
+- **Document Creation**: `mission-document-creator.md`, `roadmap-document-creator.md`, `tech-stack-document-creator.md`, `spec-document-creator.md`
+- **Technical Specialists**: `api-spec-creator.md`, `database-schema-creator.md`, `technical-spec-creator.md`, `test-spec-creator.md`
+- **Workflow Support**: `file-creator.md`, `git-workflow.md`, `test-runner.md`, `context-fetcher.md`, `task-breakdown-creator.md`
+- **Project Management**: `project-manager.md`, `strategic-planner.md`, `pre-flight-checklist-creator.md`, `dependency-orchestrator.md`
+- **Utility Agents**: `date-checker.md`, `claude-md-manager.md`, `document-creation-error-handler.md`, `document-orchestration-coordinator.md`
 - **Installation System**: Two-phase architecture (base → project) with `--claude-code` flags
-- **Orchestration**: `agent_coordination.py` managing handoffs between sub-agents
+- **Orchestration**: `agent_coordination.py` managing handoffs between 25 specialized sub-agents
 - **Quality Gates**: Validation hooks with blocking/warning mechanisms
 
-### Framework-Tools Backend  
-- **Pattern Analysis**: Sophisticated `pattern_analysis/` module with 6 components
-- **Code Generation**: `pocketflow_tools/generators/workflow_composer.py` (2000+ lines)
-- **Template Validation**: Comprehensive `template_validator.py` with AST parsing
-- **Dependency Management**: `dependency_orchestrator.py` with pattern-specific configs
+### Framework-Tools Backend (PocketFlow Integration Engine)
+- **Pattern Analysis**: Sophisticated `pattern_analysis/` module with 6 components + automatic pattern detection for RAG/Agent/Workflow/Multi-Agent/MapReduce patterns
+- **Code Generation**: Complete PocketFlow project generation (`pocketflow_tools/generators/workflow_composer.py` 2000+ lines)
+  - Generates complete project structure: `main.py`, `nodes.py`, `flow.py`, `utils/`, `tests/`, `docs/design.md`
+  - Educational TODO placeholders (features, not bugs)
+  - Pydantic model generation from design specifications
+- **Template Validation**: Comprehensive `template_validator.py` with AST parsing for educational template verification
+- **Dependency Management**: `dependency_orchestrator.py` with PocketFlow pattern-specific dependency configurations
+- **Design-First Enforcement**: Blocks implementation until `docs/design.md` is complete with Mermaid diagrams and node specifications
+- **Workflow Graph Generation**: `workflow_graph_generator.py` creates Mermaid diagrams matching PocketFlow patterns
 
-### Current End-User Flow
+### Current End-User Flow (Agent OS + PocketFlow Integration)
 ```
-End-User: /execute-tasks 
-→ Core Instruction (execute-tasks.md)
-→ Sub-Agent Coordination (pocketflow-orchestrator)  
-→ Framework-Tools Engine (pattern_analyzer, workflow_composer, etc.)
-→ Generated PocketFlow Application
+End-User: /execute-tasks MyFeature
+→ Core Instruction (execute-tasks.md) - validates design.md exists
+→ Pattern Detection - analyzes requirements for RAG/Agent/Workflow patterns  
+→ Sub-Agent Coordination (pocketflow-orchestrator) - handoff to specialized agents
+→ Framework-Tools Engine:
+  ├── pattern_analyzer.py - determines optimal PocketFlow pattern
+  ├── workflow_graph_generator.py - creates Mermaid diagrams
+  ├── dependency_orchestrator.py - manages pattern-specific dependencies  
+  └── pocketflow_tools.cli - generates complete project structure
+→ Generated PocketFlow Application:
+  ├── Complete project: main.py, nodes.py, flow.py, utils/, tests/
+  ├── Design document with Mermaid diagrams
+  ├── Pydantic models and validation
+  └── Educational TODO placeholders for customization
 ```
+
+### Critical PocketFlow Integration Components (Missing from Original Analysis)
+
+#### **Design-First Enforcement System**
+- **Design Document Templates**: Auto-generated `docs/design.md` with required sections
+- **Validation Gates**: Blocks `/execute-tasks` until design is complete
+- **Mermaid Integration**: Automatic workflow diagram generation
+- **Pydantic Model Generation**: Type-safe data structures from design specs
+
+#### **Intelligent Pattern Detection Engine**
+- **Pattern Indicators**: Regex-based analysis for RAG/Agent/Workflow/Multi-Agent patterns
+- **Requirement Analysis**: Analyzes user requirements to recommend optimal PocketFlow pattern
+- **Template Selection**: Automatically chooses appropriate project templates
+- **Guidance Generation**: Provides pattern-specific implementation guidance
+
+#### **Complete Project Generation System**
+- **Project Structure**: Creates complete PocketFlow applications (12+ files)
+- **Educational Philosophy**: TODO placeholders are features that guide customization
+- **Framework vs Usage Distinction**: Generates templates for end-user projects
+- **Quality Assurance**: Template validation ensures educational value, not functional code
+
+#### **Orchestration Hooks System**
+- **Cross-File Coordination**: `orchestration/coordination.yaml` manages workflow dependencies
+- **Quality Gates**: Progressive validation with blocking/warning mechanisms
+- **Automatic Orchestrator Invocation**: Triggers pocketflow-orchestrator for LLM patterns
+- **Dependency Validation**: Ensures all prerequisites are met before progression
 
 ---
 
@@ -64,37 +109,40 @@ End-User: warp run execute_tasks
 → Generated PocketFlow Application
 ```
 
-### Core Instruction → WARP Workflow Mapping
+### Core Instruction → WARP Workflow Mapping (7 VERIFIED WORKFLOWS)
 | Core Instruction | WARP Workflow | Purpose |
 |------------------|---------------|----------|
-| `plan-product.md` | `plan_product.yaml` | Product planning and roadmap creation |
 | `analyze-product.md` | `analyze_product.yaml` | Product analysis and Agent OS installation |
 | `create-spec.md` | `create_spec.yaml` | Specification creation and requirements |
-| `execute-tasks.md` | `execute_tasks.yaml` | Multi-task execution (3-phase model) |
-| `execute-task.md` | `execute_task.yaml` | Single task execution and sub-tasks |
-| `post-execution-tasks.md` | `post_execution_tasks.yaml` | Post-execution workflow and delivery |
 | `documentation-discovery.md` | `documentation_discovery.yaml` | Documentation analysis and discovery |
+| `execute-task.md` | `execute_task.yaml` | Single task execution and sub-tasks |
+| `execute-tasks.md` | `execute_tasks.yaml` | Multi-task execution (3-phase model) |
+| `plan-product.md` | `plan_product.yaml` | Product planning and roadmap creation |
+| `post-execution-tasks.md` | `post_execution_tasks.yaml` | Post-execution workflow and delivery |
 
 ### New Directory Structure
 ```
 agent-os-pocketflow-warp/           # New duplicated project
 ├── warp/
-│   ├── workflows/
-│   │   ├── plan_product.yaml           # From plan-product.md
-│   │   ├── analyze_product.yaml        # From analyze-product.md
-│   │   ├── create_spec.yaml            # From create-spec.md
-│   │   ├── execute_tasks.yaml          # From execute-tasks.md
-│   │   ├── execute_task.yaml           # From execute-task.md
-│   │   ├── post_execution_tasks.yaml   # From post-execution-tasks.md
-│   │   └── documentation_discovery.yaml # From documentation-discovery.md
+│   ├── workflows/                         # 7 core workflows (verified)
+│   │   ├── analyze_product.yaml          # From analyze-product.md
+│   │   ├── create_spec.yaml              # From create-spec.md
+│   │   ├── documentation_discovery.yaml  # From documentation-discovery.md
+│   │   ├── execute_task.yaml             # From execute-task.md
+│   │   ├── execute_tasks.yaml            # From execute-tasks.md
+│   │   ├── plan_product.yaml             # From plan-product.md
+│   │   └── post_execution_tasks.yaml     # From post-execution-tasks.md
 │   ├── tasks/
 │   │   ├── pattern_analysis.yaml
 │   │   ├── template_generation.yaml
 │   │   └── validation.yaml
-│   └── ai/
-│       ├── pattern_analyzer.yaml
-│       ├── orchestrator.yaml
-│       └── template_validator.yaml
+│   └── ai/                                 # 25 agents (verified)
+│       ├── pocketflow_orchestrator.yaml      # Core orchestration
+│       ├── pattern_analyzer.yaml             # Pattern detection
+│       ├── template_validator.yaml           # Template validation
+│       ├── design_document_creator.yaml      # Design generation
+│       ├── file_creator.yaml                 # File operations
+│       └── [20 additional agents].yaml       # Document creators, specialists, utilities
 ├── framework-tools/
 │   ├── warp_bridge/          # NEW: WARP integration layer
 │   │   ├── __init__.py
@@ -285,7 +333,38 @@ steps:
 - `post-execution-tasks.md` (v2.1) → `post_execution_tasks.yaml`
 - `documentation-discovery.md` (v1.0) → `documentation_discovery.yaml`
 
-### Phase 5: Framework Tools Orchestration (6 days)
+### Phase 5: 25-Agent Migration & Framework Tools Orchestration (8 days)
+
+#### **Task 5.1: Core PocketFlow Agents Migration** (3 days)
+**Owner**: AI Integration Engineer
+**Priority**: CRITICAL PATH
+
+**Core Agents (4 critical agents)**:
+- `pocketflow-orchestrator.md` → `pocketflow_orchestrator.yaml`
+- `pattern-analyzer.md` → `pattern_analyzer.yaml`  
+- `template-validator.md` → `template_validator.yaml`
+- `design-document-creator.md` → `design_document_creator.yaml`
+
+#### **Task 5.2: Document Creation Agents Migration** (2 days)
+**Owner**: Content Specialist
+
+**Document Agents (7 agents)**:
+- `mission-document-creator.md`, `roadmap-document-creator.md`, `tech-stack-document-creator.md`
+- `spec-document-creator.md`, `api-spec-creator.md`, `technical-spec-creator.md`, `test-spec-creator.md`
+
+#### **Task 5.3: Workflow & Utility Agents Migration** (3 days)
+**Owner**: Backend Developer
+
+**Workflow Support (9 agents)**:
+- `file-creator.md`, `git-workflow.md`, `test-runner.md`, `context-fetcher.md`
+- `task-breakdown-creator.md`, `project-manager.md`, `strategic-planner.md`
+- `pre-flight-checklist-creator.md`, `dependency-orchestrator.md`
+
+**Utility Agents (5 agents)**:
+- `date-checker.md`, `claude-md-manager.md`, `document-creation-error-handler.md`
+- `document-orchestration-coordinator.md`, `database-schema-creator.md`
+
+### Phase 6: Framework Tools Orchestration (2 days)
 
 #### **Task 5.1: Agent Coordinator Refactoring** (6 days)
 **Owner**: Backend Developer  
@@ -315,7 +394,104 @@ class AgentCoordinator:
 - Regression tests ensuring identical outputs
 - Performance benchmarking (≤10% overhead vs Claude)
 
-### Phase 6: Quality Gates & Validation (2 days)
+### Phase 6: PocketFlow Pattern Detection & Template Generation (5 days)
+
+#### **Task 6.1: Pattern Detection Engine Migration** (3 days)
+**Owner**: AI/ML Engineer  
+**Priority**: CRITICAL PATH
+
+```python
+# warp_bridge/pattern_detection.py
+class WarpPatternDetector:
+    """WARP-native pattern detection for PocketFlow template selection"""
+    
+    def detect_pattern_via_warp(self, requirements: str, context: dict):
+        # Submit pattern analysis task to WARP
+        task_result = warp.submit_task(
+            workflow="pattern_analysis",
+            inputs={
+                "requirements": requirements,
+                "context": context,
+                "patterns": ["RAG", "AGENT", "WORKFLOW", "MULTI_AGENT", "MAPREDUCE"]
+            }
+        )
+        return task_result["recommended_pattern"]
+```
+
+**Implementation Requirements**:
+- Migrate regex-based pattern indicators to WARP AI tasks
+- Convert requirement analysis logic to WARP workflow steps
+- Maintain identical pattern detection accuracy
+- Add WARP-native caching for performance optimization
+
+#### **Task 6.2: Template Generation System Migration** (2 days)
+**Owner**: Backend Developer
+
+```yaml
+# warp/workflows/generate_pocketflow_project.yaml
+name: "PocketFlow Project Generation"
+description: "Generate complete PocketFlow application with educational TODOs"
+
+steps:
+  - name: "detect_pattern"
+    run: "python -m framework-tools.warp_bridge.pattern_detection"
+    ai:
+      model: "claude-3-5-sonnet"
+      prompt: "Analyze requirements and recommend PocketFlow pattern"
+      
+  - name: "generate_design_document"
+    deps: ["detect_pattern"]
+    run: "python -m framework-tools.warp_bridge.design_generator"
+    ai:
+      model: "claude-3-5-sonnet"
+      context: "{{ steps.detect_pattern.output }}"
+      
+  - name: "create_project_structure"
+    deps: ["generate_design_document"]
+    run: "python -m pocketflow_tools.cli --pattern {{ steps.detect_pattern.output.pattern }}"
+    
+  - name: "validate_educational_templates"
+    deps: ["create_project_structure"]
+    run: "python -m framework-tools.template_validator --mode educational"
+```
+
+### Phase 7: Design-First Enforcement Migration (3 days)
+
+#### **Task 7.1: Design Document Validation Migration** (3 days)
+**Owner**: Quality Engineer
+
+```yaml
+# warp/workflows/enforce_design_first.yaml
+name: "Design-First Enforcement"
+description: "Block implementation until design.md is complete"
+
+steps:
+  - name: "validate_design_exists"
+    run: "test -f docs/design.md"
+    hooks:
+      on_failure:
+        - fail_workflow: true
+        - message: "❌ Design document missing: docs/design.md"
+        - suggestion: "Run: warp run create_design_document"
+        
+  - name: "validate_design_completeness"
+    deps: ["validate_design_exists"]
+    run: "python -m framework-tools.design_validator"
+    hooks:
+      on_failure:
+        - fail_workflow: true
+        - message: "❌ Design document incomplete - missing required sections"
+        
+  - name: "validate_mermaid_diagram"
+    deps: ["validate_design_completeness"]
+    run: "grep -q '```mermaid' docs/design.md"
+    hooks:
+      on_failure:
+        - fail_workflow: true
+        - message: "❌ Missing Mermaid diagram in design document"
+```
+
+### Phase 8: Quality Gates & Validation (2 days)
 
 #### **Task 6.1: WARP Quality Hooks** (2 days)
 **Owner**: QA Engineer
@@ -476,15 +652,17 @@ steps:
 | 2. Core Integration | 4 days | WARP Bridge | Phase 1 |
 | 3. Installation | 2 days | WARP-Native Scripts | Phase 2 |
 | 4. Core Instructions | 7 days | 7 Workflow Conversions | Phase 3 |
-| 5. Framework Tools | 6 days | Agent Coordinator | Phase 2, 4 |
-| 6. Quality Gates | 2 days | Validation Hooks | Phase 5 |
-| 7. Documentation | 3 days | WARP User Guides | Phase 6 |
-| 8. Testing | 3 days | WARP-Native CI | All Phases |
-| 9. Release | 14 days | Public Release | Phase 8 |
+|| 5. 25-Agent Migration | 8 days | All Agents + Framework Tools | Phase 2, 4 |
+| 6. Pattern Detection & Templates | 5 days | PocketFlow Integration | Phase 5 |
+| 7. Design-First Enforcement | 3 days | Validation Gates | Phase 6 |
+| 8. Quality Gates | 2 days | Validation Hooks | Phase 7 |
+| 9. Documentation | 3 days | WARP User Guides | Phase 8 |
+| 10. Testing | 3 days | WARP-Native CI | All Phases |
+| 11. Release | 14 days | Public Release | Phase 10 |
 
-**Total Development Time**: 32 days (6.4 weeks)  
-**Total Project Timeline**: 8 weeks (including release preparation)
-**Total Project Timeline**: 12 weeks (including beta)
+**Total Development Time**: 42 days (8.4 weeks)  
+**Total Project Timeline**: 10.5 weeks (including release preparation)
+**Total Project Timeline**: 14 weeks (including beta)
 
 ---
 
